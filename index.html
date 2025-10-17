@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pymax Finanzas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tu CSS clásico (mantenemos tu estilo) -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+  (function() {
+    emailjs.init("5bz9UlqMqgPJ8HQOc"); // tu Public Key
+  })();
+</script>
+
+<body class="relative min-h-screen flex flex-col bg-gray-900 text-white font-sans overflow-hidden">
+
+  <!-- Aurora de fondo -->
+  <div class="absolute inset-0 -z-10 overflow-hidden">
+    <div class="absolute top-0 left-1/2 w-[800px] h-[800px] bg-blue-500 opacity-20 blur-[150px] rounded-full animate-pulse"></div>
+    <div class="absolute bottom-0 right-1/3 w-[900px] h-[900px] bg-purple-500 opacity-20 blur-[160px] rounded-full animate-pulse delay-700"></div>
+    <div class="absolute top-1/3 left-1/4 w-[600px] h-[600px] bg-indigo-400 opacity-10 blur-[180px] rounded-full animate-pulse delay-1000"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav id="navbar" class="flex justify-between items-center px-8 py-4 bg-transparent backdrop-blur-md">
+    <div class="flex items-center space-x-3">
+      <img src="img/pymax.png" alt="Logo Pymax" class="w-16 h-16 object-contain">
+      <span class="text-2xl font-bold tracking-wide text-white">PYMAX</span>
+    </div>
+    <div class="space-x-4" id="navButtons">
+      <button id="loginBtn" class="bg-transparent border border-gray-300 hover:bg-blue-600 px-4 py-2 rounded transition">Iniciar sesión</button>
+      <button id="registerBtn" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition">Crear cuenta</button>
+    </div>
+  </nav>
+
+  <!-- Contenido principal -->
+  <main class="flex flex-col items-center justify-center flex-grow text-center px-6">
+    <h1 class="text-5xl font-extrabold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-indigo-300 bg-clip-text text-transparent">
+      Bienvenido a Pymax
+    </h1>
+    <p class="max-w-2xl text-gray-200 mb-6 leading-relaxed">
+      En Pymax creemos que las finanzas deben ser una herramienta de crecimiento, no un obstáculo. 
+      Nuestra misión es ayudarte a tener el control total de tus ingresos, gastos y proyecciones con el poder de la automatización y la IA.
+    </p>
+
+    <h2 class="text-3xl font-semibold mb-3 text-blue-300">Quiénes somos</h2>
+    <p class="max-w-2xl text-gray-300 mb-10">
+      Somos una empresa enfocada en transformar los datos financieros de las PYMEs en decisiones inteligentes. 
+      Analizamos tus finanzas en segundos y te mostramos exactamente cómo mejorar tu rentabilidad.
+    </p>
+
+    <a id="verServiciosLink" href="servicios.html" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 px-6 py-3 rounded-lg text-lg font-medium transition shadow-lg shadow-blue-800/30">
+      Ver servicios
+    </a>
+  </main>
+
+  <!-- Modal Iniciar Sesión -->
+  <div id="loginModal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center backdrop-blur-sm">
+    <div class="bg-gray-800/90 rounded-xl p-8 w-96 text-center shadow-2xl border border-blue-600/30">
+      <h2 class="text-2xl font-bold mb-4 text-blue-400">Iniciar sesión</h2>
+      <input id="loginEmail" type="email" placeholder="Correo electrónico" class="w-full mb-3 p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <input id="loginPassword" type="password" placeholder="Contraseña" class="w-full mb-3 p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <button id="loginSubmit" class="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded mb-2">Entrar</button>
+      <button id="closeLogin" class="w-full bg-gray-600 hover:bg-gray-700 py-2 rounded">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- Modal Crear Cuenta -->
+  <div id="registerModal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center backdrop-blur-sm">
+    <div class="bg-gray-800/90 rounded-xl p-8 w-96 text-center shadow-2xl border border-purple-600/30">
+      <h2 class="text-2xl font-bold mb-4 text-purple-400">Crear cuenta</h2>
+      <input id="registerName" type="text" placeholder="Nombre completo" class="w-full mb-3 p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+      <input id="registerEmail" type="email" placeholder="Correo electrónico" class="w-full mb-3 p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+      <input id="registerPassword" type="password" placeholder="Contraseña" class="w-full mb-3 p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+      <button id="registerSubmit" class="w-full bg-purple-600 hover:bg-purple-700 py-2 rounded mb-2">Registrarse</button>
+      <button id="closeRegister" class="w-full bg-gray-600 hover:bg-gray-700 py-2 rounded">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- Modal de Confirmación -->
+  <div id="successModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-gray-900 rounded-2xl p-8 max-w-sm text-center shadow-lg border border-gray-700">
+      <h2 class="text-2xl font-semibold text-white mb-3" id="modalTitle">Acción completada</h2>
+      <p class="text-gray-300 mb-6" id="modalMessage">Operación realizada correctamente.</p>
+      <button onclick="closeModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition">Aceptar</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-transparent backdrop-blur-md text-center py-4 text-gray-400 text-sm mt-auto">
+    © 2025 Pymax Finanzas. Todos los derechos reservados.
+  </footer>
+
+  <!-- Lógica: registro/login con backend (sin cambiar tu estilo) -->
+  <script>
+    // 👉 Cambia esto SOLO si tu dominio de backend es distinto
+    const BACKEND_URL = 'https://pymax-backend.onrender.com';   // tu Flask en Render
+    const BASE_URL = window.location.origin;                     // tu dominio Netlify
+
+    // Elementos base
+    const loginBtn = document.getElementById("loginBtn");
+    const registerBtn = document.getElementById("registerBtn");
+    const loginModal = document.getElementById("loginModal");
+    const registerModal = document.getElementById("registerModal");
+    const closeLogin = document.getElementById("closeLogin");
+    const closeRegister = document.getElementById("closeRegister");
+
+    // Abrir/cerrar modales (mantenemos tu UX)
+    loginBtn.onclick = () => loginModal.classList.remove("hidden");
+    registerBtn.onclick = () => registerModal.classList.remove("hidden");
+    closeLogin.onclick = () => loginModal.classList.add("hidden");
+    closeRegister.onclick = () => registerModal.classList.add("hidden");
+
+    // Modal elegante reutilizable
+    function showModal(title, message) {
+      document.getElementById("modalTitle").innerText = title;
+      document.getElementById("modalMessage").innerText = message;
+      document.getElementById("successModal").classList.remove("hidden");
+    }
+    function closeModal() {
+      document.getElementById("successModal").classList.add("hidden");
+    }
+
+    // Registro con backend + EmailJS
+    document.getElementById("registerSubmit").onclick = async () => {
+      const name = document.getElementById("registerName").value.trim();
+      const email = document.getElementById("registerEmail").value.trim();
+      const password = document.getElementById("registerPassword").value.trim();
+
+      if (!name || !email || !password) {
+        showModal("Campos incompletos", "Por favor, completa todos los campos para continuar.");
+        return;
+      }
+
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "No pudimos registrar tu cuenta.");
+
+        // token del backend → link de confirmación en tu dominio
+        const token = data.token;
+        const confirmLink = `${BASE_URL}/confirmar.html?token=${encodeURIComponent(token)}`;
+
+        // Enviar correo con EmailJS (usa tus IDs)
+        await emailjs.send("service_9yybvh8", "template_81fvsaa", {
+          user_name: name,
+          email: email,
+          confirmation_link: confirmLink
+        });
+
+        showModal("Cuenta creada", `Te enviamos un correo de confirmación a ${email}. Revisa tu bandeja de entrada o spam.`);
+        registerModal.classList.add("hidden");
+      } catch (e) {
+        console.error(e);
+        showModal("Error", e.message || "No se pudo registrar. Intenta de nuevo.");
+      }
+    };
+
+    // Login con backend (requiere confirmación previa)
+    document.getElementById("loginSubmit").onclick = async () => {
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value.trim();
+
+      if (!email || !password) {
+        showModal("Datos incompletos", "Ingresa tu correo y contraseña.");
+        return;
+      }
+
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          if (res.status === 403) throw new Error("Tu correo no está confirmado. Revisa tu email.");
+          throw new Error(data.error || "Credenciales inválidas.");
+        }
+
+        // Guardamos sesión para el saludo y control de acceso
+        localStorage.setItem("activeUser", JSON.stringify({
+          name: data.name,
+          email: data.email,
+          token: data.session_token
+        }));
+
+        loginModal.classList.add("hidden");
+        showModal("Inicio de sesión", `Bienvenido, ${data.name}.`);
+        actualizarNavbar();
+      } catch (e) {
+        console.error(e);
+        showModal("Error de inicio de sesión", e.message || "No se pudo iniciar sesión.");
+      }
+    };
+
+    // Cerrar sesión
+    function cerrarSesion() {
+      localStorage.removeItem("activeUser");
+      actualizarNavbar();
+    }
+
+    // Actualizar navbar (mismo estilo, con saludo)
+    function actualizarNavbar() {
+      const activeUser = JSON.parse(localStorage.getItem("activeUser"));
+      const navButtons = document.getElementById("navButtons");
+
+      if (activeUser) {
+        navButtons.innerHTML = `
+          <span class="text-gray-200">Hola, ${activeUser.name}</span>
+          <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded transition">Cerrar sesión</button>
+        `;
+        document.getElementById("logoutBtn").onclick = cerrarSesion;
+      } else {
+        navButtons.innerHTML = `
+          <button id="loginBtn" class="bg-transparent border border-gray-300 hover:bg-blue-600 px-4 py-2 rounded transition">Iniciar sesión</button>
+          <button id="registerBtn" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition">Crear cuenta</button>
+        `;
+        document.getElementById("loginBtn").onclick = () => loginModal.classList.remove("hidden");
+        document.getElementById("registerBtn").onclick = () => registerModal.classList.remove("hidden");
+      }
+    }
+
+    // Bloquear acceso a servicios si no hay sesión (sin cambiar tu <a>)
+    const serviciosLink = document.getElementById('verServiciosLink');
+    if (serviciosLink) {
+      serviciosLink.addEventListener('click', (e) => {
+        const activeUser = JSON.parse(localStorage.getItem("activeUser"));
+        if (!activeUser) {
+          e.preventDefault();
+          showModal("Acceso restringido", "Debes iniciar sesión para acceder a los servicios.");
+          loginModal.classList.remove("hidden");
+        }
+      });
+    }
+
+    // Init
+    actualizarNavbar();
+  </script>
+</body>
+</html>
