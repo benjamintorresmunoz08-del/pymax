@@ -3,7 +3,9 @@ from flask_cors import CORS
 import sqlite3, os, secrets
 
 app = Flask(__name__)
-CORS(app)
+
+# === Configurar CORS (permite acceso desde tu frontend local y desde Netlify) ===
+CORS(app, resources={r"/*": {"origins": ["*", "http://127.0.0.1:5500", "https://pymaxcenter2.netlify.app"]}})
 
 # === Configuración ===
 DB_FILE = "usuarios.db"
@@ -31,7 +33,7 @@ crear_bd()
 # === Ruta raíz ===
 @app.route('/')
 def home():
-    return jsonify({"message": "Pymax backend activo 🚀"})
+    return jsonify({"message": "Pymax backend activo "})
 
 # === Registro ===
 @app.route('/api/register', methods=['POST'])

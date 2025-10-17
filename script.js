@@ -17,7 +17,7 @@ function registrarUsuario() {
   const pass = document.querySelector('#modal-registro input[type="password"]').value;
 
   if (!nombre || !correo || !pass) {
-    alert("⚠️ Por favor completa todos los campos.");
+    alert(" Por favor completa todos los campos.");
     return;
   }
 
@@ -27,7 +27,7 @@ function registrarUsuario() {
 
   cerrarModal();
   actualizarUsuario();
-  alert(`✅ Bienvenido a Pymax, ${nombre}!`);
+  alert(` Bienvenido a Pymax, ${nombre}!`);
 }
 
 // Mostrar nombre si ya está logueado
@@ -37,7 +37,7 @@ function actualizarUsuario() {
 
   if (usuario) {
     nav.innerHTML = `
-      <span>👋 Hola, ${usuario.nombre}</span>
+      <span> Hola, ${usuario.nombre}</span>
       <button onclick="cerrarSesion()">Cerrar sesión</button>
     `;
   }
@@ -52,12 +52,12 @@ function cerrarSesion() {
 // Prueba gratuita
 function enviarPrueba() {
   document.getElementById('mensaje').innerText =
-    "✅ Datos enviados correctamente. Los resultados están listos — desbloquéalos adquiriendo el servicio premium 🔒";
+    " Datos enviados correctamente. Los resultados están listos — desbloquéalos adquiriendo el servicio premium 🔒";
 }
 
 // Pago simulado
 function pagarPremium() {
-  alert("💳 Simulando pago con Stripe (modo demo)... Redirigiendo al panel Premium");
+  alert(" Simulando pago con Stripe (modo demo)... Redirigiendo al panel Premium");
   window.location.href = 'premium.html';
 }
 
@@ -75,7 +75,7 @@ function login() {
   localStorage.setItem("usuarioPymax", JSON.stringify(usuario));
   cerrarModal();
   actualizarUsuario();
-  alert(`👋 Bienvenido de nuevo, ${usuario.nombre}!`);
+  alert(` Bienvenido de nuevo, ${usuario.nombre}!`);
 }
 
 // Ejecutar cuando carga la página
