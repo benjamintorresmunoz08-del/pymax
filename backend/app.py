@@ -4,18 +4,29 @@ import sqlite3, os, secrets
 
 app = Flask(__name__)
 
-# === CORS configurado para producción y desarrollo ===
+# === Configuración de CORS (completa y segura para producción) ===
+from flask_cors import cross_origin
+
 CORS(app, resources={
     r"/*": {
         "origins": [
-            "https://pymaxcenter2.netlify.app",  # Producción (Netlify)
+            "https://pymaxcenter2.netlify.app",  # Tu frontend en producción
             "http://127.0.0.1:5500",             # Pruebas locales
-            "http://localhost:5500"              # Pruebas locales alternativas
+            "http://localhost:5500"              # Alternativa local
         ],
         "methods": ["GET", "POST", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"]
     }
 })
+
+# === Manejo automático del preflight OPTIONS ===
+@app.after_request
+def after_request(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+    response.headers.add("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+    return response
+
 
 
 # === Ruta raíz para confirmar que el backend está activo ===
