@@ -5,7 +5,8 @@ import sqlite3, os, secrets
 app = Flask(__name__)
 
 # === CORS: permite acceso desde tu frontend local y Netlify ===
-CORS(app, resources={r"/*": {"origins": ["*", "http://127.0.0.1:5500", "https://pymax.netlify.app"]}})
+CORS(app, resources={r"/*": {"origins": "*"}})
+
 
 # === Ruta raíz para confirmar que el backend está activo ===
 @app.route('/')
