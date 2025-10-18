@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, redirect, request, jsonify
 from flask_cors import CORS
 import sqlite3, os, secrets
 
@@ -50,7 +50,20 @@ def register():
     return jsonify({"message": "Usuario registrado correctamente", "token": token}), 200
 
 
-# === Ruta: confirmar correo ===
+from flask import Flask, request, jsonify, redirect
+from flask_cors import CORS
+import sqlite3, os, secrets
+
+app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+from flask import Flask, request, jsonify, redirect
+from flask_cors import CORS
+import sqlite3, secrets
+
+app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
+
 @app.route('/api/confirm', methods=['GET'])
 def confirm_email():
     token = request.args.get('token')
@@ -70,8 +83,20 @@ def confirm_email():
     conn.commit()
     conn.close()
 
-    return jsonify({"message": "Cuenta confirmada correctamente"}), 200
-
+    # ✅ Redirección HTML (funciona en Render y móviles)
+    return """
+    <html>
+      <head>
+        <meta http-equiv="refresh" content="0; url=https://pymaxcenter2.netlify.app">
+        <script>
+          window.location.href = "https://pymaxcenter2.netlify.app";
+        </script>
+      </head>
+      <body>
+        <p>Redirigiendo a Pymax...</p>
+      </body>
+    </html>
+    """
 
 # === Ruta: login ===
 @app.route('/api/login', methods=['POST'])

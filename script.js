@@ -10,25 +10,42 @@ function cerrarModal() {
   document.getElementById('modal-registro').style.display = 'none';
 }
 
-// Guardar usuario nuevo
-function registrarUsuario() {
-  const nombre = document.querySelector('#modal-registro input[type="text"]').value;
-  const correo = document.querySelector('#modal-registro input[type="email"]').value;
-  const pass = document.querySelector('#modal-registro input[type="password"]').value;
+// Guardar usuario nuevo (versión conectada al backend)
+// Guardar usuario nuevo (versión optimizada con aviso inmediato)
+async function registrarUsuario() {
+  const nombre = document.querySelector('#modal-registro input[type="text"]').value.trim();
+  const correo = document.querySelector('#modal-registro input[type="email"]').value.trim();
+  const pass = document.querySelector('#modal-registro input[type="password"]').value.trim();
 
   if (!nombre || !correo || !pass) {
-    alert(" Por favor completa todos los campos.");
+    alert("Por favor completa todos los campos.");
     return;
   }
 
-  // Guardar usuario en localStorage
-  const usuario = { nombre, correo };
-  localStorage.setItem("usuarioPymax", JSON.stringify(usuario));
+  // 🔔 Mostrar mensaje inmediato sin esperar respuesta
+  alert("Estamos enviando tu correo de confirmación. Esto puede tardar unos segundos...");
 
-  cerrarModal();
-  actualizarUsuario();
-  alert(` Bienvenido a Pymax, ${nombre}!`);
+  try {
+    const respuesta = await fetch("https://pymax-backend-6d37.onrender.com/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: nombre, email: correo, password: pass })
+    });
+
+    const data = await respuesta.json();
+
+    if (respuesta.ok) {
+      cerrarModal();
+      alert("✅ Registro exitoso. Revisa tu correo para confirmar tu cuenta antes de iniciar sesión.");
+    } else {
+      alert("⚠️ Error: " + (data.error || "No se pudo registrar el usuario."));
+    }
+  } catch (err) {
+    alert("❌ Error de conexión con el servidor. Intenta más tarde.");
+    console.error(err);
+  }
 }
+
 
 // Mostrar nombre si ya está logueado
 function actualizarUsuario() {

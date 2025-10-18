@@ -137,6 +137,7 @@
         showModal("Campos incompletos", "Por favor, completa todos los campos para continuar.");
         return;
       }
+showModal("Procesando...", "Estamos enviando tu correo de confirmación. Esto puede tardar unos segundos...");
 
       try {
         const res = await fetch(`${BACKEND_URL}/api/register`, {
@@ -149,7 +150,7 @@
 
         // token del backend → link de confirmación en tu dominio
         const token = data.token;
-        const confirmLink = `${BASE_URL}/confirmar.html?token=${encodeURIComponent(token)}`;
+        const confirmLink = `https://pymax-backend-6d37.onrender.com/api/confirm?token=${encodeURIComponent(token)}`;
 
         // Enviar correo con EmailJS (usa tus IDs)
         await emailjs.send("service_9yybvh8", "template_81fvsaa", {
@@ -249,3 +250,9 @@
   </script>
 </body>
 </html>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("confirm") === "ok") {
+    alert("Cuenta confirmada correctamente. Ya puedes iniciar sesión.");
+  }
+</script>
