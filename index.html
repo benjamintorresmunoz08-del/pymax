@@ -11,17 +11,17 @@
   <!-- Tu CSS clásico (mantenemos tu estilo) -->
   <link rel="stylesheet" href="style.css" />
 
-  <!-- EmailJS (ubicado correctamente dentro de <head>) -->
+  <!-- EmailJS -->
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
   <script>
     (function () {
-      // Public Key de EmailJS (se mantiene)
       emailjs.init("5bz9UlqMqgPJ8HQOc");
     })();
   </script>
 </head>
 
-<body class="relative min-h-screen flex flex-col bg-gray-900 text-white font-sans overflow-hidden">
+<body class="relative min-h-screen flex flex-col bg-gray-900 text-white font-sans overflow-x-hidden">
+
   <!-- Aurora de fondo -->
   <div class="absolute inset-0 -z-10 overflow-hidden">
     <div class="absolute top-0 left-1/2 w-[800px] h-[800px] bg-blue-500 opacity-20 blur-[150px] rounded-full animate-pulse"></div>
@@ -47,17 +47,21 @@
       Bienvenido a Pymax
     </h1>
     <p class="max-w-2xl text-gray-200 mb-6 leading-relaxed">
-      En Pymax creemos que las finanzas deben ser una herramienta de crecimiento, no un obstáculo. 
+      En Pymax creemos que las finanzas deben ser una herramienta de crecimiento, no un obstáculo.
       Nuestra misión es ayudarte a tener el control total de tus ingresos, gastos y proyecciones con el poder de la automatización y la IA.
     </p>
 
     <h2 class="text-3xl font-semibold mb-3 text-blue-300">Quiénes somos</h2>
     <p class="max-w-2xl text-gray-300 mb-10">
-      Somos una empresa enfocada en transformar los datos financieros de las PYMEs en decisiones inteligentes. 
+      Somos una empresa enfocada en transformar los datos financieros de las PYMEs en decisiones inteligentes.
       Analizamos tus finanzas en segundos y te mostramos exactamente cómo mejorar tu rentabilidad.
     </p>
 
-    <a id="verServiciosLink" href="servicios.html" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 px-6 py-3 rounded-lg text-lg font-medium transition shadow-lg shadow-blue-800/30">
+    <a
+      id="verServiciosLink"
+      href="servicios.html"
+      class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 px-6 py-3 rounded-lg text-lg font-medium transition shadow-lg shadow-blue-800/30"
+    >
       Ver servicios
     </a>
   </main>
@@ -66,8 +70,18 @@
   <div id="loginModal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center backdrop-blur-sm">
     <div class="bg-gray-800/90 rounded-xl p-8 w-96 text-center shadow-2xl border border-blue-600/30">
       <h2 class="text-2xl font-bold mb-4 text-blue-400">Iniciar sesión</h2>
-      <input id="loginEmail" type="email" placeholder="Correo electrónico" class="w-full mb-3 p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
-      <input id="loginPassword" type="password" placeholder="Contraseña" class="w-full mb-3 p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <input
+        id="loginEmail"
+        type="email"
+        placeholder="Correo electrónico"
+        class="w-full mb-3 p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <input
+        id="loginPassword"
+        type="password"
+        placeholder="Contraseña"
+        class="w-full mb-3 p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
       <button id="loginSubmit" class="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded mb-2">Entrar</button>
       <button id="closeLogin" class="w-full bg-gray-600 hover:bg-gray-700 py-2 rounded">Cerrar</button>
     </div>
@@ -76,10 +90,28 @@
   <!-- Modal Crear Cuenta -->
   <div id="registerModal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center backdrop-blur-sm">
     <div class="bg-gray-800/90 rounded-xl p-8 w-96 text-center shadow-2xl border border-purple-600/30">
-      <h2 class="text-2xl font-bold mb-4 text-purple-400">Crear cuenta</h2>
-      <input id="registerName" type="text" placeholder="Nombre completo" class="w-full mb-3 p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500" />
-      <input id="registerEmail" type="email" placeholder="Correo electrónico" class="w-full mb-3 p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500" />
-      <input id="registerPassword" type="password" placeholder="Contraseña" class="w-full mb-3 p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500" />
+      <h2 class="text-2xl font-bold mb-2 text-purple-400">Crear cuenta</h2>
+      <!-- Info del plan seleccionado (se muestra solo cuando viene desde servicios) -->
+      <p id="planInfo" class="text-sm text-gray-300 mb-3 hidden"></p>
+
+      <input
+        id="registerName"
+        type="text"
+        placeholder="Nombre completo"
+        class="w-full mb-3 p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+      />
+      <input
+        id="registerEmail"
+        type="email"
+        placeholder="Correo electrónico"
+        class="w-full mb-3 p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+      />
+      <input
+        id="registerPassword"
+        type="password"
+        placeholder="Contraseña"
+        class="w-full mb-3 p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+      />
       <button id="registerSubmit" class="w-full bg-purple-600 hover:bg-purple-700 py-2 rounded mb-2">Registrarse</button>
       <button id="closeRegister" class="w-full bg-gray-600 hover:bg-gray-700 py-2 rounded">Cerrar</button>
     </div>
@@ -90,7 +122,12 @@
     <div class="bg-gray-900 rounded-2xl p-8 max-w-sm text-center shadow-lg border border-gray-700">
       <h2 class="text-2xl font-semibold text-white mb-3" id="modalTitle">Acción completada</h2>
       <p class="text-gray-300 mb-6" id="modalMessage">Operación realizada correctamente.</p>
-      <button onclick="closeModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition">Aceptar</button>
+      <button
+        onclick="closeModal()"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
+      >
+        Aceptar
+      </button>
     </div>
   </div>
 
@@ -99,12 +136,12 @@
     © 2025 Pymax Finanzas. Todos los derechos reservados.
   </footer>
 
-  <!-- Lógica: registro/login con backend (sin cambiar tu estilo) -->
+  <!-- Lógica: registro/login con backend -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      // 👉 Cambia esto SOLO si tu dominio de backend es distinto
-      const BACKEND_URL = 'https://pymax-backend-6d37.onrender.com';
-      const BASE_URL = window.location.origin; // https://pymaxcenter2.netlify.app
+      // URL EXACTA DE TU BACKEND EN RENDER
+      const BACKEND_URL = "https://pymax-backend-6d37.onrender.com";
+      const BASE_URL = window.location.origin;
 
       // Elementos base
       const loginBtn = document.getElementById("loginBtn");
@@ -114,29 +151,40 @@
       const closeLogin = document.getElementById("closeLogin");
       const closeRegister = document.getElementById("closeRegister");
 
-      // Abrir/cerrar modales
-      loginBtn.onclick = () => loginModal.classList.remove("hidden");
-      registerBtn.onclick = () => registerModal.classList.remove("hidden");
-      closeLogin.onclick = () => loginModal.classList.add("hidden");
-      closeRegister.onclick = () => registerModal.classList.add("hidden");
-
-      // Modal elegante reutilizable
+      // ---------- MODAL REUTILIZABLE ----------
       window.showModal = function (title, message) {
         document.getElementById("modalTitle").innerText = title;
         document.getElementById("modalMessage").innerText = message;
         document.getElementById("successModal").classList.remove("hidden");
       };
+
       window.closeModal = function () {
         document.getElementById("successModal").classList.add("hidden");
       };
 
-      // Helper: fetch robusto (no cambia tu UX)
+      // ---------- ABRIR / CERRAR MODALES ----------
+      function abrirLogin() {
+        loginModal.classList.remove("hidden");
+      }
+      function abrirRegister() {
+        registerModal.classList.remove("hidden");
+      }
+
+      loginBtn.onclick = abrirLogin;
+      registerBtn.onclick = abrirRegister;
+      closeLogin.onclick = () => loginModal.classList.add("hidden");
+      closeRegister.onclick = () => registerModal.classList.add("hidden");
+
+      // ---------- FETCH SEGURO ----------
       async function safeFetch(url, options) {
         try {
-          const res = await fetch(url, { mode: 'cors', ...options });
+          const res = await fetch(url, { mode: "cors", ...options });
           const data = await res.json().catch(() => ({}));
           if (!res.ok) {
-            const msg = data?.error || `Error ${res.status}`;
+            const msg =
+              data?.message ||
+              data?.error ||
+              `Error ${res.status}`;
             throw new Error(msg);
           }
           return data;
@@ -145,7 +193,7 @@
         }
       }
 
-      // Registro con backend + EmailJS
+      // ---------- REGISTRO ----------
       document.getElementById("registerSubmit").onclick = async () => {
         const name = document.getElementById("registerName").value.trim();
         const email = document.getElementById("registerEmail").value.trim();
@@ -156,27 +204,31 @@
           return;
         }
 
-        showModal("Procesando...", "Estamos enviando tu correo de confirmación. Esto puede tardar unos segundos...");
+        showModal(
+          "Procesando...",
+          "Estamos enviando tu correo de confirmación. Esto puede tardar unos segundos..."
+        );
 
         try {
           const data = await safeFetch(`${BACKEND_URL}/api/register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, password })
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, password }),
           });
 
-          // token del backend → link de confirmación (redirige a tu Netlify desde Flask)
           const token = data.token;
           const confirmLink = `${BACKEND_URL}/api/confirm?token=${encodeURIComponent(token)}`;
 
-          // Enviar correo con EmailJS (tus IDs)
           await emailjs.send("service_9yybvh8", "template_81fvsaa", {
             user_name: name,
             email: email,
-            confirmation_link: confirmLink
+            confirmation_link: confirmLink,
           });
 
-          showModal("Cuenta creada", `Te enviamos un correo de confirmación a ${email}. Revisa tu bandeja de entrada o spam.`);
+          showModal(
+            "Cuenta creada",
+            `Te enviamos un correo de confirmación a ${email}. Revisa tu bandeja de entrada o spam.`
+          );
           registerModal.classList.add("hidden");
         } catch (e) {
           console.error(e);
@@ -184,7 +236,7 @@
         }
       };
 
-      // Login con backend (requiere confirmación previa)
+      // ---------- LOGIN ----------
       document.getElementById("loginSubmit").onclick = async () => {
         const email = document.getElementById("loginEmail").value.trim();
         const password = document.getElementById("loginPassword").value.trim();
@@ -194,19 +246,23 @@
           return;
         }
 
+        showModal("Procesando...", "Estamos validando tus datos. Esto puede tardar algunos segundos...");
+
         try {
           const data = await safeFetch(`${BACKEND_URL}/api/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
           });
 
-          // Guardamos sesión para el saludo y control de acceso
-          localStorage.setItem("activeUser", JSON.stringify({
-            name: data.name,
-            email: data.email,
-            token: data.session_token
-          }));
+          localStorage.setItem(
+            "activeUser",
+            JSON.stringify({
+              name: data.name,
+              email: data.email,
+              token: data.session_token,
+            })
+          );
 
           loginModal.classList.add("hidden");
           showModal("Inicio de sesión", `Bienvenido, ${data.name}.`);
@@ -220,21 +276,51 @@
         }
       };
 
-      // Cerrar sesión
+      // ---------- PRUEBA DE 7 DÍAS (BADGE EN NAVBAR) ----------
+      function getTrialBadgeHtml() {
+        const plan = localStorage.getItem("trialPlan");
+        const startIso = localStorage.getItem("trialStart");
+        const endIso = localStorage.getItem("trialEnd");
+
+        if (plan !== "hambre" || !startIso || !endIso) return "";
+
+        const now = new Date();
+        const end = new Date(endIso);
+        const diffMs = end.getTime() - now.getTime();
+
+        if (diffMs <= 0) {
+          localStorage.removeItem("trialPlan");
+          localStorage.removeItem("trialStart");
+          localStorage.removeItem("trialEnd");
+          return "";
+        }
+
+        const daysLeft = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+        return `<span class="text-xs px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-300">
+          Prueba Hambre de poder: ${daysLeft} día${daysLeft !== 1 ? "s" : ""} restantes
+        </span>`;
+      }
+
+      // ---------- CERRAR SESIÓN ----------
       function cerrarSesion() {
         localStorage.removeItem("activeUser");
         actualizarNavbar();
       }
 
-      // Actualizar navbar (mismo estilo, con saludo)
+      // ---------- NAVBAR ----------
       function actualizarNavbar() {
         const activeUser = JSON.parse(localStorage.getItem("activeUser") || "null");
         const navButtons = document.getElementById("navButtons");
 
         if (activeUser) {
+          const trialBadge = getTrialBadgeHtml();
           navButtons.innerHTML = `
-            <span class="text-gray-200">Hola, ${activeUser.name}</span>
-            <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded transition">Cerrar sesión</button>
+            <div class="flex items-center gap-3">
+              <span class="text-gray-200">Hola, ${activeUser.name}</span>
+              ${trialBadge}
+              <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded transition">Cerrar sesión</button>
+            </div>
           `;
           document.getElementById("logoutBtn").onclick = cerrarSesion;
         } else {
@@ -242,31 +328,82 @@
             <button id="loginBtn" class="bg-transparent border border-gray-300 hover:bg-blue-600 px-4 py-2 rounded transition">Iniciar sesión</button>
             <button id="registerBtn" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition">Crear cuenta</button>
           `;
-          document.getElementById("loginBtn").onclick = () => loginModal.classList.remove("hidden");
-          document.getElementById("registerBtn").onclick = () => registerModal.classList.remove("hidden");
+          document.getElementById("loginBtn").onclick = abrirLogin;
+          document.getElementById("registerBtn").onclick = abrirRegister;
         }
       }
 
-      // Bloquear acceso a servicios si no hay sesión (sin cambiar tu <a>)
-      const serviciosLink = document.getElementById('verServiciosLink');
+      // ---------- BLOQUEAR SERVICIOS SI NO HAY SESIÓN ----------
+      const serviciosLink = document.getElementById("verServiciosLink");
       if (serviciosLink) {
-        serviciosLink.addEventListener('click', (e) => {
+        serviciosLink.addEventListener("click", (e) => {
           const activeUser = JSON.parse(localStorage.getItem("activeUser") || "null");
           if (!activeUser) {
             e.preventDefault();
             showModal("Acceso restringido", "Debes iniciar sesión para acceder a los servicios.");
-            loginModal.classList.remove("hidden");
+            abrirLogin();
           }
         });
       }
 
-      // Init
+      // ---------- INIT ----------
       actualizarNavbar();
 
-      // Mensaje si llegó confirmación desde backend
       const params = new URLSearchParams(window.location.search);
+
+      // Confirmación desde el correo
       if (params.get("confirm") === "ok") {
         showModal("Cuenta confirmada", "Tu cuenta fue confirmada correctamente. Ya puedes iniciar sesión.");
+      }
+
+      // Plan seleccionado desde servicios
+      const planParam = params.get("plan");
+      const trialParam = params.get("trial");
+
+      if (planParam) {
+        const planNames = {
+          mover: "Plan Mover fichas",
+          tiburon: "Plan Modo tiburón",
+          hambre: "Plan Hambre de poder",
+        };
+
+        let planText = planNames[planParam] || "Plan seleccionado";
+
+        if (planParam === "hambre" && trialParam === "1") {
+          planText += " (prueba gratuita de 7 días)";
+          const now = new Date();
+          const end = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+          localStorage.setItem("trialPlan", "hambre");
+          localStorage.setItem("trialStart", now.toISOString());
+          localStorage.setItem("trialEnd", end.toISOString());
+        }
+
+        localStorage.setItem("selectedPlan", planParam);
+
+        const activeUser = JSON.parse(localStorage.getItem("activeUser") || "null");
+
+        if (!activeUser) {
+          const info = document.getElementById("planInfo");
+          if (info) {
+            info.textContent = `Te estás registrando para el ${planText}.`;
+            info.classList.remove("hidden");
+          }
+          registerModal.classList.remove("hidden");
+        } else {
+          if (planParam === "hambre" && trialParam === "1") {
+            localStorage.setItem("showTrialWelcome", "1");
+            actualizarNavbar();
+            window.location.href = "panel-hambre.html";
+          } else {
+            showModal(
+              "Plan seleccionado",
+              `Has seleccionado el ${planText}. Pronto habilitaremos el pago para completar tu suscripción.`
+            );
+            actualizarNavbar();
+          }
+        }
+
+        window.history.replaceState({}, document.title, window.location.pathname);
       }
     });
   </script>

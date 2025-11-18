@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Servicios - Pymax Finanzas</title>
+
+  <!-- Tailwind (igual que en index) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tu CSS clásico (el mismo que usa el index) -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="relative min-h-screen flex flex-col bg-gray-900 text-white font-sans overflow-x-hidden">
+  <!-- Aurora de fondo (igual que el index) -->
+  <div class="absolute inset-0 -z-10 overflow-hidden">
+    <div class="absolute top-0 left-1/2 w-[800px] h-[800px] bg-blue-500 opacity-20 blur-[150px] rounded-full animate-pulse"></div>
+    <div class="absolute bottom-0 right-1/3 w-[900px] h-[900px] bg-purple-500 opacity-20 blur-[160px] rounded-full animate-pulse delay-700"></div>
+    <div class="absolute top-1/3 left-1/4 w-[600px] h-[600px] bg-indigo-400 opacity-10 blur-[180px] rounded-full animate-pulse delay-1000"></div>
+  </div>
+
+  <!-- Navbar (mismo estilo visual) -->
+  <nav class="flex justify-between items-center px-8 py-4 bg-transparent backdrop-blur-md">
+    <div class="flex items-center space-x-3">
+      <img src="img/pymax.png" alt="Logo Pymax" class="w-16 h-16 object-contain" />
+      <span class="text-2xl font-bold tracking-wide text-white">PYMAX</span>
+    </div>
+    <div class="space-x-4">
+      <!-- Botón para volver al inicio -->
+      <button
+        onclick="window.location.href='index.html'"
+        class="bg-transparent border border-gray-300 hover:bg-blue-600 px-4 py-2 rounded transition"
+      >
+        Inicio
+      </button>
+    </div>
+  </nav>
+
+  <!-- Contenido principal -->
+  <main class="flex-grow px-6 pb-12">
+    <!-- Encabezado -->
+    <section class="max-w-4xl mx-auto text-center mt-10">
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-indigo-300 bg-clip-text text-transparent">
+        Servicios Pymax para empresas y PYMEs
+      </h1>
+      <p class="text-gray-200 mb-3 leading-relaxed">
+        Pymax combina planillas financieras operativas con una IA experta en economía y negocios,
+        diseñada para <span class="font-semibold">empresas y PYMEs</span> que necesitan claridad total de sus números.
+      </p>
+      <p class="text-gray-300 mb-3 leading-relaxed">
+        Construimos el <span class="font-semibold">gemelo financiero de tu empresa</span>, analizamos cada movimiento
+        y te guiamos paso a paso para que tomes mejores decisiones, cuides tu caja y hagas crecer tu negocio sin perder el control.
+      </p>
+      <p class="text-gray-300 leading-relaxed">
+        Puedes acceder al plan <span class="font-semibold">Hambre de poder</span> con una
+        <span class="font-semibold">prueba gratuita de 7 días</span> y luego decidir qué nivel se ajusta mejor
+        a tu empresa o PYME.
+      </p>
+    </section>
+
+    <!-- Tarjetas de planes -->
+    <section class="mt-12 max-w-6xl mx-auto grid gap-8 md:grid-cols-3">
+      <!-- Plan Mover fichas -->
+      <article class="bg-gray-900/80 border border-white/10 rounded-2xl p-6 shadow-xl hover:-translate-y-1 hover:shadow-2xl transition">
+        <h2 class="text-xl font-semibold mb-2">Plan Mover fichas</h2>
+        <p class="text-sm text-gray-300 mb-2">
+          <span class="font-semibold">Precio:</span> $12.900 CLP al mes (aprox. 14 USD).<br />
+          <span class="text-xs text-gray-400 italic">Sin periodo de prueba.</span>
+        </p>
+        <p class="text-sm text-gray-300 mb-3">
+          Pensado para emprendedores, empresas y PYMEs que hoy no tienen sus números claros
+          y necesitan dar el primer paso: saber cuánto venden, cuánto gastan y si realmente están ganando dinero.
+        </p>
+        <p class="text-sm text-gray-300 mb-6">
+          Ideal para pasar del desorden total a una visión honesta y ordenada del negocio en pocos días.
+        </p>
+        <div class="flex flex-col gap-2">
+          <button
+            onclick="abrirModal('mover')"
+            class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 px-4 py-2 rounded-lg text-sm font-medium transition shadow-lg shadow-blue-800/30"
+          >
+            Ver detalles
+          </button>
+          <!-- BOTÓN AURORA MÁS OSCURO -->
+          <button
+            onclick="window.location.href='mover.html'"
+            class="bg-gradient-to-r from-cyan-800 to-emerald-700 hover:from-cyan-700 hover:to-emerald-600 px-4 py-2 rounded-lg text-sm font-medium transition shadow-lg shadow-emerald-900/40"
+          >
+            Elegir plan
+          </button>
+        </div>
+      </article>
+
+      <!-- Plan Modo tiburón -->
+      <article class="bg-gray-900/80 border border-white/10 rounded-2xl p-6 shadow-xl hover:-translate-y-1 hover:shadow-2xl transition">
+        <h2 class="text-xl font-semibold mb-2">Plan Modo tiburón</h2>
+        <p class="text-sm text-gray-300 mb-2">
+          <span class="font-semibold">Precio:</span> $24.900 CLP al mes (aprox. 27 USD).<br />
+          <span class="text-xs text-gray-400 italic">Sin periodo de prueba.</span>
+        </p>
+        <p class="text-sm text-gray-300 mb-3">
+          Para empresas y PYMEs que ya venden, tienen equipo y responsabilidades importantes,
+          y necesitan <span class="font-semibold">control real</span> de flujo de caja, IVA,
+          estados de resultados, remuneraciones y decisiones clave.
+        </p>
+        <p class="text-sm text-gray-300 mb-6">
+          Ideal para dirigir tu empresa como un negocio serio, con información financiera conectada
+          y decisiones fundamentadas.
+        </p>
+        <div class="flex flex-col gap-2">
+          <button
+            onclick="abrirModal('tiburon')"
+            class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 px-4 py-2 rounded-lg text-sm font-medium transition shadow-lg shadow-blue-800/30"
+          >
+            Ver detalles
+          </button>
+          <!-- BOTÓN AURORA MÁS OSCURO -->
+          <button
+            onclick="window.location.href='tiburon.html'"
+            class="bg-gradient-to-r from-cyan-800 to-emerald-700 hover:from-cyan-700 hover:to-emerald-600 px-4 py-2 rounded-lg text-sm font-medium transition shadow-lg shadow-emerald-900/40"
+          >
+            Elegir plan
+          </button>
+        </div>
+      </article>
+
+      <!-- Plan Hambre de poder -->
+      <article class="bg-gray-900/80 border border-emerald-400/40 rounded-2xl p-6 shadow-xl hover:-translate-y-1 hover:shadow-2xl transition">
+        <h2 class="text-xl font-semibold mb-2">Plan Hambre de poder</h2>
+        <p class="text-sm text-gray-300 mb-2">
+          <span class="font-semibold">Precio:</span> $39.000 CLP al mes (aprox. 42 USD).<br />
+          <span class="inline-block mt-1 text-xs px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold">
+            7 días de prueba gratis (solo este plan)
+          </span>
+        </p>
+        <p class="text-sm text-gray-300 mb-3">
+          Para dueños y directorios de <span class="font-semibold">empresas y PYMEs</span> que no se conforman con
+          sobrevivir y quieren usar su negocio como un <span class="font-semibold">vehículo de crecimiento,
+          expansión y patrimonio</span>.
+        </p>
+        <p class="text-sm text-gray-300 mb-6">
+          Es el nivel donde Pymax se convierte en tu CFO digital, estratega y analista, disponible 24/7.
+        </p>
+        <div class="flex flex-col gap-2">
+          <button
+            onclick="abrirModal('hambre')"
+            class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 px-4 py-2 rounded-lg text-sm font-medium transition shadow-lg shadow-blue-800/30"
+          >
+            Ver detalles
+          </button>
+          <!-- BOTÓN AURORA MÁS OSCURO -->
+          <button
+        
+
+  onclick="window.location.href='panel-hambre.html?trial=1'"
+  class="bg-gradient-to-r from-cyan-800 to-emerald-700 hover:from-cyan-700 hover:to-emerald-600 px-4 py-2 rounded-lg text-sm font-medium transition shadow-lg shadow-emerald-900/40"
+>
+  Probar 7 días
+</button>
+
+</button>
+
+</button>
+
+</button>
+      
+          </button>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-transparent backdrop-blur-md text-center py-4 text-gray-400 text-sm mt-auto">
+    © 2025 Pymax Finanzas. Todos los derechos reservados.
+  </footer>
+
+  <!-- MODALES (detalles de cada plan) -->
+  <!-- Mover fichas -->
+  <div id="modal-mover" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center backdrop-blur-sm z-50">
+    <div class="bg-gray-900/95 rounded-2xl p-6 max-w-xl w-full mx-4 shadow-2xl border border-blue-500/40">
+      <h2 class="text-2xl font-semibold mb-3 text-blue-300">Plan Mover fichas</h2>
+      <p class="text-sm text-gray-200 mb-3">
+        Pensado para emprendedores, empresas y PYMEs que aún no tienen sus números claros y necesitan dar el
+        primer paso: saber cuánto venden, cuánto gastan y si realmente están ganando dinero.
+      </p>
+      <ul class="list-disc list-inside text-sm text-gray-200 space-y-1 mb-4 text-left">
+        <li>Planilla diaria de ventas y gastos con resumen mensual automático.</li>
+        <li>Mini flujo de caja diario para ver el dinero disponible.</li>
+        <li>Registro simple de deudas y obligaciones clave (arriendo, IVA, sueldos, proveedores, créditos).</li>
+        <li>Calendario básico de fechas importantes con recordatorios de pagos típicos de la empresa.</li>
+        <li>Indicador tipo “semáforo Pymax” (verde / amarillo / rojo).</li>
+        <li>IA de apoyo 24/7 para preguntas simples de tu empresa o PYME.</li>
+        <li>Panel de avance de orden financiero para motivarte a registrar tus días.</li>
+        <li>Excel básico listo para usar con colores claros, marca de agua Pymax y estructura protegida.</li>
+      </ul>
+      <p class="text-sm text-gray-200 mb-4">
+        Es el plan ideal para ordenar el caos inicial de tu negocio. Más adelante podrás subir a
+        <span class="font-semibold">Hambre de poder</span> y probarlo 7 días sin costo.
+      </p>
+      <div class="text-right">
+        <button
+          onclick="cerrarModal('mover')"
+          class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-medium"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modo tiburón -->
+  <div id="modal-tiburon" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center backdrop-blur-sm z-50">
+    <div class="bg-gray-900/95 rounded-2xl p-6 max-w-xl w-full mx-4 shadow-2xl border border-blue-500/40">
+      <h2 class="text-2xl font-semibold mb-3 text-blue-300">Plan Modo tiburón</h2>
+      <p class="text-sm text-gray-200 mb-3">
+        Para empresas y PYMEs que ya venden, tienen equipo y responsabilidades importantes y necesitan
+        <span class="font-semibold">control real</span> del negocio.
+      </p>
+      <ul class="list-disc list-inside text-sm text-gray-200 space-y-1 mb-4 text-left">
+        <li>Incluye todo lo del plan <span class="font-semibold">Mover fichas</span>.</li>
+        <li>Planillas integradas de ventas, compras, gastos fijos/variables y estado de resultados mensual.</li>
+        <li>Flujo de caja proyectado 1–3 meses según el historial de tu empresa.</li>
+        <li>Cálculo estimado de IVA e impuestos mensuales explicado en lenguaje simple.</li>
+        <li>Control presupuestario con metas de ventas y límites de gastos.</li>
+        <li>Módulo básico de remuneraciones y costo real de la planilla de sueldos.</li>
+        <li>Gestión de cobranzas y clientes morosos con sugerencias para priorizar cobros.</li>
+        <li>Inventario y rotación de productos para evitar stock muerto.</li>
+        <li>Módulo de proveedores con plazos, descuentos y recomendaciones de negociación.</li>
+        <li>Kit bancario básico listo para presentar a bancos o financistas PYME.</li>
+        <li>IA analista de negocio que detecta meses malos y propone acciones concretas.</li>
+      </ul>
+      <p class="text-sm text-gray-200 mb-4">
+        <span class="font-semibold">Modo tiburón</span> convierte los números de tu empresa en decisiones reales.
+      </p>
+      <div class="text-right">
+        <button
+          onclick="cerrarModal('tiburon')"
+          class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-medium"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hambre de poder -->
+  <div id="modal-hambre" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center backdrop-blur-sm z-50">
+    <div class="bg-gray-900/95 rounded-2xl p-6 max-w-xl w-full mx-4 shadow-2xl border border-emerald-500/40">
+      <h2 class="text-2xl font-semibold mb-3 text-emerald-300">Plan Hambre de poder</h2>
+      <p class="text-sm text-gray-200 mb-3">
+        Para dueños y directorios de <span class="font-semibold">empresas y PYMEs</span> que quieren usar su negocio
+        como un <span class="font-semibold">vehículo de crecimiento, expansión y patrimonio</span>.
+      </p>
+      <ul class="list-disc list-inside text-sm text-gray-200 space-y-1 mb-4 text-left">
+        <li>Incluye todo lo de <span class="font-semibold">Mover fichas</span> y <span class="font-semibold">Modo tiburón</span>.</li>
+        <li>IA experta en economía y negocios que actúa como CFO personal de tu empresa.</li>
+        <li>Gemelo financiero Pymax que simula escenarios futuros (precios, personal, deuda, expansión).</li>
+        <li>Simulador de crisis y crecimiento para ver qué pasa con caja, utilidad y riesgo.</li>
+        <li>Radar de oportunidades Pymax usando tu historial y patrones de empresas similares.</li>
+        <li>Academia Pymax personalizada con contenidos cortos usando tus propios números.</li>
+        <li>Módulos avanzados de RRHH y costos laborales: licencias, asignación familiar, costo total del equipo.</li>
+        <li>Impuestos avanzados y reportes listos para bancos, inversionistas y socios.</li>
+        <li>Reporte mensual estilo “reunión de directorio” con gráficos y decisiones recomendadas.</li>
+        <li>Mapa de sueños del dueño que conecta tus metas personales con el plan financiero de tu empresa.</li>
+        <li>Alertas inteligentes y modo crisis cuando la IA detecta riesgo de caja o cambios fuertes de gastos.</li>
+        <li>Excels y modelos personalizados por objetivo, con marca de agua Pymax y estructura protegida.</li>
+      </ul>
+      <p class="text-sm text-gray-200 mb-4">
+        <span class="font-semibold">Hambre de poder</span> es el nivel para quienes quieren llevar su empresa a otro nivel.
+        Incluye <span class="font-semibold">7 días de prueba gratis</span> para que veas todo el potencial antes de decidir.
+      </p>
+      <div class="text-right">
+        <button
+          onclick="cerrarModal('hambre')"
+          class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-medium"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script simple para abrir/cerrar modales -->
+  <script>
+    function abrirModal(nombre) {
+      const modal = document.getElementById('modal-' + nombre);
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function cerrarModal(nombre) {
+      const modal = document.getElementById('modal-' + nombre);
+      if (modal) modal.classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
