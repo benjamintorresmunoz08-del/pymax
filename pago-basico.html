@@ -42,7 +42,8 @@
         type="button"
         class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 px-4 py-2 rounded-lg text-sm font-medium transition cursor-not-allowed"
       >
-        Pagar (próximamente)
+       <button id="pagarMover" class="btn">
+  Pagar $37.000 CLP
       </button>
     </div>
   </main>
@@ -52,3 +53,21 @@
   </footer>
 </body>
 </html>
+<script>
+document.getElementById("pagarMover").addEventListener("click", async () => {
+  // aquí luego va Mercado Pago
+  // por ahora simulamos pago aprobado
+
+  const user = await supabase.auth.getUser();
+
+  await fetch("https://TU_BACKEND_RENDER/activar-mover-fichas", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      user_id: user.data.user.id
+    })
+  });
+
+  window.location.href = "/panel-mover.html";
+});
+</script>

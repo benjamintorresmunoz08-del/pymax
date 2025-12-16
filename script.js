@@ -1,6 +1,42 @@
 // ===== Config =====
 const BACKEND_URL = 'https://pymax-backend-6d37.onrender.com';
 
+// Clave de sesión y duración (24 horas)
+const SESSION_KEY = 'usuarioPymax';
+const MAX_SESSION_AGE_MS = 24 * 60 * 60 * 1000;
+
+// ===== Funciones de sesión (nueva capa) =====
+function guardarSesion(usuario) {
+  const sesion = {
+    ...usuario,
+    createdAt: Date.now()
+  };
+  localStorage.setItem(SESSION_KEY, JSON.stringify(sesion));
+}
+
+function cargarSesion() {
+  let ses = null;
+  try {
+    ses = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+  } catch {
+    ses = null;
+  }
+
+  if (!ses) return null;
+
+  // Si no tiene createdAt o ya expiró, la eliminamos
+  if (!ses.createdAt || (Date.now() - ses.createdAt) > MAX_SESSION_AGE_MS) {
+    localStorage.removeItem(SESSION_KEY);
+    return null;
+  }
+
+  return ses;
+}
+
+function borrarSesion() {
+  localStorage.removeItem(SESSION_KEY);
+}
+
 // ===== Mostrar y cerrar modales =====
 function mostrarLogin() {
   const m = document.getElementById('modal-login');
@@ -82,24 +118,23 @@ function actualizarUsuario() {
   const nav = document.querySelector('nav');
   if (!nav) return;
 
-  let usuario = null;
-  try {
-    usuario = JSON.parse(localStorage.getItem('usuarioPymax') || 'null');
-  } catch {
-    usuario = null;
-  }
+  const sesion = cargarSesion();
 
-  if (usuario) {
+  if (sesion) {
+    // Si hay sesión válida, mostramos saludo + botón cerrar
     nav.innerHTML = `
-      <span> Hola, ${usuario.nombre}</span>
+      <span> Hola, ${sesion.nombre}</span>
       <button onclick="cerrarSesion()">Cerrar sesión</button>
     `;
+  } else {
+    // Si no hay sesión, no tocamos el nav (se queda con su HTML original)
+    // Si quieres, aquí podrías restaurar manualmente el nav original
   }
 }
 
 // ===== Cerrar sesión =====
 function cerrarSesion() {
-  localStorage.removeItem('usuarioPymax');
+  borrarSesion();
   location.reload();
 }
 
@@ -117,7 +152,7 @@ function pagarPremium() {
   window.location.href = 'premium.html';
 }
 
-// ===== Iniciar sesión (ahora REAL contra el backend) =====
+// ===== Iniciar sesión (REAL contra el backend) =====
 async function login() {
   const modal = document.getElementById('modal-login');
   const email = modal ? modal.querySelector('input[type="email"]')?.value.trim() : '';
@@ -136,15 +171,24 @@ async function login() {
     });
 
     // Guardamos datos mínimos en localStorage (mantengo tu clave "usuarioPymax")
-    const usuario = { nombre: data.name || email.split('@')[0], correo: data.email, token: data.session_token };
-    localStorage.setItem('usuarioPymax', JSON.stringify(usuario));
+    const usuario = {
+      nombre: data.name || email.split('@')[0],
+      correo: data.email,
+      token: data.session_token
+    };
+    guardarSesion(usuario);
 
     cerrarModal();
     actualizarUsuario();
     alert(` Bienvenido de nuevo, ${usuario.nombre}!`);
   } catch (err) {
     console.error(err);
-    if (err.status === 403) {
+
+    if (err.status === 401) {
+      // El backend respondió 401 = credenciales inválidas
+      alert('❌ Usuario o contraseña incorrectos.');
+    } else if (err.status === 403) {
+      // El backend respondió 403 = correo no confirmado
       alert('⚠️ Tu correo no está confirmado. Revisa tu bandeja de entrada.');
     } else {
       alert('❌ ' + (err.message || 'No se pudo iniciar sesión.'));

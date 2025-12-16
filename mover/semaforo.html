@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pymax · Semáforo del Negocio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      background:
+        radial-gradient(900px 400px at 10% -10%, rgba(79,70,229,.25), transparent 40%),
+        radial-gradient(800px 500px at 90% 10%, rgba(99,102,241,.18), transparent 45%),
+        radial-gradient(700px 400px at 50% 120%, rgba(56,189,248,.12), transparent 40%),
+        #020617;
+    }
+
+    .glass {
+      background: rgba(15,23,42,0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(148,163,184,0.15);
+    }
+
+    .hover-card {
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+    .hover-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,.45);
+    }
+
+    .pulse {
+      animation: pulseGlow 2.5s infinite;
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 0 rgba(0,0,0,0); }
+      50% { box-shadow: 0 0 30px rgba(99,102,241,.35); }
+      100% { box-shadow: 0 0 0 rgba(0,0,0,0); }
+    }
+  </style>
+</head>
+
+<body class="text-slate-100 min-h-screen">
+
+<!-- HEADER -->
+<header class="glass px-8 py-5 flex justify-between items-center border-b border-slate-800">
+  <h1 class="text-xl font-semibold text-indigo-400">
+    Pymax · Semáforo del Negocio
+  </h1>
+  <a href="panel-mover.html" class="text-sm text-slate-300 hover:text-white transition">
+    Volver al panel
+  </a>
+</header>
+
+<!-- CONTENIDO -->
+<main class="max-w-7xl mx-auto px-6 py-10 space-y-14">
+
+  <!-- INTRO -->
+  <section class="max-w-4xl">
+    <h2 class="text-3xl font-semibold mb-3">
+      Estado general de tu negocio
+    </h2>
+    <p class="text-slate-300 leading-relaxed">
+      El Semáforo Pymax analiza tus números y te muestra, de forma clara y rápida,
+      si tu negocio está en una situación saludable, de alerta o de riesgo.
+    </p>
+  </section>
+
+  <!-- SEMÁFORO CENTRAL -->
+  <section class="flex justify-center">
+    <div class="glass rounded-2xl p-10 text-center pulse max-w-md w-full">
+
+      <p class="text-sm text-slate-400 mb-2">
+        Estado actual
+      </p>
+
+      <!-- ESTADO (mock visual) -->
+      <div class="text-5xl font-bold text-green-400 mb-4">
+        VERDE
+      </div>
+
+      <p class="text-slate-300 leading-relaxed">
+        Tu negocio muestra un equilibrio positivo entre ingresos y gastos.
+        Mantén el control y sigue registrando tus movimientos.
+      </p>
+
+    </div>
+  </section>
+
+  <!-- INTERPRETACIÓN -->
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    <div class="glass rounded-xl p-6 hover-card">
+      <h3 class="font-semibold text-green-400 mb-2">
+        Verde
+      </h3>
+      <p class="text-slate-300 text-sm">
+        Flujo positivo, gastos controlados y estabilidad financiera.
+        Es un buen momento para consolidar y planificar crecimiento.
+      </p>
+    </div>
+
+    <div class="glass rounded-xl p-6 hover-card">
+      <h3 class="font-semibold text-yellow-400 mb-2">
+        Amarillo
+      </h3>
+      <p class="text-slate-300 text-sm">
+        Equilibrio ajustado. Se recomienda revisar gastos y anticipar
+        próximos compromisos financieros.
+      </p>
+    </div>
+
+    <div class="glass rounded-xl p-6 hover-card">
+      <h3 class="font-semibold text-red-400 mb-2">
+        Rojo
+      </h3>
+      <p class="text-slate-300 text-sm">
+        Riesgo financiero. Es necesario tomar decisiones inmediatas
+        para evitar problemas de liquidez.
+      </p>
+    </div>
+
+  </section>
+
+  <!-- INDICADORES CLAVE -->
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    <div class="glass rounded-xl p-6 hover-card">
+      <p class="text-sm text-slate-400">Resultado del mes</p>
+      <p class="text-2xl font-bold text-indigo-400 mt-2">$0</p>
+    </div>
+
+    <div class="glass rounded-xl p-6 hover-card">
+      <p class="text-sm text-slate-400">Flujo de caja actual</p>
+      <p class="text-2xl font-bold text-indigo-400 mt-2">$0</p>
+    </div>
+
+    <div class="glass rounded-xl p-6 hover-card">
+      <p class="text-sm text-slate-400">Obligaciones pendientes</p>
+      <p class="text-2xl font-bold text-indigo-400 mt-2">$0</p>
+    </div>
+
+  </section>
+
+  <!-- ACCIONES -->
+  <section class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
+
+    <a href="flujo-caja.html" class="glass rounded-xl p-6 hover-card block">
+      <h4 class="font-semibold text-lg mb-2">
+        Revisar flujo de caja
+      </h4>
+      <p class="text-slate-300 text-sm">
+        Analiza en detalle tu liquidez diaria.
+      </p>
+      <p class="mt-4 text-indigo-400 text-sm">
+        Ir al flujo →
+      </p>
+    </a>
+
+    <a href="obligaciones.html" class="glass rounded-xl p-6 hover-card block">
+      <h4 class="font-semibold text-lg mb-2">
+        Ver deudas y obligaciones
+      </h4>
+      <p class="text-slate-300 text-sm">
+        Controla compromisos que afectan tu estado financiero.
+      </p>
+      <p class="mt-4 text-indigo-400 text-sm">
+        Ir a obligaciones →
+      </p>
+    </a>
+
+  </section>
+
+  <!-- MENSAJE FINAL -->
+  <section class="text-center text-slate-400 text-sm pt-6">
+    Claridad financiera para decisiones inteligentes.
+  </section>
+
+</main>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="/mover/pymax-core.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const data = await getEstadoFinanciero();
+  if (!data) return;
+
+  // ===== SEMÁFORO =====
+  const estadoEl = document.querySelector(".text-5xl.font-bold");
+  estadoEl.classList.remove("text-green-400", "text-yellow-400", "text-red-400");
+
+  if (data.semaforo === "VERDE") {
+    estadoEl.innerText = "VERDE";
+    estadoEl.classList.add("text-green-400");
+  }
+
+  if (data.semaforo === "AMARILLO") {
+    estadoEl.innerText = "AMARILLO";
+    estadoEl.classList.add("text-yellow-400");
+  }
+
+  if (data.semaforo === "ROJO") {
+    estadoEl.innerText = "ROJO";
+    estadoEl.classList.add("text-red-400");
+  }
+
+  // ===== INDICADORES =====
+  const cards = document.querySelectorAll(".glass .text-2xl.font-bold");
+
+  if (cards.length >= 3) {
+    cards[0].innerText = `$${data.resultado_mes}`;
+    cards[1].innerText = `$${data.flujo_actual}`;
+    cards[2].innerText = `$${data.gastos_mes}`;
+  }
+});
+</script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="/mover/pymax-core.js"></script>
+
+</body>
+</html>

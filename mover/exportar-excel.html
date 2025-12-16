@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pymax · Exportar Información</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      background:
+        radial-gradient(900px 420px at 10% -10%, rgba(79,70,229,.28), transparent 45%),
+        radial-gradient(800px 420px at 90% 10%, rgba(99,102,241,.22), transparent 45%),
+        radial-gradient(700px 400px at 50% 120%, rgba(56,189,248,.14), transparent 40%),
+        #020617;
+    }
+
+    .glass {
+      background: rgba(15,23,42,0.65);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(148,163,184,0.15);
+    }
+
+    .hover-card {
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+    .hover-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 24px 48px rgba(0,0,0,.45);
+    }
+
+    .btn-main {
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      transition: all .3s ease;
+    }
+
+    .btn-main:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+
+<body class="text-slate-100 min-h-screen">
+
+<!-- HEADER -->
+<header class="glass px-8 py-5 flex justify-between items-center border-b border-slate-800">
+  <h1 class="text-xl font-semibold text-indigo-400">
+    Pymax · Exportación de Reportes
+  </h1>
+  <a href="panel-mover.html" class="text-sm text-slate-300 hover:text-white transition">
+    Volver al panel
+  </a>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 py-10 space-y-14">
+
+  <!-- INTRO -->
+  <section class="max-w-4xl">
+    <h2 class="text-3xl font-semibold mb-3">
+      Información clara, exportable y profesional
+    </h2>
+    <p class="text-slate-300 leading-relaxed">
+      Descarga reportes financieros estructurados para análisis,
+      respaldo, contabilidad externa o toma de decisiones estratégicas.
+      Todos los archivos son generados con criterios Pymax.
+    </p>
+  </section>
+
+  <!-- TIPOS DE EXPORTACIÓN -->
+  <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <div class="glass rounded-xl p-6 hover-card">
+      <h3 class="text-lg font-semibold mb-2">
+        Movimientos del mes
+      </h3>
+      <p class="text-slate-300 text-sm">
+        Registro completo de ingresos y gastos del período actual.
+      </p>
+      <ul class="text-slate-400 text-xs mt-4 space-y-1">
+        <li>• Fecha</li>
+        <li>• Tipo</li>
+        <li>• Categoría</li>
+        <li>• Monto</li>
+      </ul>
+
+      <button
+        onclick="exportar('movimientos')"
+        class="btn-main w-full mt-6 py-2 rounded-lg font-semibold">
+        Descargar Excel
+      </button>
+    </div>
+
+    <div class="glass rounded-xl p-6 hover-card">
+      <h3 class="text-lg font-semibold mb-2">
+        Resumen financiero
+      </h3>
+      <p class="text-slate-300 text-sm">
+        Vista consolidada del resultado mensual.
+      </p>
+      <ul class="text-slate-400 text-xs mt-4 space-y-1">
+        <li>• Total ingresos</li>
+        <li>• Total gastos</li>
+        <li>• Resultado neto</li>
+        <li>• Evaluación Pymax</li>
+      </ul>
+
+      <button
+        onclick="exportar('resumen')"
+        class="btn-main w-full mt-6 py-2 rounded-lg font-semibold">
+        Descargar Excel
+      </button>
+    </div>
+
+    <div class="glass rounded-xl p-6 hover-card">
+      <h3 class="text-lg font-semibold mb-2">
+        Deudas y obligaciones
+      </h3>
+      <p class="text-slate-300 text-sm">
+        Compromisos financieros registrados y su estado.
+      </p>
+      <ul class="text-slate-400 text-xs mt-4 space-y-1">
+        <li>• Tipo</li>
+        <li>• Monto</li>
+        <li>• Fecha de pago</li>
+        <li>• Estado</li>
+      </ul>
+
+      <button
+        onclick="exportar('obligaciones')"
+        class="btn-main w-full mt-6 py-2 rounded-lg font-semibold">
+        Descargar Excel
+      </button>
+    </div>
+
+  </section>
+
+  <!-- EXPORTACIÓN COMPLETA -->
+  <section class="glass rounded-xl p-8 max-w-5xl">
+
+    <h3 class="text-xl font-semibold mb-4">
+      Reporte integral Pymax
+    </h3>
+
+    <p class="text-slate-300 text-sm mb-6">
+      Archivo avanzado que consolida toda la información financiera
+      del período, ideal para contabilidad, proyecciones y respaldo formal.
+    </p>
+
+    <div class="flex flex-col md:flex-row gap-4">
+      <button
+        onclick="exportar('completo')"
+        class="btn-main px-6 py-3 rounded-lg font-semibold">
+        Descargar reporte completo
+      </button>
+
+      <a
+        href="progreso.html"
+        class="px-6 py-3 rounded-lg border border-slate-600 text-slate-300 hover:text-white hover:border-slate-400 transition">
+        Ver avance de orden financiero
+      </a>
+    </div>
+
+  </section>
+
+  <!-- NOTA -->
+  <section class="text-slate-400 text-sm max-w-4xl">
+    Los reportes exportados mantienen la estructura y criterios
+    definidos por Pymax. La información pertenece exclusivamente
+    al usuario y no se modifica durante el proceso.
+  </section>
+
+</main>
+
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="/mover/pymax-core.js"></script>
+
+</body>
+</html>

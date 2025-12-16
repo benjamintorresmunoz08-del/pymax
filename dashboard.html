@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pymax · Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      background: radial-gradient(circle at top, #1e293b, #020617);
+    }
+
+    .card {
+      transition: all 0.25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 20px 40px rgba(99,102,241,0.15);
+    }
+
+    .glow {
+      box-shadow: 0 0 0 rgba(99,102,241,0);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .glow:hover {
+      box-shadow: 0 0 25px rgba(99,102,241,0.4);
+    }
+  </style>
+</head>
+
+<body class="text-gray-100 min-h-screen">
+
+<!-- HEADER -->
+<header class="flex justify-between items-center px-8 py-5 border-b border-slate-700 bg-slate-900/60 backdrop-blur">
+  <h1 class="text-2xl font-semibold text-indigo-400">Pymax</h1>
+
+  <div class="flex items-center gap-4">
+    <span class="text-sm text-gray-300">Plan: <b>Mover Fichas</b></span>
+    <button class="text-sm text-gray-400 hover:text-white transition">Cerrar sesión</button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="max-w-7xl mx-auto px-8 py-10 space-y-10">
+
+  <!-- ESTADO GENERAL -->
+  <section class="bg-slate-800/80 backdrop-blur rounded-2xl p-8 border border-slate-700 card">
+    <h2 class="text-xl font-semibold mb-6">Estado general del negocio</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div class="bg-slate-900 rounded-xl p-5 glow">
+        <p class="text-sm text-gray-400">Ingresos del mes</p>
+        <p class="text-2xl font-bold text-green-400 mt-1">$0</p>
+      </div>
+
+      <div class="bg-slate-900 rounded-xl p-5 glow">
+        <p class="text-sm text-gray-400">Gastos del mes</p>
+        <p class="text-2xl font-bold text-red-400 mt-1">$0</p>
+      </div>
+
+      <div class="bg-slate-900 rounded-xl p-5 glow">
+        <p class="text-sm text-gray-400">Resultado</p>
+        <p class="text-2xl font-bold mt-1">$0</p>
+      </div>
+
+      <div class="bg-slate-900 rounded-xl p-5 glow">
+        <p class="text-sm text-gray-400">Semáforo Pymax</p>
+        <p class="text-2xl font-bold text-yellow-400 mt-1">AMARILLO</p>
+      </div>
+    </div>
+
+    <p class="mt-6 text-gray-300">
+      Pymax está analizando tu negocio. Registra tus movimientos para obtener recomendaciones.
+    </p>
+  </section>
+
+  <!-- ACCESOS A MÓDULOS -->
+  <section>
+    <h2 class="text-xl font-semibold mb-6">Módulos Pymax</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <a href="#" class="bg-slate-800 rounded-2xl p-6 border border-slate-700 card">
+        <h3 class="text-lg font-semibold text-indigo-400">📊 Finanzas</h3>
+        <p class="text-sm text-gray-300 mt-2">
+          Ingresos, gastos, flujo de caja y estado de resultados.
+        </p>
+      </a>
+
+      <a href="#" class="bg-slate-800 rounded-2xl p-6 border border-slate-700 card">
+        <h3 class="text-lg font-semibold text-indigo-400">🧾 Obligaciones</h3>
+        <p class="text-sm text-gray-300 mt-2">
+          IVA, pagos, vencimientos y alertas automáticas.
+        </p>
+      </a>
+
+      <a href="#" class="bg-slate-800 rounded-2xl p-6 border border-slate-700 card">
+        <h3 class="text-lg font-semibold text-indigo-400">📅 Calendario</h3>
+        <p class="text-sm text-gray-300 mt-2">
+          Fechas clave y compromisos financieros.
+        </p>
+      </a>
+
+      <a href="#" class="bg-slate-800 rounded-2xl p-6 border border-slate-700 card">
+        <h3 class="text-lg font-semibold text-indigo-400">📈 Reportes</h3>
+        <p class="text-sm text-gray-300 mt-2">
+          Exporta Excel, revisa históricos y proyecciones.
+        </p>
+      </a>
+
+      <a href="#" class="bg-slate-800 rounded-2xl p-6 border border-slate-700 card md:col-span-2">
+        <h3 class="text-lg font-semibold text-indigo-400">🤖 Asesor Pymax</h3>
+        <p class="text-sm text-gray-300 mt-2">
+          Inteligencia financiera que analiza tu negocio y te guía para crecer.
+        </p>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- TEASER IA -->
+  <section class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-8 card">
+    <h2 class="text-xl font-semibold mb-3">Pymax está pensando en tu negocio</h2>
+    <p class="text-gray-100 max-w-2xl">
+      Nuestra inteligencia analiza tus datos para alertarte de riesgos, oportunidades
+      y decisiones clave. Muy pronto recibirás recomendaciones personalizadas.
+    </p>
+  </section>
+
+</main>
+
+</body>
+</html>

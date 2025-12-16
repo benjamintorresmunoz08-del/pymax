@@ -1,57 +1,45 @@
-from flask import Flask, request, jsonify
+# =========================
+# IMPORTS
+# =========================
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
-import sqlite3, secrets, os, time
-
-app = Flask(__name__)
+import sqlite3
+import secrets
+import os
+import time
+import io
+from datetime import datetime, timedelta
+from openpyxl import Workbook
+from supabase import create_client
 
 # =========================
-# BASE DE DATOS (RUTA ABSOLUTA)
+# APP
+# =========================
+app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+# =========================
+# SQLITE (USUARIOS LOCALES)
 # =========================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "pymax_usuarios_v3.db")
 
-
-# =========================
-# CORS (PERMITIR TODO MIENTRAS DESARROLLAS)
-# =========================
-CORS(
-    app,
-    resources={r"/*": {"origins": "*"}}
-)
-
-
-# =========================
-# FUNCIONES DE BASE DE DATOS
-# =========================
-
 def connect_db(retries=5, delay=0.2):
-    """
-    Intenta conectarse a la BD varias veces.
-    Útil cuando Render "despierta" y SQLite todavía no está listo.
-    """
     last_err = None
     for _ in range(retries):
         try:
-            conn = sqlite3.connect(DB_PATH)
-            return conn
+            return sqlite3.connect(DB_PATH)
         except sqlite3.OperationalError as e:
             last_err = e
             time.sleep(delay)
     print("NO SE PUDO CONECTAR A LA BD:", last_err)
     return None
 
-
 def ensure_users_table(conn):
-    """
-    - Crea la tabla usuarios si no existe.
-    - Si faltan columnas (confirmed, token) las agrega.
-    """
     if conn is None:
         return
 
     cur = conn.cursor()
-
-    # Crear tabla base
     cur.execute("""
         CREATE TABLE IF NOT EXISTS usuarios (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -63,196 +51,273 @@ def ensure_users_table(conn):
         )
     """)
 
-    # Revisar columnas
     cur.execute("PRAGMA table_info(usuarios)")
     cols = [row[1] for row in cur.fetchall()]
 
     if "confirmed" not in cols:
         cur.execute("ALTER TABLE usuarios ADD COLUMN confirmed INTEGER DEFAULT 0")
-
     if "token" not in cols:
         cur.execute("ALTER TABLE usuarios ADD COLUMN token TEXT")
 
     conn.commit()
-
 
 def init_db():
     conn = connect_db()
     if conn:
         ensure_users_table(conn)
         conn.close()
-        print("BD inicializada en:", DB_PATH)
-    else:
-        print("NO se pudo inicializar la BD al arrancar")
+        print("BD inicializada:", DB_PATH)
 
-
-# Ejecutar al importar la app (Render + local)
 init_db()
 
+# =========================
+# SUPABASE
+# =========================
+SUPABASE_URL = "https://haqjuyagyvxynmulanhe.supabase.co"
+SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # =========================
-# RUTAS
+# RUTA BASE
 # =========================
-
 @app.route("/")
 def home():
-    # mensaje distinto para saber que esta versión está corriendo
     return jsonify({"message": "Pymax backend v3 activo 🚀"})
 
-
-# ---------- REGISTRO ----------
+# =========================
+# AUTH
+# =========================
 @app.route("/api/register", methods=["POST"])
 def register():
+    data = request.get_json(silent=True) or {}
+    name = data.get("name")
+    email = data.get("email")
+    password = data.get("password")
+
+    if not all([name, email, password]):
+        return jsonify({"error": "Faltan datos"}), 400
+
+    conn = connect_db()
+    ensure_users_table(conn)
+    cursor = conn.cursor()
+
+    token = secrets.token_urlsafe(16)
+
     try:
-        data = request.get_json(silent=True) or {}
-        name = data.get("name")
-        email = data.get("email")
-        password = data.get("password")
-
-        if not all([name, email, password]):
-            return jsonify({"error": "Faltan datos"}), 400
-
-        conn = connect_db()
-        if conn is None:
-            return jsonify({"error": "Servidor iniciando, intenta nuevamente."}), 503
-
-        ensure_users_table(conn)
-        cursor = conn.cursor()
-
-        token = secrets.token_urlsafe(16)
-
-        try:
-            cursor.execute(
-                "INSERT INTO usuarios (name, email, password, token) VALUES (?, ?, ?, ?)",
-                (name, email, password, token)
-            )
-            conn.commit()
-        except sqlite3.IntegrityError:
-            conn.close()
-            return jsonify({"error": "El correo ya está registrado"}), 400
-
+        cursor.execute(
+            "INSERT INTO usuarios (name, email, password, token) VALUES (?, ?, ?, ?)",
+            (name, email, password, token)
+        )
+        conn.commit()
+    except sqlite3.IntegrityError:
         conn.close()
-        return jsonify({"message": "Usuario registrado correctamente", "token": token}), 200
+        return jsonify({"error": "El correo ya está registrado"}), 400
 
-    except Exception as e:
-        print("ERROR EN /api/register:", e)
-        return jsonify({"error": "Error interno en el servidor"}), 500
+    conn.close()
+    return jsonify({"message": "Usuario registrado", "token": token})
 
-
-# ---------- CONFIRMACIÓN ----------
 @app.route("/api/confirm", methods=["GET"])
 def confirm_email():
-    try:
-        token = request.args.get("token")
-        if not token:
-            return jsonify({"error": "Token no encontrado"}), 400
+    token = request.args.get("token")
+    conn = connect_db()
+    ensure_users_table(conn)
+    cursor = conn.cursor()
 
-        conn = connect_db()
-        if conn is None:
-            return jsonify({"error": "Servidor iniciando, intenta nuevamente."}), 503
+    cursor.execute("SELECT id FROM usuarios WHERE token = ?", (token,))
+    user = cursor.fetchone()
 
-        ensure_users_table(conn)
-        cursor = conn.cursor()
+    if not user:
+        return jsonify({"error": "Token inválido"}), 404
 
-        cursor.execute("SELECT * FROM usuarios WHERE token = ?", (token,))
-        user = cursor.fetchone()
-        if not user:
-            conn.close()
-            return jsonify({"error": "Token inválido"}), 404
+    cursor.execute("UPDATE usuarios SET confirmed = 1 WHERE token = ?", (token,))
+    conn.commit()
+    conn.close()
 
-        cursor.execute("UPDATE usuarios SET confirmed = 1 WHERE token = ?", (token,))
-        conn.commit()
-        conn.close()
+    return """
+    <script>
+      window.location.href="https://pymaxcenter2.netlify.app?confirm=ok";
+    </script>
+    """
 
-        # Redirección a Netlify
-        return """
-        <html>
-          <head>
-            <meta http-equiv="refresh" content="0; url=https://pymaxcenter2.netlify.app?confirm=ok">
-            <script>window.location.href="https://pymaxcenter2.netlify.app?confirm=ok";</script>
-          </head>
-          <body>Redirigiendo a Pymax...</body>
-        </html>
-        """
-
-    except Exception as e:
-        print("ERROR EN /api/confirm:", e)
-        return jsonify({"error": "Error interno en el servidor"}), 500
-
-
-# ---------- LOGIN ----------
 @app.route("/api/login", methods=["POST"])
 def login():
-    try:
-        # 1) Leer datos
-        data = request.get_json(silent=True) or {}
-        email = (data.get("email") or "").strip()
-        password = (data.get("password") or "").strip()
+    data = request.get_json(silent=True) or {}
+    email = data.get("email")
+    password = data.get("password")
 
-        if not email or not password:
-            return jsonify({"error": "Faltan datos"}), 400
+    conn = connect_db()
+    ensure_users_table(conn)
+    cur = conn.cursor()
 
-        # 2) Conectar a BD
-        conn = connect_db()
-        if conn is None:
-            return jsonify({"error": "Servidor iniciando, intenta nuevamente."}), 503
+    cur.execute("SELECT id, name, password, confirmed FROM usuarios WHERE email = ?", (email,))
+    row = cur.fetchone()
+    conn.close()
 
-        try:
-            ensure_users_table(conn)
-            cur = conn.cursor()
+    if not row or row[2] != password:
+        return jsonify({"error": "Credenciales incorrectas"}), 401
 
-            cur.execute("""
-                SELECT
-                    id,
-                    name,
-                    email,
-                    password,
-                    COALESCE(confirmed, 0) AS confirmed
-                FROM usuarios
-                WHERE email = ?
-            """, (email,))
-            row = cur.fetchone()
-        except sqlite3.Error as db_err:
-            print("ERROR BD EN /api/login:", db_err)
-            conn.close()
-            return jsonify({
-                "error": "Problema con la base de datos. Intenta nuevamente en unos minutos."
-            }), 503
-        finally:
-            try:
-                conn.close()
-            except:
-                pass
+    if not row[3]:
+        return jsonify({"error": "Correo no confirmado"}), 403
 
-        # 3) Validaciones de negocio (NO generan 500)
-        if not row:
-            return jsonify({"error": "Usuario o contraseña incorrectos"}), 401
+    return jsonify({
+        "message": "Login exitoso",
+        "user_id": row[0],
+        "name": row[1]
+    })
 
-        user_id, name, email_db, password_db, confirmed = row
+# =========================
+# SUSCRIPCIÓN
+# =========================
+@app.route("/activar-mover-fichas", methods=["POST"])
+def activar_mover_fichas():
+    user_id = request.json.get("user_id")
+    hoy = datetime.utcnow()
+    vencimiento = hoy + timedelta(days=30)
 
-        if password_db != password:
-            return jsonify({"error": "Usuario o contraseña incorrectos"}), 401
+    supabase.table("suscripciones").insert({
+        "user_id": user_id,
+        "plan": "mover_fichas",
+        "estado": "activo",
+        "fecha_inicio": hoy.isoformat(),
+        "fecha_vencimiento": vencimiento.isoformat()
+    }).execute()
 
-        if not confirmed:
-            return jsonify({"error": "Tu correo aún no está confirmado."}), 403
+    return jsonify({"ok": True})
 
-        # 4) Generar token de sesión
-        session_token = secrets.token_urlsafe(16)
+# =========================
+# MOVIMIENTOS
+# =========================
+@app.route("/movimientos", methods=["POST"])
+def crear_movimiento():
+    supabase.table("movimientos").insert(request.json).execute()
+    return jsonify({"ok": True})
 
-        return jsonify({
-            "message": "Inicio de sesión exitoso",
-            "name": name,
-            "email": email_db,
-            "session_token": session_token
-        }), 200
+# =========================
+# OBLIGACIONES
+# =========================
+@app.route("/obligaciones", methods=["POST"])
+def crear_obligacion():
+    supabase.table("obligaciones").insert(request.json).execute()
+    return jsonify({"ok": True})
 
-    except Exception as e:
-        print("ERROR DESCONOCIDO EN /api/login:", e)
-        return jsonify({
-            "error": "Error interno al iniciar sesión. Intenta nuevamente."
-        }), 500
+@app.route("/obligaciones", methods=["GET"])
+def listar_obligaciones():
+    user_id = request.args.get("user_id")
+    res = supabase.table("obligaciones").select("*").eq("user_id", user_id).execute()
+    return jsonify(res.data)
 
+# =========================
+# CALENDARIO
+# =========================
+@app.route("/calendario", methods=["POST"])
+def crear_evento():
+    supabase.table("calendario").insert(request.json).execute()
+    return jsonify({"ok": True})
 
-if __name__ == "__main__":
-    # Solo local; en Render se usa gunicorn (Start Command)
-    app.run(host="0.0.0.0", port=5000)
+@app.route("/calendario", methods=["GET"])
+def listar_eventos():
+    user_id = request.args.get("user_id")
+    res = supabase.table("calendario").select("*").eq("user_id", user_id).execute()
+    return jsonify(res.data)
+
+# =========================================================
+# === PYMAX CORE · ESTADO FINANCIERO CENTRAL (NUEVO) ===
+# =========================================================
+@app.route("/progreso", methods=["GET"])
+def progreso():
+    user_id = request.args.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Usuario requerido"}), 400
+
+    hoy = datetime.utcnow()
+    inicio_mes = hoy.replace(day=1).date()
+
+    movimientos = supabase.table("movimientos") \
+        .select("tipo, monto, fecha") \
+        .eq("user_id", user_id) \
+        .gte("fecha", inicio_mes.isoformat()) \
+        .execute().data
+
+    obligaciones = supabase.table("obligaciones") \
+        .select("monto, fecha_pago, estado") \
+        .eq("user_id", user_id) \
+        .execute().data
+
+    ingresos = sum(m["monto"] for m in movimientos if m["tipo"] == "ingreso")
+    gastos = sum(m["monto"] for m in movimientos if m["tipo"] == "gasto")
+    flujo = ingresos - gastos
+
+    obligaciones_vencidas = [
+        o for o in obligaciones
+        if o["estado"] == "pendiente" and datetime.fromisoformat(o["fecha_pago"]) < hoy
+    ]
+
+    # SEMÁFORO
+    if flujo > 0 and not obligaciones_vencidas:
+        semaforo = "VERDE"
+    elif flujo == 0 or obligaciones_vencidas:
+        semaforo = "AMARILLO"
+    else:
+        semaforo = "ROJO"
+
+    # ORDEN FINANCIERO (0-100)
+    orden = 0
+    if movimientos:
+        orden += 40
+    if flujo > 0:
+        orden += 25
+    if not obligaciones_vencidas:
+        orden += 20
+    if len(movimientos) >= 5:
+        orden += 15
+
+    alertas = []
+    if flujo < 0:
+        alertas.append("El flujo de caja es negativo este mes.")
+    if obligaciones_vencidas:
+        alertas.append("Existen obligaciones vencidas.")
+    if not movimientos:
+        alertas.append("No hay registros financieros este mes.")
+
+    return jsonify({
+        "ingresos_mes": ingresos,
+        "gastos_mes": gastos,
+        "resultado_mes": ingresos - gastos,
+        "flujo_actual": flujo,
+        "semaforo": semaforo,
+        "orden_financiero": orden,
+        "alertas": alertas
+    })
+
+# =========================
+# EXCEL
+# =========================
+@app.route("/exportar-excel", methods=["GET"])
+def exportar_excel():
+    user_id = request.args.get("user_id")
+    inicio_mes = datetime.utcnow().replace(day=1).date()
+
+    movimientos = supabase.table("movimientos") \
+        .select("*") \
+        .eq("user_id", user_id) \
+        .gte("fecha", inicio_mes.isoformat()) \
+        .order("fecha") \
+        .execute().data
+
+    wb = Workbook()
+    ws = wb.active
+    ws.append(["Fecha", "Tipo", "Categoría", "Monto"])
+
+    for m in movimientos:
+        ws.append([m["fecha"], m["tipo"], m["categoria"], m["monto"]])
+
+    file = io.BytesIO()
+    wb.save(file)
+    file.seek(0)
+
+    return send_file(
+        file,
+        as_attachment=True,
+        download_name="pymax_mover_fichas.xlsx",
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )

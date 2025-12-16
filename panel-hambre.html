@@ -396,11 +396,7 @@
       const activeUser = JSON.parse(localStorage.getItem("activeUser") || "null");
       const navRight = document.getElementById("navRight");
 
-      // Si no hay usuario → redirigir al inicio
-      if (!activeUser) {
-        window.location.href = "index.html";
-        return;
-      }
+      
 
       // Badge de prueba Hambre de poder (si viene desde trial)
       const trialPlan = localStorage.getItem("trialPlan");
