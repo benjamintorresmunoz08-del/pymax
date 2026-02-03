@@ -385,6 +385,32 @@ function actualizarResumen(data) {
     else divVencidas.className = "text-3xl font-bold text-red-400 mt-2";
 }
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Busca TODOS los enlaces (<a>) de tu código original
+    document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            let url = this.getAttribute('href');
+            
+            // Solo actuamos si el enlace apunta a un archivo .html
+            if (url && url.includes('.html')) {
+                e.preventDefault(); // Detiene el error 404
+                
+                // 1. Quita la extensión .html automáticamente
+                let nuevaRuta = url.replace('.html', '');
 
+                // 2. DICCIONARIO DE CORRECCIONES (Para los botones "Volver")
+                // Aquí le enseñamos a ir a las rutas principales correctas
+                if (url.includes('panel-mover.html')) nuevaRuta = "/empresa/mover";
+                if (url.includes('index-empresa.html')) nuevaRuta = "/empresa";
+                if (url.includes('index.html')) nuevaRuta = "/";
+
+                // 3. Te envía a la ruta limpia de Python
+                window.location.href = nuevaRuta;
+            }
+        });
+    });
+});
+</script>
 </body>
 </html>
