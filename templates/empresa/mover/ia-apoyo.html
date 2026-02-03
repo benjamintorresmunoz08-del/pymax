@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pymax Consultor - Asistente Financiero</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="pymax-core.js"></script>
+  
+  <style>
+    /* === AURORA BACKGROUND (Efecto suave y elegante) === */
+    @keyframes aurora-float {
+      0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+      50% { transform: translate(20px, -20px) scale(1.1); opacity: 0.7; }
+      100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+    }
+
+    .aurora-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      animation: aurora-float 12s infinite ease-in-out;
+      z-index: -1;
+    }
+
+    .blob-blue { background: #2563eb; width: 700px; height: 700px; top: -150px; left: 10%; animation-delay: 0s; }
+    .blob-purple { background: #9333ea; width: 600px; height: 600px; bottom: -100px; right: 0%; animation-delay: 3s; }
+    .blob-indigo { background: #4f46e5; width: 500px; height: 500px; top: 30%; left: -100px; animation-delay: 6s; }
+
+    /* Scrollbar */
+    .chat-scroll::-webkit-scrollbar { width: 6px; }
+    .chat-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+    .chat-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+
+    /* Animación mensajes */
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .msg-anim { animation: slideIn 0.3s ease-out forwards; }
+  </style>
+</head>
+
+<body class="relative min-h-screen flex flex-col bg-slate-900 text-white font-sans overflow-hidden selection:bg-blue-500 selection:text-white">
+
+<div class="fixed inset-0 overflow-hidden pointer-events-none">
+  <div class="aurora-blob blob-blue"></div>
+  <div class="aurora-blob blob-purple"></div>
+  <div class="aurora-blob blob-indigo"></div>
+</div>
+
+<nav class="flex justify-between items-center px-8 py-5 backdrop-blur-md border-b border-white/10 relative z-20">
+  <div class="flex items-center space-x-3">
+    <div class="w-8 h-8 bg-gradient-to-tr from-blue-500 to-purple-500 rounded-lg flex items-center justify-center font-bold text-white shadow-lg">  AI</div>
+    <span class="text-xl font-bold tracking-wide text-white drop-shadow-sm">PYMAX</span>
+  </div>
+  
+  <a href="panel-mover.html" class="group flex items-center space-x-2 text-blue-200 hover:text-white transition px-4 py-2 rounded-lg hover:bg-white/10">
+    <span>← Volver al Panel</span>
+  </a>
+</nav>
+
+<main class="flex-grow flex items-center justify-center p-4 md:p-6 relative z-10">
+  
+  <div class="w-full max-w-5xl h-[85vh] bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl flex flex-col overflow-hidden relative ring-1 ring-white/5">
+    
+    <header class="px-6 py-4 border-b border-white/10 flex justify-between items-center bg-white/5">
+      <div>
+        <h1 class="text-lg font-bold text-white tracking-wide">Tu Compañero Pymax</h1>
+        <p class="text-xs text-blue-200/80 mt-0.5">Asistente Financiero & Estratégico</p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <div class="flex items-center px-3 py-1 bg-blue-500/10 rounded-full border border-blue-400/20">
+          <div class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse mr-2"></div>
+          <span class="text-xs font-semibold text-blue-200">Plan Básico</span>
+        </div>
+        <a href="servicios.html" class="text-xs font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 px-4 py-1.5 rounded-full transition shadow-lg shadow-blue-900/20">
+          Mejorar Plan ✨
+        </a>
+      </div>
+    </header>
+
+    <div id="chatHistory" class="flex-grow p-6 overflow-y-auto chat-scroll space-y-6">
+      
+      <div class="flex gap-4 msg-anim">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg flex-shrink-0 border border-white/20 mt-1">
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <div class="space-y-2 max-w-2xl">
+          <div class="bg-white/10 border border-white/5 p-4 rounded-2xl rounded-tl-none text-gray-100 shadow-sm backdrop-blur-sm">
+            <p class="font-bold text-blue-300 mb-1 text-sm">Sistema Pymax</p>
+            <p class="text-gray-300">Hola. He analizado tus ventas, gastos y deudas registradas en el sistema. Puedo responder preguntas sobre tu liquidez actual o estado de obligaciones.</p>
+          </div>
+          <p class="text-xs text-gray-500 pl-2">IA • Ahora</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="p-5 bg-slate-900/80 border-t border-white/10 backdrop-blur-md">
+      <div class="relative flex items-center w-full">
+        <input 
+          id="chatInput" 
+          type="text" 
+          placeholder="Escribe tu consulta aquí..." 
+          class="w-full bg-slate-800/50 text-white placeholder-gray-400 pl-5 pr-32 py-4 rounded-xl border border-white/10 focus:outline-none focus:border-blue-500/50 focus:bg-slate-800 transition-all shadow-inner"
+        />
+        <button 
+          id="sendBtn" 
+          class="absolute right-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg font-medium transition shadow-lg flex items-center gap-2 transform active:scale-95"
+        >
+          <span>Enviar</span>
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+      <p class="text-center text-[11px] text-gray-400 mt-3 tracking-wide">
+        Respuestas generadas por IA. El Plan Básico limita proyecciones a futuro.
+      </p>
+    </div>
+
+  </div>
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const chatInput = document.getElementById("chatInput");
+  const sendBtn = document.getElementById("sendBtn");
+  const chatHistory = document.getElementById("chatHistory");
+
+  // --- FUNCIONES VISUALES ---
+  function addMessage(text, isUser) {
+    const div = document.createElement("div");
+    div.className = isUser ? "flex justify-end gap-4 msg-anim" : "flex gap-4 msg-anim";
+    
+    if (isUser) {
+      div.innerHTML = `
+        <div class="max-w-[80%] md:max-w-xl text-right">
+          <div class="bg-blue-600/90 text-white p-3.5 rounded-2xl rounded-tr-none shadow-lg text-left text-sm md:text-base leading-relaxed">
+            ${text}
+          </div>
+        </div>`;
+    } else {
+      div.innerHTML = `
+        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg flex-shrink-0 border border-white/20 mt-1">
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <div class="bg-white/5 border border-white/10 p-4 rounded-2xl rounded-tl-none text-gray-200 shadow-md max-w-[90%] md:max-w-2xl text-sm md:text-base leading-relaxed backdrop-blur-md">
+          ${text}
+        </div>`;
+    }
+    chatHistory.appendChild(div);
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+  }
+
+  function addLoading() {
+    const id = "loading-" + Date.now();
+    const div = document.createElement("div");
+    div.id = id;
+    div.className = "flex gap-4 msg-anim ml-1";
+    div.innerHTML = `
+      <div class="w-9 h-9 flex-shrink-0"></div>
+      <div class="flex items-center space-x-1 h-10">
+        <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0s"></div>
+        <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+        <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+      </div>
+    `;
+    chatHistory.appendChild(div);
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+    return id; 
+  }
+
+  function removeLoading(id) {
+    const el = document.getElementById(id);
+    if(el) el.remove();
+  }
+
+  // --- LÓGICA DE ENVÍO (PLACEHOLDER VISUAL) ---
+  async function handleSend() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+
+    // 1. Pone mensaje usuario
+    addMessage(text, true);
+    chatInput.value = "";
+    
+    // 2. Pone los puntos suspensivos
+    const loadingId = addLoading();
+
+    // 3. Simula espera breve y responde (SIN ERRORES)
+    setTimeout(() => {
+      removeLoading(loadingId);
+      addMessage("¡Mensaje recibido! La interfaz funciona correctamente. Conectaremos la IA en la fase final del proyecto.", false);
+    }, 1000);
+  }
+
+  // Event Listeners
+  sendBtn.addEventListener("click", handleSend);
+  chatInput.addEventListener("keypress", (e) => {
+    if(e.key === "Enter") handleSend();
+  });
+});
+</script>
+</body>
+</html>

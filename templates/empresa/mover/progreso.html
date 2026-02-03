@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pymax · Avance de Orden Financiero</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      background:
+        radial-gradient(900px 400px at 15% -10%, rgba(79,70,229,.25), transparent 40%),
+        radial-gradient(800px 500px at 85% 15%, rgba(99,102,241,.2), transparent 45%),
+        radial-gradient(700px 400px at 50% 120%, rgba(56,189,248,.12), transparent 40%),
+        #020617;
+    }
+
+    .glass {
+      background: rgba(15,23,42,0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(148,163,184,0.15);
+    }
+
+    .hover-card {
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+    .hover-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,.45);
+    }
+
+    .progress-bar {
+      transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+
+<body class="text-slate-100 min-h-screen">
+
+<header class="glass px-8 py-5 flex justify-between items-center border-b border-slate-800">
+  <h1 class="text-xl font-semibold text-indigo-400">
+    Pymax · Avance de Orden Financiero
+  </h1>
+  <a href="panel-mover.html" class="text-sm text-slate-300 hover:text-white transition">
+    Volver al panel
+  </a>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 py-10 space-y-14">
+
+  <section class="max-w-4xl">
+    <h2 class="text-3xl font-semibold mb-3">
+      Control, disciplina y progreso medible
+    </h2>
+    <p class="text-slate-300 leading-relaxed">
+      Pymax evalúa tu nivel de orden financiero considerando registros,
+      obligaciones, flujo de caja y consistencia. Este indicador refleja
+      qué tan preparado está tu negocio para crecer.
+    </p>
+  </section>
+
+  <section class="glass rounded-xl p-8 max-w-5xl relative overflow-hidden">
+    <div id="loadingOverlay" class="absolute inset-0 bg-slate-900/80 z-10 flex items-center justify-center">
+        <span class="text-indigo-400 animate-pulse">Analizando datos de la empresa...</span>
+    </div>
+
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+      <div>
+        <h3 class="text-xl font-semibold">
+          Nivel de orden financiero
+        </h3>
+        <p class="text-slate-400 text-sm">
+          Calculado en tiempo real basado en tus registros.
+        </p>
+      </div>
+
+      <div id="scoreNumber" class="text-4xl font-bold text-indigo-400 mt-4 md:mt-0 drop-shadow-lg">
+        0%
+      </div>
+    </div>
+
+    <div class="w-full bg-slate-900 rounded-full h-5 overflow-hidden border border-slate-700">
+      <div
+        id="progressBar"
+        class="bg-gradient-to-r from-indigo-600 to-blue-500 h-5 rounded-full progress-bar shadow-[0_0_15px_rgba(79,70,229,0.5)]"
+        style="width: 0%;">
+      </div>
+    </div>
+
+    <p id="statusText" class="text-slate-400 text-sm mt-3">
+      Cargando análisis...
+    </p>
+
+  </section>
+
+  <section class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl">
+
+    <div class="glass rounded-xl p-6 hover-card">
+      <h4 class="font-semibold text-indigo-400 mb-2">
+        Registro financiero
+      </h4>
+      <p class="text-slate-300 text-sm">
+        Ingresos y gastos ingresados de forma regular y ordenada.
+      </p>
+      <p class="text-emerald-400 text-xs mt-3">Impacto Alto</p>
+    </div>
+
+    <div class="glass rounded-xl p-6 hover-card">
+      <h4 class="font-semibold text-indigo-400 mb-2">
+        Flujo de caja actualizado
+      </h4>
+      <p class="text-slate-300 text-sm">
+        Control diario de liquidez y capacidad operativa.
+      </p>
+      <p class="text-emerald-400 text-xs mt-3">Impacto Alto</p>
+    </div>
+
+    <div class="glass rounded-xl p-6 hover-card">
+      <h4 class="font-semibold text-indigo-400 mb-2">
+        Deudas y obligaciones
+      </h4>
+      <p class="text-slate-300 text-sm">
+        Registro claro de compromisos financieros y fechas.
+      </p>
+      <p class="text-yellow-400 text-xs mt-3">Impacto Medio</p>
+    </div>
+
+    <div class="glass rounded-xl p-6 hover-card">
+      <h4 class="font-semibold text-indigo-400 mb-2">
+        Consistencia mensual
+      </h4>
+      <p class="text-slate-300 text-sm">
+        Uso continuo de la plataforma sin largos periodos de inactividad.
+      </p>
+      <p class="text-yellow-400 text-xs mt-3">Impacto Medio</p>
+    </div>
+
+  </section>
+
+  <section class="glass rounded-xl p-8 max-w-5xl border-t-2 border-indigo-500/20">
+
+    <div class="flex items-center gap-3 mb-4">
+        <div class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></div>
+        <h3 class="text-xl font-semibold text-white">
+        Análisis Inteligente Pymax
+        </h3>
+    </div>
+
+    <div id="aiTipsContainer" class="space-y-3 text-slate-300 text-sm">
+      <p class="text-slate-500 italic">Generando estrategia personalizada...</p>
+    </div>
+
+  </section>
+
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl">
+
+    <a href="flujo-caja.html" class="glass rounded-xl p-6 hover-card block group">
+      <h4 class="font-semibold mb-2 group-hover:text-indigo-300 transition">Flujo de caja</h4>
+      <p class="text-slate-300 text-sm">Impacto directo en tu nivel de orden.</p>
+      <p class="mt-4 text-indigo-400 text-sm">Ir al flujo →</p>
+    </a>
+
+    <a href="semaforo.html" class="glass rounded-xl p-6 hover-card block group">
+      <h4 class="font-semibold mb-2 group-hover:text-indigo-300 transition">Semáforo Pymax</h4>
+      <p class="text-slate-300 text-sm">Evalúa la salud general del negocio.</p>
+      <p class="mt-4 text-indigo-400 text-sm">Ver estado →</p>
+    </a>
+
+    <a href="consultor.html" class="glass rounded-xl p-6 hover-card block group">
+      <h4 class="font-semibold mb-2 group-hover:text-indigo-300 transition">IA de apoyo</h4>
+      <p class="text-slate-300 text-sm">Obtén orientación para mejorar tu puntaje.</p>
+      <p class="mt-4 text-indigo-400 text-sm">Consultar →</p>
+    </a>
+
+  </section>
+
+  <section class="text-center text-slate-400 text-sm pt-6">
+    El orden financiero es la base del crecimiento sostenible.
+  </section>
+
+</main>
+
+<script src="pymax-core.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    
+    // 1. REFERENCIAS AL DOM
+    const scoreEl = document.getElementById("scoreNumber");
+    const barEl = document.getElementById("progressBar");
+    const statusEl = document.getElementById("statusText");
+    const aiContainer = document.getElementById("aiTipsContainer");
+    const loading = document.getElementById("loadingOverlay");
+
+    // 2. SIMULACIÓN DE DATOS DEL BACKEND (Supabase)
+    // Aquí es donde conectarías con: await supabase.from('transacciones').select('*')...
+    // Por ahora, simulamos que leemos la base de datos y calculamos un puntaje.
+    
+    async function obtenerDatosFinancieros() {
+        // Simulación de demora de red
+        await new Promise(r => setTimeout(r, 1500)); 
+
+        // ESTOS DATOS VENDRÍAN DE TU DB REAL
+        const datosSimulados = {
+            registrosTotales: 15,    // Cuántos movimientos ha registrado el usuario
+            diasActivo: 5,           // Cuántos días ha entrado
+            flujoPositivo: true,     // ¿Tiene ganancias?
+            deudasPendientes: 1      // ¿Deudas sin pagar?
+        };
+
+        return datosSimulados;
+    }
+
+    // 3. CÁLCULO DEL PUNTAJE (Lógica de Negocio)
+    function calcularPuntaje(datos) {
+        let score = 0;
+        
+        // Regla 1: Actividad (Máx 40%)
+        if (datos.registrosTotales > 0) score += 10;
+        if (datos.registrosTotales > 10) score += 20;
+        if (datos.diasActivo > 3) score += 10;
+
+        // Regla 2: Salud (Máx 40%)
+        if (datos.flujoPositivo) score += 40;
+
+        // Regla 3: Limpieza (Máx 20%)
+        if (datos.deudasPendientes === 0) score += 20;
+        if (datos.deudasPendientes > 0 && datos.deudasPendientes < 3) score += 10;
+
+        return score; // Retorna número entre 0 y 100
+    }
+
+    // 4. GENERADOR DE CONSEJOS IA (Aquí conectarás a Gemini después)
+    // Actualmente usa lógica condicional para simular inteligencia.
+    function generarConsejoIA(puntaje) {
+        let consejoHTML = "";
+
+        if (puntaje < 30) {
+            consejoHTML = `
+                <ul class="space-y-3">
+                    <li class="flex gap-2"><span class="text-red-400">⚠</span> <strong>Prioridad Crítica:</strong> Tu volumen de registros es muy bajo. La IA no puede ayudarte si no alimentas el sistema.</li>
+                    <li class="flex gap-2"><span class="text-indigo-300">💡</span> <strong>Acción Inmediata:</strong> Dedica 10 minutos hoy a subir tus gastos de la semana pasada.</li>
+                </ul>`;
+        } else if (puntaje < 70) {
+            consejoHTML = `
+                <ul class="space-y-3">
+                    <li class="flex gap-2"><span class="text-yellow-400">⚠</span> <strong>Atención:</strong> Vas por buen camino, pero tu consistencia es irregular.</li>
+                    <li class="flex gap-2"><span class="text-indigo-300">💡</span> <strong>Recomendación IA:</strong> Revisa tu flujo de caja los viernes. Tienes algunas obligaciones pendientes que podrían afectar tu liquidez.</li>
+                </ul>`;
+        } else {
+            consejoHTML = `
+                <ul class="space-y-3">
+                    <li class="flex gap-2"><span class="text-emerald-400">✓</span> <strong>Excelente Estado:</strong> Tu orden financiero es sólido. Estás listo para tomar decisiones de inversión.</li>
+                    <li class="flex gap-2"><span class="text-indigo-300">💡</span> <strong>Estrategia:</strong> Según tus datos, podrías reinvertir un 10% de tu excedente este mes. Consúltalo en el chat de IA.</li>
+                </ul>`;
+        }
+        return consejoHTML;
+    }
+
+    // 5. EJECUCIÓN PRINCIPAL
+    try {
+        const datos = await obtenerDatosFinancieros();
+        const puntajeFinal = calcularPuntaje(datos);
+        
+        // Actualizar UI
+        loading.classList.add("hidden"); // Quitar pantalla de carga
+        
+        // Animación de números
+        let currentNum = 0;
+        const interval = setInterval(() => {
+            if(currentNum >= puntajeFinal) {
+                clearInterval(interval);
+                // Mostrar consejo IA al terminar de contar
+                aiContainer.innerHTML = generarConsejoIA(puntajeFinal);
+                aiContainer.classList.add("animate-pulse"); // Efecto visual suave
+                setTimeout(() => aiContainer.classList.remove("animate-pulse"), 1000);
+            } else {
+                currentNum++;
+                scoreEl.innerText = currentNum + "%";
+                barEl.style.width = currentNum + "%";
+                
+                // Cambiar color de barra según progreso
+                if(currentNum < 30) barEl.className = "bg-red-600 h-5 rounded-full progress-bar";
+                else if(currentNum < 70) barEl.className = "bg-yellow-500 h-5 rounded-full progress-bar";
+                else barEl.className = "bg-emerald-500 h-5 rounded-full progress-bar";
+            }
+        }, 20); // Velocidad de la animación
+
+        // Texto de estado
+        if(puntajeFinal < 30) statusEl.innerText = "Nivel crítico. Requiere atención inmediata.";
+        else if(puntajeFinal < 70) statusEl.innerText = "Nivel regular. Mejora la consistencia.";
+        else statusEl.innerText = "Nivel óptimo. ¡Sigue así!";
+
+    } catch (error) {
+        console.error("Error cargando progreso:", error);
+        loading.innerHTML = "<span class='text-red-400'>Error de conexión</span>";
+    }
+
+});
+</script>
+
+</body>
+</html>

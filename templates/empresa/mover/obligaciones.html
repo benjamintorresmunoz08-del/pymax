@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pymax · Deudas y Obligaciones</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="{{ url_for('static', filename='js/pymax-core.js') }}"></script>
+  <style>
+    body {
+      background:
+        radial-gradient(900px 400px at 10% -10%, rgba(79,70,229,.25), transparent 40%),
+        radial-gradient(800px 500px at 90% 10%, rgba(99,102,241,.18), transparent 45%),
+        radial-gradient(700px 400px at 50% 120%, rgba(56,189,248,.12), transparent 40%),
+        #020617;
+    }
+
+    .glass {
+      background: rgba(15,23,42,0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(148,163,184,0.15);
+    }
+
+    .hover-card {
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+    .hover-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,.45);
+    }
+  </style>
+</head>
+
+<body class="text-slate-100 min-h-screen font-sans">
+
+<div id="pymax-toast-container" class="fixed top-6 right-6 z-50 space-y-3"></div>
+
+<header class="glass px-8 py-5 flex justify-between items-center border-b border-slate-800 sticky top-0 z-40">
+  <h1 class="text-xl font-semibold text-indigo-400">
+    Pymax · Deudas y Obligaciones
+  </h1>
+  <a href="panel-mover.html" class="text-sm text-slate-300 hover:text-white transition border border-slate-600 px-3 py-1 rounded hover:bg-slate-800">
+    Volver al panel
+  </a>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 py-10 space-y-12">
+
+  <section class="max-w-3xl">
+    <h2 class="text-3xl font-semibold mb-3">
+      Control total de compromisos financieros
+    </h2>
+    <p class="text-slate-300 leading-relaxed">
+      Registra, organiza y visualiza todas tus deudas y obligaciones.
+      Pymax te ayuda a no olvidar ningún pago y a mantener tu negocio en regla.
+    </p>
+  </section>
+
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    <div class="glass rounded-xl p-6 hover-card">
+      <p class="text-sm text-slate-400">Total obligaciones activas</p>
+      <p id="sum-activas" class="text-3xl font-bold text-indigo-400 mt-2">$0</p>
+      <p class="text-xs text-slate-400 mt-2">
+        Suma de compromisos pendientes.
+      </p>
+    </div>
+
+    <div class="glass rounded-xl p-6 hover-card">
+      <p class="text-sm text-slate-400">Pagos próximos</p>
+      <p id="sum-proximos" class="text-3xl font-bold text-yellow-400 mt-2">0</p>
+      <p class="text-xs text-slate-400 mt-2">
+        Vencimientos cercanos (7 días).
+      </p>
+    </div>
+
+    <div class="glass rounded-xl p-6 hover-card">
+      <p class="text-sm text-slate-400">Obligaciones vencidas</p>
+      <p id="sum-vencidas" class="text-3xl font-bold text-red-400 mt-2">0</p>
+      <p class="text-xs text-slate-400 mt-2">
+        Compromisos fuera de plazo.
+      </p>
+    </div>
+
+  </section>
+
+  <section class="glass rounded-xl p-8 max-w-5xl">
+    <h3 class="text-xl font-semibold mb-6">
+      Registrar nueva obligación
+    </h3>
+
+    <form id="formObligacion" class="space-y-4">
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <input id="inpTipo" type="text" placeholder="Tipo (IVA, arriendo, proveedor)"
+            class="bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:border-indigo-500" required />
+
+          <input id="inpMonto" type="number" placeholder="Monto" step="0.01"
+            class="bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:border-indigo-500" required />
+
+          <input id="inpFecha" type="date"
+            class="bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:border-indigo-500" required />
+
+          <select id="inpEstado" class="bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:border-indigo-500">
+            <option value="pendiente">Pendiente</option>
+            <option value="pagada">Pagada</option>
+          </select>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+          <div class="md:col-span-3">
+             <input id="inpEmail" type="email" placeholder=" Email para recordatorios (Opcional - ej: tu@correo.com)"
+            class="w-full bg-slate-900 border border-indigo-900/50 rounded px-3 py-2 text-white focus:outline-none focus:border-indigo-500 placeholder-slate-500" />
+          </div>
+          
+          <button id="btnGuardar" type="submit"
+            class="bg-indigo-600 hover:bg-indigo-700 transition rounded px-4 py-2 font-semibold text-white shadow-lg w-full">
+            Registrar
+          </button>
+      </div>
+
+    </form>
+  </section>
+
+  <section class="glass rounded-xl p-8">
+    <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-semibold">
+          Obligaciones registradas
+        </h3>
+        <button onclick="cargarObligaciones()" class="text-xs text-indigo-400 hover:text-white flex items-center gap-1">
+            <span>↻</span> Actualizar
+        </button>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="text-slate-400 border-b border-slate-700">
+            <tr>
+              <th class="py-2 text-left">Tipo</th>
+              <th class="py-2 text-right">Monto</th>
+              <th class="py-2 text-center">Vencimiento</th>
+              <th class="py-2 text-center">Avisos</th>
+              <th class="py-2 text-center">Estado</th>
+              <th class="py-2 text-center">Acción</th> </tr>
+          </thead>
+          <tbody id="tabla-obligaciones" class="text-slate-300 divide-y divide-slate-800">
+            <tr>
+              <td colspan="6" class="py-8 text-center text-gray-500">Cargando obligaciones...</td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+  </section>
+
+  <section class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
+
+    <a href="calendario.html" class="glass rounded-xl p-6 hover-card block">
+      <h4 class="font-semibold text-lg mb-2">
+        Ver calendario financiero
+      </h4>
+      <p class="text-slate-300 text-sm">
+        Revisa todas las fechas importantes y vencimientos próximos.
+      </p>
+      <p class="mt-4 text-indigo-400 text-sm">
+        Ir al calendario →
+      </p>
+    </a>
+
+    <a href="flujo-caja.html" class="glass rounded-xl p-6 hover-card block">
+      <h4 class="font-semibold text-lg mb-2">
+        Impacto en el flujo de caja
+      </h4>
+      <p class="text-slate-300 text-sm">
+        Analiza cómo estas obligaciones afectan tu liquidez diaria.
+      </p>
+      <p class="mt-4 text-indigo-400 text-sm">
+        Ver flujo →
+      </p>
+    </a>
+
+  </section>
+
+  <section class="text-center text-slate-400 text-sm pt-6">
+    Un negocio ordenado comienza por cumplir a tiempo.
+  </section>
+
+</main>
+
+<div id="modalConfirmar" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity duration-300">
+    <div class="relative w-full max-w-md bg-slate-900 rounded-2xl p-8 shadow-2xl border border-indigo-500/30 transform scale-100 transition-transform">
+        
+        <h3 class="text-xl font-bold text-white mb-2">¿Confirmar pago?</h3>
+        <p class="text-gray-300 mb-6 text-sm leading-relaxed">
+            Esto marcará la obligación como <b>PAGADA</b> y el sistema dejará de enviar correos de recordatorio.
+        </p>
+
+        <div class="flex justify-end space-x-3">
+            <button onclick="cerrarModal()" 
+                class="px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-slate-800 transition text-sm">
+                Cancelar
+            </button>
+            <button onclick="ejecutarPago()" 
+                class="px-5 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white font-semibold shadow-lg shadow-green-900/20 transition text-sm">
+                Sí, marcar como pagado
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// NOTIFICACIONES (Estilo Visual)
+function pymaxNotify({ title = "Pymax", message = "", type = "info" }) {
+  const container = document.getElementById("pymax-toast-container");
+  const colors = {
+    info: "from-blue-500/20 to-indigo-500/20 border-blue-400/30",
+    success: "from-emerald-500/20 to-green-500/20 border-emerald-400/30",
+    error: "from-red-500/20 to-pink-500/20 border-red-400/30"
+  };
+  const toast = document.createElement("div");
+  toast.className = `relative overflow-hidden backdrop-blur-xl bg-gradient-to-r ${colors[type]} border text-white px-5 py-4 rounded-xl shadow-xl max-w-sm mb-3 transition-all transform duration-500`;
+  toast.innerHTML = `<div class="font-semibold text-sm mb-1">${title}</div><div class="text-sm text-gray-200">${message}</div>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add("opacity-0", "translate-x-5");
+    setTimeout(() => toast.remove(), 400);
+  }, 4000);
+}
+
+// VARIABLE GLOBAL PARA EL MODAL
+let idPendienteDePago = null;
+
+document.addEventListener("DOMContentLoaded", async () => {
+    // 1. Verificar Usuario
+    if (typeof pymaxGetUser === 'undefined') return;
+    const user = await pymaxGetUser();
+    if (!user) { window.location.href = "../index.html"; return; }
+
+    // Fecha por defecto hoy
+    document.getElementById("inpFecha").valueAsDate = new Date();
+
+    // Cargar datos iniciales
+    cargarObligaciones();
+
+    // 2. Guardar Nueva Deuda
+    document.getElementById("formObligacion").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById("btnGuardar");
+        
+        const tipo = document.getElementById("inpTipo").value.trim();
+        const monto = parseFloat(document.getElementById("inpMonto").value);
+        const fecha_pago = document.getElementById("inpFecha").value;
+        const estado = document.getElementById("inpEstado").value;
+        const email_contacto = document.getElementById("inpEmail").value.trim();
+
+        if (!tipo || !monto || !fecha_pago) {
+            pymaxNotify({ title: "Atención", message: "Faltan datos obligatorios.", type: "error" });
+            return;
+        }
+
+        btn.disabled = true; btn.innerText = "Guardando...";
+
+        const { error } = await window.supabase.from('obligaciones').insert([{
+            user_id: user.id, tipo, monto, fecha_pago, estado, 
+            email_contacto: email_contacto || null
+        }]);
+
+        btn.disabled = false; btn.innerText = "Registrar";
+
+        if (error) {
+            pymaxNotify({ title: "Error", message: "No se pudo guardar.", type: "error" });
+        } else {
+            pymaxNotify({ title: "Éxito", message: "Obligación registrada.", type: "success" });
+            document.getElementById("inpTipo").value = "";
+            document.getElementById("inpMonto").value = "";
+            document.getElementById("inpEmail").value = "";
+            cargarObligaciones();
+        }
+    });
+});
+
+async function cargarObligaciones() {
+    const user = await pymaxGetUser();
+    if(!user) return;
+
+    const tabla = document.getElementById("tabla-obligaciones");
+    const { data: obligaciones, error } = await window.supabase
+        .from('obligaciones').select('*').eq('user_id', user.id).order('fecha_pago', { ascending: true });
+
+    if (error || !obligaciones || obligaciones.length === 0) {
+        tabla.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-gray-500">No hay obligaciones registradas.</td></tr>`;
+        actualizarResumen([]);
+        return;
+    }
+
+    let html = "";
+    const hoy = new Date().toISOString().split('T')[0];
+
+    obligaciones.forEach(o => {
+        let estadoColor = "text-gray-400";
+        if(o.estado === 'pendiente') {
+            if (o.fecha_pago < hoy) estadoColor = "text-red-400 font-bold";
+            else if (o.fecha_pago === hoy) estadoColor = "text-yellow-400 font-bold";
+            else estadoColor = "text-green-400";
+        } else {
+            estadoColor = "text-blue-400 decoration-line-through";
+        }
+
+        const iconoEmail = o.email_contacto ? '<span class="text-gray-600">-</span>' : '';
+
+        html += `
+            <tr class="hover:bg-slate-800/50 transition border-b border-slate-800 last:border-0">
+                <td class="py-3 text-left pl-2">${o.tipo}</td>
+                <td class="py-3 text-right font-mono">$${o.monto}</td>
+                <td class="py-3 text-center">${o.fecha_pago}</td>
+                <td class="py-3 text-center" title="${o.email_contacto || 'Sin email'}">${iconoEmail}</td>
+                <td class="py-3 text-center capitalize ${estadoColor}">
+                    ${o.estado} ${o.fecha_pago < hoy && o.estado === 'pendiente' ? '⚠️' : ''}
+                </td>
+                <td class="py-3 text-center">
+                    ${o.estado === 'pendiente' ? 
+                        `<button onclick="abrirModalConfirmar(${o.id})" class="text-xs border border-green-500 text-green-400 px-3 py-1 rounded hover:bg-green-500 hover:text-white transition">Pagar</button>` 
+                        : '<span class="text-xs text-gray-500">✓ Listo</span>'}
+                </td>
+            </tr>
+        `;
+    });
+    tabla.innerHTML = html;
+    actualizarResumen(obligaciones);
+}
+
+// === FUNCIONES MODAL ===
+function abrirModalConfirmar(id) {
+    idPendienteDePago = id;
+    document.getElementById("modalConfirmar").classList.remove("hidden");
+}
+
+function cerrarModal() {
+    idPendienteDePago = null;
+    document.getElementById("modalConfirmar").classList.add("hidden");
+}
+
+async function ejecutarPago() {
+    if (!idPendienteDePago) return;
+    
+    const { error } = await window.supabase
+        .from('obligaciones')
+        .update({ estado: 'pagada' })
+        .eq('id', idPendienteDePago);
+
+    cerrarModal();
+
+    if(!error) {
+        pymaxNotify({ title: "Pago completado", message: "Deuda actualizada.", type: "success" });
+        cargarObligaciones();
+    } else {
+        pymaxNotify({ title: "Error", message: "No se pudo actualizar.", type: "error" });
+    }
+}
+
+function actualizarResumen(data) {
+    let totalActivas = 0; let vencidas = 0; let proximas = 0;
+    const hoyStr = new Date().toISOString().split('T')[0];
+    const en7dias = new Date(); en7dias.setDate(new Date().getDate() + 7);
+    const en7diasStr = en7dias.toISOString().split('T')[0];
+
+    data.forEach(o => {
+        if (o.estado === 'pendiente') {
+            totalActivas += o.monto;
+            if (o.fecha_pago < hoyStr) vencidas++;
+            if (o.fecha_pago >= hoyStr && o.fecha_pago <= en7diasStr) proximas++;
+        }
+    });
+
+    document.getElementById("sum-activas").innerText = `$${totalActivas.toLocaleString()}`;
+    document.getElementById("sum-proximos").innerText = proximas;
+    document.getElementById("sum-vencidas").innerText = vencidas;
+    
+    const divVencidas = document.getElementById("sum-vencidas");
+    if(vencidas > 0) divVencidas.className = "text-3xl font-bold text-red-500 mt-2 animate-pulse";
+    else divVencidas.className = "text-3xl font-bold text-red-400 mt-2";
+}
+</script>
+
+</body>
+</html>

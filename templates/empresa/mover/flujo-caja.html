@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pymax · Flujo de Caja Diario</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="../pymax-core.js"></script>
+
+  <style>
+    body {
+      background:
+        radial-gradient(900px 400px at 10% -10%, rgba(79,70,229,.25), transparent 40%),
+        radial-gradient(800px 500px at 90% 10%, rgba(99,102,241,.18), transparent 45%),
+        radial-gradient(700px 400px at 50% 120%, rgba(56,189,248,.12), transparent 40%),
+        #020617;
+    }
+
+    .glass {
+      background: rgba(15,23,42,0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(148,163,184,0.15);
+    }
+
+    .card-hover {
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,.4);
+    }
+  </style>
+</head>
+
+<body class="text-slate-100 min-h-screen font-sans">
+
+  <header class="glass px-8 py-5 flex justify-between items-center border-b border-slate-800 sticky top-0 z-40">
+    <h1 class="text-xl font-semibold text-indigo-400">
+      Pymax · Flujo de Caja Diario
+    </h1>
+    <a href="panel-mover.html" class="text-sm text-slate-300 hover:text-white transition border border-slate-600 px-3 py-1 rounded hover:bg-slate-800">
+      ← Volver al panel
+    </a>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-10 space-y-12">
+
+    <section class="text-center max-w-3xl mx-auto">
+      <h2 class="text-3xl font-semibold mb-4">
+        Controla tu dinero disponible día a día
+      </h2>
+      <p class="text-slate-300 leading-relaxed">
+        El flujo de caja te permite saber exactamente cuánto dinero real tienes hoy (<span id="fecha-hoy" class="text-indigo-400 font-bold">...</span>),
+        considerando ingresos y gastos.
+      </p>
+    </section>
+
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <div class="glass rounded-xl p-6 card-hover border-t-4 border-green-500">
+        <p class="text-sm text-slate-400">Ingresos acumulados hoy</p>
+        <p id="val-ingresos" class="text-3xl font-bold text-green-400 mt-2">Cargando...</p>
+        <p class="text-xs text-slate-400 mt-2">
+          Total de entradas registradas durante el día.
+        </p>
+      </div>
+
+      <div class="glass rounded-xl p-6 card-hover border-t-4 border-red-500">
+        <p class="text-sm text-slate-400">Gastos acumulados hoy</p>
+        <p id="val-gastos" class="text-3xl font-bold text-red-400 mt-2">Cargando...</p>
+        <p class="text-xs text-slate-400 mt-2">
+          Pagos y egresos realizados en el día.
+        </p>
+      </div>
+
+      <div class="glass rounded-xl p-6 card-hover border-t-4 border-indigo-500">
+        <p class="text-sm text-slate-400">Dinero disponible</p>
+        <p id="val-disponible" class="text-3xl font-bold text-white mt-2">Cargando...</p>
+        <p class="text-xs text-slate-400 mt-2">
+          Resultado real de tu flujo de caja diario.
+        </p>
+      </div>
+
+    </section>
+
+    <section class="glass rounded-xl p-8 max-w-4xl mx-auto">
+      <h3 class="text-xl font-semibold mb-4 text-indigo-300">
+        ¿Por qué este indicador es clave?
+      </h3>
+
+      <ul class="list-disc list-inside space-y-2 text-slate-300">
+        <li>Evita gastar dinero que aún no existe realmente.</li>
+        <li>Te permite anticipar problemas de liquidez.</li>
+        <li>Facilita decisiones como compras, pagos o inversiones.</li>
+        <li>Es la base para un negocio ordenado y sostenible.</li>
+      </ul>
+    </section>
+
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+
+      <a href="ventas-gastos.html"
+         class="glass rounded-xl p-6 card-hover block hover:bg-slate-800/50 transition">
+        <h4 class="font-semibold text-lg mb-2 text-indigo-400">
+          Registrar ingresos y gastos
+        </h4>
+        <p class="text-slate-300 text-sm">
+          Actualiza tus movimientos diarios para mantener el flujo de caja correcto.
+        </p>
+        <p class="mt-4 text-white text-sm font-semibold">
+          Ir al registro →
+        </p>
+      </a>
+
+      <a href="progreso.html"
+         class="glass rounded-xl p-6 card-hover block hover:bg-slate-800/50 transition">
+        <h4 class="font-semibold text-lg mb-2 text-indigo-400">
+          Ver estado del negocio
+        </h4>
+        <p class="text-slate-300 text-sm">
+          Analiza tu situación general con indicadores claros y simples.
+        </p>
+        <p class="mt-4 text-white text-sm font-semibold">
+          Ver análisis →
+        </p>
+      </a>
+
+    </section>
+
+    <section class="text-center text-slate-400 text-sm pt-6 pb-10">
+      Pymax transforma números en claridad financiera.
+    </section>
+
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        // 1. Verificar si cargó el Core
+        try {
+            if (typeof pymaxGetUser === 'undefined') {
+                console.error("Error: Core no cargado");
+                return;
+            }
+            
+            // 2. Verificar Sesión
+            const user = await pymaxGetUser();
+            if(!user) {
+                window.location.href = "../index.html"; // Protección
+                return;
+            }
+
+            // 3. Obtener Fecha de Hoy (Local)
+            const hoy = new Date();
+            // Formato YYYY-MM-DD para comparar con DB
+            const fechaHoyString = hoy.toISOString().split('T')[0];
+            // Formato legible para el usuario
+            document.getElementById("fecha-hoy").innerText = hoy.toLocaleDateString();
+
+            // 4. Leer Movimientos
+            const movimientos = await pymaxLeerMovimientos();
+
+            // 5. Filtrar solo los de HOY
+            let ingresosHoy = 0;
+            let gastosHoy = 0;
+
+            if(movimientos && movimientos.length > 0) {
+                movimientos.forEach(m => {
+                    // Supabase devuelve la fecha como YYYY-MM-DD
+                    if (m.fecha === fechaHoyString) {
+                        if (m.tipo === 'ingreso') ingresosHoy += m.monto;
+                        if (m.tipo === 'gasto') gastosHoy += m.monto;
+                    }
+                });
+            }
+
+            const disponible = ingresosHoy - gastosHoy;
+
+            // 6. Actualizar Interfaz
+            document.getElementById("val-ingresos").innerText = `$${ingresosHoy.toLocaleString()}`;
+            document.getElementById("val-gastos").innerText = `$${gastosHoy.toLocaleString()}`;
+            
+            const divDisp = document.getElementById("val-disponible");
+            divDisp.innerText = `$${disponible.toLocaleString()}`;
+
+            // Colorear el resultado
+            if(disponible > 0) divDisp.className = "text-3xl font-bold text-green-400 mt-2";
+            else if(disponible < 0) divDisp.className = "text-3xl font-bold text-red-400 mt-2";
+            else divDisp.className = "text-3xl font-bold text-white mt-2";
+
+        } catch (e) {
+            console.error("Error en flujo de caja:", e);
+        }
+    });
+  </script>
+
+</body>
+</html>

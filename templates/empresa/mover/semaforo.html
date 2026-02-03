@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pymax · Semáforo del Negocio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="../pymax-core.js"></script>
+
+  <style>
+    body {
+      background:
+        radial-gradient(900px 400px at 10% -10%, rgba(79,70,229,.25), transparent 40%),
+        radial-gradient(800px 500px at 90% 10%, rgba(99,102,241,.18), transparent 45%),
+        radial-gradient(700px 400px at 50% 120%, rgba(56,189,248,.12), transparent 40%),
+        #020617;
+    }
+
+    .glass {
+      background: rgba(15,23,42,0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(148,163,184,0.15);
+    }
+
+    .hover-card {
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+    .hover-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,.45);
+    }
+
+    /* Animación de Pulso Dinámica */
+    .pulse { animation: pulseGlow 2.5s infinite; }
+    
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 0 rgba(0,0,0,0); }
+      50% { box-shadow: 0 0 40px var(--pulse-color, rgba(99,102,241,0.35)); }
+      100% { box-shadow: 0 0 0 rgba(0,0,0,0); }
+    }
+  </style>
+</head>
+
+<body class="text-slate-100 min-h-screen font-sans">
+
+<header class="glass px-8 py-5 flex justify-between items-center border-b border-slate-800 sticky top-0 z-40">
+  <h1 class="text-xl font-semibold text-indigo-400">
+    Pymax · Semáforo del Negocio
+  </h1>
+  <a href="panel-mover.html" class="text-sm text-slate-300 hover:text-white transition border border-slate-600 px-3 py-1 rounded hover:bg-slate-800">
+    ← Volver al panel
+  </a>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 py-10 space-y-14">
+
+  <section class="max-w-4xl">
+    <h2 class="text-3xl font-semibold mb-3">
+      Estado general de tu negocio
+    </h2>
+    <p class="text-slate-300 leading-relaxed">
+      El Semáforo Pymax analiza tus números en tiempo real y te muestra si tu negocio está en una situación saludable, de alerta o de riesgo.
+    </p>
+  </section>
+
+  <section class="flex justify-center">
+    <div id="semaforo-card" class="glass rounded-2xl p-10 text-center pulse max-w-md w-full transition-colors duration-500" style="--pulse-color: rgba(99,102,241,0.35);">
+
+      <p class="text-sm text-slate-400 mb-2">Estado actual</p>
+
+      <div id="semaforo-titulo" class="text-5xl font-bold text-gray-500 mb-4 tracking-wider">
+        ANALIZANDO...
+      </div>
+
+      <p id="semaforo-desc" class="text-slate-300 leading-relaxed text-sm">
+        Conectando con la base de datos financiera...
+      </p>
+
+    </div>
+  </section>
+
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="glass rounded-xl p-6 hover-card border-t-2 border-green-500/30">
+      <h3 class="font-semibold text-green-400 mb-2">Verde</h3>
+      <p class="text-slate-300 text-sm">
+        Flujo positivo y solvencia. Tus ingresos cubren gastos y deudas cómodamente. Momento de invertir.
+      </p>
+    </div>
+    <div class="glass rounded-xl p-6 hover-card border-t-2 border-yellow-500/30">
+      <h3 class="font-semibold text-yellow-400 mb-2">Amarillo</h3>
+      <p class="text-slate-300 text-sm">
+        Equilibrio delicado. Tienes ingresos, pero tus deudas u obligaciones consumen casi todo tu margen. Precaución.
+      </p>
+    </div>
+    <div class="glass rounded-xl p-6 hover-card border-t-2 border-red-500/30">
+      <h3 class="font-semibold text-red-400 mb-2">Rojo</h3>
+      <p class="text-slate-300 text-sm">
+        Riesgo. Gastas más de lo que ingresas o tienes deudas vencidas que amenazan la operación. Acción inmediata.
+      </p>
+    </div>
+  </section>
+
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    <div class="glass rounded-xl p-6 hover-card">
+      <p class="text-sm text-slate-400">Ingresos Totales</p>
+      <p id="val-ingresos" class="text-2xl font-bold text-green-400 mt-2">Cargando...</p>
+    </div>
+
+    <div class="glass rounded-xl p-6 hover-card">
+      <p class="text-sm text-slate-400">Dinero Disponible (Flujo)</p>
+      <p id="val-flujo" class="text-2xl font-bold text-indigo-400 mt-2">Cargando...</p>
+    </div>
+
+    <div class="glass rounded-xl p-6 hover-card">
+      <p class="text-sm text-slate-400">Deuda Total Pendiente</p>
+      <p id="val-deuda" class="text-2xl font-bold text-red-400 mt-2">Cargando...</p>
+    </div>
+
+  </section>
+
+  <section class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
+    <a href="flujo-caja.html" class="glass rounded-xl p-6 hover-card block hover:bg-slate-800/50 transition">
+      <h4 class="font-semibold text-lg mb-2 text-indigo-400">Revisar flujo de caja</h4>
+      <p class="text-slate-300 text-sm">Analiza en detalle tu liquidez diaria.</p>
+      <p class="mt-4 text-white text-sm">Ir al flujo →</p>
+    </a>
+    <a href="obligaciones.html" class="glass rounded-xl p-6 hover-card block hover:bg-slate-800/50 transition">
+      <h4 class="font-semibold text-lg mb-2 text-indigo-400">Ver deudas y obligaciones</h4>
+      <p class="text-slate-300 text-sm">Controla compromisos que afectan tu estado financiero.</p>
+      <p class="mt-4 text-white text-sm">Ir a obligaciones →</p>
+    </a>
+  </section>
+
+  <section class="text-center text-slate-400 text-sm pt-6 pb-10">
+    Claridad financiera para decisiones inteligentes.
+  </section>
+
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    
+    // 1. Verificación de Seguridad
+    if (typeof pymaxGetUser === 'undefined') return;
+    const user = await pymaxGetUser();
+    if (!user) {
+        window.location.href = "../index.html";
+        return;
+    }
+
+    calcularSaludFinanciera(user.id);
+});
+
+async function calcularSaludFinanciera(userId) {
+    // === PASO 1: OBTENER DATOS DE SUPABASE ===
+    
+    // A) Traer Movimientos (Ingresos y Gastos)
+    const { data: movimientos } = await window.supabase
+        .from('movimientos')
+        .select('tipo, monto')
+        .eq('user_id', userId);
+
+    // B) Traer Obligaciones (Deudas)
+    const { data: obligaciones } = await window.supabase
+        .from('obligaciones')
+        .select('monto, estado, fecha_pago')
+        .eq('user_id', userId);
+
+    // === PASO 2: CALCULADORA MATEMÁTICA ===
+    let ingresos = 0;
+    let gastos = 0;
+    
+    if (movimientos) {
+        movimientos.forEach(m => {
+            if (m.tipo === 'ingreso') ingresos += m.monto;
+            if (m.tipo === 'gasto') gastos += m.monto;
+        });
+    }
+
+    let deudaPendiente = 0;
+    let deudaVencida = 0;
+    const hoy = new Date().toISOString().split('T')[0];
+
+    if (obligaciones) {
+        obligaciones.forEach(o => {
+            if (o.estado === 'pendiente') {
+                deudaPendiente += o.monto;
+                if (o.fecha_pago < hoy) {
+                    deudaVencida += o.monto;
+                }
+            }
+        });
+    }
+
+    // Cálculos Clave
+    const flujoCaja = ingresos - gastos; // Dinero real en mano
+    const solvencia = flujoCaja - deudaPendiente; // Capacidad de pago
+
+    // === PASO 3: ACTUALIZAR NÚMEROS EN PANTALLA ===
+    document.getElementById("val-ingresos").innerText = `$${ingresos.toLocaleString()}`;
+    document.getElementById("val-flujo").innerText = `$${flujoCaja.toLocaleString()}`;
+    document.getElementById("val-deuda").innerText = `$${deudaPendiente.toLocaleString()}`;
+
+    // Colores dinámicos para los números
+    document.getElementById("val-flujo").className = flujoCaja >= 0 
+        ? "text-2xl font-bold text-green-400 mt-2" 
+        : "text-2xl font-bold text-red-400 mt-2";
+
+    // === PASO 4: EL ALGORITMO DEL SEMÁFORO ===
+    const semaforoCard = document.getElementById("semaforo-card");
+    const titulo = document.getElementById("semaforo-titulo");
+    const desc = document.getElementById("semaforo-desc");
+
+    // Limpiar clases anteriores
+    titulo.className = "text-5xl font-bold mb-4 tracking-wider transition-all duration-500";
+
+    // LÓGICA DE DECISIÓN
+    if (deudaVencida > 0 || flujoCaja < 0) {
+        // ROJO: Si hay deuda vencida O si estás perdiendo dinero
+        titulo.innerText = "ROJO";
+        titulo.classList.add("text-red-500");
+        semaforoCard.style.setProperty('--pulse-color', 'rgba(239, 68, 68, 0.6)'); // Rojo neón
+        semaforoCard.classList.add("border", "border-red-500/50");
+        desc.innerText = deudaVencida > 0 
+            ? "ALERTA: Tienes obligaciones vencidas que requieren atención inmediata." 
+            : "CUIDADO: Tus gastos superan a tus ingresos. Tu flujo de caja es negativo.";
+
+    } else if (solvencia < 0) {
+        // AMARILLO: Tienes flujo positivo, pero debes más de lo que tienes
+        titulo.innerText = "AMARILLO";
+        titulo.classList.add("text-yellow-400");
+        semaforoCard.style.setProperty('--pulse-color', 'rgba(234, 179, 8, 0.6)'); // Amarillo neón
+        semaforoCard.classList.add("border", "border-yellow-500/50");
+        desc.innerText = "PRECAUCIÓN: Tienes dinero en caja, pero tus deudas pendientes superan tu liquidez actual. Planifica tus pagos.";
+
+    } else {
+        // VERDE: Tienes flujo positivo y cubres tus deudas
+        titulo.innerText = "VERDE";
+        titulo.classList.add("text-green-400");
+        semaforoCard.style.setProperty('--pulse-color', 'rgba(74, 222, 128, 0.6)'); // Verde neón
+        semaforoCard.classList.add("border", "border-green-500/50");
+        desc.innerText = "EXCELENTE: Tu negocio es saludable. Tus ingresos cubren gastos y todas tus deudas pendientes. ¡Sigue así!";
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pymax | Control & Inventario</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* === ESTILO LIQUID FUTURE === */
+    :root {
+      --bg-void: #030014;
+      --glass-surface: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.06);
+      --text-main: #f1f5f9;
+      --accent-violet: #7c3aed;
+      --accent-cyan: #06b6d4;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-void);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, .font-future { font-family: 'Outfit', sans-serif; letter-spacing: -0.02em; }
+
+    /* Fondo Nebulosa */
+    .nebula-bg {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;
+      background: 
+        radial-gradient(circle at 10% 20%, rgba(124, 58, 237, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 40%);
+    }
+
+    /* Cards Cápsula */
+    .capsule-card {
+      background: #0b0b14;
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    /* Inputs Oscuros */
+    .input-void {
+      width: 100%; background: #050508; border: 1px solid rgba(255,255,255,0.1); 
+      padding: 14px; border-radius: 12px; color: white; outline: none; transition: all 0.3s;
+    }
+    .input-void:focus { border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(6, 182, 212, 0.15); }
+    
+    select.input-void { appearance: none; cursor: pointer; }
+
+    /* Botones */
+    .btn-liquid {
+      background: linear-gradient(90deg, var(--accent-violet), #2563eb); color: white;
+      padding: 12px 24px; border-radius: 100px; font-weight: 600; cursor: pointer; border: none;
+      transition: all 0.3s; box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+    }
+    .btn-liquid:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(124, 58, 237, 0.5); }
+
+    .btn-inventory {
+      background: linear-gradient(90deg, #059669, #10b981); color: white;
+      padding: 12px 24px; border-radius: 100px; font-weight: 600; cursor: pointer; border: none;
+      transition: all 0.3s; box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem;
+    }
+    .btn-inventory:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(16, 185, 129, 0.5); }
+
+    .btn-glass-sm {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
+      padding: 8px 16px; border-radius: 50px; font-size: 0.8rem; color: #cbd5e1; cursor: pointer;
+    }
+    .btn-glass-sm:hover { background: rgba(255,255,255,0.1); color: white; }
+
+    /* Tabla */
+    .table-row { border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s; }
+    .table-row:hover { background: rgba(255,255,255,0.02); }
+    .type-badge-in { color: #4ade80; background: rgba(74, 222, 128, 0.1); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; }
+    .type-badge-out { color: #f87171; background: rgba(248, 113, 113, 0.1); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; }
+
+    /* Loading IA */
+    .ai-loader span {
+      display: inline-block; width: 6px; height: 6px; background-color: white;
+      border-radius: 50%; animation: blink 1.4s infinite both;
+    }
+    .ai-loader span:nth-child(2) { animation-delay: 0.2s; }
+    .ai-loader span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink { 0% { opacity: 0.2; } 20% { opacity: 1; } 100% { opacity: 0.2; } }
+
+    /* === MODAL ACTUALIZADO GIGANTE === */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(15px);
+      z-index: 100; display: none; align-items: center; justify-content: center;
+    }
+    .modal-backdrop.active { display: flex; }
+    .modal-content {
+      background: #0b0b14; border: 1px solid rgba(255,255,255,0.1); 
+      /* Hacemos el modal MUY grande */
+      width: 95%; max-width: 1400px; height: 90vh;
+      border-radius: 24px; box-shadow: 0 0 100px rgba(16, 185, 129, 0.15); 
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+  </style>
+</head>
+
+<body class="flex flex-col min-h-screen">
+  <div class="nebula-bg"></div>
+
+  <nav class="w-full h-20 border-b border-white/5 flex items-center justify-between px-8 bg-[#030014]/90 backdrop-blur-md sticky top-0 z-50">
+    <div class="flex items-center gap-4">
+      <a href="../index.html" class="flex items-center gap-2 text-slate-400 hover:text-white transition">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        <span class="text-xs font-bold uppercase tracking-widest">Volver</span>
+      </a>
+      <div class="h-6 w-px bg-white/10"></div>
+      <span class="text-xl font-bold tracking-tight text-white font-future">PANEL DE CONTROL</span>
+    </div>
+    
+    <div class="flex items-center gap-4">
+      <div class="hidden md:flex flex-col items-end">
+        <span class="text-xs text-slate-400">Meta Activa:</span>
+        <span id="userGoalDisplay" class="text-xs font-bold text-white max-w-[200px] truncate">...</span>
+      </div>
+      <div class="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm shadow-lg">PY</div>
+    </div>
+  </nav>
+
+  <main class="flex-grow p-6 md:p-10 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <div class="lg:col-span-2 space-y-8">
+      
+      <div class="flex justify-end">
+        <button id="btnInventoryOpen" class="btn-inventory flex items-center gap-2 px-6 py-3 text-sm">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+          GESTIONAR INVENTARIO
+        </button>
+      </div>
+
+      <section class="capsule-card p-8">
+        <h2 class="text-xl font-bold text-white mb-6 font-future flex items-center gap-2">
+          <svg class="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          Registrar Operación
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="text-xs text-slate-400 uppercase tracking-wider mb-2 block">Monto (CLP)</label>
+            <input type="number" id="opAmount" placeholder="$ 0" class="input-void text-lg font-bold">
+          </div>
+          <div>
+            <label class="text-xs text-slate-400 uppercase tracking-wider mb-2 block">Concepto / Producto</label>
+            
+            <div class="flex items-center gap-2 mb-2">
+              <input type="checkbox" id="useInventory" class="accent-cyan-500 w-4 h-4">
+              <span class="text-xs text-cyan-400 font-bold">Vender desde Inventario</span>
+            </div>
+
+            <input type="text" id="opConcept" placeholder="Ej: Compra Insumos" class="input-void">
+            
+            <select id="opInventorySelect" class="input-void hidden bg-emerald-900/20 border-emerald-500/50">
+              <option value="">Selecciona un producto...</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+          <div>
+            <label class="text-xs text-slate-400 uppercase tracking-wider mb-2 block">Fecha</label>
+            <input type="date" id="opDate" class="input-void text-slate-300">
+          </div>
+          <div>
+            <label class="text-xs text-slate-400 uppercase tracking-wider mb-2 block">Tipo</label>
+            <div class="flex gap-2">
+              <button id="btnIngreso" class="flex-1 py-3 rounded-xl border border-white/10 text-sm hover:bg-emerald-500/20 transition text-slate-300">Ingreso (+)</button>
+              <button id="btnEgreso" class="flex-1 py-3 rounded-xl border border-white/10 text-sm hover:bg-red-500/20 transition text-slate-300">Egreso (-)</button>
+            </div>
+            <input type="hidden" id="opType">
+          </div>
+        </div>
+
+        <button id="btnSaveOp" class="btn-liquid w-full mt-8 py-3.5 rounded-xl shadow-lg">Guardar Operación</button>
+      </section>
+
+      <section class="capsule-card p-8 min-h-[400px]">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-bold text-white font-future">Libro Diario</h2>
+          <button onclick="window.location.reload()" class="btn-glass-sm text-xs">Actualizar</button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="text-xs text-slate-500 uppercase tracking-widest border-b border-white/10">
+                <th class="pb-4 pl-4 font-normal">Fecha</th>
+                <th class="pb-4 font-normal">Concepto</th>
+                <th class="pb-4 font-normal text-right">Monto</th>
+                <th class="pb-4 pr-4 font-normal text-center">Tipo</th>
+              </tr>
+            </thead>
+            <tbody id="movementsTable" class="text-sm text-slate-300">
+              <tr><td colspan="4" class="py-8 text-center text-slate-500 italic">Conectando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <div class="space-y-8">
+      <div class="capsule-card p-6 bg-gradient-to-r from-blue-900/20 to-transparent">
+        <span class="text-xs text-slate-400 uppercase tracking-widest">Balance del Mes</span>
+        <div class="text-3xl font-bold text-white mt-2 font-future" id="balanceDisplay">$ 0 CLP</div>
+      </div>
+
+      <div class="capsule-card p-8 border border-violet-500/20 bg-violet-900/5 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-violet-500/20 blur-[60px] rounded-full pointer-events-none"></div>
+        <div class="relative z-10">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-8 h-8 rounded-lg bg-violet-600 flex items-center justify-center shadow-lg">
+              <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+            <div>
+              <h3 class="font-bold text-white font-future text-lg">IA Economista</h3>
+              <p class="text-[10px] text-violet-300 uppercase tracking-wider">Esperando Integración</p>
+            </div>
+          </div>
+          <div class="bg-black/20 p-6 rounded-xl border border-white/5 flex flex-col justify-center items-center text-center min-h-[200px]">
+            <div class="ai-loader mb-4"><span></span><span></span><span></span></div>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              El motor de Inteligencia Artificial se activará una vez contrates el módulo avanzado. 
+              Analizará tus movimientos y metas para generar estrategias en tiempo real.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="inventoryModal" class="modal-backdrop">
+    <div class="modal-content">
+      
+      <div class="px-8 py-6 border-b border-white/10 flex justify-between items-center bg-[#0b0b14]">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            </div>
+            <div>
+                <h3 class="text-2xl font-bold text-white font-future">Gestión de Inventario</h3>
+                <p class="text-xs text-slate-400">Centro de control de stock y salidas</p>
+            </div>
+        </div>
+        <button id="btnInventoryClose" class="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="flex-grow flex flex-col lg:flex-row overflow-hidden">
+        
+        <div class="flex-1 p-8 border-r border-white/10 flex flex-col overflow-hidden bg-[#0e0e18]">
+            <h4 class="text-sm font-bold text-emerald-400 mb-6 uppercase tracking-wider flex items-center gap-2">
+                <span>📦 Stock Actual</span>
+            </h4>
+
+            <div class="bg-white/5 p-5 rounded-xl mb-6 border border-white/5 shadow-lg">
+                <label class="text-[10px] text-slate-400 uppercase tracking-wider mb-2 block">Agregar Nuevo Producto</label>
+                <div class="flex gap-3">
+                  <input type="text" id="invName" placeholder="Nombre..." class="input-void flex-grow text-sm">
+                  <input type="number" id="invStock" placeholder="Cant." class="input-void w-24 text-sm text-center">
+                  <button id="invAddBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 rounded-xl font-bold transition flex items-center justify-center shadow-lg shadow-emerald-500/20">+</button>
+                </div>
+            </div>
+
+            <div class="flex-grow overflow-y-auto pr-2">
+                <table class="w-full text-left">
+                  <thead class="sticky top-0 bg-[#0e0e18] z-10">
+                    <tr class="text-[10px] text-slate-500 uppercase border-b border-white/10">
+                      <th class="pb-3 pl-2">Producto</th>
+                      <th class="pb-3 text-center">Cant.</th>
+                      <th class="pb-3 text-right pr-2">Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody id="inventoryList" class="text-sm text-slate-300">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="flex-1 p-8 flex flex-col overflow-hidden bg-[#0b0b14]">
+            <h4 class="text-sm font-bold text-blue-400 mb-6 uppercase tracking-wider flex items-center gap-2">
+                <span>📋 Historial de Salidas / Ventas</span>
+            </h4>
+
+            <div class="bg-blue-500/10 border border-blue-500/20 p-4 rounded-xl mb-6 text-xs text-blue-200">
+                Aquí verás automáticamente cada vez que se descuenta un producto al realizar una venta.
+            </div>
+
+            <div class="flex-grow overflow-y-auto pr-2">
+                <table class="w-full text-left">
+                    <thead class="sticky top-0 bg-[#0b0b14] z-10">
+                      <tr class="text-[10px] text-slate-500 uppercase border-b border-white/10">
+                        <th class="pb-3 pl-2">Fecha</th>
+                        <th class="pb-3">Detalle del Movimiento</th>
+                        <th class="pb-3 text-right pr-2">Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody id="inventoryHistoryList" class="text-sm text-slate-300">
+                       <tr><td colspan="3" class="py-4 text-center text-slate-600 text-xs italic">Cargando historial...</td></tr>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- 1. CLAVES SUPABASE ---
+    const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
+    const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
+
+    // --- CLIENTE SEGURO ---
+    const cliente = window.supabase.createClient(SU_URL, SU_KEY);
+
+    // --- VARIABLES ---
+    let currentType = '';
+    let inventoryData = [];
+    let allMovements = []; // Guardamos todos los movimientos aquí para filtrar el historial
+
+    // --- ELEMENTOS UI ---
+    const btnIngreso = document.getElementById('btnIngreso');
+    const btnEgreso = document.getElementById('btnEgreso');
+    const inputType = document.getElementById('opType');
+    const checkInventory = document.getElementById('useInventory');
+    const inputConcept = document.getElementById('opConcept');
+    const selectInventory = document.getElementById('opInventorySelect');
+
+    // --- LOGICA BOTONES TIPO ---
+    if(btnIngreso && btnEgreso) {
+        btnIngreso.addEventListener('click', () => {
+          currentType = 'ingreso';
+          inputType.value = 'ingreso';
+          btnIngreso.className = "flex-1 py-3 rounded-xl border border-emerald-500 bg-emerald-500/20 text-emerald-400 font-bold transition";
+          btnEgreso.className = "flex-1 py-3 rounded-xl border border-white/10 text-sm hover:bg-red-500/20 transition text-slate-300";
+        });
+
+        btnEgreso.addEventListener('click', () => {
+          currentType = 'egreso';
+          inputType.value = 'egreso';
+          btnEgreso.className = "flex-1 py-3 rounded-xl border border-red-500 bg-red-500/20 text-red-400 font-bold transition";
+          btnIngreso.className = "flex-1 py-3 rounded-xl border border-white/10 text-sm hover:bg-emerald-500/20 transition text-slate-300";
+        });
+    }
+
+    // --- CHECKBOX INVENTARIO ---
+    if(checkInventory) {
+        checkInventory.addEventListener('change', (e) => {
+          if(e.target.checked) {
+            inputConcept.classList.add('hidden');
+            selectInventory.classList.remove('hidden');
+            loadInventoryForSelect(); 
+            // Forzar tipo a ingreso si es venta de stock
+            if(btnIngreso) btnIngreso.click();
+          } else {
+            inputConcept.classList.remove('hidden');
+            selectInventory.classList.add('hidden');
+          }
+        });
+    }
+
+    // --- CARGA DE DATOS GENERAL ---
+    async function loadData() {
+      const { data: { user } } = await cliente.auth.getUser();
+      if (!user) { window.location.href = '../index.html'; return; }
+
+      const { data: profile } = await cliente.from('user_profiles').select('goal').eq('id', user.id).single();
+      if(profile && profile.goal) document.getElementById('userGoalDisplay').innerText = profile.goal;
+
+      // Cargamos movimientos
+      const { data: movements } = await cliente
+        .from('user_operations')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      allMovements = movements || []; // Guardar en variable global
+      renderTable(allMovements);
+      calculateBalance(allMovements);
+    }
+
+    // --- CARGA DE INVENTARIO Y STOCK ---
+    async function loadInventory() {
+      const { data: { user } } = await cliente.auth.getUser();
+      const { data } = await cliente.from('user_inventory').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+      inventoryData = data || [];
+      renderInventoryList();
+      renderInventoryHistory(); // Cargar también el historial
+    }
+
+    // Función nueva: FILTRAR HISTORIAL DE INVENTARIO
+    function renderInventoryHistory() {
+        const historyList = document.getElementById('inventoryHistoryList');
+        if(!historyList) return;
+        historyList.innerHTML = '';
+
+        // Filtramos movimientos que digan "Venta:"
+        const stockMoves = allMovements.filter(m => m.concept && m.concept.startsWith('Venta:'));
+
+        if(stockMoves.length === 0) {
+            historyList.innerHTML = '<tr><td colspan="3" class="py-8 text-center text-slate-600 text-xs">No hay salidas registradas aún.</td></tr>';
+            return;
+        }
+
+        stockMoves.forEach(mov => {
+            const row = document.createElement('tr');
+            row.className = 'border-b border-white/5 hover:bg-white/5 transition';
+            row.innerHTML = `
+              <td class="py-3 pl-2 text-slate-400 text-xs">${new Date(mov.created_at).toLocaleDateString()}</td>
+              <td class="py-3 text-white text-xs">
+                <span class="block font-bold text-slate-200">${mov.concept}</span>
+                <span class="text-[10px] text-slate-500">Monto: $${Number(mov.amount).toLocaleString()}</span>
+              </td>
+              <td class="py-3 pr-2 text-right">
+                <span class="text-[10px] bg-red-500/10 text-red-400 px-2 py-1 rounded-full border border-red-500/20">-1 Stock</span>
+              </td>
+            `;
+            historyList.appendChild(row);
+        });
+    }
+
+    async function loadInventoryForSelect() {
+      await loadInventory();
+      selectInventory.innerHTML = '<option value="">Selecciona producto...</option>';
+      inventoryData.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.id;
+        opt.text = `${item.product_name} (Stock: ${item.current_stock})`;
+        selectInventory.appendChild(opt);
+      });
+    }
+
+    // --- RENDERIZADO TABLA PRINCIPAL ---
+    function renderTable(movements) {
+      const tbody = document.getElementById('movementsTable');
+      tbody.innerHTML = '';
+      if (movements.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="py-8 text-center text-slate-500">Sin movimientos.</td></tr>';
+        return;
+      }
+      movements.forEach(mov => {
+        const row = document.createElement('tr');
+        row.className = 'table-row';
+        const sign = mov.type === 'ingreso' ? '+' : '-';
+        const badgeClass = mov.type === 'ingreso' ? 'type-badge-in' : 'type-badge-out';
+        row.innerHTML = `
+          <td class="py-4 pl-4 text-slate-400">${new Date(mov.created_at).toLocaleDateString()}</td>
+          <td class="py-4 font-medium text-white">${mov.concept}</td>
+          <td class="py-4 text-right font-mono text-slate-300">${sign} $${Number(mov.amount).toLocaleString()}</td>
+          <td class="py-4 pr-4 text-center"><span class="${badgeClass}">${mov.type.toUpperCase()}</span></td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function renderInventoryList() {
+      const list = document.getElementById('inventoryList');
+      list.innerHTML = '';
+      inventoryData.forEach(item => {
+        const row = document.createElement('tr');
+        row.className = 'border-b border-white/5 hover:bg-white/5 transition';
+        
+        // Color stock bajo
+        let stockColor = 'text-emerald-400';
+        if(item.current_stock < 5) stockColor = 'text-yellow-400';
+        if(item.current_stock === 0) stockColor = 'text-red-500';
+
+        row.innerHTML = `
+          <td class="py-3 pl-2 text-white font-medium text-sm">${item.product_name}</td>
+          <td class="py-3 text-center ${stockColor} font-bold text-sm">${item.current_stock}</td>
+          <td class="py-3 pr-2 text-right">
+            <button onclick="deleteProduct('${item.id}')" class="text-xs text-red-400 hover:text-red-300 opacity-50 hover:opacity-100 transition">✕</button>
+          </td>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    function calculateBalance(movements) {
+      let total = 0;
+      movements.forEach(m => {
+        if(m.type === 'ingreso') total += parseFloat(m.amount);
+        else total -= parseFloat(m.amount);
+      });
+      document.getElementById('balanceDisplay').innerText = `$ ${total.toLocaleString()} CLP`;
+    }
+
+    // --- GUARDAR OPERACIÓN ---
+    async function saveOperation() {
+      const amount = document.getElementById('opAmount').value;
+      const type = document.getElementById('opType').value;
+      const dateVal = document.getElementById('opDate').value;
+      const isInventory = checkInventory.checked;
+      let concept = '';
+      
+      if(!amount || !type) return alert("Falta monto o tipo");
+
+      const { data: { user } } = await cliente.auth.getUser();
+
+      if (isInventory) {
+        const productId = selectInventory.value;
+        if(!productId) return alert("Selecciona un producto");
+        
+        const product = inventoryData.find(p => p.id === productId);
+        // IMPORTANTE: Este formato "Venta: Nombre" es el que usa el historial para filtrar
+        concept = `Venta: ${product.product_name}`;
+        
+        if(type === 'ingreso') {
+          const newStock = product.current_stock - 1;
+          await cliente.from('user_inventory').update({ current_stock: newStock }).eq('id', productId);
+        }
+      } else {
+        concept = inputConcept.value;
+        if(!concept) return alert("Escribe el concepto");
+      }
+
+      const { error } = await cliente.from('user_operations').insert({
+        user_id: user.id,
+        amount: amount,
+        concept: concept,
+        type: type,
+        created_at: new Date(dateVal).toISOString()
+      });
+
+      if(error) alert("Error: " + error.message);
+      else {
+        document.getElementById('opAmount').value = '';
+        if(!isInventory) inputConcept.value = '';
+        loadData(); // Recarga tabla principal
+        loadInventory(); // Recarga inventario e historial en tiempo real
+        
+        // Cerrar modal si estaba abierto y fue una venta rapida
+        // pero mejor lo dejamos abierto para seguir viendo
+      }
+    }
+
+    async function addProduct() {
+      const name = document.getElementById('invName').value;
+      const stock = document.getElementById('invStock').value;
+      if(!name || !stock) return;
+
+      const { data: { user } } = await cliente.auth.getUser();
+      await cliente.from('user_inventory').insert({
+        user_id: user.id, product_name: name, current_stock: stock
+      });
+      document.getElementById('invName').value = '';
+      document.getElementById('invStock').value = '';
+      loadInventory();
+    }
+
+    window.deleteProduct = async (id) => {
+      if(confirm("¿Borrar producto?")) {
+        await cliente.from('user_inventory').delete().eq('id', id);
+        loadInventory();
+      }
+    };
+
+    // --- INICIALIZACIÓN ---
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById('opDate').valueAsDate = new Date();
+      loadData();
+
+      document.getElementById('btnSaveOp').addEventListener('click', saveOperation);
+
+      const modal = document.getElementById('inventoryModal');
+      document.getElementById('btnInventoryOpen').addEventListener('click', () => {
+        modal.classList.add('active');
+        loadInventory(); // Carga stock e historial al abrir
+      });
+      document.getElementById('btnInventoryClose').addEventListener('click', () => {
+        modal.classList.remove('active');
+      });
+
+      document.getElementById('invAddBtn').addEventListener('click', addProduct);
+    });
+  </script>
+</body>
+</html>

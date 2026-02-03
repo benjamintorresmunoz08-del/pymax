@@ -1,323 +1,174 @@
-# =========================
-# IMPORTS
-# =========================
-from flask import Flask, request, jsonify, send_file
-from flask_cors import CORS
-import sqlite3
-import secrets
 import os
-import time
-import io
+from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
-from openpyxl import Workbook
-from supabase import create_client
 
-# =========================
-# APP
-# =========================
+# ==============================================================================
+# CONFIGURACIÓN INICIAL - NIVEL EMPRESARIAL
+# ==============================================================================
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
 
-# =========================
-# SQLITE (USUARIOS LOCALES)
-# =========================
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "pymax_usuarios_v3.db")
+# 1. SEGURIDAD DE SESIÓN (La clave para que nunca se cierre)
+# Esta clave cifra las cookies. En producción real, esto iría en una variable de entorno.
+app.secret_key = 'CLAVE_MAESTRA_PYMAX_SEGURIDAD_TOTAL_2026' 
 
-def connect_db(retries=5, delay=0.2):
-    last_err = None
-    for _ in range(retries):
-        try:
-            return sqlite3.connect(DB_PATH)
-        except sqlite3.OperationalError as e:
-            last_err = e
-            time.sleep(delay)
-    print("NO SE PUDO CONECTAR A LA BD:", last_err)
-    return None
+# 2. DURACIÓN DE LA MEMORIA
+# La sesión durará 365 días. El usuario no tendrá que elegir de nuevo en un año.
+app.permanent_session_lifetime = timedelta(days=365)
 
-def ensure_users_table(conn):
-    if conn is None:
-        return
+# 3. CONEXIÓN A BASE DE DATOS (SUPABASE)
+# ⚠️ PEGA AQUÍ TU URL "POOLER" (Puerto 6543) QUE YA FUNCIONABA ⚠️
+# Recuerda: Sin corchetes [] y con tu contraseña real.
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://postgres:kedlO3vlVNh9luLO@db.haqjuyagyvxynmulanhe.supabase.co:6543/postgres"
 
-    cur = conn.cursor()
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS usuarios (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            email TEXT UNIQUE,
-            password TEXT,
-            confirmed INTEGER DEFAULT 0,
-            token TEXT
-        )
-    """)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    cur.execute("PRAGMA table_info(usuarios)")
-    cols = [row[1] for row in cur.fetchall()]
+# Inicialización del Motor de Base de Datos
+db = SQLAlchemy(app)
 
-    if "confirmed" not in cols:
-        cur.execute("ALTER TABLE usuarios ADD COLUMN confirmed INTEGER DEFAULT 0")
-    if "token" not in cols:
-        cur.execute("ALTER TABLE usuarios ADD COLUMN token TEXT")
+# ==============================================================================
+# MODELOS DE DATOS (Arquitectura Escalable)
+# ==============================================================================
 
-    conn.commit()
+class Obligacion(db.Model):
+    __tablename__ = 'obligaciones'
+    id = db.Column(db.Integer, primary_key=True)
+    titulo = db.Column(db.String(100), nullable=False)
+    monto = db.Column(db.Float, nullable=False)
+    fecha_vencimiento = db.Column(db.Date, nullable=False)
+    estado = db.Column(db.String(20), default='Pendiente') # Pendiente, Pagado, Vencido
+    prioridad = db.Column(db.String(10), default='Media')  # Alta, Media, Baja
+    
+    # Metadatos para auditoría (Nivel Enterprise)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-def init_db():
-    conn = connect_db()
-    if conn:
-        ensure_users_table(conn)
-        conn.close()
-        print("BD inicializada:", DB_PATH)
+# ==============================================================================
+# LÓGICA DE CONTROL DE TRÁFICO (El "Portero" Inteligente)
+# ==============================================================================
 
-init_db()
-
-# =========================
-# SUPABASE
-# =========================
-SUPABASE_URL = "https://haqjuyagyvxynmulanhe.supabase.co"
-SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-
-# =========================
-# RUTA BASE
-# =========================
-@app.route("/")
-def home():
-    return jsonify({"message": "Pymax backend v3 activo 🚀"})
-
-# =========================
-# AUTH
-# =========================
-@app.route("/api/register", methods=["POST"])
-def register():
-    data = request.get_json(silent=True) or {}
-    name = data.get("name")
-    email = data.get("email")
-    password = data.get("password")
-
-    if not all([name, email, password]):
-        return jsonify({"error": "Faltan datos"}), 400
-
-    conn = connect_db()
-    ensure_users_table(conn)
-    cursor = conn.cursor()
-
-    token = secrets.token_urlsafe(16)
-
-    try:
-        cursor.execute(
-            "INSERT INTO usuarios (name, email, password, token) VALUES (?, ?, ?, ?)",
-            (name, email, password, token)
-        )
-        conn.commit()
-    except sqlite3.IntegrityError:
-        conn.close()
-        return jsonify({"error": "El correo ya está registrado"}), 400
-
-    conn.close()
-    return jsonify({"message": "Usuario registrado", "token": token})
-
-@app.route("/api/confirm", methods=["GET"])
-def confirm_email():
-    token = request.args.get("token")
-    conn = connect_db()
-    ensure_users_table(conn)
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT id FROM usuarios WHERE token = ?", (token,))
-    user = cursor.fetchone()
-
-    if not user:
-        return jsonify({"error": "Token inválido"}), 404
-
-    cursor.execute("UPDATE usuarios SET confirmed = 1 WHERE token = ?", (token,))
-    conn.commit()
-    conn.close()
-
-    return """
-    <script>
-      window.location.href="https://pymaxcenter2.netlify.app?confirm=ok";
-    </script>
+@app.route('/')
+def index():
     """
+    Esta es la puerta principal.
+    Si el usuario ya tiene una preferencia guardada ("Empresa" o "Personal"),
+    lo redirigimos AUTOMÁTICAMENTE a su panel. No pasa por el inicio.
+    """
+    # Verificamos si existe la cookie de memoria
+    if 'departamento' in session:
+        departamento = session['departamento']
+        if departamento == 'empresa':
+            return redirect(url_for('empresa_home'))
+        elif departamento == 'personal':
+            return redirect(url_for('personal_home'))
+            
+    # Si es un usuario nuevo (o borró cookies), le mostramos la portada
+    return render_template('index.html')
 
-@app.route("/api/login", methods=["POST"])
-def login():
-    data = request.get_json(silent=True) or {}
-    email = data.get("email")
-    password = data.get("password")
+@app.route('/configurar-preferencia/<tipo>')
+def configurar_preferencia(tipo):
+    """
+    Esta ruta NO TIENE VISTA. Solo sirve para guardar la decisión en el cerebro.
+    Se activa cuando el usuario hace clic en "Ir a Empresa" o "Ir a Personal".
+    """
+    session.permanent = True  # Activa la duración de 1 año
+    session['departamento'] = tipo # Guarda la elección
+    
+    if tipo == 'empresa':
+        return redirect(url_for('empresa_home'))
+    elif tipo == 'personal':
+        return redirect(url_for('personal_home'))
+        
+    return redirect(url_for('index'))
 
-    conn = connect_db()
-    ensure_users_table(conn)
-    cur = conn.cursor()
+@app.route('/reiniciar-sistema')
+def reiniciar_sistema():
+    """
+    Botón de emergencia para cambiar de departamento.
+    Borra la memoria y te manda al inicio.
+    """
+    session.pop('departamento', None)
+    return redirect(url_for('index'))
 
-    cur.execute("SELECT id, name, password, confirmed FROM usuarios WHERE email = ?", (email,))
-    row = cur.fetchone()
-    conn.close()
+# ==============================================================================
+# RUTAS DEL DEPARTAMENTO: EMPRESA
+# ==============================================================================
 
-    if not row or row[2] != password:
-        return jsonify({"error": "Credenciales incorrectas"}), 401
+@app.route('/empresa')
+def empresa_home():
+    # Doble verificación de seguridad
+    if session.get('departamento') != 'empresa':
+        # Si alguien intenta entrar aquí siendo "Personal", lo corregimos
+        session['departamento'] = 'empresa' 
+    return render_template('empresa/index-empresa.html')
 
-    if not row[3]:
-        return jsonify({"error": "Correo no confirmado"}), 403
+# --- MÓDULO: PLAN MOVER (Finanzas) ---
 
-    return jsonify({
-        "message": "Login exitoso",
-        "user_id": row[0],
-        "name": row[1]
-    })
+@app.route('/empresa/mover')
+def mover_panel():
+    # Panel con manejo de errores robusto (Si DB falla, no cae la web)
+    try:
+        total_obs = Obligacion.query.count()
+        pendientes = Obligacion.query.filter_by(estado='Pendiente').count()
+    except Exception as e:
+        print(f"⚠️ ALERTA DE SISTEMA: Error conectando a DB: {e}")
+        total_obs = 0
+        pendientes = 0
+        
+    return render_template('empresa/mover/panel-mover.html', total=total_obs, pendientes=pendientes)
 
-# =========================
-# SUSCRIPCIÓN
-# =========================
-@app.route("/activar-mover-fichas", methods=["POST"])
-def activar_mover_fichas():
-    user_id = request.json.get("user_id")
-    hoy = datetime.utcnow()
-    vencimiento = hoy + timedelta(days=30)
+@app.route('/empresa/mover/obligaciones', methods=['GET', 'POST'])
+def mover_obligaciones():
+    if request.method == 'POST':
+        try:
+            # Procesamiento de datos del formulario
+            titulo = request.form['titulo']
+            monto = float(request.form['monto'])
+            fecha = datetime.strptime(request.form['fecha'], '%Y-%m-%d')
+            prioridad = request.form.get('prioridad', 'Media')
+            
+            nueva_obs = Obligacion(titulo=titulo, monto=monto, fecha_vencimiento=fecha, prioridad=prioridad)
+            db.session.add(nueva_obs)
+            db.session.commit()
+            print(f"✅ REGISTRO EXITOSO: {titulo} guardado en la Nube.")
+        except Exception as e:
+            db.session.rollback()
+            print(f"❌ ERROR CRÍTICO AL GUARDAR: {e}")
+            
+        return redirect(url_for('mover_obligaciones'))
 
-    supabase.table("suscripciones").insert({
-        "user_id": user_id,
-        "plan": "mover_fichas",
-        "estado": "activo",
-        "fecha_inicio": hoy.isoformat(),
-        "fecha_vencimiento": vencimiento.isoformat()
-    }).execute()
+    # Obtención de datos para la lista
+    try:
+        lista_obligaciones = Obligacion.query.order_by(Obligacion.fecha_vencimiento).all()
+    except Exception as e:
+        lista_obligaciones = []
+        print(f"⚠️ Error leyendo lista: {e}")
 
-    return jsonify({"ok": True})
+    return render_template('empresa/mover/obligaciones.html', obligaciones=lista_obligaciones)
 
-# =========================
-# MOVIMIENTOS
-# =========================
-@app.route("/movimientos", methods=["POST"])
-def crear_movimiento():
-    supabase.table("movimientos").insert(request.json).execute()
-    return jsonify({"ok": True})
+# ==============================================================================
+# RUTAS DEL DEPARTAMENTO: PERSONAL
+# ==============================================================================
 
-# =========================
-# OBLIGACIONES
-# =========================
-@app.route("/obligaciones", methods=["POST"])
-def crear_obligacion():
-    supabase.table("obligaciones").insert(request.json).execute()
-    return jsonify({"ok": True})
+@app.route('/personal')
+def personal_home():
+    # Doble verificación
+    if session.get('departamento') != 'personal':
+        session['departamento'] = 'personal'
+    return render_template('personal/index-personal.html')
 
-@app.route("/obligaciones", methods=["GET"])
-def listar_obligaciones():
-    user_id = request.args.get("user_id")
-    res = supabase.table("obligaciones").select("*").eq("user_id", user_id).execute()
-    return jsonify(res.data)
+# ==============================================================================
+# INICIALIZADOR DEL SERVIDOR
+# ==============================================================================
 
-# =========================
-# CALENDARIO
-# =========================
-@app.route("/calendario", methods=["POST"])
-def crear_evento():
-    supabase.table("calendario").insert(request.json).execute()
-    return jsonify({"ok": True})
-
-@app.route("/calendario", methods=["GET"])
-def listar_eventos():
-    user_id = request.args.get("user_id")
-    res = supabase.table("calendario").select("*").eq("user_id", user_id).execute()
-    return jsonify(res.data)
-
-# =========================================================
-# === PYMAX CORE · ESTADO FINANCIERO CENTRAL (NUEVO) ===
-# =========================================================
-@app.route("/progreso", methods=["GET"])
-def progreso():
-    user_id = request.args.get("user_id")
-    if not user_id:
-        return jsonify({"error": "Usuario requerido"}), 400
-
-    hoy = datetime.utcnow()
-    inicio_mes = hoy.replace(day=1).date()
-
-    movimientos = supabase.table("movimientos") \
-        .select("tipo, monto, fecha") \
-        .eq("user_id", user_id) \
-        .gte("fecha", inicio_mes.isoformat()) \
-        .execute().data
-
-    obligaciones = supabase.table("obligaciones") \
-        .select("monto, fecha_pago, estado") \
-        .eq("user_id", user_id) \
-        .execute().data
-
-    ingresos = sum(m["monto"] for m in movimientos if m["tipo"] == "ingreso")
-    gastos = sum(m["monto"] for m in movimientos if m["tipo"] == "gasto")
-    flujo = ingresos - gastos
-
-    obligaciones_vencidas = [
-        o for o in obligaciones
-        if o["estado"] == "pendiente" and datetime.fromisoformat(o["fecha_pago"]) < hoy
-    ]
-
-    # SEMÁFORO
-    if flujo > 0 and not obligaciones_vencidas:
-        semaforo = "VERDE"
-    elif flujo == 0 or obligaciones_vencidas:
-        semaforo = "AMARILLO"
-    else:
-        semaforo = "ROJO"
-
-    # ORDEN FINANCIERO (0-100)
-    orden = 0
-    if movimientos:
-        orden += 40
-    if flujo > 0:
-        orden += 25
-    if not obligaciones_vencidas:
-        orden += 20
-    if len(movimientos) >= 5:
-        orden += 15
-
-    alertas = []
-    if flujo < 0:
-        alertas.append("El flujo de caja es negativo este mes.")
-    if obligaciones_vencidas:
-        alertas.append("Existen obligaciones vencidas.")
-    if not movimientos:
-        alertas.append("No hay registros financieros este mes.")
-
-    return jsonify({
-        "ingresos_mes": ingresos,
-        "gastos_mes": gastos,
-        "resultado_mes": ingresos - gastos,
-        "flujo_actual": flujo,
-        "semaforo": semaforo,
-        "orden_financiero": orden,
-        "alertas": alertas
-    })
-
-# =========================
-# EXCEL
-# =========================
-@app.route("/exportar-excel", methods=["GET"])
-def exportar_excel():
-    user_id = request.args.get("user_id")
-    inicio_mes = datetime.utcnow().replace(day=1).date()
-
-    movimientos = supabase.table("movimientos") \
-        .select("*") \
-        .eq("user_id", user_id) \
-        .gte("fecha", inicio_mes.isoformat()) \
-        .order("fecha") \
-        .execute().data
-
-    wb = Workbook()
-    ws = wb.active
-    ws.append(["Fecha", "Tipo", "Categoría", "Monto"])
-
-    for m in movimientos:
-        ws.append([m["fecha"], m["tipo"], m["categoria"], m["monto"]])
-
-    file = io.BytesIO()
-    wb.save(file)
-    file.seek(0)
-
-    return send_file(
-        file,
-        as_attachment=True,
-        download_name="pymax_mover_fichas.xlsx",
-        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
+if __name__ == '__main__':
+    with app.app_context():
+        # Crea las tablas si no existen (Sincronización con Supabase)
+        db.create_all()
+        print("---------------------------------------------------------")
+        print(" SISTEMA PYMAX ENTERPRISE: EN LÍNEA")
+        print(" CONEXIÓN A NUBE: ESTABLECIDA")
+        print(" SISTEMA DE SESIONES: ACTIVO (365 DÍAS)")
+        print("---------------------------------------------------------")
+    
+    # Ejecución en puerto 5000
+    app.run(debug=True, port=5000)
