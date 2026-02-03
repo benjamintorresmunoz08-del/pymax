@@ -10,3 +10,4 @@ Jinja2
 click
 xlsxwriter
 psycopg2-binary
+flask-sqlalchemy
