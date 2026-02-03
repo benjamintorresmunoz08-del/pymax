@@ -22,8 +22,8 @@
       font-family: 'Inter', sans-serif;
       background-color: var(--bg-void);
       color: #e2e8f0;
-      min-height: 100vh; /* Crece si es necesario */
-      overflow-y: auto;  /* Habilita el dedo en celular */
+      min-height: 100vh;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
     }
@@ -260,14 +260,14 @@
         cerrarModal();
         document.getElementById('loaderOverlay').style.display = 'flex';
 
-        // Redirigir a la ruta de Python que guarda la cookie y hace la redirección
-        // Usamos la magia de Jinja2 para construir la URL base
-        // Flask generará algo como: /configurar-preferencia/
+        // === CORRECCIÓN CRÍTICA ===
+        // Usamos una ruta directa para evitar errores de sintaxis
         let baseUrl = "/configurar-preferencia/";
         
         setTimeout(() => {
+            // Esto construirá: /configurar-preferencia/empresa
             window.location.href = baseUrl + seleccionPendiente;
-        }, 1500); // 1.5s de drama para que se vea el loader
+        }, 1500);
     }
   </script>
 
