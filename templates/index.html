@@ -978,9 +978,9 @@
                     El dinero deja de ser un estrés y se convierte en tu herramienta de libertad. Tu propia IA diseñando el camino exacto hacia tus sueños. Dejar de sobrevivir, empezar a construir legado.
                 </p>
                 <div class="mt-6">
-                    <button onclick="window.location.href='seleccion.html'" class="btn-ghost-personal">
-                        DESCUBRIR ESTE PODER &rarr;
-                    </button>
+                    <button onclick="window.location.href='/seleccion'" class="btn-ghost-personal">
+    DESCUBRIR ESTE PODER &rarr;
+</button>
                 </div>
             </div>
             
@@ -994,9 +994,9 @@
                     Transforma el caos operativo en una maquinaria de precisión suiza. Deja que la IA audite, optimice y escale tu negocio mientras tú te enfocas en la visión estratégica y la expansión global.
                 </p>
                 <div class="mt-6">
-                    <button onclick="window.location.href='seleccion.html'" class="btn-ghost-empresa">
-                        DESCUBRIR ESTE PODER &rarr;
-                    </button>
+                    <button onclick="window.location.href='/seleccion'" class="btn-ghost-empresa">
+    DESCUBRIR ESTE PODER &rarr;
+</button>>
                 </div>
             </div>
         </div>
@@ -1158,7 +1158,7 @@
             badgeHtml = `<span id="identityBadge" class="text-[10px] font-bold px-2 py-0.5 rounded border ${color} bg-white/5 cursor-help">${tipo}</span>`;
         } else {
             // SI NO TIENE TIPO: Mostrar botón de "Terminar Configuración"
-            badgeHtml = `<a id="identityBadge" href="seleccion.html" class="text-[10px] font-bold px-2 py-0.5 rounded border border-red-500/50 bg-red-500/10 text-red-300 hover:bg-red-500/20 animate-pulse">⚠️ CONFIGURAR</a>`;
+         badgeHtml = `<a id="identityBadge" href="/seleccion" class="text-[10px] font-bold px-2 py-0.5 rounded border border-red-500/50 bg-red-500/10 text-red-300 hover:bg-red-500/20 animate-pulse">⚠️ CONFIGURAR</a>`;  
         }
 
         // Actualizar Navbar (Login -> Usuario)
@@ -1189,7 +1189,7 @@
         } else {
             // Si le falta elegir -> Ir a Selección
             heroActionBtn.innerText = "Terminar Configuración";
-            heroActionBtn.onclick = () => window.location.href = 'seleccion.html';
+            heroActionBtn.onclick = () => window.location.href = '/seleccion';
             heroActionBtn.style.background = "linear-gradient(90deg, #f59e0b, #d97706)"; // Color ámbar de alerta
         }
     }
