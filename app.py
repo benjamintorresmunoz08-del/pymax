@@ -19,7 +19,7 @@ app.permanent_session_lifetime = timedelta(days=365)
 # 3. CONEXIÓN A BASE DE DATOS (SUPABASE)
 # ⚠️ PEGA AQUÍ TU URL "POOLER" (Puerto 6543) QUE YA FUNCIONABA ⚠️
 # Recuerda: Sin corchetes [] y con tu contraseña real.
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://postgres:kedlO3vlVNh9luLO@db.haqjuyagyvxynmulanhe.supabase.co:6543/postgres"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres.haqjuyagyvxynmulanhe:kedlO3vlVNh9luLO @aws-1-sa-east-1.pooler.supabase.com:6543/postgres"
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
