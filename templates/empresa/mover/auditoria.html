@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pymax | Libro Mayor</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;700&family=Outfit:wght@700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+  <style>
+    :root {
+      --bg-void: #030014;
+      --border-color: rgba(255, 255, 255, 0.1);
+      --accent-cyan: #06b6d4;
+    }
+
+    body {
+      background-color: var(--bg-void);
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      display: flex; flex-direction: column;
+    }
+
+    .toolbar {
+        background: #0a0a12;
+        border-bottom: 1px solid var(--border-color);
+        padding: 16px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        z-index: 20;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .watermark {
+        position: absolute; top: 50%; left: 50%;
+        transform: translate(-50%, -50%) rotate(-15deg);
+        font-family: 'Outfit', sans-serif;
+        font-size: 12vw; font-weight: 900;
+        color: rgba(255, 255, 255, 0.02);
+        pointer-events: none; z-index: 0;
+        white-space: nowrap; user-select: none;
+    }
+
+    .table-container {
+        flex: 1; overflow: auto; position: relative; z-index: 10;
+        padding: 0 24px 24px 24px;
+    }
+    
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    
+    th {
+        position: sticky; top: 0; background: #030014; z-index: 20;
+        text-align: left; padding: 12px;
+        color: #94a3b8; font-weight: 600;
+        border-bottom: 2px solid var(--border-color);
+        text-transform: uppercase; letter-spacing: 0.05em;
+        cursor: pointer; transition: color 0.2s; user-select: none;
+    }
+    th:hover { color: white; background: #0f172a; }
+    
+    /* SECCIÓN CORREGIDA: Caracteres ocultos eliminados y formato limpio */
+    td {
+        padding: 10px 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        color: #cbd5e1;
+        transition: background 0.1s;
+    }
+    tr:hover td {
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .col-amount { font-family: 'JetBrains Mono', monospace; text-align: right; font-weight: 700; }
+    .col-status { text-align: center; }
+    
+    .badge {
+        padding: 4px 8px; border-radius: 4px;
+        font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+        display: inline-block;
+    }
+    .badge-in { background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
+    .badge-out { background: rgba(244, 63, 94, 0.1); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.2); }
+
+    .filter-group { display: flex; gap: 12px; }
+    .filter-select {
+        background: #1e1e24; border: 1px solid var(--border-color); color: white;
+        padding: 8px 12px; border-radius: 8px; outline: none; font-size: 0.8rem;
+    }
+    .search-input {
+        background: #1e1e24; border: 1px solid var(--border-color); color: white;
+        padding: 8px 12px 8px 32px; border-radius: 8px; outline: none;
+        font-size: 0.8rem; width: 250px;
+    }
+    .search-wrap { position: relative; }
+    .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #64748b; }
+
+    .btn-excel {
+        background: #107c41; color: white; border: none; padding: 8px 16px;
+        border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer;
+        display: flex; align-items: center; gap: 8px; transition: transform 0.2s;
+    }
+    .btn-excel:hover { transform: scale(1.05); background: #0c6633; }
+  </style>
+</head>
+<body>
+
+  <div class="watermark">PYMAX AUDIT</div>
+
+  <div class="toolbar">
+      <div class="flex items-center gap-6">
+          <a href="/empresa/mover" class="text-slate-400 hover:text-white transition"><i class="ph-bold ph-arrow-left text-xl"></i></a>
+          <h1 class="text-lg font-bold text-white font-future tracking-wide">LIBRO MAYOR</h1>
+          
+          <div class="filter-group">
+              <div class="search-wrap">
+                  <i class="ph-bold ph-magnifying-glass search-icon"></i>
+                  <input type="text" id="searchInput" class="search-input" placeholder="Buscar concepto, monto..." onkeyup="filterTable()">
+              </div>
+              <select id="filterType" class="filter-select" onchange="filterTable()">
+                  <option value="all">Todo</option>
+                  <option value="ingreso">Ingresos</option>
+                  <option value="egreso">Egresos</option>
+              </select>
+              <select id="filterCategory" class="filter-select" onchange="filterTable()">
+                  <option value="all">Todas las Categorías</option>
+              </select>
+          </div>
+      </div>
+
+      <button onclick="exportToExcel()" class="btn-excel">
+          <i class="ph-fill ph-file-xls"></i> Exportar a Excel
+      </button>
+  </div>
+
+  <div class="table-container custom-scroll">
+      <table id="auditTable">
+          <thead>
+              <tr>
+                  <th onclick="sortTable('date')">Fecha <i class="ph-bold ph-caret-up-down text-xs ml-1"></i></th>
+                  <th onclick="sortTable('concept')">Concepto <i class="ph-bold ph-caret-up-down text-xs ml-1"></i></th>
+                  <th onclick="sortTable('category')">Categoría <i class="ph-bold ph-caret-up-down text-xs ml-1"></i></th>
+                  <th>Método</th>
+                  <th>Tipo</th>
+                  <th onclick="sortTable('amount')" class="text-right">Monto <i class="ph-bold ph-caret-up-down text-xs ml-1"></i></th>
+              </tr>
+          </thead>
+          <tbody id="tableBody">
+              <tr><td colspan="6" class="text-center py-10 text-slate-500">Cargando datos...</td></tr>
+          </tbody>
+      </table>
+  </div>
+
+  <script>
+    const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
+    const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
+    const cliente = supabase.createClient(SU_URL, SU_KEY);
+    
+    let allData = [];
+    let currentData = [];
+    let sortAsc = false;
+
+    document.addEventListener("DOMContentLoaded", loadAuditData);
+
+    async function loadAuditData() {
+        try {
+            const { data: { user } } = await cliente.auth.getUser();
+            if(!user) return;
+
+            const { data, error } = await cliente.from('user_operations')
+                .select('*')
+                .eq('user_id', user.id)
+                .order('created_at', {ascending: false});
+
+            if (error) throw error;
+
+            allData = data || [];
+            currentData = [...allData];
+            populateCategories();
+            renderTable(currentData);
+        } catch (e) {
+            console.error("Error:", e);
+            document.getElementById('tableBody').innerHTML = `<tr><td colspan="6" class="text-center py-10 text-rose-500">Error de conexión. Intente recargar.</td></tr>`;
+        }
+    }
+
+    function populateCategories() {
+        const cats = [...new Set(allData.map(d => d.category))].sort();
+        const sel = document.getElementById('filterCategory');
+        sel.innerHTML = '<option value="all">Todas las Categorías</option>';
+        cats.forEach(c => {
+            if(c) {
+                const opt = document.createElement('option');
+                opt.value = c; opt.innerText = c;
+                sel.appendChild(opt);
+            }
+        });
+    }
+
+    function renderTable(data) {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+
+        if(data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-slate-500 font-mono text-xs">No se encontraron registros coincidentes.</td></tr>`;
+            return;
+        }
+
+        data.forEach(row => {
+            if (!row) return;
+
+            const date = row.created_at ? new Date(row.created_at).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A';
+            let concept = row.concept || 'Sin descripción';
+            let method = "N/A";
+            
+            if (concept.includes('[') && concept.includes(']')) {
+                 const methodMatch = concept.match(/\[(.*?)\]/);
+                 if(methodMatch) {
+                     const meta = methodMatch[0];
+                     if(meta.includes('Método') || meta.includes('Transferencia') || meta.includes('Efectivo') || meta.includes('Tarjeta')) {
+                         method = meta.replace('[','').replace(']','').replace('Método:','').trim();
+                     }
+                     concept = concept.replace(meta, '').trim();
+                     concept = concept.replace(/\[.*?\]/g, '').trim(); 
+                 }
+            }
+
+            const isIngreso = row.type === 'ingreso';
+            const badgeClass = isIngreso ? 'badge-in' : 'badge-out';
+            const typeText = isIngreso ? 'INGRESO' : 'EGRESO';
+            const amountColor = isIngreso ? 'text-emerald-400' : 'text-rose-400';
+            const sign = isIngreso ? '+' : '-';
+            const category = row.category || 'General';
+
+            tbody.innerHTML += `
+                <tr>
+                    <td class="font-mono text-slate-400">${date}</td>
+                    <td class="font-bold text-white">${concept}</td>
+                    <td><span class="text-[10px] text-cyan-300 bg-cyan-900/30 px-2 py-1 rounded border border-cyan-500/20">${category}</span></td>
+                    <td class="text-xs text-slate-400">${method}</td>
+                    <td class="col-status"><span class="badge ${badgeClass}">${typeText}</span></td>
+                    <td class="col-amount ${amountColor}">${sign}$${Number(row.amount).toLocaleString()}</td>
+                </tr>
+            `;
+        });
+    }
+
+    function filterTable() {
+        const term = document.getElementById('searchInput').value.toLowerCase();
+        const type = document.getElementById('filterType').value;
+        const cat = document.getElementById('filterCategory').value;
+
+        currentData = allData.filter(item => {
+            const c = (item.concept || '').toLowerCase();
+            const a = (item.amount || 0).toString();
+            const matchesSearch = c.includes(term) || a.includes(term);
+            const matchesType = type === 'all' || item.type === type;
+            const matchesCat = cat === 'all' || item.category === cat;
+            return matchesSearch && matchesType && matchesCat;
+        });
+
+        renderTable(currentData);
+    }
+
+    function sortTable(key) {
+        sortAsc = !sortAsc;
+        
+        currentData.sort((a, b) => {
+            let valA, valB;
+            if (key === 'amount') {
+                valA = Number(a.amount);
+                valB = Number(b.amount);
+            } else if (key === 'date') {
+                valA = new Date(a.created_at);
+                valB = new Date(b.created_at);
+            } else {
+                valA = (a[key] || '').toLowerCase();
+                valB = (b[key] || '').toLowerCase();
+            }
+            if (valA < valB) return sortAsc ? -1 : 1;
+            if (valA > valB) return sortAsc ? 1 : -1;
+            return 0;
+        });
+        renderTable(currentData);
+    }
+
+    function exportToExcel() {
+        const exportData = currentData.map(d => ({
+            Fecha: new Date(d.created_at).toLocaleDateString(),
+            Concepto: d.concept,
+            Categoria: d.category,
+            Tipo: d.type ? d.type.toUpperCase() : 'N/A',
+            Monto: Number(d.amount)
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(exportData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Libro_Mayor_Pymax");
+        XLSX.writeFile(wb, "Pymax_Reporte_Auditoria.xlsx");
+    }
+  </script>
+</body>
+</html>

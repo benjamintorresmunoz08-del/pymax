@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pymax | Mis 3 Objetivos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    :root { --bg-void: #030014; --glass-border: rgba(255, 255, 255, 0.08); }
+    body { background-color: var(--bg-void); color: #e2e8f0; font-family: 'Inter', sans-serif; }
+    h1, h2, h3, .font-display { font-family: 'Outfit', sans-serif; letter-spacing: -0.02em; }
+    
+    .nebula-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #030014 80%); pointer-events: none; }
+    
+    .goal-card {
+        background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border);
+        border-radius: 24px; padding: 32px; min-height: 280px;
+        display: flex; flex-direction: column; justify-content: space-between;
+        transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .goal-card:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-5px); }
+    
+    .card-empty { border-style: dashed; border-color: rgba(255,255,255,0.1); cursor: pointer; }
+    .card-empty:hover { background: rgba(255,255,255,0.03); border-color: rgba(139, 92, 246, 0.5); }
+    
+    .slot-badge {
+        position: absolute; top: 20px; right: 20px;
+        font-size: 0.7rem; font-weight: bold; text-transform: uppercase;
+        padding: 4px 12px; border-radius: 20px; letter-spacing: 1px;
+    }
+    .badge-1 { background: rgba(6, 182, 212, 0.1); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.2); }
+    .badge-extra { background: rgba(139, 92, 246, 0.1); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.2); }
+
+    .btn-action {
+        width: 100%; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 0.9rem;
+        transition: all 0.2s; border: none; cursor: pointer;
+    }
+    .btn-edit { background: rgba(255,255,255,0.05); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.1); }
+    .btn-edit:hover { background: rgba(255,255,255,0.1); color: white; }
+  </style>
+</head>
+<body class="p-6 md:p-12">
+  <div class="nebula-bg"></div>
+
+  <nav class="flex items-center gap-4 mb-12">
+      <a href="/empresa/mover" class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-slate-400 hover:text-white transition border border-white/10">
+          <i class="ph-bold ph-arrow-left"></i>
+      </a>
+      <div>
+          <h1 class="text-2xl font-bold text-white font-display">Mis Objetivos</h1>
+          <p class="text-xs text-slate-500 uppercase tracking-widest">Plan Básico (Máx. 3 Metas)</p>
+      </div>
+  </nav>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      
+      <div class="goal-card" id="card-1">
+          <div class="slot-badge badge-1">Principal (Bóveda)</div>
+          <div class="flex-1 flex flex-col justify-center items-center text-center p-4">
+              <div class="w-16 h-16 rounded-full bg-cyan-500/10 flex items-center justify-center mb-4 text-cyan-400 text-2xl">
+                  <i class="ph-fill ph-target"></i>
+              </div>
+              <h3 class="text-white font-bold text-lg mb-2" id="text-1">...</h3>
+              <p class="text-slate-500 text-xs">Esta es tu meta maestra.</p>
+          </div>
+          <button onclick="editGoal(1)" class="btn-action btn-edit mt-4">Editar Objetivo</button>
+      </div>
+
+      <div class="goal-card card-empty" id="card-2" onclick="editGoal(2)">
+          <div class="slot-badge badge-extra">Slot 2</div>
+          <div class="flex-1 flex flex-col justify-center items-center text-center">
+              <i class="ph-bold ph-plus text-3xl text-slate-600 mb-2"></i>
+              <span class="text-slate-500 font-bold text-sm">Definir Meta #2</span>
+          </div>
+      </div>
+
+      <div class="goal-card card-empty" id="card-3" onclick="editGoal(3)">
+          <div class="slot-badge badge-extra">Slot 3</div>
+          <div class="flex-1 flex flex-col justify-center items-center text-center">
+              <i class="ph-bold ph-plus text-3xl text-slate-600 mb-2"></i>
+              <span class="text-slate-500 font-bold text-sm">Definir Meta #3</span>
+          </div>
+      </div>
+
+  </div>
+
+  <script>
+    const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
+    const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
+    const cliente = supabase.createClient(SU_URL, SU_KEY);
+
+    document.addEventListener('DOMContentLoaded', loadGoals);
+
+    async function loadGoals() {
+        const { data: { user } } = await cliente.auth.getUser();
+        if(!user) return;
+
+        // 1. CARGAR META PRINCIPAL (Tabla: user_goals)
+        const { data: mainGoal } = await cliente.from('user_goals').select('goal_text').eq('user_id', user.id).single();
+        if(mainGoal) updateCardUI(1, mainGoal.goal_text);
+
+        // 2. CARGAR METAS EXTRA (Tabla: user_goals_extra)
+        const { data: extras } = await cliente.from('user_goals_extra').select('*').eq('user_id', user.id);
+        if(extras) {
+            extras.forEach(g => updateCardUI(g.slot_number, g.goal_text));
+        }
+    }
+
+    function updateCardUI(slot, text) {
+        const card = document.getElementById(`card-${slot}`);
+        // Quitar estado vacío
+        card.className = "goal-card";
+        card.onclick = null; // Quitar click global
+        
+        let icon = slot === 1 ? 'ph-target' : (slot === 2 ? 'ph-rocket' : 'ph-flag');
+        let color = slot === 1 ? 'text-cyan-400 bg-cyan-500/10' : 'text-violet-400 bg-violet-500/10';
+        let badgeClass = slot === 1 ? 'badge-1' : 'badge-extra';
+        let badgeText = slot === 1 ? 'Principal' : `Objetivo #${slot}`;
+
+        card.innerHTML = `
+            <div class="slot-badge ${badgeClass}">${badgeText}</div>
+            <div class="flex-1 flex flex-col justify-center items-center text-center p-4">
+                <div class="w-14 h-14 rounded-full ${color} flex items-center justify-center mb-4 text-2xl">
+                    <i class="ph-fill ${icon}"></i>
+                </div>
+                <h3 class="text-white font-bold text-lg leading-snug mb-2 break-words w-full">${text}</h3>
+            </div>
+            <button onclick="editGoal(${slot})" class="btn-action btn-edit mt-2 text-xs uppercase tracking-wide">Modificar</button>
+        `;
+    }
+
+    async function editGoal(slot) {
+        const { value: text } = await Swal.fire({
+            title: `Meta #${slot}`,
+            input: 'textarea',
+            inputLabel: 'Describe tu objetivo',
+            inputPlaceholder: 'Ej: Aumentar ventas un 20%...',
+            background: '#0b0b14', color: '#fff', confirmButtonColor: '#7c3aed',
+            showCancelButton: true
+        });
+
+        if (text) {
+            const { data: { user } } = await cliente.auth.getUser();
+            
+            if (slot === 1) {
+                // Actualizar Meta Principal (Index)
+                await cliente.from('user_goals').upsert({ user_id: user.id, goal_text: text }, { onConflict: 'user_id' });
+            } else {
+                // Actualizar Meta Extra
+                // Usamos un pequeño truco: borramos la anterior de ese slot y creamos nueva para evitar lios de ID
+                await cliente.from('user_goals_extra').delete().match({ user_id: user.id, slot_number: slot });
+                await cliente.from('user_goals_extra').insert({ user_id: user.id, slot_number: slot, goal_text: text });
+            }
+            
+            updateCardUI(slot, text);
+            Swal.fire({toast:true, position:'top-end', icon:'success', title:'Meta Actualizada', background:'#0b0b14', color:'#fff', showConfirmButton:false, timer:1500});
+        }
+    }
+  </script>
+</body>
+</html>

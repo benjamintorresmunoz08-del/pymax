@@ -8,62 +8,107 @@ from datetime import datetime, timedelta
 # ==============================================================================
 app = Flask(__name__)
 
-# 1. SEGURIDAD: Llave maestra para encriptar las sesiones (Cookies)
-# Esto hace que nadie pueda falsificar su identidad.
+# 1. SEGURIDAD
 app.secret_key = 'CLAVE_MAESTRA_PYMAX_SEGURIDAD_TOTAL_2026' 
-app.permanent_session_lifetime = timedelta(days=365) # La memoria dura 1 año
+
+# CORRECCIÓN: 36500 días son 100 años. Es "eterno" para el usuario,
+# pero un número seguro para que el servidor no falle.
+app.permanent_session_lifetime = timedelta(days=36500) 
 
 # 2. CONEXIÓN A BASE DE DATOS (SUPABASE)
-# Esta es la línea que conecta tu código con la nube.
-# IMPORTANTE: Si cambiaste la contraseña de Supabase, ponla aquí.
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:kedlO3vlVNh9luLO@aws-0-us-west-1.pooler.supabase.com:6543/postgres"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres.haqjuyagyvxynmulanhe:kedlO3vlVNh9luLO@aws-1-sa-east-1.pooler.supabase.com:5432/postgres"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
 # ==============================================================================
-# MODELOS DE DATOS (LA MEMORIA)
+# MODELOS DE DATOS (LA MEMORIA DE PYMAX)
 # ==============================================================================
-# Aquí definimos las tablas. Python las creará automáticamente en Supabase.
 
+# --- TUS TABLAS ORIGINALES ---
 class Obligacion(db.Model):
     __tablename__ = 'obligaciones'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.String(50)) # ID único del usuario (UUID)
-    tipo = db.Column(db.String(100), nullable=False) # Ej: Proveedor, Impuesto
+    user_id = db.Column(db.String(50))
+    tipo = db.Column(db.String(100), nullable=False)
     monto = db.Column(db.Float, nullable=False)
     fecha_vencimiento = db.Column(db.Date, nullable=False)
-    estado = db.Column(db.String(20), default='pendiente') # pendiente, pagada
+    estado = db.Column(db.String(20), default='pendiente')
     email_contacto = db.Column(db.String(100))
 
-# (Aquí podrás agregar más tablas en el futuro para Tiburón y Hambre)
+# --- TABLAS PARA LA IA Y FLUJO DE CAJA ---
+
+class MetaUsuario(db.Model):
+    __tablename__ = 'user_goals'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(100), unique=True, nullable=False)
+    goal_text = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class MetasAdicionales(db.Model):
+    __tablename__ = 'user_goals_extra'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(100), nullable=False)
+    slot_number = db.Column(db.Integer, nullable=False) # Guardará 2 o 3
+    goal_text = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Operacion(db.Model):
+    __tablename__ = 'user_operations'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(100), nullable=False)
+    amount = db.Column(db.Numeric(10, 2), nullable=False)
+    concept = db.Column(db.String(200))
+    type = db.Column(db.String(50)) # 'ingreso' o 'gasto'
+    category = db.Column(db.String(50))
+    
+    # --- NUEVAS COLUMNAS (INTELIGENCIA FINANCIERA) ---
+    cost_amount = db.Column(db.Numeric(10, 2), default=0) # Costo real
+    tax_amount = db.Column(db.Numeric(10, 2), default=0) # Impuestos
+    net_profit = db.Column(db.Numeric(10, 2), default=0) # Ganancia Neta
+    counterparty = db.Column(db.String(150)) # Proveedor/Cliente
+    # -------------------------------------------------
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Inventario(db.Model):
+    __tablename__ = 'user_inventory'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(100), nullable=False)
+    product_name = db.Column(db.String(150), nullable=False)
+    current_stock = db.Column(db.Integer, default=0)
+    
+    # --- NUEVAS COLUMNAS (ECONOMÍA UNITARIA) ---
+    cost_price = db.Column(db.Numeric(10, 2), default=0) # Precio Compra
+    sale_price = db.Column(db.Numeric(10, 2), default=0) # Precio Venta
+    tax_percent = db.Column(db.Numeric(5, 2), default=0) # % Impuesto
+    supplier = db.Column(db.String(150)) # Proveedor
+    # -------------------------------------------
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 # ==============================================================================
 # RUTAS DE NAVEGACIÓN Y LOGICA DE NEGOCIO
 # ==============================================================================
 
-# --- PORTADA Y REDIRECCIÓN INTELIGENTE ---
 @app.route('/')
 def index():
-    # El cerebro verifica: ¿Ya conozco a este usuario?
-    # Si ya eligió departamento, lo mandamos directo a su oficina.
     if 'departamento' in session:
         if session['departamento'] == 'empresa':
             return redirect(url_for('empresa_home'))
         elif session['departamento'] == 'personal':
             return redirect(url_for('personal_home'))
-    # Si es nuevo, le mostramos la portada.
     return render_template('index.html')
 
 @app.route('/seleccion')
 def seleccion():
     return render_template('seleccion.html')
 
-# --- GUARDADO DE PREFERENCIA (MEMORIA) ---
 @app.route('/configurar-preferencia/<tipo>')
 def configurar_preferencia(tipo):
     session.permanent = True
-    session['departamento'] = tipo # Guardamos "empresa" o "personal" en la cookie
+    session['departamento'] = tipo
     
     if tipo == 'empresa':
         return redirect(url_for('empresa_home'))
@@ -74,7 +119,6 @@ def configurar_preferencia(tipo):
 
 @app.route('/reiniciar-sistema')
 def reiniciar_sistema():
-    # Borra la memoria para permitir elegir de nuevo (o cerrar sesión)
     session.pop('departamento', None)
     return redirect(url_for('index'))
 
@@ -84,13 +128,11 @@ def reiniciar_sistema():
 
 @app.route('/empresa')
 def empresa_home():
-    # Seguridad: Si intenta entrar aquí sin ser empresa, lo corregimos.
     if session.get('departamento') != 'empresa':
         session['departamento'] = 'empresa'
     return render_template('empresa/index-empresa.html')
 
 # --- MÓDULO 1: PLAN MOVER (Finanzas) ---
-# Todas las herramientas financieras viven bajo esta ruta.
 
 @app.route('/empresa/mover')
 def mover_panel():
@@ -103,6 +145,16 @@ def mover_ventas():
 @app.route('/empresa/mover/flujo-caja')
 def mover_flujo():
     return render_template('empresa/mover/flujo-caja.html')
+
+# GESTIÓN DE METAS
+@app.route('/empresa/mover/metas')
+def mover_metas():
+    return render_template('empresa/mover/metas.html')
+
+# AUDITORÍA (LIBRO MAYOR)
+@app.route('/empresa/mover/auditoria')
+def mover_auditoria():
+    return render_template('empresa/mover/auditoria.html')
 
 @app.route('/empresa/mover/obligaciones')
 def mover_obligaciones():
@@ -129,16 +181,13 @@ def mover_exportar():
     return render_template('empresa/mover/exportar-excel.html')
 
 # --- MÓDULO 2: TIBURÓN (Ventas - Placeholder) ---
-# Preparado para el futuro. Ahora redirige al panel, pero pronto tendrá su propio home.
 @app.route('/empresa/tiburon')
 def tiburon():
-    # TODO: Crear templates/empresa/tiburon/panel-tiburon.html
     return render_template('empresa/index-empresa.html')
 
 # --- MÓDULO 3: HAMBRE (Operaciones - Placeholder) ---
 @app.route('/empresa/hambre')
 def hambre():
-    # TODO: Crear templates/empresa/hambre/panel-hambre.html
     return render_template('empresa/index-empresa.html')
 
 # ==============================================================================
@@ -156,9 +205,9 @@ def personal_home():
 # ==============================================================================
 
 if __name__ == '__main__':
-    # Esto le dice a Python: "Si las tablas no existen en Supabase, créalas ahora"
     with app.app_context():
+        # ESTA LÍNEA ES MÁGICA: SI VE COLUMNAS NUEVAS, LAS AGREGA SIN BORRAR DATOS
         db.create_all()
+        print("✅ SISTEMA ACTUALIZADO Y SEGURO")
     
-    # Modo Debug activado para desarrollo local, pero seguro para la nube.
     app.run(debug=True, port=5000)

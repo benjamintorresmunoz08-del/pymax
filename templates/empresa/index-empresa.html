@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pymax | Panel Empresarial</title>
   <link rel="icon" href="data:,">
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   
   <style>
-    /* ESTÉTICA IDÉNTICA AL INDEX */
+    /* ESTÉTICA GENERAL */
     :root { 
         --bg-void: #030014; 
         --glass-surface: rgba(255, 255, 255, 0.02); 
@@ -21,14 +24,13 @@
         --accent-violet: #7c3aed; 
     }
     
-    /* SCROLL FIX: Permitimos scroll infinito y fluido */
     body { 
         font-family: 'Inter', sans-serif; 
         background-color: var(--bg-void); 
         color: var(--text-main); 
         -webkit-font-smoothing: antialiased; 
         min-height: 100vh;
-        overflow-y: auto; /* Fundamental para móvil */
+        overflow-y: auto; 
         overflow-x: hidden;
     }
 
@@ -80,7 +82,7 @@
   <nav class="fixed top-6 left-0 w-full z-50 px-4 md:px-6">
     <div class="max-w-6xl mx-auto h-16 capsule-card flex justify-between items-center px-8 bg-black/60">
       <div class="flex items-center gap-6">
-        <a href="{{ url_for('index') }}" class="flex items-center gap-3 cursor-pointer group">
+        <a href="/" class="flex items-center gap-3 cursor-pointer group">
           <span class="text-xl font-bold tracking-tight text-white font-future">PYMAX</span>
           <div class="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></div>
         </a>
@@ -92,9 +94,10 @@
       </div>
       <div class="flex items-center gap-4">
         <span class="text-[10px] font-bold px-2 py-0.5 rounded border border-cyan-500/30 text-cyan-400 bg-white/5">EMPRESA</span>
-        <a href="{{ url_for('reiniciar_sistema') }}" class="text-xs text-slate-500 hover:text-red-400 transition flex items-center gap-1">
+        
+        <button id="btnExit" class="text-xs text-slate-500 hover:text-red-400 transition flex items-center gap-1 cursor-pointer bg-transparent border-none">
             Salir <i class="ph-bold ph-sign-out"></i>
-        </a>
+        </button>
       </div>
     </div>
   </nav>
@@ -127,7 +130,7 @@
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <a href="{{ url_for('mover_panel') }}" class="capsule-card p-8 group relative overflow-hidden block">
+              <a href="/empresa/mover" class="capsule-card p-8 group relative overflow-hidden block">
                   <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <div class="relative z-10">
                       <div class="flex justify-between items-start mb-6">
@@ -144,7 +147,7 @@
                   </div>
               </a>
 
-              <a href="{{ url_for('tiburon') }}" class="capsule-card p-8 group relative overflow-hidden block">
+              <a href="/empresa/tiburon" class="capsule-card p-8 group relative overflow-hidden block">
                   <div class="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <div class="relative z-10">
                       <div class="flex justify-between items-start mb-6">
@@ -161,7 +164,7 @@
                   </div>
               </a>
 
-              <a href="{{ url_for('hambre') }}" class="capsule-card p-8 group relative overflow-hidden block">
+              <a href="/empresa/hambre" class="capsule-card p-8 group relative overflow-hidden block">
                   <div class="absolute inset-0 bg-gradient-to-br from-red-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <div class="relative z-10">
                       <div class="flex justify-between items-start mb-6">
@@ -281,32 +284,61 @@
     <p class="text-slate-500 text-sm">© 2026 Pymax Global. Tecnología Financiera de Élite.</p>
   </footer>
 
-  </body>
-  <script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Busca TODOS los enlaces (<a>) de tu código original
-    document.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', function(e) {
-            let url = this.getAttribute('href');
-            
-            // Solo actuamos si el enlace apunta a un archivo .html
-            if (url && url.includes('.html')) {
-                e.preventDefault(); // Detiene el error 404
-                
-                // 1. Quita la extensión .html automáticamente
-                let nuevaRuta = url.replace('.html', '');
+</body>
 
-                // 2. DICCIONARIO DE CORRECCIONES (Para los botones "Volver")
-                // Aquí le enseñamos a ir a las rutas principales correctas
-                if (url.includes('panel-mover.html')) nuevaRuta = "/empresa/mover";
-                if (url.includes('index-empresa.html')) nuevaRuta = "/empresa";
-                if (url.includes('index.html')) nuevaRuta = "/";
+<script>
+    // 1. CONFIGURACIÓN SUPABASE
+    const SU_URL_INDEX = 'https://haqjuyagyvxynmulanhe.supabase.co';
+    const SU_KEY_INDEX = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
+    const supabaseClient = window.supabase.createClient(SU_URL_INDEX, SU_KEY_INDEX);
 
-                // 3. Te envía a la ruta limpia de Python
-                window.location.href = nuevaRuta;
-            }
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        // A. MANEJO DEL BOTÓN SALIR (NUCLEAR)
+        const btnExit = document.getElementById('btnExit');
+        if (btnExit) {
+            btnExit.addEventListener('click', async (e) => {
+                e.preventDefault(); // Prevenir cualquier navegación por defecto
+                console.log("🛑 EJECUTANDO PROTOCOLO DE SALIDA...");
+
+                // 1. Bandera para Index (Evita redirección automática)
+                localStorage.setItem('pymax_logging_out', 'true');
+
+                // 2. Limpieza TOTAL del LocalStorage (Borra la sesión local)
+                // OJO: Borramos todo MENOS la bandera de salida
+                localStorage.clear();
+                localStorage.setItem('pymax_logging_out', 'true'); 
+
+                // 3. Cerrar en Supabase (Servidor)
+                try {
+                    await supabaseClient.auth.signOut();
+                } catch (error) {
+                    console.warn("Supabase ya estaba cerrado o error menor:", error);
+                }
+
+                // 4. REDIRECCIÓN FORZADA (REPLACE)
+                // Usamos 'replace' para que no puedan volver atrás con el botón del navegador
+                window.location.replace("/");
+            });
+        }
+
+        // B. FIX DE ENLACES PARA NAVEGACIÓN
+        document.querySelectorAll('a').forEach(link => {
+            // Ignoramos el botón de salir porque ya tiene su evento arriba
+            if(link.id === 'btnExit') return;
+
+            link.addEventListener('click', function(e) {
+                let url = this.getAttribute('href');
+                if (url && url.includes('.html')) {
+                    e.preventDefault(); 
+                    let nuevaRuta = url.replace('.html', '');
+                    if (url.includes('panel-mover.html')) nuevaRuta = "/empresa/mover";
+                    if (url.includes('index-empresa.html')) nuevaRuta = "/empresa";
+                    if (url.includes('index.html')) nuevaRuta = "/";
+                    window.location.href = nuevaRuta;
+                }
+            });
         });
     });
-});
 </script>
 </html>

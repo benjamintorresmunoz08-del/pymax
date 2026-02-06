@@ -6,8 +6,10 @@
   <title>Elige tu Camino | Pymax Corp</title>
   
   <link rel="icon" href="data:,">
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
     :root {
@@ -163,7 +165,7 @@
 
   <div class="nebula-bg"></div>
 
-  <a href="{{ url_for('index') }}" class="absolute top-8 left-8 flex items-center gap-2 text-slate-500 hover:text-white transition font-medium text-sm z-20">
+  <a href="/" class="absolute top-8 left-8 flex items-center gap-2 text-slate-500 hover:text-white transition font-medium text-sm z-20">
     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
     <span>Volver al Inicio</span>
   </a>
@@ -211,7 +213,7 @@
       <h3 class="text-2xl font-bold text-white mb-4 font-future">¿Confirmar Selección?</h3>
       <p class="text-slate-400 mb-8 text-sm">
         Estás a punto de activar el entorno <strong id="modalRoleName" class="text-white"></strong>.
-        <br>La IA se calibrará para este objetivo.
+        <br>La IA se calibrará para este objetivo permanentemente.
       </p>
       <div class="flex flex-col gap-3">
         <button onclick="ejecutarSeleccion()" class="w-full py-3 bg-white text-black font-bold rounded-xl hover:bg-slate-200 transition">
@@ -230,7 +232,18 @@
     <p class="text-slate-500 text-xs uppercase tracking-widest">Estableciendo conexión segura</p>
   </div>
 
-  <script>
+ <script>
+    // --- 1. CONFIGURACIÓN SUPABASE (Solo para respaldo) ---
+    const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co'; 
+    const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
+    // Si falla la carga de Supabase, no importa, seguimos adelante.
+    let supabaseClient = null;
+    try {
+        supabaseClient = window.supabase.createClient(SU_URL, SU_KEY);
+    } catch (e) {
+        console.warn("Supabase no cargó, pero no detendremos la misión.");
+    }
+
     let seleccionPendiente = null;
 
     // Abrir Modal
@@ -241,6 +254,7 @@
         
         const modal = document.getElementById('confirmationModal');
         modal.style.display = 'flex';
+        // Pequeño delay para la animación CSS
         setTimeout(() => modal.classList.add('active'), 10);
     }
 
@@ -252,50 +266,36 @@
         seleccionPendiente = null;
     }
 
-    // Ejecutar la Magia (Conectar con Flask)
+    // --- EJECUTAR SELECCIÓN (VERSIÓN BLINDADA) ---
     function ejecutarSeleccion() {
         if (!seleccionPendiente) return;
 
-        // Mostrar Loader
-        cerrarModal();
+        // 1. UI: Mostrar Loader
+        const modal = document.getElementById('confirmationModal');
+        modal.classList.remove('active');
         document.getElementById('loaderOverlay').style.display = 'flex';
 
-        // === CORRECCIÓN CRÍTICA ===
-        // Usamos una ruta directa para evitar errores de sintaxis
-        let baseUrl = "/configurar-preferencia/";
+        // 2. ACTUALIZAR BASE DE DATOS (En segundo plano - Fuego y Olvido)
+        // No usamos 'await' para que no frene la redirección si el internet está lento.
+        if (supabaseClient) {
+            supabaseClient.auth.getUser().then(({ data: { user } }) => {
+                if (user) {
+                    supabaseClient.from('user_profiles')
+                        .upsert({ id: user.id, account_type: seleccionPendiente })
+                        .then(() => console.log("Preferencia guardada en nube"));
+                }
+            });
+        }
+
+        // 3. REDIRECCIÓN FORZADA (PRIORIDAD MÁXIMA)
+        console.log("Redirigiendo a: /configurar-preferencia/" + seleccionPendiente);
         
+        // Esperamos 1 segundo solo para que se vea la animación de carga bonita
         setTimeout(() => {
-            // Esto construirá: /configurar-preferencia/empresa
-            window.location.href = baseUrl + seleccionPendiente;
-        }, 1500);
+            // Esta línea le grita al servidor Python: "¡CAMBIA DE RUTA AHORA!"
+            window.location.replace("/configurar-preferencia/" + seleccionPendiente);
+        }, 1000);
     }
   </script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Busca TODOS los enlaces (<a>) de tu código original
-    document.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', function(e) {
-            let url = this.getAttribute('href');
-            
-            // Solo actuamos si el enlace apunta a un archivo .html
-            if (url && url.includes('.html')) {
-                e.preventDefault(); // Detiene el error 404
-                
-                // 1. Quita la extensión .html automáticamente
-                let nuevaRuta = url.replace('.html', '');
-
-                // 2. DICCIONARIO DE CORRECCIONES (Para los botones "Volver")
-                // Aquí le enseñamos a ir a las rutas principales correctas
-                if (url.includes('panel-mover.html')) nuevaRuta = "/empresa/mover";
-                if (url.includes('index-empresa.html')) nuevaRuta = "/empresa";
-                if (url.includes('index.html')) nuevaRuta = "/";
-
-                // 3. Te envía a la ruta limpia de Python
-                window.location.href = nuevaRuta;
-            }
-        });
-    });
-});
-</script>
 </body>
 </html>

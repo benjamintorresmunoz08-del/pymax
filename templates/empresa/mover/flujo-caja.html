@@ -2,226 +2,841 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Pymax · Flujo de Caja Diario</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Pymax | Flujo de Caja Pro</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <script src="../pymax-core.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
+    /* === 🧬 ADN PYMAX === */
+    :root {
+      --bg-void: #030014;
+      --glass-surface: rgba(255, 255, 255, 0.02);
+      --glass-border: rgba(255, 255, 255, 0.06);
+      --text-main: #e2e8f0;
+      
+      --accent-cyan: #06b6d4;
+      --accent-violet: #7c3aed;
+      --accent-gold: #fbbf24;
+      --accent-emerald: #10b981;
+      --accent-rose: #ef4444;
+    }
+
     body {
-      background:
-        radial-gradient(900px 400px at 10% -10%, rgba(79,70,229,.25), transparent 40%),
-        radial-gradient(800px 500px at 90% 10%, rgba(99,102,241,.18), transparent 45%),
-        radial-gradient(700px 400px at 50% 120%, rgba(56,189,248,.12), transparent 40%),
-        #020617;
+      background-color: var(--bg-void);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      padding-bottom: 120px;
+      -webkit-font-smoothing: antialiased;
     }
 
-    .glass {
-      background: rgba(15,23,42,0.65);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(148,163,184,0.15);
+    h1, h2, h3, .font-future { font-family: 'Outfit', sans-serif; letter-spacing: -0.02em; }
+    .gpu { transform: translateZ(0); will-change: transform; }
+
+    /* FONDO NEBULA */
+    .nebula-bg {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      background: 
+        radial-gradient(circle at 10% 20%, rgba(124, 58, 237, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 40%);
     }
 
-    .card-hover {
-      transition: transform .3s ease, box-shadow .3s ease;
+    /* CARDS CÁPSULA */
+    .capsule-card {
+      background: #08080c; 
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      position: relative; 
+      transition: border-color 0.3s ease;
+    }
+    .capsule-card::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    }
+    .capsule-card:hover { border-color: rgba(255, 255, 255, 0.15); }
+
+    /* TIME SELECTOR */
+    .time-selector {
+      display: flex; background: rgba(255,255,255,0.03);
+      border: 1px solid var(--glass-border); border-radius: 100px;
+      padding: 4px; gap: 4px;
+    }
+    .time-btn {
+      padding: 6px 16px; border-radius: 100px;
+      font-size: 0.75rem; font-weight: 700; color: #94a3b8;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .time-btn:hover { color: white; background: rgba(255,255,255,0.05); }
+    .time-btn.active { background: var(--accent-violet); color: white; box-shadow: 0 2px 10px rgba(124, 58, 237, 0.3); }
+
+    /* === INFO TOGGLES === */
+    .info-btn {
+        background: transparent; border: none; color: #64748b; cursor: pointer;
+        font-size: 14px; margin-left: 8px; transition: color 0.2s;
+        position: relative; z-index: 50; 
+    }
+    .info-btn:hover { color: var(--accent-cyan); }
+    
+    .info-panel {
+        position: absolute;
+        top: 100%; left: 0; right: 0;
+        z-index: 9999 !important; 
+        background: #0f172a; 
+        border: 1px solid rgba(124, 58, 237, 0.3); 
+        border-left: 3px solid var(--accent-cyan);
+        padding: 16px; border-radius: 12px;
+        margin-top: 8px; 
+        font-size: 0.75rem; color: #cbd5e1; line-height: 1.6;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        display: none; 
+        pointer-events: auto;
+    }
+    .info-panel.active { display: block; animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+    .info-panel strong { color: white; display: block; margin-bottom: 6px; font-size: 0.85rem; font-family: 'Outfit', sans-serif; }
+    .info-close { 
+        position: absolute; top: 8px; right: 8px; color: #64748b; cursor: pointer; padding: 4px;
+    }
+    .info-close:hover { color: white; }
+
+    @keyframes popIn { from { opacity: 0; transform: translateY(-10px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+    /* ORACLE CARD (IA) */
+    .oracle-card {
+      background: linear-gradient(145deg, rgba(124, 58, 237, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      min-height: 250px; display: flex; flex-direction: column;
+    }
+    .advice-item {
+      display: flex; gap: 12px; margin-bottom: 12px;
+      padding: 10px; border-radius: 12px;
+      background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05);
+      transition: all 0.2s;
+    }
+    .advice-item:hover { background: rgba(255,255,255,0.05); border-color: rgba(139, 92, 246, 0.3); }
+    .advice-number {
+      width: 20px; height: 20px; background: var(--accent-violet); color: white;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-weight: bold; font-size: 0.65rem; flex-shrink: 0; margin-top: 2px;
     }
 
-    .card-hover:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 40px rgba(0,0,0,.4);
+    /* KPI METRICS GRID */
+    .kpi-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px;
+        margin-bottom: 24px; position: relative; 
     }
+    .kpi-box {
+        background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border);
+        padding: 16px; border-radius: 16px; position: relative;
+    }
+    .kpi-box:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.1); }
+    
+    .kpi-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .kpi-label { font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+    .kpi-value { font-size: 1.2rem; color: white; font-family: 'Outfit', sans-serif; font-weight: 700; }
+    .kpi-trend { font-size: 0.7rem; display: flex; align-items: center; gap: 4px; margin-top: 4px; }
+
+    /* TABLA FINANCIERA */
+    .finance-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.85rem; }
+    .finance-table th { text-align: left; color: #64748b; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; padding: 12px 0; border-bottom: 1px solid var(--glass-border); }
+    .finance-table td { padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.02); color: #cbd5e1; }
+    .amount-col { text-align: right; font-family: 'Outfit', sans-serif; font-weight: 600; }
+    .hidden-row { display: none; } 
+
+    /* SCORE DE SALUD */
+    .health-score-container {
+        display: flex; align-items: center; justify-content: space-between;
+        background: linear-gradient(90deg, rgba(16, 185, 129, 0.1), transparent);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        padding: 12px 20px; border-radius: 16px; margin-bottom: 24px;
+    }
+    .score-circle {
+        width: 40px; height: 40px; border-radius: 50%;
+        background: #10b981; color: #020617;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-family: 'Outfit', sans-serif;
+    }
+
+    /* ALERTS & ACTIONS */
+    .alerts-section { margin-bottom: 24px; }
+    .alert-item {
+        display: flex; align-items: center; gap: 12px;
+        background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);
+        padding: 12px; border-radius: 12px; margin-bottom: 8px;
+    }
+    .alert-icon { color: #f87171; font-size: 1.2rem; }
+    .alert-text { font-size: 0.75rem; color: #fca5a5; flex: 1; }
+
+    .action-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+    .action-btn {
+        background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+        padding: 12px; border-radius: 12px; text-align: center;
+        transition: all 0.2s; cursor: pointer;
+    }
+    .action-btn:hover { background: rgba(255,255,255,0.08); border-color: white; transform: translateY(-2px); }
+    .action-icon { display: block; font-size: 1.2rem; margin-bottom: 4px; color: var(--accent-violet); }
+    .action-label { font-size: 0.7rem; font-weight: 700; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* UTILS */
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .btn-glow {
+      background: linear-gradient(90deg, #7c3aed, #2563eb); color: white;
+      padding: 10px 20px; border-radius: 100px; font-weight: bold; font-size: 0.8rem;
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.3); transition: transform 0.2s;
+    }
+    .btn-glow:hover { transform: scale(1.05); }
+    .btn-text { 
+        background: none; border: none; color: var(--accent-violet); 
+        font-size: 0.7rem; font-weight: 700; text-transform: uppercase; cursor: pointer; letter-spacing: 1px;
+        display: none; 
+    }
+    .btn-text:hover { color: white; }
+    .lock-overlay { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(3, 0, 20, 0.6); backdrop-filter: blur(4px); text-align: center; padding: 20px; border-radius: 24px; }
+    .blurred-content { filter: blur(4px); opacity: 0.3; pointer-events: none; user-select: none; }
   </style>
 </head>
 
-<body class="text-slate-100 min-h-screen font-sans">
+<body>
+  <div class="nebula-bg gpu"></div>
 
-  <header class="glass px-8 py-5 flex justify-between items-center border-b border-slate-800 sticky top-0 z-40">
-    <h1 class="text-xl font-semibold text-indigo-400">
-      Pymax · Flujo de Caja Diario
-    </h1>
-    <a href="panel-mover.html" class="text-sm text-slate-300 hover:text-white transition border border-slate-600 px-3 py-1 rounded hover:bg-slate-800">
-      ← Volver al panel
-    </a>
-  </header>
+  <nav class="fixed top-0 left-0 w-full z-50 bg-[#030014]/90 backdrop-blur-md border-b border-white/5 h-16 flex items-center px-4 md:px-6 justify-between">
+    <div class="flex items-center gap-4">
+      <a href="/empresa" class="text-slate-400 hover:text-white transition"><i class="ph-bold ph-arrow-left text-lg"></i></a>
+      <div class="h-6 w-px bg-white/10"></div>
+      <div>
+        <h1 class="text-lg font-bold text-white font-future tracking-tight">PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">DIRECTOR FINANCIERO</span></h1>
+      </div>
+    </div>
+    
+    <div class="hidden md:flex time-selector">
+       <button class="time-btn" onclick="updateTimeframe('1M', this)">1M</button>
+       <button class="time-btn" onclick="updateTimeframe('3M', this)">3M</button>
+       <button class="time-btn" onclick="updateTimeframe('YTD', this)">Año Fiscal</button>
+       <button class="time-btn active" onclick="updateTimeframe('MAX', this)">Histórico</button>
+    </div>
+  </nav>
 
-  <main class="max-w-7xl mx-auto px-6 py-10 space-y-12">
+  <main class="max-w-7xl mx-auto px-4 md:px-6 pt-24 pb-12 grid lg:grid-cols-12 gap-6 relative z-10">
 
-    <section class="text-center max-w-3xl mx-auto">
-      <h2 class="text-3xl font-semibold mb-4">
-        Controla tu dinero disponible día a día
-      </h2>
-      <p class="text-slate-300 leading-relaxed">
-        El flujo de caja te permite saber exactamente cuánto dinero real tienes hoy (<span id="fecha-hoy" class="text-indigo-400 font-bold">...</span>),
-        considerando ingresos y gastos.
-      </p>
-    </section>
-
-    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-      <div class="glass rounded-xl p-6 card-hover border-t-4 border-green-500">
-        <p class="text-sm text-slate-400">Ingresos acumulados hoy</p>
-        <p id="val-ingresos" class="text-3xl font-bold text-green-400 mt-2">Cargando...</p>
-        <p class="text-xs text-slate-400 mt-2">
-          Total de entradas registradas durante el día.
-        </p>
+    <div class="lg:col-span-8 space-y-6">
+      
+      <div class="capsule-card min-h-[450px] flex flex-col">
+         <div class="flex justify-between items-center mb-6">
+            <div>
+               <div class="flex items-center">
+                   <h3 class="text-xl font-bold text-white font-future">Tendencia de Liquidez</h3>
+                   <button class="info-btn" onclick="toggleInfo('infoChart')"><i class="ph-bold ph-question"></i></button>
+               </div>
+               <p class="text-xs text-slate-500 mt-1" id="chartSubtitle">Análisis visual de patrimonio neto</p>
+               
+               <div id="infoChart" class="info-panel">
+                   <div class="info-close" onclick="toggleInfo('infoChart')"><i class="ph-bold ph-x"></i></div>
+                   <strong>¿Cómo leer este gráfico?</strong>
+                   Esta línea representa tu "signo vital" financiero. <br>
+                   • Muestra exactamente cuánto dinero real tienes disponible.<br>
+                   • Detecta automáticamente picos máximos y caídas peligrosas.<br>
+                   • La meta es mantener la línea siempre por encima de $0 y en ascenso.
+               </div>
+            </div>
+            <div class="md:hidden">
+               <select id="mobileTimeSelect" class="bg-[#0f172a] text-xs text-white p-2 rounded-lg border border-white/10 outline-none" onchange="updateTimeframe(this.value)">
+                  <option value="MAX" selected>Histórico</option>
+                  <option value="1M">Mes Actual</option>
+               </select>
+            </div>
+         </div>
+         <div id="cashflowChart" class="flex-1 w-full -ml-2"></div>
       </div>
 
-      <div class="glass rounded-xl p-6 card-hover border-t-4 border-red-500">
-        <p class="text-sm text-slate-400">Gastos acumulados hoy</p>
-        <p id="val-gastos" class="text-3xl font-bold text-red-400 mt-2">Cargando...</p>
-        <p class="text-xs text-slate-400 mt-2">
-          Pagos y egresos realizados en el día.
-        </p>
+      <div class="capsule-card">
+          <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center">
+                  <h3 class="text-lg font-bold text-white font-future">Estado de Flujo de Efectivo</h3>
+                  <button class="info-btn" onclick="toggleInfo('infoStatement')"><i class="ph-bold ph-question"></i></button>
+              </div>
+              <button onclick="toggleDetails()" id="btnDetails" class="btn-text">Ver Detalle Completo</button>
+          </div>
+
+          <div id="infoStatement" class="info-panel">
+              <div class="info-close" onclick="toggleInfo('infoStatement')"><i class="ph-bold ph-x"></i></div>
+              <strong>Balance Operativo</strong>
+              • <b>Ingresos:</b> Dinero real que entró.<br>
+              • <b>Egresos:</b> Dinero real que salió.<br>
+              • <b>Flujo Neto:</b> La verdad absoluta de tu mes. (Ingresos - Egresos).
+          </div>
+          
+          <table class="finance-table">
+              <thead>
+                  <tr>
+                      <th>Concepto Operativo</th>
+                      <th class="text-right">Monto</th>
+                      <th class="text-right">% Relativo</th>
+                  </tr>
+              </thead>
+              <tbody id="statementTableBody">
+                  <tr><td colspan="3" class="text-center text-xs text-slate-500 py-4">Calculando estado financiero...</td></tr>
+              </tbody>
+          </table>
       </div>
 
-      <div class="glass rounded-xl p-6 card-hover border-t-4 border-indigo-500">
-        <p class="text-sm text-slate-400">Dinero disponible</p>
-        <p id="val-disponible" class="text-3xl font-bold text-white mt-2">Cargando...</p>
-        <p class="text-xs text-slate-400 mt-2">
-          Resultado real de tu flujo de caja diario.
-        </p>
+      <div class="capsule-card oracle-card p-6 relative">
+         <div id="aiLockOverlay" class="lock-overlay hidden">
+            <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-3">
+               <i class="ph-fill ph-lock-key text-xl text-slate-300"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white font-future mb-1">Estrategia Desactivada</h3>
+            <p class="text-xs text-slate-400 mb-4 max-w-[250px]">
+               Para darte consejos tácticos, necesito saber cuál es tu objetivo financiero.
+            </p>
+            <button onclick="window.location.href='/empresa/mover/metas'" class="btn-glow">Definir Metas</button>
+         </div>
+
+         <div id="aiContent" class="flex flex-col h-full">
+            <div class="flex items-center gap-3 mb-4 pb-4 border-b border-white/10">
+               <div class="w-8 h-8 rounded-full bg-violet-600 flex items-center justify-center shadow-[0_0_10px_#7c3aed]">
+                  <i class="ph-fill ph-brain text-white text-sm animate-pulse"></i>
+               </div>
+               <div>
+                  <h4 class="text-sm font-bold text-white font-future uppercase tracking-widest">Estrategia del Copiloto</h4>
+                  <p class="text-[10px] text-violet-300">Foco Actual: <span id="currentGoalText" class="font-bold text-white">...</span></p>
+               </div>
+            </div>
+            <div id="adviceList" class="flex-1 overflow-y-auto pr-2 custom-scroll space-y-2">
+               <div class="text-center p-4 text-xs text-slate-500">Analizando todas tus metas...</div>
+            </div>
+         </div>
       </div>
 
-    </section>
+    </div>
 
-    <section class="glass rounded-xl p-8 max-w-4xl mx-auto">
-      <h3 class="text-xl font-semibold mb-4 text-indigo-300">
-        ¿Por qué este indicador es clave?
-      </h3>
+    <div class="lg:col-span-4 space-y-6">
+      
+      <div class="health-score-container">
+          <div>
+              <div class="text-[10px] text-emerald-300 font-bold uppercase tracking-widest mb-1">Salud Financiera</div>
+              <div class="text-xs text-slate-400">Calificación en tiempo real</div>
+          </div>
+          <div class="score-circle" id="healthScore">--</div>
+      </div>
 
-      <ul class="list-disc list-inside space-y-2 text-slate-300">
-        <li>Evita gastar dinero que aún no existe realmente.</li>
-        <li>Te permite anticipar problemas de liquidez.</li>
-        <li>Facilita decisiones como compras, pagos o inversiones.</li>
-        <li>Es la base para un negocio ordenado y sostenible.</li>
-      </ul>
-    </section>
+      <div class="kpi-grid">
+          <div class="kpi-box">
+              <div class="kpi-header">
+                  <div class="kpi-label">Margen Neto</div>
+                  <button class="info-btn" onclick="toggleInfo('infoMargin')"><i class="ph-bold ph-question"></i></button>
+              </div>
+              <div id="infoMargin" class="info-panel">
+                  <div class="info-close" onclick="toggleInfo('infoMargin')"><i class="ph-bold ph-x"></i></div>
+                  <strong>Rentabilidad Real</strong>
+                  Porcentaje limpio que te queda después de todos los gastos.
+              </div>
+              <div class="kpi-value" id="kpiMargin">0%</div>
+              <div class="kpi-trend text-slate-500" id="kpiMarginTrend">--</div>
+          </div>
 
-    <section class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <div class="kpi-box">
+              <div class="kpi-header">
+                  <div class="kpi-label">Burn Rate</div>
+                  <button class="info-btn" onclick="toggleInfo('infoBurn')"><i class="ph-bold ph-question"></i></button>
+              </div>
+              <div id="infoBurn" class="info-panel">
+                  <div class="info-close" onclick="toggleInfo('infoBurn')"><i class="ph-bold ph-x"></i></div>
+                  <strong>Velocidad de Gasto</strong>
+                  Promedio de dinero quemado por día para operar.
+              </div>
+              <div class="kpi-value text-rose-400" id="kpiBurn">$0</div>
+              <div class="kpi-trend text-slate-500">Diario Prom.</div>
+          </div>
 
-      <a href="ventas-gastos.html"
-         class="glass rounded-xl p-6 card-hover block hover:bg-slate-800/50 transition">
-        <h4 class="font-semibold text-lg mb-2 text-indigo-400">
-          Registrar ingresos y gastos
-        </h4>
-        <p class="text-slate-300 text-sm">
-          Actualiza tus movimientos diarios para mantener el flujo de caja correcto.
-        </p>
-        <p class="mt-4 text-white text-sm font-semibold">
-          Ir al registro →
-        </p>
-      </a>
+          <div class="kpi-box">
+              <div class="kpi-header">
+                  <div class="kpi-label text-cyan-300">Ticket Prom.</div>
+                  <button class="info-btn" onclick="toggleInfo('infoTicket')"><i class="ph-bold ph-question"></i></button>
+              </div>
+              <div id="infoTicket" class="info-panel">
+                  <div class="info-close" onclick="toggleInfo('infoTicket')"><i class="ph-bold ph-x"></i></div>
+                  <strong>Calidad de Venta</strong>
+                  Promedio de ingreso por cada venta realizada. Si sube, ganas más con el mismo esfuerzo.
+              </div>
+              <div class="kpi-value text-white" id="kpiTicket">$0</div>
+              <div class="kpi-trend text-cyan-500/60">Por Transacción</div>
+          </div>
 
-      <a href="progreso.html"
-         class="glass rounded-xl p-6 card-hover block hover:bg-slate-800/50 transition">
-        <h4 class="font-semibold text-lg mb-2 text-indigo-400">
-          Ver estado del negocio
-        </h4>
-        <p class="text-slate-300 text-sm">
-          Analiza tu situación general con indicadores claros y simples.
-        </p>
-        <p class="mt-4 text-white text-sm font-semibold">
-          Ver análisis →
-        </p>
-      </a>
+          <div class="kpi-box">
+              <div class="kpi-header">
+                  <div class="kpi-label text-amber-300">Inventario</div>
+                  <button class="info-btn" onclick="toggleInfo('infoInvVal')"><i class="ph-bold ph-question"></i></button>
+              </div>
+              <div id="infoInvVal" class="info-panel">
+                  <div class="info-close" onclick="toggleInfo('infoInvVal')"><i class="ph-bold ph-x"></i></div>
+                  <strong>Dinero Estancado</strong>
+                  Valor total de costo de todos tus productos en bodega. Es dinero que tienes, pero no puedes gastar.
+              </div>
+              <div class="kpi-value text-amber-400" id="kpiInvValue">$0</div>
+              <div class="kpi-trend text-amber-500/60">Activo Físico</div>
+          </div>
 
-    </section>
+          <div class="kpi-box col-span-full border-violet-500/30 bg-violet-500/05">
+              <div class="kpi-header">
+                  <div class="kpi-label text-violet-300">Runway Estimado</div>
+                  <button class="info-btn" onclick="toggleInfo('infoRunway')"><i class="ph-bold ph-question"></i></button>
+              </div>
+              <div id="infoRunway" class="info-panel">
+                  <div class="info-close" onclick="toggleInfo('infoRunway')"><i class="ph-bold ph-x"></i></div>
+                  <strong>Días de Vida</strong>
+                  Si hoy dejaras de vender, ¿cuántos días sobrevive tu empresa con el dinero actual?
+              </div>
+              <div class="kpi-value text-white" id="kpiRunway">∞ Días</div>
+              <div class="kpi-trend text-violet-400/60">Proyección IA de Supervivencia</div>
+          </div>
+      </div>
 
-    <section class="text-center text-slate-400 text-sm pt-6 pb-10">
-      Pymax transforma números en claridad financiera.
-    </section>
+      <div class="capsule-card border-l-4 border-l-cyan-500">
+         <div class="flex items-center justify-between">
+             <p class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest mb-2">Posición Neta</p>
+             <button class="info-btn" onclick="toggleInfo('infoPos')"><i class="ph-bold ph-question"></i></button>
+         </div>
+         <div id="infoPos" class="info-panel">
+             <div class="info-close" onclick="toggleInfo('infoPos')"><i class="ph-bold ph-x"></i></div>
+             <strong>Tu Saldo Real</strong>
+             Diferencia exacta entre entradas y salidas totales. Es tu "termómetro" de liquidez.
+         </div>
+         <h3 class="text-3xl font-bold text-white font-future" id="totalBalance">$0</h3>
+         <div class="flex justify-between mt-4 text-xs border-t border-white/5 pt-3">
+            <div>
+                <span class="block text-slate-500 mb-1">Entradas Totales</span>
+                <span class="text-emerald-400 font-bold text-lg" id="totalIng">$0</span>
+            </div>
+            <div class="text-right">
+                <span class="block text-slate-500 mb-1">Salidas Totales</span>
+                <span class="text-rose-400 font-bold text-lg" id="totalGas">$0</span>
+            </div>
+         </div>
+      </div>
+
+      <div class="capsule-card">
+          <h4 class="text-sm font-bold text-white font-future mb-4">Panel de Control</h4>
+          
+          <div id="alertsContainer" class="alerts-section">
+              </div>
+
+          <div class="action-btn-grid">
+              <div class="action-btn" onclick="window.location.href='/empresa/mover/ventas-gastos'">
+                  <i class="ph-bold ph-plus-circle action-icon"></i>
+                  <div class="action-label">Registrar Ingreso</div>
+              </div>
+              <div class="action-btn" onclick="window.location.href='/empresa/mover/obligaciones'">
+                  <i class="ph-bold ph-warning-circle action-icon"></i>
+                  <div class="action-label">Ver Deudas</div>
+              </div>
+          </div>
+      </div>
+
+    </div>
 
   </main>
 
   <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-        // 1. Verificar si cargó el Core
-        try {
-            if (typeof pymaxGetUser === 'undefined') {
-                console.error("Error: Core no cargado");
-                return;
-            }
-            
-            // 2. Verificar Sesión
-            const user = await pymaxGetUser();
-            if(!user) {
-                window.location.href = "../index.html"; // Protección
-                return;
-            }
+    const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
+    const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
+    const cliente = supabase.createClient(SU_URL, SU_KEY);
+    
+    let allData = [];
+    let chartInstance = null;
+    let userGoals = []; 
+    let financialData = { income: 0, expense: 0, balance: 0 };
+    let statementCategories = {};
 
-            // 3. Obtener Fecha de Hoy (Local)
-            const hoy = new Date();
-            // Formato YYYY-MM-DD para comparar con DB
-            const fechaHoyString = hoy.toISOString().split('T')[0];
-            // Formato legible para el usuario
-            document.getElementById("fecha-hoy").innerText = hoy.toLocaleDateString();
+    // --- MANEJO DE INFO TOGGLES ---
+    function toggleInfo(id) {
+        const el = document.getElementById(id);
+        const isActive = el.classList.contains('active');
+        document.querySelectorAll('.info-panel').forEach(p => p.classList.remove('active'));
+        if (!isActive) el.classList.add('active');
+    }
 
-            // 4. Leer Movimientos
-            const movimientos = await pymaxLeerMovimientos();
+    function toggleDetails() {
+        const rows = document.querySelectorAll('.hidden-row');
+        const btn = document.getElementById('btnDetails');
+        if (rows.length === 0) return;
+        let isHidden = rows[0].style.display === 'none';
+        rows.forEach(row => row.style.display = isHidden ? 'table-row' : 'none');
+        btn.innerText = isHidden ? "OCULTAR DETALLE" : "VER DETALLE COMPLETO";
+    }
 
-            // 5. Filtrar solo los de HOY
-            let ingresosHoy = 0;
-            let gastosHoy = 0;
+    document.addEventListener("DOMContentLoaded", () => {
+       loadFullHistory();
+       loadInventoryAssets(); // NUEVO: Carga valor del inventario
+    });
 
-            if(movimientos && movimientos.length > 0) {
-                movimientos.forEach(m => {
-                    // Supabase devuelve la fecha como YYYY-MM-DD
-                    if (m.fecha === fechaHoyString) {
-                        if (m.tipo === 'ingreso') ingresosHoy += m.monto;
-                        if (m.tipo === 'gasto') gastosHoy += m.monto;
-                    }
-                });
-            }
+    // --- CARGA DE DATOS ---
+    async function loadFullHistory() {
+       const { data: { user } } = await cliente.auth.getUser();
+       if(!user) return;
 
-            const disponible = ingresosHoy - gastosHoy;
+       // Cargar Metas
+       const { data: mainGoal } = await cliente.from('user_goals').select('goal_text').eq('user_id', user.id).maybeSingle();
+       const { data: extraGoals } = await cliente.from('user_goals_extra').select('goal_text').eq('user_id', user.id);
+       
+       userGoals = [];
+       if (mainGoal) userGoals.push(mainGoal.goal_text);
+       if (extraGoals) extraGoals.forEach(g => userGoals.push(g.goal_text));
+       updateGoalUI();
 
-            // 6. Actualizar Interfaz
-            document.getElementById("val-ingresos").innerText = `$${ingresosHoy.toLocaleString()}`;
-            document.getElementById("val-gastos").innerText = `$${gastosHoy.toLocaleString()}`;
-            
-            const divDisp = document.getElementById("val-disponible");
-            divDisp.innerText = `$${disponible.toLocaleString()}`;
+       // Cargar Operaciones
+       const { data } = await cliente.from('user_operations')
+          .select('amount, type, category, created_at, concept')
+          .eq('user_id', user.id)
+          .order('created_at', {ascending: true});
 
-            // Colorear el resultado
-            if(disponible > 0) divDisp.className = "text-3xl font-bold text-green-400 mt-2";
-            else if(disponible < 0) divDisp.className = "text-3xl font-bold text-red-400 mt-2";
-            else divDisp.className = "text-3xl font-bold text-white mt-2";
+       allData = data || [];
+       updateTimeframe('MAX');
+    }
 
-        } catch (e) {
-            console.error("Error en flujo de caja:", e);
+    // --- NUEVO: CALCULAR VALOR DEL INVENTARIO ---
+    async function loadInventoryAssets() {
+        const { data: { user } } = await cliente.auth.getUser();
+        if(!user) return;
+
+        const { data } = await cliente.from('user_inventory').select('cost_price, current_stock').eq('user_id', user.id);
+        
+        let totalValue = 0;
+        if(data) {
+            data.forEach(item => {
+                totalValue += (Number(item.cost_price) * Number(item.current_stock));
+            });
         }
-    });
-  </script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Busca TODOS los enlaces (<a>) de tu código original
-    document.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', function(e) {
-            let url = this.getAttribute('href');
-            
-            // Solo actuamos si el enlace apunta a un archivo .html
-            if (url && url.includes('.html')) {
-                e.preventDefault(); // Detiene el error 404
-                
-                // 1. Quita la extensión .html automáticamente
-                let nuevaRuta = url.replace('.html', '');
+        
+        document.getElementById('kpiInvValue').innerText = `$${totalValue.toLocaleString()}`;
+    }
 
-                // 2. DICCIONARIO DE CORRECCIONES (Para los botones "Volver")
-                // Aquí le enseñamos a ir a las rutas principales correctas
-                if (url.includes('panel-mover.html')) nuevaRuta = "/empresa/mover";
-                if (url.includes('index-empresa.html')) nuevaRuta = "/empresa";
-                if (url.includes('index.html')) nuevaRuta = "/";
+    // --- FILTRADO DE TIEMPO ---
+    function updateTimeframe(range, btn) {
+       if(btn) {
+          document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+       }
+       
+       const now = new Date();
+       let filtered = allData;
+       let subtitle = "ANÁLISIS HISTÓRICO";
 
-                // 3. Te envía a la ruta limpia de Python
-                window.location.href = nuevaRuta;
-            }
+       if (range === '1M') {
+          const oneMonthAgo = new Date(); oneMonthAgo.setMonth(now.getMonth() - 1);
+          filtered = allData.filter(d => new Date(d.created_at) >= oneMonthAgo);
+          subtitle = "PERIODO: 30 DÍAS";
+       } else if (range === '3M') {
+          const threeMonthsAgo = new Date(); threeMonthsAgo.setMonth(now.getMonth() - 3);
+          filtered = allData.filter(d => new Date(d.created_at) >= threeMonthsAgo);
+          subtitle = "PERIODO: ÚLTIMO TRIMESTRE";
+       } else if (range === 'YTD') {
+          const startOfYear = new Date(now.getFullYear(), 0, 1);
+          filtered = allData.filter(d => new Date(d.created_at) >= startOfYear);
+          subtitle = `AÑO FISCAL ${now.getFullYear()}`;
+       }
+
+       document.getElementById('chartSubtitle').innerText = subtitle;
+       processData(filtered, range);
+    }
+
+    // --- PROCESAMIENTO DE DATOS ---
+    function processData(data, range) {
+       let totalIng = 0, totalGas = 0;
+       let balanceHistory = [];
+       let currentBalance = 0;
+       let categories = {};
+       let incomeCount = 0;
+       
+       data.sort((a,b) => new Date(a.created_at) - new Date(b.created_at));
+
+       const dates = data.map(d => new Date(d.created_at).getTime());
+       const minDate = dates.length > 0 ? Math.min(...dates) : Date.now();
+       const maxDate = dates.length > 0 ? Math.max(...dates) : Date.now();
+       const daysDiff = Math.max(1, (maxDate - minDate) / (1000 * 60 * 60 * 24));
+
+       data.forEach(d => {
+          const amount = Number(d.amount);
+          if(d.type === 'ingreso') {
+             totalIng += amount;
+             currentBalance += amount;
+             incomeCount++;
+          } else {
+             totalGas += amount;
+             currentBalance -= amount;
+             const cat = d.category || 'Otros';
+             categories[cat] = (categories[cat] || 0) + amount;
+          }
+          balanceHistory.push({ x: new Date(d.created_at).getTime(), y: currentBalance });
+       });
+
+       financialData = { income: totalIng, expense: totalGas, balance: totalIng - totalGas };
+       statementCategories = categories;
+
+       document.getElementById('totalBalance').innerText = `$${(totalIng - totalGas).toLocaleString()}`;
+       document.getElementById('totalIng').innerText = `$${totalIng.toLocaleString()}`;
+       document.getElementById('totalGas').innerText = `$${totalGas.toLocaleString()}`;
+
+       updateKPIs(totalIng, totalGas, currentBalance, daysDiff, incomeCount);
+       renderStatementTable(totalIng, totalGas, categories);
+       renderChart(balanceHistory);
+       generateAIAdvice();
+       checkAlerts(currentBalance, totalIng, totalGas);
+    }
+
+    function updateKPIs(ingreso, gasto, balance, dias, incomeCount) {
+        // Margen Neto
+        const margen = ingreso > 0 ? ((ingreso - gasto) / ingreso) * 100 : 0;
+        const divMargin = document.getElementById('kpiMargin');
+        divMargin.innerText = `${margen.toFixed(1)}%`;
+        divMargin.className = margen >= 0 ? "kpi-value text-emerald-400" : "kpi-value text-rose-400";
+
+        // Burn Rate
+        const burnRate = gasto / dias;
+        document.getElementById('kpiBurn').innerText = `$${Math.round(burnRate).toLocaleString()}`;
+
+        // Ticket Promedio (NUEVO)
+        const avgTicket = incomeCount > 0 ? ingreso / incomeCount : 0;
+        document.getElementById('kpiTicket').innerText = `$${Math.round(avgTicket).toLocaleString()}`;
+
+        // Runway Estimado
+        let runway = "∞";
+        if (burnRate > 0 && balance > 0) {
+            runway = Math.round(balance / burnRate) + " Días";
+        } else if (balance <= 0) {
+            runway = "0 Días";
+        }
+        document.getElementById('kpiRunway').innerText = runway;
+
+        // Score de Salud
+        let score = 0;
+        if (margen > 10) score += 30; else if (margen > 0) score += 15;
+        if (runway !== "0 Días" && runway !== "∞") {
+            const rDays = parseInt(runway);
+            if (rDays > 90) score += 30; else if (rDays > 30) score += 15;
+        } else if (runway === "∞") score += 30;
+        if (balance > 0) score += 30;
+        if (avgTicket > 0) score += 10;
+
+        const scoreEl = document.getElementById('healthScore');
+        scoreEl.innerText = score + "/100";
+        scoreEl.style.backgroundColor = score > 70 ? '#10b981' : (score > 40 ? '#f59e0b' : '#ef4444');
+    }
+
+    function checkAlerts(balance, ing, gas) {
+        const container = document.getElementById('alertsContainer');
+        container.innerHTML = '';
+        
+        let alerts = [];
+        if (balance < 0) alerts.push({ icon: 'ph-warning', text: 'Saldo negativo crítico. Requiere inyección de capital.' });
+        if (gas > ing) alerts.push({ icon: 'ph-trend-down', text: 'Gastos superan ingresos en este periodo.' });
+        
+        if (alerts.length === 0) {
+            container.innerHTML = `<div class="text-xs text-slate-500 text-center py-2 flex items-center justify-center gap-2"><i class="ph-bold ph-check-circle text-emerald-500"></i> Sin alertas críticas</div>`;
+        } else {
+            alerts.forEach(a => {
+                container.innerHTML += `
+                    <div class="alert-item">
+                        <i class="ph-fill ${a.icon} alert-icon"></i>
+                        <span class="alert-text">${a.text}</span>
+                    </div>
+                `;
+            });
+        }
+    }
+
+    function renderStatementTable(ingreso, gasto, categories) {
+        const tbody = document.getElementById('statementTableBody');
+        const btn = document.getElementById('btnDetails');
+        tbody.innerHTML = '';
+
+        if (ingreso === 0 && gasto === 0) {
+            tbody.innerHTML = `<tr><td colspan="3" class="text-center text-xs text-slate-500 py-4">Sin movimientos</td></tr>`;
+            btn.style.display = 'none'; 
+            return;
+        }
+
+        // Ingresos
+        tbody.innerHTML += `
+            <tr>
+                <td><span class="font-bold text-white">INGRESOS OPERATIVOS</span></td>
+                <td class="amount-col text-emerald-400">+$${ingreso.toLocaleString()}</td>
+                <td class="text-right text-xs text-slate-500">100%</td>
+            </tr>
+        `;
+
+        // Gastos
+        const sortedCats = Object.entries(categories).sort((a,b) => b[1] - a[1]);
+        
+        if (sortedCats.length > 3) {
+            btn.style.display = 'block';
+        } else {
+            btn.style.display = 'none';
+        }
+
+        sortedCats.slice(0, 3).forEach(([cat, amount]) => {
+            const pct = ingreso > 0 ? (amount / ingreso) * 100 : 0;
+            tbody.innerHTML += `
+                <tr>
+                    <td style="padding-left: 20px;">(-) ${cat}</td>
+                    <td class="amount-col text-slate-400">$${amount.toLocaleString()}</td>
+                    <td class="text-right text-xs text-slate-500">${pct.toFixed(1)}%</td>
+                </tr>
+            `;
         });
-    });
-});
-</script>
+
+        if (sortedCats.length > 3) {
+            sortedCats.slice(3).forEach(([cat, amount]) => {
+                const pct = ingreso > 0 ? (amount / ingreso) * 100 : 0;
+                tbody.innerHTML += `
+                    <tr class="hidden-row" style="display:none;">
+                        <td style="padding-left: 20px;">(-) ${cat}</td>
+                        <td class="amount-col text-slate-400">$${amount.toLocaleString()}</td>
+                        <td class="text-right text-xs text-slate-500">${pct.toFixed(1)}%</td>
+                    </tr>
+                `;
+            });
+        }
+
+        tbody.innerHTML += `
+            <tr style="background: rgba(255,255,255,0.02)">
+                <td><span class="font-bold text-slate-300">TOTAL EGRESOS</span></td>
+                <td class="amount-col text-rose-400">-$${gasto.toLocaleString()}</td>
+                <td class="text-right text-xs text-slate-500">${ingreso > 0 ? ((gasto/ingreso)*100).toFixed(1) : 0}%</td>
+            </tr>
+        `;
+
+        const neto = ingreso - gasto;
+        const colorNeto = neto >= 0 ? "text-emerald-400" : "text-rose-400";
+        tbody.innerHTML += `
+            <tr style="border-top: 1px solid rgba(255,255,255,0.1)">
+                <td class="py-4"><span class="font-bold text-white text-sm">FLUJO DE CAJA NETO</span></td>
+                <td class="amount-col ${colorNeto} text-lg py-4">$${neto.toLocaleString()}</td>
+                <td></td>
+            </tr>
+        `;
+    }
+
+    function generateAIAdvice() {
+       const list = document.getElementById('adviceList');
+       list.innerHTML = '';
+
+       if (userGoals.length === 0) {
+          document.getElementById('aiLockOverlay').classList.remove('hidden');
+          document.getElementById('aiContent').classList.add('blurred-content');
+          return;
+       }
+
+       document.getElementById('aiLockOverlay').classList.add('hidden');
+       document.getElementById('aiContent').classList.remove('blurred-content');
+
+       const tips = [];
+       const mainGoal = userGoals[0];
+       const totalGoals = userGoals.length;
+
+       tips.push(`<strong>OBJETIVO PRINCIPAL:</strong> Para alcanzar "${mainGoal}", es imperativo mantener un flujo de caja positivo sostenido.`);
+
+       if (totalGoals > 1) {
+           tips.push(`<strong>ESTRATEGIA DIVERSIFICADA:</strong> Con ${totalGoals} objetivos activos, se recomienda asignar el 70% del excedente a la meta principal.`);
+       }
+
+       if (financialData.balance < 0) tips.push(`<strong>ALERTA CRÍTICA:</strong> Balance negativo detectado. Acción requerida: Reducción inmediata de costos operativos no esenciales.`);
+       else tips.push(`<strong>ESTADO ÓPTIMO:</strong> Superávit confirmado. Oportunidad viable para inversión de capital en el objetivo primario.`);
+
+       const tactics = [
+           "Auditoría de suscripciones recurrentes recomendada.",
+           "Negociación de plazos de pago con proveedores para optimizar liquidez.",
+           "Liquidación de inventario de baja rotación para generar capital."
+       ];
+       tips.push(`<strong>ACCIÓN TÁCTICA:</strong> ${tactics[Math.floor(Math.random() * tactics.length)]}`);
+
+       tips.push(`<strong>PROYECCIÓN:</strong> Basado en el rendimiento actual, la viabilidad de los objetivos es positiva.`);
+
+       tips.forEach((tip, index) => {
+          list.innerHTML += `
+             <div class="advice-item">
+                <div class="advice-number">${index + 1}</div>
+                <p class="text-xs text-slate-300 leading-relaxed">${tip}</p>
+             </div>
+          `;
+       });
+    }
+
+    function updateGoalUI() {
+       const text = document.getElementById('currentGoalText');
+       if (userGoals.length > 0) {
+           text.innerText = userGoals.length === 1 ? userGoals[0] : `${userGoals[0]} (+${userGoals.length - 1} más)`;
+       } else {
+           text.innerText = "NO DEFINIDO";
+       }
+    }
+
+    function renderChart(seriesData) {
+       if(chartInstance) chartInstance.destroy();
+       
+       if (seriesData.length === 0) {
+           document.getElementById('cashflowChart').innerHTML = "<div class='text-center p-8 text-slate-500 font-bold uppercase text-xs tracking-widest'>Sin datos registrados</div>";
+           return;
+       }
+
+       const values = seriesData.map(d => d.y);
+       const maxVal = Math.max(...values);
+       const lastPoint = seriesData[seriesData.length - 1];
+       const maxPoint = seriesData.find(d => d.y === maxVal);
+
+       const options = {
+          series: [{ name: 'Saldo', data: seriesData }],
+          chart: { 
+             type: 'area', height: 380, toolbar: { show: false }, background: 'transparent', fontFamily: 'Outfit, sans-serif',
+             animations: { enabled: true, easing: 'easeinout', speed: 800 }
+          },
+          colors: ['#7c3aed'], stroke: { curve: 'straight', width: 2 },
+          fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.05, stops: [0, 100] } },
+          dataLabels: { enabled: false }, theme: { mode: 'dark' },
+          xaxis: { 
+             type: 'datetime', tooltip: { enabled: false }, axisBorder: { show: false }, axisTicks: { show: false },
+             labels: { style: { colors: '#64748b', fontSize: '10px', fontWeight: 600, fontFamily: 'Inter' } },
+             crosshairs: { show: true, stroke: { color: '#475569', width: 1, dashArray: 0 } }
+          },
+          yaxis: {
+             labels: { style: { colors: '#64748b', fontSize: '10px', fontWeight: 600, fontFamily: 'Inter' }, formatter: (value) => { return "$" + value.toLocaleString(); } }
+          },
+          grid: { borderColor: 'rgba(255,255,255,0.03)', strokeDashArray: 2, padding: { top: 0, right: 20, bottom: 0, left: 10 } },
+          annotations: {
+             yaxis: [{ y: 0, borderColor: '#ef4444', strokeDashArray: 0, label: { borderColor: '#ef4444', style: { color: '#fff', background: '#ef4444', fontSize: '9px', fontWeight: 'bold' }, text: 'PUNTO DE EQUILIBRIO' } }],
+             points: [
+                { x: maxPoint.x, y: maxPoint.y, marker: { size: 4, fillColor: '#10b981', strokeColor: '#fff', radius: 0 }, label: { borderColor: '#10b981', offsetY: 0, style: { color: '#fff', background: '#10b981', fontSize: '9px', fontWeight: 'bold' }, text: 'MÁXIMO HISTÓRICO' } },
+                { x: lastPoint.x, y: lastPoint.y, marker: { size: 5, fillColor: '#3b82f6', strokeColor: '#fff', radius: 50 }, label: { borderColor: '#3b82f6', style: { color: '#fff', background: '#3b82f6', fontSize: '9px', fontWeight: 'bold' }, text: 'SALDO ACTUAL' } }
+             ]
+          },
+          tooltip: { 
+             theme: 'dark', marker: { show: false }, x: { show: false }, fixed: { enabled: false },
+             custom: function({series, seriesIndex, dataPointIndex, w}) {
+                const value = w.globals.series[seriesIndex][dataPointIndex];
+                const dateRaw = new Date(w.globals.seriesX[seriesIndex][dataPointIndex]);
+                const date = dateRaw.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase().replace('.', '');
+                const color = value >= 0 ? '#10b981' : '#ef4444'; 
+                return `<div style="background: #020617; border: 1px solid #1e293b; padding: 12px 16px; border-radius: 4px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);"><div style="color: #94a3b8; font-size: 9px; font-weight: 700; letter-spacing: 1px; margin-bottom: 4px; font-family: 'Inter', sans-serif;">${date}</div><div style="display: flex; align-items: baseline; gap: 4px;"><span style="color: #64748b; font-size: 10px; font-weight: 500;">SALDO:</span><span style="color: ${color}; font-size: 14px; font-weight: 700; font-family: 'Outfit', sans-serif; letter-spacing: 0.5px;">$${value.toLocaleString()}</span></div></div>`;
+             }
+          }
+       };
+       chartInstance = new ApexCharts(document.querySelector("#cashflowChart"), options);
+       chartInstance.render();
+    }
+
+    function guardianSpeak(text) {
+       const b = document.getElementById('guardianBubble');
+       b.innerText = text; b.style.opacity = 1;
+       setTimeout(() => b.style.opacity = 0, 4000);
+    }
+    function guardianClick() { guardianSpeak("Sincronización de datos completada."); }
+
+  </script>
 </body>
 </html>
