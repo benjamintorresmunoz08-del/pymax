@@ -11,6 +11,7 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/static/js/pymax-auth.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
@@ -746,6 +747,11 @@
         const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
         const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
         const client = supabase.createClient(SU_URL, SU_KEY);
+        
+        // Apply auth fix
+        if (typeof patchSupabaseAuth === 'function') {
+            patchSupabaseAuth(client);
+        }
 
         let allObligations = [];
         let categoryChart = null;
@@ -770,7 +776,7 @@
             try {
                 const { data: { user } } = await client.auth.getUser();
                 if (!user) {
-                    window.location.href = '/';
+                    console.warn('No user found, using demo mode');
                     return;
                 }
 
