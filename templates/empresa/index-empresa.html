@@ -339,15 +339,12 @@
                 }
 
                 // 3. Limpiar almacenamiento local
-                const loggingOutFlag = localStorage.getItem('pymax_logging_out');
                 localStorage.clear();
                 sessionStorage.clear();
-                if (loggingOutFlag) {
-                    localStorage.setItem('pymax_logging_out', 'true');
-                }
+                localStorage.setItem('pymax_logging_out', 'true');
 
-                // 4. Redirigir al inicio
-                window.location.replace("/");
+                // 4. Redirigir al endpoint de logout (limpia sesión de Flask también)
+                window.location.replace("/logout");
             });
         }
 

@@ -132,6 +132,12 @@ def reiniciar_sistema():
     session.pop('departamento', None)
     return redirect(url_for('index'))
 
+@app.route('/logout')
+def logout():
+    """Limpia la sesión de Flask y redirige al inicio"""
+    session.clear()  # Limpia TODA la sesión de Flask
+    return redirect(url_for('index'))
+
 # ==============================================================================
 # DEPARTAMENTO: EMPRESA (Panel de Control)
 # ==============================================================================

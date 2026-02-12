@@ -1240,24 +1240,27 @@
         });
     }
 
-    // --- FUNCIÓN DE SALIDA NUCLEAR (FIX DEFINITIVO) ---
+    // --- FUNCIÓN DE SALIDA (LIMPIA TODO) ---
     async function logout() {
-        console.log("🛑 EJECUTANDO PROTOCOLO DE SALIDA...");
+        console.log("🛑 CERRANDO SESIÓN...");
         
-        // 1. AVISO AL PORTERO: "ME VOY"
+        // 1. Bandera para evitar redirección automática
         localStorage.setItem('pymax_logging_out', 'true');
         
-        // 2. Cerramos la sesión en Supabase (Intentar)
+        // 2. Cerrar sesión en Supabase
         try {
             await supabaseClient.auth.signOut();
-        } catch(e) { console.log("Error menor en signout, ignorando..."); }
+        } catch(e) { 
+            console.log("Error en signout:", e);
+        }
 
-        // 3. DESTRUCCIÓN MANUAL DE LA SESIÓN (LOCAL STORAGE)
-        // Esto asegura que al recargar, Supabase NO encuentre nada.
-        localStorage.removeItem('sb-haqjuyagyvxynmulanhe-auth-token'); 
+        // 3. Limpiar almacenamiento local
+        localStorage.clear();
+        sessionStorage.clear();
+        localStorage.setItem('pymax_logging_out', 'true');
         
-        // 4. Forzamos la recarga hacia el inicio limpio
-        window.location.href = "/";
+        // 4. Redirigir a /logout (limpia sesión de Flask también)
+        window.location.replace("/logout");
     }
 
     const observer = new IntersectionObserver((entries) => {
