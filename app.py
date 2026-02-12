@@ -201,6 +201,84 @@ def hambre():
     return render_template('empresa/index-empresa.html')
 
 # ==============================================================================
+# API ENDPOINTS - WHATSAPP INTEGRATION
+# ==============================================================================
+
+@app.route('/api/whatsapp/webhook', methods=['POST', 'GET'])
+def whatsapp_webhook():
+    """
+    Webhook para recibir mensajes de WhatsApp Business API
+    POST: Recibe mensajes entrantes
+    GET: Verificación inicial de WhatsApp
+    """
+    if request.method == 'GET':
+        # Verificación de webhook (WhatsApp requirement)
+        mode = request.args.get('hub.mode')
+        token = request.args.get('hub.verify_token')
+        challenge = request.args.get('hub.challenge')
+        
+        if mode == 'subscribe' and token == os.getenv('WHATSAPP_VERIFY_TOKEN'):
+            return challenge, 200
+        return 'Forbidden', 403
+    
+    # POST: Procesar mensaje entrante
+    data = request.json
+    # TODO: Implementar procesamiento de mensajes
+    # Ver INTEGRACION_WHATSAPP_SII.md para detalles
+    return jsonify({'status': 'received'}), 200
+
+@app.route('/api/whatsapp/send', methods=['POST'])
+def whatsapp_send():
+    """Envía mensajes a usuarios vía WhatsApp"""
+    # TODO: Implementar envío de mensajes
+    return jsonify({'status': 'sent'}), 200
+
+# ==============================================================================
+# API ENDPOINTS - SII INTEGRATION
+# ==============================================================================
+
+@app.route('/api/sii/connect', methods=['POST'])
+def sii_connect():
+    """Conecta la cuenta SII del usuario"""
+    # TODO: Implementar autenticación con SII
+    # Ver INTEGRACION_WHATSAPP_SII.md para detalles
+    return jsonify({'status': 'connected'}), 200
+
+@app.route('/api/sii/sync', methods=['POST'])
+def sii_sync():
+    """Sincronización manual de facturas SII"""
+    # TODO: Implementar sincronización SII
+    return jsonify({'status': 'syncing'}), 200
+
+@app.route('/api/sii/status', methods=['GET'])
+def sii_status():
+    """Estado de última sincronización SII"""
+    # TODO: Retornar estado de sync
+    return jsonify({'status': 'ready', 'last_sync': None}), 200
+
+# ==============================================================================
+# API ENDPOINTS - IA SERVICES
+# ==============================================================================
+
+@app.route('/api/ai/classify', methods=['POST'])
+def ai_classify():
+    """Clasifica una transacción usando IA"""
+    # TODO: Implementar clasificación con GPT-4o
+    return jsonify({'category': 'unknown'}), 200
+
+@app.route('/api/ai/advice', methods=['POST'])
+def ai_advice():
+    """Genera consejo contextual basado en datos del usuario"""
+    # TODO: Implementar generación de consejos IA
+    return jsonify({'advice': 'pending'}), 200
+
+@app.route('/api/ai/chat', methods=['POST'])
+def ai_chat():
+    """Endpoint para conversación con IA en el panel web"""
+    # TODO: Implementar chat IA
+    return jsonify({'response': 'Hola, soy Pymax IA'}), 200
+
+# ==============================================================================
 # DEPARTAMENTO: PERSONAL
 # ==============================================================================
 
