@@ -499,30 +499,6 @@
         </a>
       </div>
 
-      <div class="card-module type-premium fade-in d-7" style="border-color: rgba(96, 165, 250, 0.3);">
-        <div>
-          <div class="icon-box" style="background: rgba(96, 165, 250, 0.1); color: #60a5fa;"><i class="ph-duotone ph-handshake"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">Tiburón CRM</h3>
-          <p class="text-slate-400 text-sm">Sales & Customer Management</p>
-        </div>
-        <a href="{{ url_for('tiburon_home') }}" class="btn-link btn-premium">
-          <span>Ver Pipeline</span>
-          <i class="ph-bold ph-chart-line"></i>
-        </a>
-      </div>
-
-      <div class="card-module type-premium fade-in d-7" style="border-color: rgba(251, 146, 60, 0.3);">
-        <div>
-          <div class="icon-box" style="background: rgba(251, 146, 60, 0.1); color: #fb923c;"><i class="ph-duotone ph-hard-drives"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">Hambre Ops</h3>
-          <p class="text-slate-400 text-sm">Operations & Task Management</p>
-        </div>
-        <a href="{{ url_for('hambre_home') }}" class="btn-link" style="background: rgba(251, 146, 60, 0.1); color: #fb923c;">
-          <span>Gestionar</span>
-          <i class="ph-bold ph-gear"></i>
-        </a>
-      </div>
-
     </div>
   </div>
 
@@ -536,33 +512,46 @@ const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
 const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
 const supabase = window.supabase.createClient(SU_URL, SU_KEY);
 
-// AUTO-LOGIN DEMO USER (if no session exists)
+// SIMULATED USER FOR DEMO
+let DEMO_USER = null;
+
 async function ensureAuthentication() {
     try {
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-            const { error } = await supabase.auth.signInWithPassword({
-                email: 'demo@pymax.com',
-                password: 'demo123456'
-            });
-            if (error) {
-                const { error: signUpError } = await supabase.auth.signUp({
-                    email: 'demo@pymax.com',
-                    password: 'demo123456',
-                    options: { data: { full_name: 'Demo User' } }
-                });
-                if (!signUpError) {
-                    await supabase.auth.signInWithPassword({
-                        email: 'demo@pymax.com',
-                        password: 'demo123456'
-                    });
-                }
-            }
+        if (user) {
+            DEMO_USER = user;
+            return;
         }
+
+        DEMO_USER = {
+            id: 'demo-user-' + Date.now(),
+            email: 'demo@pymax.local',
+            user_metadata: { full_name: 'Demo User' }
+        };
+        
+        localStorage.setItem('pymax_demo_user', JSON.stringify(DEMO_USER));
     } catch (error) {
-        console.error('Authentication error:', error);
+        const stored = localStorage.getItem('pymax_demo_user');
+        if (stored) {
+            DEMO_USER = JSON.parse(stored);
+        } else {
+            DEMO_USER = {
+                id: 'demo-user-local',
+                email: 'demo@pymax.local',
+                user_metadata: { full_name: 'Demo User' }
+            };
+            localStorage.setItem('pymax_demo_user', JSON.stringify(DEMO_USER));
+        }
     }
 }
+
+const originalGetUser = supabase.auth.getUser.bind(supabase.auth);
+supabase.auth.getUser = async function() {
+    if (DEMO_USER) {
+        return { data: { user: DEMO_USER }, error: null };
+    }
+    return originalGetUser();
+};
 
 // Formato de moneda internacional
 function formatCurrency(amount, currency = '$', locale = 'en-US') {
