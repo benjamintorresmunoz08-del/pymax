@@ -4,7 +4,30 @@
 
 ---
 
-## 🔥 CORRECCIONES CRÍTICAS REALIZADAS (SESIÓN ACTUAL):
+## 🔥 CORRECCIONES CRÍTICAS REALIZADAS (SESIÓN ACTUAL - ÚLTIMA ACTUALIZACIÓN):
+
+### ✅ COMPLETADO:
+1. Tiburón y Hambre eliminados del panel MOVER
+2. Sistema de autenticación demo con localStorage implementado
+3. Script pymax-auth.js creado para uso compartido
+4. Fix aplicado a obligaciones.html (template funcional)
+5. Selector de idioma funcional en index-empresa.html
+
+### 🔄 EN PROGRESO:
+1. Aplicar auth fix a TODOS los módulos restantes
+2. Sistema de traducción completo (actualmente solo index-empresa)
+3. Mejorar UI de módulos incompletos
+4. Eliminar TODAS las redirecciones al index
+
+### ❌ PENDIENTE:
+1. Traducción completa en TODOS los módulos al cambiar idioma
+2. Mejorar diseño de módulos "feos" (calendario, metas, etc.)
+3. Testing completo de navegación
+4. Optimización de rendimiento adicional
+
+---
+
+## 🔥 CORRECCIONES ANTERIORES:
 
 ### 1. RUTAS CORREGIDAS EN APP.PY
 - ✅ Tiburón CRM: `/empresa/mover/tiburon` (antes redirigía incorrectamente)
