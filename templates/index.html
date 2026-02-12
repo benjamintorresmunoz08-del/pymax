@@ -1061,16 +1061,32 @@
 
         // PASO 3: SOLO MOSTRAR BOTÓN SI HAY USUARIO (SIN REDIRIGIR)
         setTimeout(async () => {
-            const { data: { user } } = await supabaseClient.auth.getUser();
+            try {
+                const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
 
-            if (user) {
+                if (authError || !user) {
+                    console.log("No hay usuario autenticado");
+                    return;
+                }
+
                 currentUser = user;
                 
-                const { data: profile } = await supabaseClient
-                    .from('user_profiles')
-                    .select('account_type, full_name')
-                    .eq('id', user.id)
-                    .maybeSingle();
+                // Intentar cargar perfil (con manejo de error)
+                let profile = null;
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('user_profiles')
+                        .select('account_type, full_name, email')
+                        .eq('id', user.id)
+                        .maybeSingle();
+                    
+                    if (!error && data) {
+                        profile = data;
+                    }
+                } catch (profileError) {
+                    console.warn("Error al cargar perfil, continuando:", profileError);
+                    profile = null;
+                }
 
                 // Si tiene perfil completo, mostrar botón para entrar
                 if (profile && profile.account_type) {
@@ -1080,6 +1096,9 @@
                     // Si NO tiene rol, mostrar botón configurar
                     mostrarBotonConfigurar(user, profile);
                 }
+            } catch (error) {
+                console.error("Error en verificación inicial:", error);
+                // No hacer nada, dejar la UI como está
             }
         }, 500);
     });
@@ -1133,34 +1152,46 @@
     }
 
     async function selectRole(role) {
-        if (!currentUser) return showToast("Error de sesión", "error");
-        try {
-            // Primero intentamos UPDATE por si ya existe el perfil
-            const { error: updateError } = await supabaseClient
-                .from('user_profiles')
-                .update({ account_type: role, updated_at: new Date() })
-                .eq('id', currentUser.id);
+        if (!currentUser) {
+            showToast("Error de sesión", "error");
+            return;
+        }
 
-            // Si falla el UPDATE (porque no existe), hacemos INSERT
-            if (updateError) {
-                const { error: insertError } = await supabaseClient
-                    .from('user_profiles')
-                    .insert({ 
-                        id: currentUser.id, 
-                        account_type: role, 
-                        full_name: currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0],
-                        updated_at: new Date() 
-                    });
-                
-                if (insertError) {
-                    console.error("Error detallado:", insertError);
-                    throw new Error(insertError.message || "Error al guardar perfil");
-                }
+        try {
+            console.log("Guardando perfil para usuario:", currentUser.id);
+
+            // Preparar datos del perfil
+            const profileData = {
+                id: currentUser.id,
+                user_id: currentUser.id,  // Redundancia por compatibilidad
+                account_type: role,
+                full_name: currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || 'Usuario',
+                email: currentUser.email,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            };
+
+            console.log("Datos a insertar:", profileData);
+
+            // Intentar UPSERT (insert o update)
+            const { data, error } = await supabaseClient
+                .from('user_profiles')
+                .upsert(profileData, { 
+                    onConflict: 'id',
+                    returning: 'minimal'
+                });
+
+            if (error) {
+                console.error("Error al guardar perfil:", error);
+                throw new Error(error.message);
             }
+
+            console.log("✅ Perfil guardado exitosamente");
 
             userRole = role;
             closeModal('welcomeGuideModal');
-            Swal.fire({
+            
+            await Swal.fire({
                 title: 'Perfil Configurado',
                 text: 'Redirigiendo a tu panel...',
                 icon: 'success',
@@ -1168,13 +1199,18 @@
                 color: '#fff',
                 timer: 1500,
                 showConfirmButton: false
-            }).then(() => {
-                if (role === 'empresa') window.location.href = '/empresa/mover';
-                else window.location.href = '/personal/dashboard';
             });
+
+            // Redirigir según el rol
+            if (role === 'empresa') {
+                window.location.href = '/empresa/mover';
+            } else {
+                window.location.href = '/personal/dashboard';
+            }
+
         } catch (e) {
             console.error("Error completo:", e);
-            showToast("Error: " + (e.message || "Verifica permisos en Supabase"), "error");
+            showToast("Error: " + (e.message || "Problema al guardar. Ejecuta el script SQL en Supabase."), "error");
         }
     }
 
@@ -1227,15 +1263,33 @@
                 showToast(error.message, "error");
                 btn.innerText = "REGISTRARME";
             } else {
-                showToast("Cuenta creada.", "success");
+                showToast("Cuenta creada. Revisa tu email para confirmar.", "success");
                 closeModal('registerModal');
+                
                 // Crear perfil inicial sin account_type (lo elegirá después)
-            if (data.user) {
-                const { error: profileError } = await supabaseClient
-                    .from('user_profiles')
-                    .insert({ id: data.user.id, full_name: name });
-                if (profileError) console.warn("Perfil ya existe o error menor:", profileError);
-            }
+                if (data.user) {
+                    try {
+                        const { error: profileError } = await supabaseClient
+                            .from('user_profiles')
+                            .insert({ 
+                                id: data.user.id,
+                                user_id: data.user.id,
+                                full_name: name,
+                                email: email,
+                                created_at: new Date().toISOString(),
+                                updated_at: new Date().toISOString()
+                            });
+                        
+                        if (profileError) {
+                            console.warn("Error al crear perfil inicial:", profileError);
+                            // No es crítico, el perfil se creará cuando elija rol
+                        } else {
+                            console.log("✅ Perfil inicial creado");
+                        }
+                    } catch (e) {
+                        console.warn("Error menor en perfil:", e);
+                    }
+                }
             }
         });
     }
