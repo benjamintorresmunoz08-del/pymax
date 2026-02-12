@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Operations Management - Task Management & Team Efficiency" />
+    <title>Pymax | Hambre Operations</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --bg-void: #020617;
+            --bg-card: rgba(15, 23, 42, 0.6);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --neon-orange: #fb923c;
+            --neon-violet: #a78bfa;
+            --neon-emerald: #34d399;
+            --neon-rose: #fb7185;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        .nebula-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(251, 146, 60, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(239, 68, 68, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            backdrop-filter: blur(24px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        /* AI Premium Panel */
+        .ai-premium-panel {
+            background: linear-gradient(135deg, rgba(251, 146, 60, 0.1), rgba(239, 68, 68, 0.1));
+            border: 2px solid rgba(251, 146, 60, 0.3);
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-premium-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #fb923c, transparent);
+        }
+
+        .ai-lock-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #f97316, #fb923c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 40px rgba(251, 146, 60, 0.5);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .ai-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(251, 146, 60, 0.1);
+            border: 1px solid rgba(251, 146, 60, 0.2);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        .ai-upgrade-btn {
+            background: linear-gradient(135deg, #f97316, #fb923c);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(251, 146, 60, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-upgrade-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(251, 146, 60, 0.6);
+        }
+
+        /* Task Card */
+        .task-card {
+            padding: 16px;
+            border-radius: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .task-card:hover {
+            border-color: rgba(251, 146, 60, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .task-card.completed {
+            opacity: 0.6;
+        }
+
+        /* Priority Badge */
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .priority-badge.urgent { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .priority-badge.high { background: rgba(251, 146, 60, 0.2); color: #fdba74; border: 1px solid rgba(251, 146, 60, 0.3); }
+        .priority-badge.normal { background: rgba(96, 165, 250, 0.2); color: #93c5fd; border: 1px solid rgba(96, 165, 250, 0.3); }
+        .priority-badge.low { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.3); }
+
+        /* Progress Ring */
+        .progress-ring {
+            width: 120px;
+            height: 120px;
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring__circle {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 280px;
+            padding: 20px 10px;
+        }
+
+        /* Modern Button */
+        .modern-btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #fb923c, #f97316);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 30px rgba(251, 146, 60, 0.4);
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(251, 146, 60, 0.3); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(251, 146, 60, 0.5); }
+    </style>
+</head>
+
+<body>
+    <div class="nebula-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-[#020617]/90 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="/empresa/mover" class="flex items-center gap-2 text-slate-400 hover:text-white transition group">
+                    <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/30 transition">
+                        <i class="ph-bold ph-arrow-left"></i>
+                    </div>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">Back</span>
+                </a>
+                <div class="h-6 w-px bg-white/10"></div>
+                <h1 class="text-xl font-bold text-white font-display tracking-tight">
+                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-400">HAMBRE OPS</span>
+                </h1>
+            </div>
+
+            <button onclick="addTask()" class="flex items-center gap-2 px-3 py-2 rounded-full border border-orange-500/30 text-orange-400 bg-orange-500/5 hover:bg-orange-500/10 text-[10px] font-bold uppercase transition">
+                <i class="ph-bold ph-plus"></i>
+                <span class="hidden md:inline">New Task</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 md:px-6 pt-24 pb-12 relative z-10">
+
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8 fade-in">
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Active Tasks</p>
+                    <i class="ph-duotone ph-list-checks text-orange-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1">34</h3>
+                <p class="text-xs text-slate-400">In progress</p>
+            </div>
+
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Completed</p>
+                    <i class="ph-duotone ph-check-circle text-emerald-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1">156</h3>
+                <p class="text-xs text-slate-400">This month</p>
+            </div>
+
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Efficiency</p>
+                    <i class="ph-duotone ph-trend-up text-cyan-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1">87%</h3>
+                <p class="text-xs text-slate-400">Team average</p>
+            </div>
+
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Overdue</p>
+                    <i class="ph-duotone ph-warning text-rose-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1">3</h3>
+                <p class="text-xs text-slate-400">Need attention</p>
+            </div>
+
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Avg. Completion</p>
+                    <i class="ph-duotone ph-clock text-violet-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1">2.3d</h3>
+                <p class="text-xs text-slate-400">Days per task</p>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-8">
+
+            <!-- Left Column: Tasks -->
+            <div class="lg:col-span-8 space-y-6">
+
+                <!-- Task Board -->
+                <div class="glass-card p-6 fade-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold text-white font-display flex items-center gap-2">
+                            <i class="ph-duotone ph-kanban text-orange-400"></i>
+                            Task Board
+                        </h3>
+                        <div class="flex gap-2">
+                            <select class="text-xs bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-slate-400">
+                                <option value="all">All Tasks</option>
+                                <option value="urgent">Urgent</option>
+                                <option value="high">High Priority</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 custom-scroll" style="max-height: 600px;">
+                        <!-- Task 1 -->
+                        <div class="task-card">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-start gap-3">
+                                    <input type="checkbox" class="mt-1" />
+                                    <div>
+                                        <p class="font-bold text-white text-sm mb-1">Launch marketing campaign</p>
+                                        <p class="text-xs text-slate-400">Create social media content and schedule posts</p>
+                                    </div>
+                                </div>
+                                <span class="priority-badge urgent">Urgent</span>
+                            </div>
+                            <div class="flex items-center gap-4 text-xs text-slate-500">
+                                <div class="flex items-center gap-1">
+                                    <i class="ph-bold ph-calendar"></i>
+                                    <span>Feb 15, 2024</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i class="ph-bold ph-user"></i>
+                                    <span>Marketing Team</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Task 2 -->
+                        <div class="task-card">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-start gap-3">
+                                    <input type="checkbox" class="mt-1" />
+                                    <div>
+                                        <p class="font-bold text-white text-sm mb-1">Update product inventory</p>
+                                        <p class="text-xs text-slate-400">Sync inventory with warehouse system</p>
+                                    </div>
+                                </div>
+                                <span class="priority-badge high">High</span>
+                            </div>
+                            <div class="flex items-center gap-4 text-xs text-slate-500">
+                                <div class="flex items-center gap-1">
+                                    <i class="ph-bold ph-calendar"></i>
+                                    <span>Feb 16, 2024</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i class="ph-bold ph-user"></i>
+                                    <span>Operations</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Task 3 -->
+                        <div class="task-card">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-start gap-3">
+                                    <input type="checkbox" class="mt-1" />
+                                    <div>
+                                        <p class="font-bold text-white text-sm mb-1">Review customer feedback</p>
+                                        <p class="text-xs text-slate-400">Analyze support tickets from last week</p>
+                                    </div>
+                                </div>
+                                <span class="priority-badge normal">Normal</span>
+                            </div>
+                            <div class="flex items-center gap-4 text-xs text-slate-500">
+                                <div class="flex items-center gap-1">
+                                    <i class="ph-bold ph-calendar"></i>
+                                    <span>Feb 17, 2024</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i class="ph-bold ph-user"></i>
+                                    <span>Support Team</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Task 4 (Completed) -->
+                        <div class="task-card completed">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-start gap-3">
+                                    <input type="checkbox" class="mt-1" checked />
+                                    <div>
+                                        <p class="font-bold text-white text-sm mb-1 line-through">Prepare monthly report</p>
+                                        <p class="text-xs text-slate-400">Financial summary for stakeholders</p>
+                                    </div>
+                                </div>
+                                <span class="priority-badge low">Low</span>
+                            </div>
+                            <div class="flex items-center gap-4 text-xs text-slate-500">
+                                <div class="flex items-center gap-1">
+                                    <i class="ph-bold ph-check-circle text-emerald-400"></i>
+                                    <span>Completed</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Performance -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-6 flex items-center gap-2">
+                        <i class="ph-duotone ph-users-three text-emerald-400"></i>
+                        Team Performance
+                    </h3>
+
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="p-4 rounded-lg bg-white/5 border border-white/5">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold">
+                                    JD
+                                </div>
+                                <div>
+                                    <p class="font-bold text-white text-sm">John Doe</p>
+                                    <p class="text-xs text-slate-400">Developer</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-slate-500">Efficiency</span>
+                                <span class="text-emerald-400 font-bold">92%</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-lg bg-white/5 border border-white/5">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center text-violet-400 font-bold">
+                                    SM
+                                </div>
+                                <div>
+                                    <p class="font-bold text-white text-sm">Sarah Miller</p>
+                                    <p class="text-xs text-slate-400">Designer</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-slate-500">Efficiency</span>
+                                <span class="text-emerald-400 font-bold">88%</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-lg bg-white/5 border border-white/5">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 font-bold">
+                                    MJ
+                                </div>
+                                <div>
+                                    <p class="font-bold text-white text-sm">Mike Johnson</p>
+                                    <p class="text-xs text-slate-400">Marketing</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-slate-500">Efficiency</span>
+                                <span class="text-emerald-400 font-bold">85%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: AI Panel & Analytics -->
+            <div class="lg:col-span-4 space-y-6">
+
+                <!-- AI PREMIUM PANEL - LOCKED -->
+                <div class="ai-premium-panel fade-in">
+                    <div class="ai-lock-icon">
+                        <i class="ph-fill ph-lock-key text-3xl text-white"></i>
+                    </div>
+                    
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-white font-display mb-2">
+                            AI Operations Manager
+                        </h3>
+                        <p class="text-sm text-orange-300 mb-1">Premium Feature</p>
+                        <p class="text-xs text-slate-400">Intelligent task automation and optimization</p>
+                    </div>
+
+                    <div class="space-y-3 mb-6">
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-robot text-orange-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Automatic task prioritization based on urgency & impact</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-users text-orange-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Smart team workload balancing</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-chart-line text-orange-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Productivity analytics with actionable insights</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-warning-diamond text-orange-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Bottleneck detection and resolution suggestions</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-bell-ringing text-orange-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Deadline risk alerts with 24h advance warning</span>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button class="ai-upgrade-btn" onclick="showUpgradeModal()">
+                            <i class="ph-bold ph-rocket-launch"></i>
+                            Upgrade to Premium
+                        </button>
+                        <p class="text-xs text-slate-500 mt-3">Starting at $59/month</p>
+                    </div>
+                </div>
+
+                <!-- Task Completion Progress -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-6 flex items-center gap-2">
+                        <i class="ph-duotone ph-chart-pie text-violet-400"></i>
+                        This Week
+                    </h3>
+                    
+                    <div class="flex justify-center mb-6">
+                        <div class="relative">
+                            <svg class="progress-ring" width="120" height="120">
+                                <circle class="progress-ring__circle" stroke="rgba(255,255,255,0.1)" stroke-width="8" r="52" cx="60" cy="60" />
+                                <circle class="progress-ring__circle" stroke="#fb923c" stroke-width="8" r="52" cx="60" cy="60" style="stroke-dasharray: 326.73; stroke-dashoffset: 81.68;" />
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center flex-col">
+                                <span class="text-3xl font-bold text-white">75%</span>
+                                <span class="text-xs text-slate-400">Complete</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-slate-400">Completed</span>
+                            <span class="text-sm font-bold text-emerald-400">24 tasks</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-slate-400">In Progress</span>
+                            <span class="text-sm font-bold text-orange-400">8 tasks</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-slate-400">Remaining</span>
+                            <span class="text-sm font-bold text-slate-400">0 tasks</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Task Distribution -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-chart-bar text-cyan-400"></i>
+                        Task Distribution
+                    </h3>
+                    
+                    <div class="chart-container">
+                        <canvas id="taskChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- JavaScript -->
+    <script>
+        // Supabase Configuration
+        const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
+        const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
+        const client = supabase.createClient(SU_URL, SU_KEY);
+
+        let taskChart = null;
+
+        // Toast Notification
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            background: '#0b0b14',
+            color: '#fff'
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+            renderTaskChart();
+        });
+
+        // Check Auth
+        async function checkAuth() {
+            try {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) {
+                    window.location.href = '/';
+                    return;
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+            }
+        }
+
+        // Render Task Chart
+        function renderTaskChart() {
+            const ctx = document.getElementById('taskChart');
+            
+            taskChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Development', 'Marketing', 'Support', 'Operations', 'Design'],
+                    datasets: [{
+                        data: [32, 24, 18, 15, 11],
+                        backgroundColor: [
+                            '#60a5fa',
+                            '#fb923c',
+                            '#34d399',
+                            '#a78bfa',
+                            '#fbbf24'
+                        ],
+                        borderColor: '#020617',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#94a3b8',
+                                font: { size: 10 },
+                                padding: 12
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#fff',
+                            bodyColor: '#94a3b8',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = (context.parsed / total * 100).toFixed(1);
+                                    return `${context.label}: ${context.parsed} tasks (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Add Task
+        function addTask() {
+            Toast.fire({ icon: 'info', title: 'Task creation feature coming soon' });
+        }
+
+        // Show Upgrade Modal
+        function showUpgradeModal() {
+            Swal.fire({
+                title: 'Upgrade to Premium',
+                html: `
+                    <div class="text-left space-y-4 p-4">
+                        <p class="text-sm text-slate-400 mb-4">
+                            Unlock AI-powered operations management and maximize team efficiency.
+                        </p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Automatic Task Prioritization</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Smart Team Workload Balancing</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Productivity Analytics</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Bottleneck Detection</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Deadline Risk Alerts</span>
+                            </div>
+                        </div>
+                        <div class="mt-6 p-4 bg-orange-500/10 rounded-lg border border-orange-500/30">
+                            <p class="text-center text-2xl font-bold text-white mb-1">$59/month</p>
+                            <p class="text-center text-xs text-slate-400">or $590/year (save 17%)</p>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#fb923c',
+                cancelButtonColor: '#3f3f46',
+                confirmButtonText: 'Contact Sales',
+                cancelButtonText: 'Maybe Later',
+                background: '#0b0b14',
+                color: '#fff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'mailto:sales@pymax.com?subject=Premium Upgrade Inquiry';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

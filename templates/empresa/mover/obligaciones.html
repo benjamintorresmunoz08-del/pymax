@@ -1,422 +1,1323 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Pymax · Deudas y Obligaciones</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Debts & Obligations Management - Smart Payment Tracking" />
+    <title>Pymax | Debts & Obligations</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
-    const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
-    window.supabase = supabase.createClient(SU_URL, SU_KEY);
-    async function pymaxGetUser() {
-      const { data: { user } } = await window.supabase.auth.getUser();
-      return user;
-    }
-  </script>
-  <style>
-    body {
-      background:
-        radial-gradient(900px 400px at 10% -10%, rgba(79,70,229,.25), transparent 40%),
-        radial-gradient(800px 500px at 90% 10%, rgba(99,102,241,.18), transparent 45%),
-        radial-gradient(700px 400px at 50% 120%, rgba(56,189,248,.12), transparent 40%),
-        #020617;
-    }
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    .glass {
-      background: rgba(15,23,42,0.65);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(148,163,184,0.15);
-    }
+    <style>
+        :root {
+            --bg-void: #020617;
+            --bg-card: rgba(15, 23, 42, 0.6);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --neon-cyan: #60a5fa;
+            --neon-violet: #a78bfa;
+            --neon-emerald: #34d399;
+            --neon-rose: #fb7185;
+            --neon-amber: #fbbf24;
+        }
 
-    .hover-card {
-      transition: transform .3s ease, box-shadow .3s ease;
-    }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    .hover-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 40px rgba(0,0,0,.45);
-    }
-  </style>
+        body {
+            background: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        .nebula-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(96, 165, 250, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(167, 139, 250, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            backdrop-filter: blur(24px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        /* AI Premium Panel - LOCKED */
+        .ai-premium-panel {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(139, 92, 246, 0.1));
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-premium-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #a78bfa, transparent);
+        }
+
+        .ai-lock-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 40px rgba(139, 92, 246, 0.5);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .ai-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        .ai-upgrade-btn {
+            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(124, 58, 237, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-upgrade-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(124, 58, 237, 0.6);
+        }
+
+        /* Obligation Card */
+        .obligation-card {
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border-glass);
+            background: rgba(15, 23, 42, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .obligation-card:hover {
+            background: rgba(15, 23, 42, 0.6);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .obligation-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .obligation-card.overdue::before { background: #fb7185; }
+        .obligation-card.due-soon::before { background: #fbbf24; }
+        .obligation-card.paid::before { background: #34d399; }
+        .obligation-card.pending::before { background: #60a5fa; }
+
+        /* Priority Badge */
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .priority-badge.critical {
+            background: rgba(251, 113, 133, 0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(251, 113, 133, 0.3);
+        }
+
+        .priority-badge.high {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fcd34d;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .priority-badge.normal {
+            background: rgba(96, 165, 250, 0.2);
+            color: #93c5fd;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+        }
+
+        .priority-badge.low {
+            background: rgba(148, 163, 184, 0.2);
+            color: #cbd5e1;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        /* Modern Input */
+        .modern-input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px 16px;
+            border-radius: 12px;
+            color: white;
+            outline: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .modern-input:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.2);
+            background: rgba(15, 23, 42, 0.95);
+        }
+
+        .modern-input::placeholder {
+            color: #64748b;
+        }
+
+        select.modern-input {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Modern Button */
+        .modern-btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 30px rgba(96, 165, 250, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #34d399, #10b981);
+            color: white;
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 0 30px rgba(52, 211, 153, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #fb7185, #f43f5e);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 0 30px rgba(251, 113, 133, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Action Button */
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .action-btn:hover {
+            background: rgba(96, 165, 250, 0.2);
+            color: var(--neon-cyan);
+            border-color: var(--neon-cyan);
+        }
+
+        .action-btn.success:hover {
+            background: rgba(52, 211, 153, 0.2);
+            color: var(--neon-emerald);
+            border-color: var(--neon-emerald);
+        }
+
+        .action-btn.danger:hover {
+            background: rgba(251, 113, 133, 0.2);
+            color: var(--neon-rose);
+            border-color: var(--neon-rose);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 280px;
+            padding: 20px 10px;
+        }
+
+        /* Timeline */
+        .timeline-item {
+            position: relative;
+            padding-left: 40px;
+            padding-bottom: 24px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 12px;
+            top: 12px;
+            bottom: -8px;
+            width: 2px;
+            background: rgba(96, 165, 250, 0.2);
+        }
+
+        .timeline-item:last-child::before {
+            display: none;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--bg-void);
+        }
+
+        .timeline-dot.overdue { background: #fb7185; }
+        .timeline-dot.soon { background: #fbbf24; }
+        .timeline-dot.future { background: #60a5fa; }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(96, 165, 250, 0.2);
+            border-top-color: var(--neon-cyan);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(96, 165, 250, 0.3); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(96, 165, 250, 0.5); }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: #0b0b14;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 95%;
+            max-width: 600px;
+            max-height: 90vh;
+            border-radius: 24px;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .obligation-card {
+                padding: 16px;
+            }
+            .chart-container {
+                height: 220px;
+                padding: 10px 5px;
+            }
+        }
+    </style>
 </head>
 
-<body class="text-slate-100 min-h-screen font-sans">
+<body>
+    <div class="nebula-bg"></div>
 
-<div id="pymax-toast-container" class="fixed top-6 right-6 z-50 space-y-3"></div>
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-[#020617]/90 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="/empresa/mover" class="flex items-center gap-2 text-slate-400 hover:text-white transition group">
+                    <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/30 transition">
+                        <i class="ph-bold ph-arrow-left"></i>
+                    </div>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">Back</span>
+                </a>
+                <div class="h-6 w-px bg-white/10"></div>
+                <h1 class="text-xl font-bold text-white font-display tracking-tight">
+                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">DEBTS & OBLIGATIONS</span>
+                </h1>
+            </div>
 
-<header class="glass px-8 py-5 flex justify-between items-center border-b border-slate-800 sticky top-0 z-40">
-  <h1 class="text-xl font-semibold text-indigo-400">
-    Pymax · Deudas y Obligaciones
-  </h1>
-  <a href="/empresa/mover" class="text-sm text-slate-300 hover:text-white transition border border-slate-600 px-3 py-1 rounded hover:bg-slate-800">
-    Volver al panel
-  </a>
-</header>
-
-<main class="max-w-7xl mx-auto px-6 py-10 space-y-12">
-
-  <section class="max-w-3xl">
-    <h2 class="text-3xl font-semibold mb-3">
-      Control total de compromisos financieros
-    </h2>
-    <p class="text-slate-300 leading-relaxed">
-      Registra, organiza y visualiza todas tus deudas y obligaciones.
-      Pymax te ayuda a no olvidar ningún pago y a mantener tu negocio en regla.
-    </p>
-  </section>
-
-  <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-    <div class="glass rounded-xl p-6 hover-card">
-      <p class="text-sm text-slate-400">Total obligaciones activas</p>
-      <p id="sum-activas" class="text-3xl font-bold text-indigo-400 mt-2">$0</p>
-      <p class="text-xs text-slate-400 mt-2">
-        Suma de compromisos pendientes.
-      </p>
-    </div>
-
-    <div class="glass rounded-xl p-6 hover-card">
-      <p class="text-sm text-slate-400">Pagos próximos</p>
-      <p id="sum-proximos" class="text-3xl font-bold text-yellow-400 mt-2">0</p>
-      <p class="text-xs text-slate-400 mt-2">
-        Vencimientos cercanos (7 días).
-      </p>
-    </div>
-
-    <div class="glass rounded-xl p-6 hover-card">
-      <p class="text-sm text-slate-400">Obligaciones vencidas</p>
-      <p id="sum-vencidas" class="text-3xl font-bold text-red-400 mt-2">0</p>
-      <p class="text-xs text-slate-400 mt-2">
-        Compromisos fuera de plazo.
-      </p>
-    </div>
-
-  </section>
-
-  <section class="glass rounded-xl p-8 max-w-5xl">
-    <h3 class="text-xl font-semibold mb-6">
-      Registrar nueva obligación
-    </h3>
-
-    <form id="formObligacion" class="space-y-4">
-      
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <input id="inpTipo" type="text" placeholder="Tipo (IVA, arriendo, proveedor)"
-            class="bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:border-indigo-500" required />
-
-          <input id="inpMonto" type="number" placeholder="Monto" step="0.01"
-            class="bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:border-indigo-500" required />
-
-          <input id="inpFecha" type="date"
-            class="bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:border-indigo-500" required />
-
-          <select id="inpEstado" class="bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:border-indigo-500">
-            <option value="pendiente">Pendiente</option>
-            <option value="pagada">Pagada</option>
-          </select>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
-          <div class="md:col-span-3">
-             <input id="inpEmail" type="email" placeholder=" Email para recordatorios (Opcional - ej: tu@correo.com)"
-            class="w-full bg-slate-900 border border-indigo-900/50 rounded px-3 py-2 text-white focus:outline-none focus:border-indigo-500 placeholder-slate-500" />
-          </div>
-          
-          <button id="btnGuardar" type="submit"
-            class="bg-indigo-600 hover:bg-indigo-700 transition rounded px-4 py-2 font-semibold text-white shadow-lg w-full">
-            Registrar
-          </button>
-      </div>
-
-    </form>
-  </section>
-
-  <section class="glass rounded-xl p-8">
-    <div class="flex justify-between items-center mb-6">
-        <h3 class="text-xl font-semibold">
-          Obligaciones registradas
-        </h3>
-        <button onclick="cargarObligaciones()" class="text-xs text-indigo-400 hover:text-white flex items-center gap-1">
-            <span>↻</span> Actualizar
-        </button>
-    </div>
-
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-          <thead class="text-slate-400 border-b border-slate-700">
-            <tr>
-              <th class="py-2 text-left">Tipo</th>
-              <th class="py-2 text-right">Monto</th>
-              <th class="py-2 text-center">Vencimiento</th>
-              <th class="py-2 text-center">Avisos</th>
-              <th class="py-2 text-center">Estado</th>
-              <th class="py-2 text-center">Acción</th> </tr>
-          </thead>
-          <tbody id="tabla-obligaciones" class="text-slate-300 divide-y divide-slate-800">
-            <tr>
-              <td colspan="6" class="py-8 text-center text-gray-500">Cargando obligaciones...</td>
-            </tr>
-          </tbody>
-        </table>
-    </div>
-  </section>
-
-  <section class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
-
-    <a href="/empresa/mover/calendario" class="glass rounded-xl p-6 hover-card block">
-      <h4 class="font-semibold text-lg mb-2">
-        Ver calendario financiero
-      </h4>
-      <p class="text-slate-300 text-sm">
-        Revisa todas las fechas importantes y vencimientos próximos.
-      </p>
-      <p class="mt-4 text-indigo-400 text-sm">
-        Ir al calendario →
-      </p>
-    </a>
-
-    <a href="/empresa/mover/flujo-caja" class="glass rounded-xl p-6 hover-card block">
-      <h4 class="font-semibold text-lg mb-2">
-        Impacto en el flujo de caja
-      </h4>
-      <p class="text-slate-300 text-sm">
-        Analiza cómo estas obligaciones afectan tu liquidez diaria.
-      </p>
-      <p class="mt-4 text-indigo-400 text-sm">
-        Ver flujo →
-      </p>
-    </a>
-
-  </section>
-
-  <section class="text-center text-slate-400 text-sm pt-6">
-    Un negocio ordenado comienza por cumplir a tiempo.
-  </section>
-
-</main>
-
-<div id="modalConfirmar" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity duration-300">
-    <div class="relative w-full max-w-md bg-slate-900 rounded-2xl p-8 shadow-2xl border border-indigo-500/30 transform scale-100 transition-transform">
-        
-        <h3 class="text-xl font-bold text-white mb-2">¿Confirmar pago?</h3>
-        <p class="text-gray-300 mb-6 text-sm leading-relaxed">
-            Esto marcará la obligación como <b>PAGADA</b> y el sistema dejará de enviar correos de recordatorio.
-        </p>
-
-        <div class="flex justify-end space-x-3">
-            <button onclick="cerrarModal()" 
-                class="px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-slate-800 transition text-sm">
-                Cancelar
-            </button>
-            <button onclick="ejecutarPago()" 
-                class="px-5 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white font-semibold shadow-lg shadow-green-900/20 transition text-sm">
-                Sí, marcar como pagado
+            <button onclick="addNewObligation()" class="flex items-center gap-2 px-3 py-2 rounded-full border border-cyan-500/30 text-cyan-400 bg-cyan-500/5 hover:bg-cyan-500/10 text-[10px] font-bold uppercase transition">
+                <i class="ph-bold ph-plus"></i>
+                <span class="hidden md:inline">New Debt</span>
             </button>
         </div>
-    </div>
-</div>
+    </nav>
 
-<script>
-// NOTIFICACIONES (Estilo Visual)
-function pymaxNotify({ title = "Pymax", message = "", type = "info" }) {
-  const container = document.getElementById("pymax-toast-container");
-  const colors = {
-    info: "from-blue-500/20 to-indigo-500/20 border-blue-400/30",
-    success: "from-emerald-500/20 to-green-500/20 border-emerald-400/30",
-    error: "from-red-500/20 to-pink-500/20 border-red-400/30"
-  };
-  const toast = document.createElement("div");
-  toast.className = `relative overflow-hidden backdrop-blur-xl bg-gradient-to-r ${colors[type]} border text-white px-5 py-4 rounded-xl shadow-xl max-w-sm mb-3 transition-all transform duration-500`;
-  toast.innerHTML = `<div class="font-semibold text-sm mb-1">${title}</div><div class="text-sm text-gray-200">${message}</div>`;
-  container.appendChild(toast);
-  setTimeout(() => {
-    toast.classList.add("opacity-0", "translate-x-5");
-    setTimeout(() => toast.remove(), 400);
-  }, 4000);
-}
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 md:px-6 pt-24 pb-12 relative z-10">
 
-// VARIABLE GLOBAL PARA EL MODAL
-let idPendienteDePago = null;
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 fade-in">
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Total Pending</p>
+                    <i class="ph-duotone ph-coins text-amber-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statTotal">$0</h3>
+                <p class="text-xs text-slate-400" id="statTotalCount">0 obligations</p>
+            </div>
 
-document.addEventListener("DOMContentLoaded", async () => {
-    // 1. Verificar Usuario
-    if (typeof pymaxGetUser === 'undefined') return;
-    const user = await pymaxGetUser();
-    if (!user) { window.location.href = "/"; return; }
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-rose-400">Overdue</p>
+                    <i class="ph-duotone ph-warning text-rose-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statOverdue">0</h3>
+                <p class="text-xs text-slate-400" id="statOverdueAmount">$0</p>
+            </div>
 
-    // Fecha por defecto hoy
-    document.getElementById("inpFecha").valueAsDate = new Date();
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-amber-400">Due Soon</p>
+                    <i class="ph-duotone ph-clock text-amber-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statDueSoon">0</h3>
+                <p class="text-xs text-slate-400">Next 7 days</p>
+            </div>
 
-    // Cargar datos iniciales
-    cargarObligaciones();
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-emerald-400">Paid</p>
+                    <i class="ph-duotone ph-check-circle text-emerald-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statPaid">0</h3>
+                <p class="text-xs text-slate-400" id="statPaidAmount">$0</p>
+            </div>
+        </div>
 
-    // 2. Guardar Nueva Deuda
-    document.getElementById("formObligacion").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById("btnGuardar");
-        
-        const tipo = document.getElementById("inpTipo").value.trim();
-        const monto = parseFloat(document.getElementById("inpMonto").value);
-        const fecha_pago = document.getElementById("inpFecha").value;
-        const estado = document.getElementById("inpEstado").value;
-        const email_contacto = document.getElementById("inpEmail").value.trim();
+        <div class="grid lg:grid-cols-12 gap-8">
 
-        if (!tipo || !monto || !fecha_pago) {
-            pymaxNotify({ title: "Atención", message: "Faltan datos obligatorios.", type: "error" });
-            return;
-        }
+            <!-- Left Column: Obligations List -->
+            <div class="lg:col-span-8 space-y-6">
 
-        btn.disabled = true; btn.innerText = "Guardando...";
+                <!-- Active Obligations -->
+                <div class="glass-card p-6 fade-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-white font-display flex items-center gap-2">
+                            <i class="ph-duotone ph-list-checks text-cyan-400"></i>
+                            Active Obligations
+                        </h2>
+                        <div class="flex gap-2">
+                            <select id="filterStatus" class="text-xs bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-slate-400" onchange="loadObligations()">
+                                <option value="all">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="paid">Paid</option>
+                            </select>
+                            <select id="sortBy" class="text-xs bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-slate-400" onchange="loadObligations()">
+                                <option value="date">By Date</option>
+                                <option value="amount">By Amount</option>
+                                <option value="priority">By Priority</option>
+                            </select>
+                        </div>
+                    </div>
 
-        const { error } = await window.supabase.from('obligaciones').insert([{
-            user_id: user.id, tipo, monto, fecha_pago, estado, 
-            email_contacto: email_contacto || null
-        }]);
+                    <div id="obligationsList" class="space-y-3 custom-scroll" style="max-height: 800px;">
+                        <div class="flex items-center justify-center py-20">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                </div>
 
-        btn.disabled = false; btn.innerText = "Registrar";
+                <!-- Payment Timeline -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-calendar text-violet-400"></i>
+                        Payment Timeline
+                    </h3>
+                    
+                    <div id="timelineContainer" class="custom-scroll" style="max-height: 400px;">
+                        <div class="flex items-center justify-center py-12">
+                            <p class="text-sm text-slate-500">No upcoming payments</p>
+                        </div>
+                    </div>
+                </div>
 
-        if (error) {
-            pymaxNotify({ title: "Error", message: "No se pudo guardar.", type: "error" });
-        } else {
-            pymaxNotify({ title: "Éxito", message: "Obligación registrada.", type: "success" });
-            document.getElementById("inpTipo").value = "";
-            document.getElementById("inpMonto").value = "";
-            document.getElementById("inpEmail").value = "";
-            cargarObligaciones();
-        }
-    });
-});
+            </div>
 
-async function cargarObligaciones() {
-    const user = await pymaxGetUser();
-    if(!user) return;
+            <!-- Right Column: AI Panel & Analytics -->
+            <div class="lg:col-span-4 space-y-6">
 
-    const tabla = document.getElementById("tabla-obligaciones");
-    const { data: obligaciones, error } = await window.supabase
-        .from('obligaciones').select('*').eq('user_id', user.id).order('fecha_pago', { ascending: true });
+                <!-- AI PREMIUM PANEL - LOCKED -->
+                <div class="ai-premium-panel fade-in">
+                    <div class="ai-lock-icon">
+                        <i class="ph-fill ph-lock-key text-3xl text-white"></i>
+                    </div>
+                    
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-white font-display mb-2">
+                            AI Debt Advisor
+                        </h3>
+                        <p class="text-sm text-violet-300 mb-1">Premium Feature</p>
+                        <p class="text-xs text-slate-400">Intelligent debt optimization and management</p>
+                    </div>
 
-    if (error || !obligaciones || obligaciones.length === 0) {
-        tabla.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-gray-500">No hay obligaciones registradas.</td></tr>`;
-        actualizarResumen([]);
-        return;
-    }
+                    <div class="space-y-3 mb-6">
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-brain text-violet-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Smart payment prioritization based on cash flow</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-chart-line text-violet-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Predictive alerts 30 days before due dates</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-money text-violet-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Automatic negotiation suggestions with creditors</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-lightning text-violet-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Real-time debt consolidation opportunities</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-bell-ringing text-violet-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Multi-channel payment reminders (Email, SMS, WhatsApp)</span>
+                        </div>
+                    </div>
 
-    let html = "";
-    const hoy = new Date().toISOString().split('T')[0];
+                    <div class="text-center">
+                        <button class="ai-upgrade-btn" onclick="showUpgradeModal()">
+                            <i class="ph-bold ph-rocket-launch"></i>
+                            Upgrade to Premium
+                        </button>
+                        <p class="text-xs text-slate-500 mt-3">Starting at $49/month</p>
+                    </div>
+                </div>
 
-    obligaciones.forEach(o => {
-        let estadoColor = "text-gray-400";
-        if(o.estado === 'pendiente') {
-            if (o.fecha_pago < hoy) estadoColor = "text-red-400 font-bold";
-            else if (o.fecha_pago === hoy) estadoColor = "text-yellow-400 font-bold";
-            else estadoColor = "text-green-400";
-        } else {
-            estadoColor = "text-blue-400 decoration-line-through";
-        }
+                <!-- Debts by Category -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-chart-pie text-emerald-400"></i>
+                        Debts by Category
+                    </h3>
+                    
+                    <div class="chart-container">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
 
-        const iconoEmail = o.email_contacto ? '<span class="text-gray-600">-</span>' : '';
+                <!-- Quick Stats -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-info text-cyan-400"></i>
+                        Quick Stats
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-slate-400">Average Debt</span>
+                            <span class="text-sm font-bold text-white" id="avgDebt">$0</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-slate-400">Largest Debt</span>
+                            <span class="text-sm font-bold text-rose-400" id="largestDebt">$0</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-slate-400">This Month</span>
+                            <span class="text-sm font-bold text-amber-400" id="thisMonthDebt">$0</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-3 border-t border-white/10">
+                            <span class="text-xs text-slate-400">Payment Rate</span>
+                            <span class="text-sm font-bold text-emerald-400" id="paymentRate">0%</span>
+                        </div>
+                    </div>
+                </div>
 
-        html += `
-            <tr class="hover:bg-slate-800/50 transition border-b border-slate-800 last:border-0">
-                <td class="py-3 text-left pl-2">${o.tipo}</td>
-                <td class="py-3 text-right font-mono">$${o.monto}</td>
-                <td class="py-3 text-center">${o.fecha_pago}</td>
-                <td class="py-3 text-center" title="${o.email_contacto || 'Sin email'}">${iconoEmail}</td>
-                <td class="py-3 text-center capitalize ${estadoColor}">
-                    ${o.estado} ${o.fecha_pago < hoy && o.estado === 'pendiente' ? '⚠️' : ''}
-                </td>
-                <td class="py-3 text-center">
-                    ${o.estado === 'pendiente' ? 
-                        `<button onclick="abrirModalConfirmar(${o.id})" class="text-xs border border-green-500 text-green-400 px-3 py-1 rounded hover:bg-green-500 hover:text-white transition">Pagar</button>` 
-                        : '<span class="text-xs text-gray-500">✓ Listo</span>'}
-                </td>
-            </tr>
-        `;
-    });
-    tabla.innerHTML = html;
-    actualizarResumen(obligaciones);
-}
+            </div>
 
-// === FUNCIONES MODAL ===
-function abrirModalConfirmar(id) {
-    idPendienteDePago = id;
-    document.getElementById("modalConfirmar").classList.remove("hidden");
-}
+        </div>
 
-function cerrarModal() {
-    idPendienteDePago = null;
-    document.getElementById("modalConfirmar").classList.add("hidden");
-}
+    </main>
 
-async function ejecutarPago() {
-    if (!idPendienteDePago) return;
-    
-    const { error } = await window.supabase
-        .from('obligaciones')
-        .update({ estado: 'pagada' })
-        .eq('id', idPendienteDePago);
-
-    cerrarModal();
-
-    if(!error) {
-        pymaxNotify({ title: "Pago completado", message: "Deuda actualizada.", type: "success" });
-        cargarObligaciones();
-    } else {
-        pymaxNotify({ title: "Error", message: "No se pudo actualizar.", type: "error" });
-    }
-}
-
-function actualizarResumen(data) {
-    let totalActivas = 0; let vencidas = 0; let proximas = 0;
-    const hoyStr = new Date().toISOString().split('T')[0];
-    const en7dias = new Date(); en7dias.setDate(new Date().getDate() + 7);
-    const en7diasStr = en7dias.toISOString().split('T')[0];
-
-    data.forEach(o => {
-        if (o.estado === 'pendiente') {
-            totalActivas += o.monto;
-            if (o.fecha_pago < hoyStr) vencidas++;
-            if (o.fecha_pago >= hoyStr && o.fecha_pago <= en7diasStr) proximas++;
-        }
-    });
-
-    document.getElementById("sum-activas").innerText = `$${totalActivas.toLocaleString()}`;
-    document.getElementById("sum-proximos").innerText = proximas;
-    document.getElementById("sum-vencidas").innerText = vencidas;
-    
-    const divVencidas = document.getElementById("sum-vencidas");
-    if(vencidas > 0) divVencidas.className = "text-3xl font-bold text-red-500 mt-2 animate-pulse";
-    else divVencidas.className = "text-3xl font-bold text-red-400 mt-2";
-}
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Busca TODOS los enlaces (<a>) de tu código original
-    document.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', function(e) {
-            let url = this.getAttribute('href');
+    <!-- Add/Edit Obligation Modal -->
+    <div id="obligationModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="p-6 border-b border-white/10 flex justify-between items-center">
+                <h2 class="text-lg font-bold text-white font-display flex items-center gap-2">
+                    <i class="ph-fill ph-plus-circle text-cyan-400"></i>
+                    <span id="modalTitle">Add New Obligation</span>
+                </h2>
+                <button onclick="closeObligationModal()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
             
-            // Solo actuamos si el enlace apunta a un archivo .html
-            if (url && url.includes('.html')) {
-                e.preventDefault(); // Detiene el error 404
+            <div class="p-6 overflow-y-auto custom-scroll" style="max-height: calc(90vh - 80px);">
+                <form id="obligationForm" class="space-y-4">
+                    <input type="hidden" id="editingId" value="">
+                    
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Type / Description</label>
+                        <input type="text" id="obligationType" placeholder="e.g. Rent, Taxes, Supplier Payment" class="modern-input" required>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Amount</label>
+                            <input type="number" id="obligationAmount" placeholder="0.00" class="modern-input" step="0.01" required>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Due Date</label>
+                            <input type="date" id="obligationDate" class="modern-input" required>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Category</label>
+                            <select id="obligationCategory" class="modern-input" required>
+                                <option value="">Select category...</option>
+                                <option value="Taxes">Taxes</option>
+                                <option value="Rent">Rent</option>
+                                <option value="Utilities">Utilities</option>
+                                <option value="Suppliers">Suppliers</option>
+                                <option value="Salaries">Salaries</option>
+                                <option value="Loans">Loans</option>
+                                <option value="Insurance">Insurance</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Status</label>
+                            <select id="obligationStatus" class="modern-input">
+                                <option value="pending">Pending</option>
+                                <option value="paid">Paid</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Creditor / Payee</label>
+                        <input type="text" id="obligationCreditor" placeholder="Company or person name" class="modern-input">
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Notes (Optional)</label>
+                        <textarea id="obligationNotes" placeholder="Additional information..." class="modern-input" rows="3"></textarea>
+                    </div>
+
+                    <div class="flex gap-3 pt-4">
+                        <button type="submit" class="modern-btn btn-primary flex-1">
+                            <i class="ph-bold ph-floppy-disk"></i>
+                            <span id="btnSubmitText">Save Obligation</span>
+                        </button>
+                        <button type="button" onclick="closeObligationModal()" class="modern-btn btn-secondary px-6">
+                            <i class="ph-bold ph-x"></i>
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Supabase Configuration
+        const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
+        const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
+        const client = supabase.createClient(SU_URL, SU_KEY);
+
+        let allObligations = [];
+        let categoryChart = null;
+
+        // Toast Notification
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            background: '#0b0b14',
+            color: '#fff'
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadObligations();
+        });
+
+        // Load Obligations
+        async function loadObligations() {
+            try {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) {
+                    window.location.href = '/';
+                    return;
+                }
+
+                const filterStatus = document.getElementById('filterStatus').value;
+                const sortBy = document.getElementById('sortBy').value;
+
+                let query = client
+                    .from('obligaciones')
+                    .select('*')
+                    .eq('user_id', user.id);
+
+                if (filterStatus !== 'all') {
+                    query = query.eq('estado', filterStatus === 'pending' ? 'pendiente' : 'pagada');
+                }
+
+                const { data, error } = await query;
+
+                if (error) throw error;
+
+                allObligations = data || [];
+
+                // Sort
+                if (sortBy === 'date') {
+                    allObligations.sort((a, b) => new Date(a.fecha_pago) - new Date(b.fecha_pago));
+                } else if (sortBy === 'amount') {
+                    allObligations.sort((a, b) => parseFloat(b.monto) - parseFloat(a.monto));
+                } else if (sortBy === 'priority') {
+                    allObligations.sort((a, b) => getPriority(a) - getPriority(b));
+                }
+
+                renderObligations();
+                updateStatistics();
+                updateTimeline();
+                updateQuickStats();
+                updateCategoryChart();
+
+            } catch (error) {
+                console.error('Error loading obligations:', error);
+                Toast.fire({ icon: 'error', title: 'Failed to load obligations' });
+            }
+        }
+
+        // Get Priority (0 = highest)
+        function getPriority(obligation) {
+            if (obligation.estado !== 'pendiente') return 999;
+            
+            const today = new Date();
+            const dueDate = new Date(obligation.fecha_pago);
+            const diffDays = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+
+            if (diffDays < 0) return 0; // Overdue
+            if (diffDays <= 7) return 1; // Due soon
+            if (diffDays <= 30) return 2; // Due this month
+            return 3; // Future
+        }
+
+        // Render Obligations
+        function renderObligations() {
+            const container = document.getElementById('obligationsList');
+            
+            if (allObligations.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-20 text-center">
+                        <i class="ph-duotone ph-archive text-6xl text-slate-700 mb-4"></i>
+                        <p class="text-slate-500 font-medium">No obligations found</p>
+                        <p class="text-xs text-slate-600 mt-2">Add your first obligation to start tracking</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = allObligations.map(obl => {
+                const today = new Date();
+                const dueDate = new Date(obl.fecha_pago);
+                const diffDays = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
                 
-                // 1. Quita la extensión .html automáticamente
-                let nuevaRuta = url.replace('.html', '');
+                let statusClass = 'pending';
+                let priorityBadge = '';
+                let statusText = 'Pending';
 
-                // 2. DICCIONARIO DE CORRECCIONES (Para los botones "Volver")
-                // Aquí le enseñamos a ir a las rutas principales correctas
-                if (url.includes('panel-mover.html')) nuevaRuta = "/empresa/mover";
-                if (url.includes('index-empresa.html')) nuevaRuta = "/empresa";
-                if (url.includes('index.html')) nuevaRuta = "/";
+                if (obl.estado === 'pagada') {
+                    statusClass = 'paid';
+                    statusText = 'Paid';
+                    priorityBadge = '<span class="priority-badge low">COMPLETED</span>';
+                } else if (diffDays < 0) {
+                    statusClass = 'overdue';
+                    priorityBadge = '<span class="priority-badge critical">OVERDUE</span>';
+                } else if (diffDays <= 7) {
+                    statusClass = 'due-soon';
+                    priorityBadge = '<span class="priority-badge high">DUE SOON</span>';
+                } else {
+                    priorityBadge = '<span class="priority-badge normal">ACTIVE</span>';
+                }
 
-                // 3. Te envía a la ruta limpia de Python
-                window.location.href = nuevaRuta;
+                return `
+                    <div class="obligation-card ${statusClass}">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <h4 class="font-bold text-white text-base">${obl.tipo}</h4>
+                                    ${priorityBadge}
+                                </div>
+                                <p class="text-xs text-slate-400">
+                                    ${obl.creditor || 'No creditor specified'} 
+                                    ${obl.category ? `• ${obl.category}` : ''}
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-2xl font-bold text-white font-display">$${parseFloat(obl.monto || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center pt-3 border-t border-white/10">
+                            <div class="flex items-center gap-4">
+                                <div class="flex items-center gap-2">
+                                    <i class="ph-bold ph-calendar text-slate-500 text-sm"></i>
+                                    <span class="text-xs text-slate-400">Due: ${new Date(obl.fecha_pago).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                                </div>
+                                ${diffDays >= 0 && obl.estado !== 'pagada' ? `
+                                    <div class="flex items-center gap-2">
+                                        <i class="ph-bold ph-clock text-slate-500 text-sm"></i>
+                                        <span class="text-xs text-slate-400">${diffDays} days left</span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            
+                            <div class="flex gap-2">
+                                ${obl.estado === 'pendiente' ? `
+                                    <div class="action-btn success" onclick="markAsPaid('${obl.id}')" title="Mark as paid">
+                                        <i class="ph-bold ph-check"></i>
+                                    </div>
+                                ` : ''}
+                                <div class="action-btn" onclick="editObligation('${obl.id}')" title="Edit">
+                                    <i class="ph-bold ph-pencil"></i>
+                                </div>
+                                <div class="action-btn danger" onclick="deleteObligation('${obl.id}')" title="Delete">
+                                    <i class="ph-bold ph-trash"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Update Statistics
+        function updateStatistics() {
+            const today = new Date();
+            const in7Days = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+            const pending = allObligations.filter(o => o.estado === 'pendiente');
+            const paid = allObligations.filter(o => o.estado === 'pagada');
+
+            const totalPending = pending.reduce((sum, o) => sum + parseFloat(o.monto || 0), 0);
+            const totalPaid = paid.reduce((sum, o) => sum + parseFloat(o.monto || 0), 0);
+
+            const overdue = pending.filter(o => new Date(o.fecha_pago) < today);
+            const overdueAmount = overdue.reduce((sum, o) => sum + parseFloat(o.monto || 0), 0);
+
+            const dueSoon = pending.filter(o => {
+                const dueDate = new Date(o.fecha_pago);
+                return dueDate >= today && dueDate <= in7Days;
+            });
+
+            document.getElementById('statTotal').textContent = `$${totalPending.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            document.getElementById('statTotalCount').textContent = `${pending.length} obligation${pending.length !== 1 ? 's' : ''}`;
+            
+            document.getElementById('statOverdue').textContent = overdue.length;
+            document.getElementById('statOverdueAmount').textContent = `$${overdueAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            
+            document.getElementById('statDueSoon').textContent = dueSoon.length;
+            
+            document.getElementById('statPaid').textContent = paid.length;
+            document.getElementById('statPaidAmount').textContent = `$${totalPaid.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+        }
+
+        // Update Timeline
+        function updateTimeline() {
+            const container = document.getElementById('timelineContainer');
+            
+            const today = new Date();
+            const upcoming = allObligations
+                .filter(o => o.estado === 'pendiente' && new Date(o.fecha_pago) >= today)
+                .sort((a, b) => new Date(a.fecha_pago) - new Date(b.fecha_pago))
+                .slice(0, 10);
+
+            if (upcoming.length === 0) {
+                container.innerHTML = `
+                    <div class="flex items-center justify-center py-12">
+                        <p class="text-sm text-slate-500">No upcoming payments</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = upcoming.map(obl => {
+                const dueDate = new Date(obl.fecha_pago);
+                const diffDays = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+                
+                let dotClass = 'future';
+                if (diffDays <= 7) dotClass = 'soon';
+
+                return `
+                    <div class="timeline-item">
+                        <div class="timeline-dot ${dotClass}"></div>
+                        <div class="bg-white/5 rounded-lg p-4 hover:bg-white/10 transition">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-sm font-bold text-white">${obl.tipo}</span>
+                                <span class="text-xs text-slate-500">${diffDays} days</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-slate-400">${dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                                <span class="text-sm font-bold text-amber-400">$${parseFloat(obl.monto || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Update Quick Stats
+        function updateQuickStats() {
+            const pending = allObligations.filter(o => o.estado === 'pendiente');
+            const total = allObligations.length;
+
+            const avgDebt = pending.length > 0 
+                ? pending.reduce((sum, o) => sum + parseFloat(o.monto || 0), 0) / pending.length 
+                : 0;
+
+            const largestDebt = pending.length > 0 
+                ? Math.max(...pending.map(o => parseFloat(o.monto || 0))) 
+                : 0;
+
+            const now = new Date();
+            const thisMonth = allObligations.filter(o => {
+                const date = new Date(o.fecha_pago);
+                return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+            });
+            const thisMonthAmount = thisMonth.reduce((sum, o) => sum + parseFloat(o.monto || 0), 0);
+
+            const paid = allObligations.filter(o => o.estado === 'pagada').length;
+            const paymentRate = total > 0 ? (paid / total * 100).toFixed(1) : 0;
+
+            document.getElementById('avgDebt').textContent = `$${avgDebt.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            document.getElementById('largestDebt').textContent = `$${largestDebt.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            document.getElementById('thisMonthDebt').textContent = `$${thisMonthAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            document.getElementById('paymentRate').textContent = `${paymentRate}%`;
+        }
+
+        // Update Category Chart
+        function updateCategoryChart() {
+            if (categoryChart) {
+                categoryChart.destroy();
+            }
+
+            const pending = allObligations.filter(o => o.estado === 'pendiente');
+            
+            if (pending.length === 0) {
+                document.querySelector('.chart-container').innerHTML = `
+                    <div class="flex items-center justify-center h-full">
+                        <p class="text-sm text-slate-500">No data available</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const categoryData = {};
+            pending.forEach(o => {
+                const category = o.category || 'Other';
+                categoryData[category] = (categoryData[category] || 0) + parseFloat(o.monto || 0);
+            });
+
+            const labels = Object.keys(categoryData);
+            const values = Object.values(categoryData);
+
+            const ctx = document.getElementById('categoryChart');
+            
+            categoryChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: [
+                            '#60a5fa',
+                            '#a78bfa',
+                            '#34d399',
+                            '#fb7185',
+                            '#fbbf24',
+                            '#f472b6',
+                            '#818cf8',
+                            '#22d3ee'
+                        ],
+                        borderColor: '#020617',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#94a3b8',
+                                font: { size: 10 },
+                                padding: 12
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#fff',
+                            bodyColor: '#94a3b8',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    const total = values.reduce((a, b) => a + b, 0);
+                                    const percentage = (context.parsed / total * 100).toFixed(1);
+                                    return `${context.label}: $${context.parsed.toLocaleString('en-US', { minimumFractionDigits: 2 })} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Add New Obligation
+        function addNewObligation() {
+            document.getElementById('modalTitle').textContent = 'Add New Obligation';
+            document.getElementById('editingId').value = '';
+            document.getElementById('obligationForm').reset();
+            document.getElementById('obligationDate').valueAsDate = new Date();
+            document.getElementById('btnSubmitText').textContent = 'Save Obligation';
+            document.getElementById('obligationModal').classList.add('active');
+        }
+
+        // Edit Obligation
+        function editObligation(id) {
+            const obligation = allObligations.find(o => o.id === parseInt(id));
+            if (!obligation) return;
+
+            document.getElementById('modalTitle').textContent = 'Edit Obligation';
+            document.getElementById('editingId').value = id;
+            document.getElementById('obligationType').value = obligation.tipo;
+            document.getElementById('obligationAmount').value = obligation.monto;
+            document.getElementById('obligationDate').value = obligation.fecha_pago;
+            document.getElementById('obligationCategory').value = obligation.category || '';
+            document.getElementById('obligationStatus').value = obligation.estado === 'pendiente' ? 'pending' : 'paid';
+            document.getElementById('obligationCreditor').value = obligation.creditor || '';
+            document.getElementById('obligationNotes').value = obligation.notes || '';
+            document.getElementById('btnSubmitText').textContent = 'Update Obligation';
+            document.getElementById('obligationModal').classList.add('active');
+        }
+
+        // Close Modal
+        function closeObligationModal() {
+            document.getElementById('obligationModal').classList.remove('active');
+        }
+
+        // Form Submit
+        document.getElementById('obligationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            try {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) throw new Error('User not authenticated');
+
+                const editingId = document.getElementById('editingId').value;
+                const obligationData = {
+                    user_id: user.id,
+                    tipo: document.getElementById('obligationType').value,
+                    monto: parseFloat(document.getElementById('obligationAmount').value),
+                    fecha_pago: document.getElementById('obligationDate').value,
+                    category: document.getElementById('obligationCategory').value,
+                    estado: document.getElementById('obligationStatus').value === 'pending' ? 'pendiente' : 'pagada',
+                    creditor: document.getElementById('obligationCreditor').value,
+                    notes: document.getElementById('obligationNotes').value
+                };
+
+                let result;
+                if (editingId) {
+                    result = await client
+                        .from('obligaciones')
+                        .update(obligationData)
+                        .eq('id', editingId);
+                } else {
+                    result = await client
+                        .from('obligaciones')
+                        .insert(obligationData);
+                }
+
+                if (result.error) throw result.error;
+
+                closeObligationModal();
+                await loadObligations();
+                
+                Toast.fire({
+                    icon: 'success',
+                    title: editingId ? 'Obligation updated' : 'Obligation added'
+                });
+
+            } catch (error) {
+                console.error('Error saving obligation:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: error.message,
+                    icon: 'error',
+                    background: '#0b0b14',
+                    color: '#fff',
+                    confirmButtonColor: '#60a5fa'
+                });
             }
         });
-    });
-});
-</script>
+
+        // Mark as Paid
+        async function markAsPaid(id) {
+            const result = await Swal.fire({
+                title: 'Mark as Paid?',
+                text: 'This will mark the obligation as completed',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#34d399',
+                cancelButtonColor: '#3f3f46',
+                confirmButtonText: 'Yes, mark as paid',
+                background: '#0b0b14',
+                color: '#fff'
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+                const { error } = await client
+                    .from('obligaciones')
+                    .update({ estado: 'pagada' })
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                await loadObligations();
+                Toast.fire({ icon: 'success', title: 'Marked as paid' });
+
+            } catch (error) {
+                console.error('Error marking as paid:', error);
+                Toast.fire({ icon: 'error', title: 'Failed to update' });
+            }
+        }
+
+        // Delete Obligation
+        async function deleteObligation(id) {
+            const result = await Swal.fire({
+                title: 'Delete Obligation?',
+                text: 'This action cannot be undone',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#fb7185',
+                cancelButtonColor: '#3f3f46',
+                confirmButtonText: 'Yes, delete it',
+                background: '#0b0b14',
+                color: '#fff'
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+                const { error } = await client
+                    .from('obligaciones')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                await loadObligations();
+                Toast.fire({ icon: 'success', title: 'Obligation deleted' });
+
+            } catch (error) {
+                console.error('Error deleting obligation:', error);
+                Toast.fire({ icon: 'error', title: 'Failed to delete' });
+            }
+        }
+
+        // Show Upgrade Modal
+        function showUpgradeModal() {
+            Swal.fire({
+                title: 'Upgrade to Premium',
+                html: `
+                    <div class="text-left space-y-4 p-4">
+                        <p class="text-sm text-slate-400 mb-4">
+                            Unlock AI-powered debt management and save time with intelligent automation.
+                        </p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">AI Payment Prioritization</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Predictive Alerts & Reminders</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Automatic Negotiation Suggestions</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Multi-Channel Notifications</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Priority Support</span>
+                            </div>
+                        </div>
+                        <div class="mt-6 p-4 bg-violet-500/10 rounded-lg border border-violet-500/30">
+                            <p class="text-center text-2xl font-bold text-white mb-1">$49/month</p>
+                            <p class="text-center text-xs text-slate-400">or $490/year (save 17%)</p>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#7c3aed',
+                cancelButtonColor: '#3f3f46',
+                confirmButtonText: 'Contact Sales',
+                cancelButtonText: 'Maybe Later',
+                background: '#0b0b14',
+                color: '#fff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'mailto:sales@pymax.com?subject=Premium Upgrade Inquiry';
+                }
+            });
+        }
+
+        // Close modal on outside click
+        document.getElementById('obligationModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                closeObligationModal();
+            }
+        });
+
+        // Keyboard shortcut
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeObligationModal();
+            }
+        });
+    </script>
 </body>
 </html>

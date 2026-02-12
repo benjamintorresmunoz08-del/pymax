@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Sales CRM - Customer Relationship Management & Sales Pipeline" />
+    <title>Pymax | Tiburón CRM</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --bg-void: #020617;
+            --bg-card: rgba(15, 23, 42, 0.6);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --neon-cyan: #60a5fa;
+            --neon-violet: #a78bfa;
+            --neon-emerald: #34d399;
+            --neon-rose: #fb7185;
+            --neon-amber: #fbbf24;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        .nebula-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(96, 165, 250, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(52, 211, 153, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            backdrop-filter: blur(24px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        /* AI Premium Panel */
+        .ai-premium-panel {
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(96, 165, 250, 0.1));
+            border: 2px solid rgba(96, 165, 250, 0.3);
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-premium-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #60a5fa, transparent);
+        }
+
+        .ai-lock-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 40px rgba(96, 165, 250, 0.5);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .ai-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(96, 165, 250, 0.1);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        .ai-upgrade-btn {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(96, 165, 250, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-upgrade-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(96, 165, 250, 0.6);
+        }
+
+        /* Pipeline Column */
+        .pipeline-column {
+            min-width: 300px;
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        /* Deal Card */
+        .deal-card {
+            padding: 16px;
+            border-radius: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            margin-bottom: 12px;
+            cursor: grab;
+            transition: all 0.2s ease;
+        }
+
+        .deal-card:hover {
+            border-color: rgba(96, 165, 250, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .deal-card:active {
+            cursor: grabbing;
+        }
+
+        /* Customer Card */
+        .customer-card {
+            padding: 20px;
+            border-radius: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            transition: all 0.3s ease;
+        }
+
+        .customer-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge.lead { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.3); }
+        .status-badge.qualified { background: rgba(96, 165, 250, 0.2); color: #93c5fd; border: 1px solid rgba(96, 165, 250, 0.3); }
+        .status-badge.proposal { background: rgba(251, 191, 36, 0.2); color: #fcd34d; border: 1px solid rgba(251, 191, 36, 0.3); }
+        .status-badge.negotiation { background: rgba(167, 139, 250, 0.2); color: #c4b5fd; border: 1px solid rgba(167, 139, 250, 0.3); }
+        .status-badge.closed { background: rgba(52, 211, 153, 0.2); color: #6ee7b7; border: 1px solid rgba(52, 211, 153, 0.3); }
+        .status-badge.lost { background: rgba(251, 113, 133, 0.2); color: #fca5a5; border: 1px solid rgba(251, 113, 133, 0.3); }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 280px;
+            padding: 20px 10px;
+        }
+
+        /* Modern Button */
+        .modern-btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 30px rgba(96, 165, 250, 0.4);
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(96, 165, 250, 0.3); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(96, 165, 250, 0.5); }
+    </style>
+</head>
+
+<body>
+    <div class="nebula-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-[#020617]/90 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="/empresa/mover" class="flex items-center gap-2 text-slate-400 hover:text-white transition group">
+                    <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/30 transition">
+                        <i class="ph-bold ph-arrow-left"></i>
+                    </div>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">Back</span>
+                </a>
+                <div class="h-6 w-px bg-white/10"></div>
+                <h1 class="text-xl font-bold text-white font-display tracking-tight">
+                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">TIBURÓN CRM</span>
+                </h1>
+            </div>
+
+            <button onclick="addLead()" class="flex items-center gap-2 px-3 py-2 rounded-full border border-cyan-500/30 text-cyan-400 bg-cyan-500/5 hover:bg-cyan-500/10 text-[10px] font-bold uppercase transition">
+                <i class="ph-bold ph-plus"></i>
+                <span class="hidden md:inline">New Lead</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 md:px-6 pt-24 pb-12 relative z-10">
+
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8 fade-in">
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Total Leads</p>
+                    <i class="ph-duotone ph-users-three text-cyan-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1">48</h3>
+                <p class="text-xs text-slate-400">Active prospects</p>
+            </div>
+
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Pipeline Value</p>
+                    <i class="ph-duotone ph-coins text-amber-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1">$124K</h3>
+                <p class="text-xs text-slate-400">Potential revenue</p>
+            </div>
+
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Conversion Rate</p>
+                    <i class="ph-duotone ph-trend-up text-emerald-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1">32%</h3>
+                <p class="text-xs text-slate-400">Last 30 days</p>
+            </div>
+
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Closed Deals</p>
+                    <i class="ph-duotone ph-check-circle text-emerald-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1">18</h3>
+                <p class="text-xs text-slate-400">This month</p>
+            </div>
+
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Avg. Deal Size</p>
+                    <i class="ph-duotone ph-chart-bar text-violet-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1">$6.9K</h3>
+                <p class="text-xs text-slate-400">Average value</p>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-8">
+
+            <!-- Left Column: Pipeline -->
+            <div class="lg:col-span-8 space-y-6">
+
+                <!-- Sales Pipeline -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-6 flex items-center gap-2">
+                        <i class="ph-duotone ph-funnel text-cyan-400"></i>
+                        Sales Pipeline
+                    </h3>
+
+                    <div class="flex gap-4 overflow-x-auto pb-4 custom-scroll">
+                        <!-- Lead Column -->
+                        <div class="pipeline-column">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="font-bold text-white text-sm">Lead</h4>
+                                <span class="text-xs text-slate-500">12</span>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="deal-card">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <p class="font-bold text-white text-sm">Acme Corporation</p>
+                                        <span class="text-xs text-emerald-400 font-bold">$12K</span>
+                                    </div>
+                                    <p class="text-xs text-slate-400 mb-2">Enterprise software solution</p>
+                                    <div class="flex items-center gap-2">
+                                        <span class="status-badge lead">New Lead</span>
+                                    </div>
+                                </div>
+                                <div class="deal-card">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <p class="font-bold text-white text-sm">Tech Startup Inc</p>
+                                        <span class="text-xs text-emerald-400 font-bold">$8K</span>
+                                    </div>
+                                    <p class="text-xs text-slate-400 mb-2">Cloud infrastructure</p>
+                                    <div class="flex items-center gap-2">
+                                        <span class="status-badge lead">New Lead</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Qualified Column -->
+                        <div class="pipeline-column">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="font-bold text-white text-sm">Qualified</h4>
+                                <span class="text-xs text-slate-500">8</span>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="deal-card">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <p class="font-bold text-white text-sm">Global Retail Co</p>
+                                        <span class="text-xs text-emerald-400 font-bold">$25K</span>
+                                    </div>
+                                    <p class="text-xs text-slate-400 mb-2">POS system upgrade</p>
+                                    <div class="flex items-center gap-2">
+                                        <span class="status-badge qualified">Qualified</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Proposal Column -->
+                        <div class="pipeline-column">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="font-bold text-white text-sm">Proposal</h4>
+                                <span class="text-xs text-slate-500">6</span>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="deal-card">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <p class="font-bold text-white text-sm">Manufacturing Ltd</p>
+                                        <span class="text-xs text-emerald-400 font-bold">$45K</span>
+                                    </div>
+                                    <p class="text-xs text-slate-400 mb-2">ERP implementation</p>
+                                    <div class="flex items-center gap-2">
+                                        <span class="status-badge proposal">Proposal Sent</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Negotiation Column -->
+                        <div class="pipeline-column">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="font-bold text-white text-sm">Negotiation</h4>
+                                <span class="text-xs text-slate-500">4</span>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="deal-card">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <p class="font-bold text-white text-sm">Finance Group</p>
+                                        <span class="text-xs text-emerald-400 font-bold">$34K</span>
+                                    </div>
+                                    <p class="text-xs text-slate-400 mb-2">Compliance software</p>
+                                    <div class="flex items-center gap-2">
+                                        <span class="status-badge negotiation">Negotiating</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Customers -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-6 flex items-center gap-2">
+                        <i class="ph-duotone ph-handshake text-emerald-400"></i>
+                        Recent Customers
+                    </h3>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="customer-card">
+                            <div class="flex items-center gap-4 mb-3">
+                                <div class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold">
+                                    AC
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-white text-sm">Acme Corp</p>
+                                    <p class="text-xs text-slate-400">john@acme.com</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-500">Last contact: 2 days ago</span>
+                                <span class="text-emerald-400 font-bold">$12K</span>
+                            </div>
+                        </div>
+
+                        <div class="customer-card">
+                            <div class="flex items-center gap-4 mb-3">
+                                <div class="w-12 h-12 rounded-full bg-violet-500/20 flex items-center justify-center text-violet-400 font-bold">
+                                    TS
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-white text-sm">Tech Startup</p>
+                                    <p class="text-xs text-slate-400">ceo@techstartup.io</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-500">Last contact: 5 days ago</span>
+                                <span class="text-emerald-400 font-bold">$8K</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: AI Panel & Analytics -->
+            <div class="lg:col-span-4 space-y-6">
+
+                <!-- AI PREMIUM PANEL - LOCKED -->
+                <div class="ai-premium-panel fade-in">
+                    <div class="ai-lock-icon">
+                        <i class="ph-fill ph-lock-key text-3xl text-white"></i>
+                    </div>
+                    
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-white font-display mb-2">
+                            AI Sales Assistant
+                        </h3>
+                        <p class="text-sm text-cyan-300 mb-1">Premium Feature</p>
+                        <p class="text-xs text-slate-400">Intelligent lead scoring and sales automation</p>
+                    </div>
+
+                    <div class="space-y-3 mb-6">
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-target text-cyan-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">AI lead scoring with 92% accuracy prediction</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-robot text-cyan-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Automatic follow-up email generation</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-calendar-check text-cyan-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Smart meeting scheduler based on closing probability</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-chart-line text-cyan-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Revenue forecasting with ML algorithms</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-bell-ringing text-cyan-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Deal risk alerts when leads go cold</span>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button class="ai-upgrade-btn" onclick="showUpgradeModal()">
+                            <i class="ph-bold ph-rocket-launch"></i>
+                            Upgrade to Premium
+                        </button>
+                        <p class="text-xs text-slate-500 mt-3">Starting at $79/month</p>
+                    </div>
+                </div>
+
+                <!-- Conversion Funnel -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-funnel-simple text-violet-400"></i>
+                        Conversion Funnel
+                    </h3>
+                    
+                    <div class="chart-container">
+                        <canvas id="conversionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4">Quick Actions</h3>
+                    
+                    <div class="space-y-3">
+                        <button class="w-full modern-btn btn-primary text-xs py-3" onclick="addLead()">
+                            <i class="ph-bold ph-user-plus"></i>
+                            Add New Lead
+                        </button>
+                        <button class="w-full modern-btn text-xs py-3" style="background: rgba(255,255,255,0.05); color: #e2e8f0;">
+                            <i class="ph-bold ph-export"></i>
+                            Export Pipeline
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- JavaScript -->
+    <script>
+        // Supabase Configuration
+        const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
+        const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
+        const client = supabase.createClient(SU_URL, SU_KEY);
+
+        let conversionChart = null;
+
+        // Toast Notification
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            background: '#0b0b14',
+            color: '#fff'
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+            renderConversionChart();
+        });
+
+        // Check Auth
+        async function checkAuth() {
+            try {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) {
+                    window.location.href = '/';
+                    return;
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+            }
+        }
+
+        // Render Conversion Chart
+        function renderConversionChart() {
+            const ctx = document.getElementById('conversionChart');
+            
+            conversionChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Lead', 'Qualified', 'Proposal', 'Negotiation', 'Closed'],
+                    datasets: [{
+                        label: 'Conversion Rate',
+                        data: [100, 65, 45, 38, 32],
+                        backgroundColor: [
+                            'rgba(96, 165, 250, 0.6)',
+                            'rgba(52, 211, 153, 0.6)',
+                            'rgba(251, 191, 36, 0.6)',
+                            'rgba(167, 139, 250, 0.6)',
+                            'rgba(34, 211, 238, 0.6)'
+                        ],
+                        borderColor: [
+                            '#60a5fa',
+                            '#34d399',
+                            '#fbbf24',
+                            '#a78bfa',
+                            '#22d3ee'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#fff',
+                            bodyColor: '#94a3b8',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    return `Conversion: ${context.parsed.y}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#64748b', font: { size: 10 } }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { 
+                                color: '#64748b',
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Add Lead
+        function addLead() {
+            Toast.fire({ icon: 'info', title: 'Lead creation feature coming soon' });
+        }
+
+        // Show Upgrade Modal
+        function showUpgradeModal() {
+            Swal.fire({
+                title: 'Upgrade to Premium',
+                html: `
+                    <div class="text-left space-y-4 p-4">
+                        <p class="text-sm text-slate-400 mb-4">
+                            Unlock AI-powered sales automation and close more deals faster.
+                        </p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">AI Lead Scoring</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Automatic Follow-ups</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Smart Meeting Scheduler</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Revenue Forecasting</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Deal Risk Alerts</span>
+                            </div>
+                        </div>
+                        <div class="mt-6 p-4 bg-cyan-500/10 rounded-lg border border-cyan-500/30">
+                            <p class="text-center text-2xl font-bold text-white mb-1">$79/month</p>
+                            <p class="text-center text-xs text-slate-400">or $790/year (save 17%)</p>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#60a5fa',
+                cancelButtonColor: '#3f3f46',
+                confirmButtonText: 'Contact Sales',
+                cancelButtonText: 'Maybe Later',
+                background: '#0b0b14',
+                color: '#fff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'mailto:sales@pymax.com?subject=Premium Upgrade Inquiry';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

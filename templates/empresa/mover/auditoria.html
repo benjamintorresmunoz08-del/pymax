@@ -1,309 +1,898 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pymax | Libro Mayor</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Financial Audit Ledger - Complete Transaction History" />
+    <title>Pymax | Audit Ledger</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;700&family=Outfit:wght@700&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/@phosphor-icons/web"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-  <style>
-    :root {
-      --bg-void: #030014;
-      --border-color: rgba(255, 255, 255, 0.1);
-      --accent-cyan: #06b6d4;
-    }
+    <style>
+        :root {
+            --bg-void: #020617;
+            --bg-card: rgba(15, 23, 42, 0.6);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --neon-cyan: #60a5fa;
+            --neon-violet: #a78bfa;
+            --neon-emerald: #34d399;
+            --neon-rose: #fb7185;
+        }
 
-    body {
-      background-color: var(--bg-void);
-      color: #e2e8f0;
-      font-family: 'Inter', sans-serif;
-      overflow: hidden;
-      height: 100vh;
-      display: flex; flex-direction: column;
-    }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    .toolbar {
-        background: #0a0a12;
-        border-bottom: 1px solid var(--border-color);
-        padding: 16px 24px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: relative;
-        z-index: 20;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    }
+        body {
+            background: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
 
-    .watermark {
-        position: absolute; top: 50%; left: 50%;
-        transform: translate(-50%, -50%) rotate(-15deg);
-        font-family: 'Outfit', sans-serif;
-        font-size: 12vw; font-weight: 900;
-        color: rgba(255, 255, 255, 0.02);
-        pointer-events: none; z-index: 0;
-        white-space: nowrap; user-select: none;
-    }
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+        }
 
-    .table-container {
-        flex: 1; overflow: auto; position: relative; z-index: 10;
-        padding: 0 24px 24px 24px;
-    }
-    
-    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    
-    th {
-        position: sticky; top: 0; background: #030014; z-index: 20;
-        text-align: left; padding: 12px;
-        color: #94a3b8; font-weight: 600;
-        border-bottom: 2px solid var(--border-color);
-        text-transform: uppercase; letter-spacing: 0.05em;
-        cursor: pointer; transition: color 0.2s; user-select: none;
-    }
-    th:hover { color: white; background: #0f172a; }
-    
-    /* SECCIÓN CORREGIDA: Caracteres ocultos eliminados y formato limpio */
-    td {
-        padding: 10px 12px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        color: #cbd5e1;
-        transition: background 0.1s;
-    }
-    tr:hover td {
-        background: rgba(255, 255, 255, 0.03);
-    }
+        .nebula-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(96, 165, 250, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(167, 139, 250, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
 
-    .col-amount { font-family: 'JetBrains Mono', monospace; text-align: right; font-weight: 700; }
-    .col-status { text-align: center; }
-    
-    .badge {
-        padding: 4px 8px; border-radius: 4px;
-        font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-        display: inline-block;
-    }
-    .badge-in { background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
-    .badge-out { background: rgba(244, 63, 94, 0.1); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.2); }
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            backdrop-filter: blur(24px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
 
-    .filter-group { display: flex; gap: 12px; }
-    .filter-select {
-        background: #1e1e24; border: 1px solid var(--border-color); color: white;
-        padding: 8px 12px; border-radius: 8px; outline: none; font-size: 0.8rem;
-    }
-    .search-input {
-        background: #1e1e24; border: 1px solid var(--border-color); color: white;
-        padding: 8px 12px 8px 32px; border-radius: 8px; outline: none;
-        font-size: 0.8rem; width: 250px;
-    }
-    .search-wrap { position: relative; }
-    .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #64748b; }
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
 
-    .btn-excel {
-        background: #107c41; color: white; border: none; padding: 8px 16px;
-        border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer;
-        display: flex; align-items: center; gap: 8px; transition: transform 0.2s;
-    }
-    .btn-excel:hover { transform: scale(1.05); background: #0c6633; }
-  </style>
+        /* AI Premium Panel */
+        .ai-premium-panel {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(139, 92, 246, 0.1));
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-premium-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #a78bfa, transparent);
+        }
+
+        .ai-lock-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 40px rgba(139, 92, 246, 0.5);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .ai-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        .ai-upgrade-btn {
+            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(124, 58, 237, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-upgrade-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(124, 58, 237, 0.6);
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 16px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border-glass);
+            background: rgba(15, 23, 42, 0.8);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        th:hover {
+            color: white;
+            background: rgba(15, 23, 42, 0.95);
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #cbd5e1;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Badge */
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .type-badge.income {
+            background: rgba(52, 211, 153, 0.2);
+            color: #6ee7b7;
+            border: 1px solid rgba(52, 211, 153, 0.3);
+        }
+
+        .type-badge.expense {
+            background: rgba(251, 113, 133, 0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(251, 113, 133, 0.3);
+        }
+
+        /* Modern Input */
+        .modern-input {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: white;
+            outline: none;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .modern-input:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.2);
+        }
+
+        select.modern-input {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Modern Button */
+        .modern-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 30px rgba(96, 165, 250, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 280px;
+            padding: 20px 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(96, 165, 250, 0.3); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(96, 165, 250, 0.5); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            table { font-size: 0.8rem; }
+            th, td { padding: 12px 8px; }
+            .chart-container { height: 220px; padding: 10px 5px; }
+        }
+    </style>
 </head>
+
 <body>
+    <div class="nebula-bg"></div>
 
-  <div class="watermark">PYMAX AUDIT</div>
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-[#020617]/90 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="/empresa/mover" class="flex items-center gap-2 text-slate-400 hover:text-white transition group">
+                    <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/30 transition">
+                        <i class="ph-bold ph-arrow-left"></i>
+                    </div>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">Back</span>
+                </a>
+                <div class="h-6 w-px bg-white/10"></div>
+                <h1 class="text-xl font-bold text-white font-display tracking-tight">
+                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">AUDIT LEDGER</span>
+                </h1>
+            </div>
 
-  <div class="toolbar">
-      <div class="flex items-center gap-6">
-          <a href="/empresa/mover" class="text-slate-400 hover:text-white transition"><i class="ph-bold ph-arrow-left text-xl"></i></a>
-          <h1 class="text-lg font-bold text-white font-future tracking-wide">LIBRO MAYOR</h1>
-          
-          <div class="filter-group">
-              <div class="search-wrap">
-                  <i class="ph-bold ph-magnifying-glass search-icon"></i>
-                  <input type="text" id="searchInput" class="search-input" placeholder="Buscar concepto, monto..." onkeyup="filterTable()">
-              </div>
-              <select id="filterType" class="filter-select" onchange="filterTable()">
-                  <option value="all">Todo</option>
-                  <option value="ingreso">Ingresos</option>
-                  <option value="egreso">Egresos</option>
-              </select>
-              <select id="filterCategory" class="filter-select" onchange="filterTable()">
-                  <option value="all">Todas las Categorías</option>
-              </select>
-          </div>
-      </div>
+            <button onclick="exportToExcel()" class="flex items-center gap-2 px-3 py-2 rounded-full border border-emerald-500/30 text-emerald-400 bg-emerald-500/5 hover:bg-emerald-500/10 text-[10px] font-bold uppercase transition">
+                <i class="ph-bold ph-file-xls"></i>
+                <span class="hidden md:inline">Export Excel</span>
+            </button>
+        </div>
+    </nav>
 
-      <button onclick="exportToExcel()" class="btn-excel">
-          <i class="ph-fill ph-file-xls"></i> Exportar a Excel
-      </button>
-  </div>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 md:px-6 pt-24 pb-12 relative z-10">
 
-  <div class="table-container custom-scroll">
-      <table id="auditTable">
-          <thead>
-              <tr>
-                  <th onclick="sortTable('date')">Fecha <i class="ph-bold ph-caret-up-down text-xs ml-1"></i></th>
-                  <th onclick="sortTable('concept')">Concepto <i class="ph-bold ph-caret-up-down text-xs ml-1"></i></th>
-                  <th onclick="sortTable('category')">Categoría <i class="ph-bold ph-caret-up-down text-xs ml-1"></i></th>
-                  <th>Método</th>
-                  <th>Tipo</th>
-                  <th onclick="sortTable('amount')" class="text-right">Monto <i class="ph-bold ph-caret-up-down text-xs ml-1"></i></th>
-              </tr>
-          </thead>
-          <tbody id="tableBody">
-              <tr><td colspan="6" class="text-center py-10 text-slate-500">Cargando datos...</td></tr>
-          </tbody>
-      </table>
-  </div>
+        <div class="grid lg:grid-cols-12 gap-8">
 
-  <script>
-    const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
-    const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
-    const cliente = supabase.createClient(SU_URL, SU_KEY);
-    
-    let allData = [];
-    let currentData = [];
-    let sortAsc = false;
+            <!-- Left Column: Table -->
+            <div class="lg:col-span-8 space-y-6">
 
-    document.addEventListener("DOMContentLoaded", loadAuditData);
+                <!-- Filters & Search -->
+                <div class="glass-card p-6 fade-in">
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <div class="md:col-span-2">
+                            <div class="relative">
+                                <i class="ph-bold ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                                <input type="text" id="searchInput" placeholder="Search transactions..." class="modern-input pl-11 text-sm" onkeyup="filterTable()">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <select id="filterType" class="modern-input text-sm" onchange="filterTable()">
+                                <option value="all">All Types</option>
+                                <option value="ingreso">Income</option>
+                                <option value="egreso">Expenses</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <select id="filterCategory" class="modern-input text-sm" onchange="filterTable()">
+                                <option value="all">All Categories</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
-    async function loadAuditData() {
-        try {
-            const { data: { user } } = await cliente.auth.getUser();
-            if(!user) return;
+                <!-- Transactions Table -->
+                <div class="glass-card fade-in">
+                    <div class="p-6 border-b border-white/10 flex justify-between items-center">
+                        <h2 class="text-lg font-bold text-white font-display flex items-center gap-2">
+                            <i class="ph-duotone ph-list-dashes text-cyan-400"></i>
+                            Transaction History
+                        </h2>
+                        <p class="text-xs text-slate-500">
+                            Total: <span id="totalRecords" class="font-bold text-white">0</span> records
+                        </p>
+                    </div>
+                    
+                    <div class="overflow-x-auto custom-scroll" style="max-height: 800px;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th onclick="sortTable('date')">
+                                        Date <i class="ph-bold ph-caret-up-down text-xs ml-1"></i>
+                                    </th>
+                                    <th onclick="sortTable('concept')">
+                                        Description <i class="ph-bold ph-caret-up-down text-xs ml-1"></i>
+                                    </th>
+                                    <th onclick="sortTable('category')">
+                                        Category <i class="ph-bold ph-caret-up-down text-xs ml-1"></i>
+                                    </th>
+                                    <th>Type</th>
+                                    <th onclick="sortTable('amount')" style="text-align: right;">
+                                        Amount <i class="ph-bold ph-caret-up-down text-xs ml-1"></i>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <tr>
+                                    <td colspan="5" class="text-center py-20">
+                                        <div class="flex flex-col items-center">
+                                            <div class="loading-spinner mb-4"></div>
+                                            <p class="text-sm text-slate-500">Loading transactions...</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-            const { data, error } = await cliente.from('user_operations')
-                .select('*')
-                .eq('user_id', user.id)
-                .order('created_at', {ascending: false});
+                    <div class="p-4 border-t border-white/10 bg-[#0f172a]/40 flex justify-between items-center">
+                        <p class="text-xs text-slate-500">
+                            Showing <span id="showingCount">0</span> of <span id="totalCount">0</span> transactions
+                        </p>
+                        <div class="flex gap-3">
+                            <button onclick="exportToCSV()" class="text-xs font-bold text-cyan-400 hover:text-cyan-300 transition uppercase">
+                                Export CSV
+                            </button>
+                            <button onclick="exportToPDF()" class="text-xs font-bold text-violet-400 hover:text-violet-300 transition uppercase">
+                                Export PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
-            if (error) throw error;
+            </div>
 
-            allData = data || [];
-            currentData = [...allData];
-            populateCategories();
-            renderTable(currentData);
-        } catch (e) {
-            console.error("Error:", e);
-            document.getElementById('tableBody').innerHTML = `<tr><td colspan="6" class="text-center py-10 text-rose-500">Error de conexión. Intente recargar.</td></tr>`;
+            <!-- Right Column: AI Panel & Analytics -->
+            <div class="lg:col-span-4 space-y-6">
+
+                <!-- AI PREMIUM PANEL - LOCKED -->
+                <div class="ai-premium-panel fade-in">
+                    <div class="ai-lock-icon">
+                        <i class="ph-fill ph-lock-key text-3xl text-white"></i>
+                    </div>
+                    
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-white font-display mb-2">
+                            AI Audit Intelligence
+                        </h3>
+                        <p class="text-sm text-violet-300 mb-1">Premium Feature</p>
+                        <p class="text-xs text-slate-400">Advanced financial analysis and protection</p>
+                    </div>
+
+                    <div class="space-y-3 mb-6">
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-shield-check text-violet-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Real-time fraud detection and prevention</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-detective text-violet-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Pattern recognition for unusual transactions</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-warning-circle text-violet-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Anomaly alerts with 98% accuracy</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-calculator text-violet-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Automatic tax optimization suggestions</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-crystal-ball text-violet-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Financial forecasting and risk assessment</span>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button class="ai-upgrade-btn" onclick="showUpgradeModal()">
+                            <i class="ph-bold ph-rocket-launch"></i>
+                            Upgrade to Premium
+                        </button>
+                        <p class="text-xs text-slate-500 mt-3">Starting at $49/month</p>
+                    </div>
+                </div>
+
+                <!-- Summary Stats -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-chart-bar text-emerald-400"></i>
+                        Summary
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+                            <p class="text-xs font-bold uppercase tracking-widest text-emerald-400 mb-1">Total Income</p>
+                            <p class="text-2xl font-bold text-white font-display" id="summaryIncome">$0</p>
+                        </div>
+                        
+                        <div class="p-4 rounded-lg bg-rose-500/10 border border-rose-500/30">
+                            <p class="text-xs font-bold uppercase tracking-widest text-rose-400 mb-1">Total Expenses</p>
+                            <p class="text-2xl font-bold text-white font-display" id="summaryExpenses">$0</p>
+                        </div>
+                        
+                        <div class="p-4 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
+                            <p class="text-xs font-bold uppercase tracking-widest text-cyan-400 mb-1">Net Balance</p>
+                            <p class="text-2xl font-bold text-white font-display" id="summaryNet">$0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Distribution Chart -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-chart-donut text-violet-400"></i>
+                        Distribution
+                    </h3>
+                    
+                    <div class="chart-container">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Loading Spinner CSS -->
+    <style>
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(96, 165, 250, 0.2);
+            border-top-color: var(--neon-cyan);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
-    }
 
-    function populateCategories() {
-        const cats = [...new Set(allData.map(d => d.category))].sort();
-        const sel = document.getElementById('filterCategory');
-        sel.innerHTML = '<option value="all">Todas las Categorías</option>';
-        cats.forEach(c => {
-            if(c) {
-                const opt = document.createElement('option');
-                opt.value = c; opt.innerText = c;
-                sel.appendChild(opt);
-            }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+
+    <!-- JavaScript -->
+    <script>
+        // Supabase Configuration
+        const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
+        const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
+        const client = supabase.createClient(SU_URL, SU_KEY);
+
+        let allTransactions = [];
+        let filteredTransactions = [];
+        let sortAscending = true;
+        let distributionChart = null;
+
+        // Toast Notification
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            background: '#0b0b14',
+            color: '#fff'
         });
-    }
 
-    function renderTable(data) {
-        const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = '';
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadTransactions();
+        });
 
-        if(data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-slate-500 font-mono text-xs">No se encontraron registros coincidentes.</td></tr>`;
-            return;
+        // Load Transactions
+        async function loadTransactions() {
+            try {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) {
+                    window.location.href = '/';
+                    return;
+                }
+
+                const { data, error } = await client
+                    .from('user_operations')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                allTransactions = data || [];
+                filteredTransactions = allTransactions;
+                
+                populateCategories();
+                renderTable();
+                updateSummary();
+                updateDistributionChart();
+
+            } catch (error) {
+                console.error('Error loading transactions:', error);
+                Toast.fire({ icon: 'error', title: 'Failed to load transactions' });
+            }
         }
 
-        data.forEach(row => {
-            if (!row) return;
-
-            const date = row.created_at ? new Date(row.created_at).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A';
-            let concept = row.concept || 'Sin descripción';
-            let method = "N/A";
+        // Populate Categories
+        function populateCategories() {
+            const categories = [...new Set(allTransactions.map(t => t.category))].filter(c => c).sort();
+            const select = document.getElementById('filterCategory');
             
-            if (concept.includes('[') && concept.includes(']')) {
-                 const methodMatch = concept.match(/\[(.*?)\]/);
-                 if(methodMatch) {
-                     const meta = methodMatch[0];
-                     if(meta.includes('Método') || meta.includes('Transferencia') || meta.includes('Efectivo') || meta.includes('Tarjeta')) {
-                         method = meta.replace('[','').replace(']','').replace('Método:','').trim();
-                     }
-                     concept = concept.replace(meta, '').trim();
-                     concept = concept.replace(/\[.*?\]/g, '').trim(); 
-                 }
+            select.innerHTML = '<option value="all">All Categories</option>';
+            categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat;
+                option.textContent = cat;
+                select.appendChild(option);
+            });
+        }
+
+        // Render Table
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            
+            if (filteredTransactions.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center py-20">
+                            <i class="ph-duotone ph-archive text-5xl text-slate-700 mb-4 block"></i>
+                            <p class="text-slate-500">No transactions found</p>
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('showingCount').textContent = '0';
+                document.getElementById('totalCount').textContent = '0';
+                return;
             }
 
-            const isIngreso = row.type === 'ingreso';
-            const badgeClass = isIngreso ? 'badge-in' : 'badge-out';
-            const typeText = isIngreso ? 'INGRESO' : 'EGRESO';
-            const amountColor = isIngreso ? 'text-emerald-400' : 'text-rose-400';
-            const sign = isIngreso ? '+' : '-';
-            const category = row.category || 'General';
+            tbody.innerHTML = filteredTransactions.map(t => {
+                const isIncome = t.type === 'ingreso' || t.type === 'income';
+                const date = new Date(t.created_at);
+                const formattedDate = date.toLocaleDateString('en-US', { 
+                    year: 'numeric',
+                    month: 'short', 
+                    day: 'numeric'
+                });
+                const amount = parseFloat(t.amount || 0);
 
-            tbody.innerHTML += `
-                <tr>
-                    <td class="font-mono text-slate-400">${date}</td>
-                    <td class="font-bold text-white">${concept}</td>
-                    <td><span class="text-[10px] text-cyan-300 bg-cyan-900/30 px-2 py-1 rounded border border-cyan-500/20">${category}</span></td>
-                    <td class="text-xs text-slate-400">${method}</td>
-                    <td class="col-status"><span class="badge ${badgeClass}">${typeText}</span></td>
-                    <td class="col-amount ${amountColor}">${sign}$${Number(row.amount).toLocaleString()}</td>
-                </tr>
-            `;
-        });
-    }
+                return `
+                    <tr>
+                        <td class="font-mono text-slate-400 text-sm">${formattedDate}</td>
+                        <td class="font-semibold text-white">${t.concept || 'Untitled'}</td>
+                        <td>
+                            <span class="text-xs text-cyan-400 bg-cyan-500/10 px-2 py-1 rounded border border-cyan-500/20">
+                                ${t.category || 'Uncategorized'}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="type-badge ${isIncome ? 'income' : 'expense'}">
+                                ${isIncome ? 'Income' : 'Expense'}
+                            </span>
+                        </td>
+                        <td class="font-mono font-bold text-lg text-right ${isIncome ? 'text-emerald-400' : 'text-rose-400'}">
+                            ${isIncome ? '+' : '-'} $${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
 
-    function filterTable() {
-        const term = document.getElementById('searchInput').value.toLowerCase();
-        const type = document.getElementById('filterType').value;
-        const cat = document.getElementById('filterCategory').value;
+            document.getElementById('showingCount').textContent = filteredTransactions.length;
+            document.getElementById('totalCount').textContent = allTransactions.length;
+            document.getElementById('totalRecords').textContent = filteredTransactions.length;
+        }
 
-        currentData = allData.filter(item => {
-            const c = (item.concept || '').toLowerCase();
-            const a = (item.amount || 0).toString();
-            const matchesSearch = c.includes(term) || a.includes(term);
-            const matchesType = type === 'all' || item.type === type;
-            const matchesCat = cat === 'all' || item.category === cat;
-            return matchesSearch && matchesType && matchesCat;
-        });
+        // Filter Table
+        function filterTable() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const typeFilter = document.getElementById('filterType').value;
+            const categoryFilter = document.getElementById('filterCategory').value;
 
-        renderTable(currentData);
-    }
+            filteredTransactions = allTransactions.filter(t => {
+                const matchesSearch = !searchTerm || 
+                    (t.concept || '').toLowerCase().includes(searchTerm) ||
+                    (t.category || '').toLowerCase().includes(searchTerm) ||
+                    (t.amount || '').toString().includes(searchTerm);
 
-    function sortTable(key) {
-        sortAsc = !sortAsc;
-        
-        currentData.sort((a, b) => {
-            let valA, valB;
-            if (key === 'amount') {
-                valA = Number(a.amount);
-                valB = Number(b.amount);
-            } else if (key === 'date') {
-                valA = new Date(a.created_at);
-                valB = new Date(b.created_at);
-            } else {
-                valA = (a[key] || '').toLowerCase();
-                valB = (b[key] || '').toLowerCase();
+                const matchesType = typeFilter === 'all' || t.type === typeFilter;
+                const matchesCategory = categoryFilter === 'all' || t.category === categoryFilter;
+
+                return matchesSearch && matchesType && matchesCategory;
+            });
+
+            renderTable();
+            updateSummary();
+            updateDistributionChart();
+        }
+
+        // Sort Table
+        function sortTable(key) {
+            sortAscending = !sortAscending;
+
+            filteredTransactions.sort((a, b) => {
+                let valA, valB;
+
+                if (key === 'amount') {
+                    valA = parseFloat(a.amount || 0);
+                    valB = parseFloat(b.amount || 0);
+                } else if (key === 'date') {
+                    valA = new Date(a.created_at);
+                    valB = new Date(b.created_at);
+                } else {
+                    valA = (a[key] || '').toLowerCase();
+                    valB = (b[key] || '').toLowerCase();
+                }
+
+                if (valA < valB) return sortAscending ? -1 : 1;
+                if (valA > valB) return sortAscending ? 1 : -1;
+                return 0;
+            });
+
+            renderTable();
+        }
+
+        // Update Summary
+        function updateSummary() {
+            const income = filteredTransactions
+                .filter(t => t.type === 'ingreso' || t.type === 'income')
+                .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
+
+            const expenses = filteredTransactions
+                .filter(t => t.type === 'egreso' || t.type === 'expense')
+                .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
+
+            const net = income - expenses;
+
+            document.getElementById('summaryIncome').textContent = `$${income.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            document.getElementById('summaryExpenses').textContent = `$${expenses.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            document.getElementById('summaryNet').textContent = `$${net.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+        }
+
+        // Update Distribution Chart
+        function updateDistributionChart() {
+            if (distributionChart) {
+                distributionChart.destroy();
             }
-            if (valA < valB) return sortAsc ? -1 : 1;
-            if (valA > valB) return sortAsc ? 1 : -1;
-            return 0;
-        });
-        renderTable(currentData);
-    }
 
-    function exportToExcel() {
-        const exportData = currentData.map(d => ({
-            Fecha: new Date(d.created_at).toLocaleDateString(),
-            Concepto: d.concept,
-            Categoria: d.category,
-            Tipo: d.type ? d.type.toUpperCase() : 'N/A',
-            Monto: Number(d.amount)
-        }));
+            const expenses = filteredTransactions.filter(t => t.type === 'egreso' || t.type === 'expense');
+            
+            if (expenses.length === 0) {
+                return;
+            }
 
-        const ws = XLSX.utils.json_to_sheet(exportData);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Libro_Mayor_Pymax");
-        XLSX.writeFile(wb, "Pymax_Reporte_Auditoria.xlsx");
-    }
-  </script>
+            const categoryData = {};
+            expenses.forEach(t => {
+                const category = t.category || 'Uncategorized';
+                categoryData[category] = (categoryData[category] || 0) + parseFloat(t.amount || 0);
+            });
+
+            const sortedCategories = Object.entries(categoryData)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 6);
+
+            const labels = sortedCategories.map(c => c[0]);
+            const values = sortedCategories.map(c => c[1]);
+
+            const ctx = document.getElementById('distributionChart');
+
+            distributionChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: [
+                            '#60a5fa',
+                            '#a78bfa',
+                            '#34d399',
+                            '#fb7185',
+                            '#fbbf24',
+                            '#818cf8'
+                        ],
+                        borderColor: '#020617',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#94a3b8',
+                                font: { size: 10 },
+                                padding: 12
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#fff',
+                            bodyColor: '#94a3b8',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    const total = values.reduce((a, b) => a + b, 0);
+                                    const percentage = (context.parsed / total * 100).toFixed(1);
+                                    return `${context.label}: $${context.parsed.toLocaleString('en-US', { minimumFractionDigits: 2 })} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            const csv = ['Date,Description,Category,Type,Amount'];
+            
+            filteredTransactions.forEach(t => {
+                const date = new Date(t.created_at).toLocaleDateString();
+                const type = (t.type === 'ingreso' || t.type === 'income') ? 'Income' : 'Expense';
+                const amount = parseFloat(t.amount || 0);
+                csv.push(`${date},"${t.concept}","${t.category}",${type},${amount}`);
+            });
+
+            const blob = new Blob([csv.join('\n')], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Pymax_Audit_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+            
+            Toast.fire({ icon: 'success', title: 'CSV exported' });
+        }
+
+        // Export to Excel
+        function exportToExcel() {
+            const exportData = filteredTransactions.map(t => ({
+                Date: new Date(t.created_at).toLocaleDateString(),
+                Description: t.concept,
+                Category: t.category,
+                Type: (t.type === 'ingreso' || t.type === 'income') ? 'Income' : 'Expense',
+                Amount: parseFloat(t.amount || 0)
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Audit_Ledger");
+            XLSX.writeFile(wb, `Pymax_Audit_${new Date().toISOString().split('T')[0]}.xlsx`);
+            
+            Toast.fire({ icon: 'success', title: 'Excel exported' });
+        }
+
+        // Export to PDF (Placeholder)
+        function exportToPDF() {
+            Toast.fire({ icon: 'info', title: 'PDF export coming soon' });
+        }
+
+        // Show Upgrade Modal
+        function showUpgradeModal() {
+            Swal.fire({
+                title: 'Upgrade to Premium',
+                html: `
+                    <div class="text-left space-y-4 p-4">
+                        <p class="text-sm text-slate-400 mb-4">
+                            Unlock AI-powered audit intelligence and protect your business from financial risks.
+                        </p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Real-time Fraud Detection</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Pattern Recognition</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Anomaly Alerts</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Tax Optimization</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Financial Forecasting</span>
+                            </div>
+                        </div>
+                        <div class="mt-6 p-4 bg-violet-500/10 rounded-lg border border-violet-500/30">
+                            <p class="text-center text-2xl font-bold text-white mb-1">$49/month</p>
+                            <p class="text-center text-xs text-slate-400">or $490/year (save 17%)</p>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#7c3aed',
+                cancelButtonColor: '#3f3f46',
+                confirmButtonText: 'Contact Sales',
+                cancelButtonText: 'Maybe Later',
+                background: '#0b0b14',
+                color: '#fff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'mailto:sales@pymax.com?subject=Premium Upgrade Inquiry';
+                }
+            });
+        }
+    </script>
 </body>
 </html>

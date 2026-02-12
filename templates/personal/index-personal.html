@@ -1,75 +1,1020 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pymax | Panel Personal</title>
-  <link rel="icon" href="data:,">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
-  <style>
-    /* ESTÉTICA IDÉNTICA */
-    :root { --bg-void: #030014; --glass-surface: rgba(255, 255, 255, 0.02); --glass-border: rgba(255, 255, 255, 0.05); --text-main: #e2e8f0; --accent-gold: #fbbf24; --accent-cyan: #06b6d4; --accent-violet: #7c3aed; }
-    body { font-family: 'Inter', sans-serif; background-color: var(--bg-void); color: var(--text-main); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
-    h1, h2, h3, .font-future { font-family: 'Outfit', sans-serif; letter-spacing: -0.02em; }
-    .gpu { transform: translateZ(0); will-change: transform, opacity; }
-    .nebula-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; background: radial-gradient(circle at 15% 50%, rgba(79, 70, 229, 0.08) 0%, transparent 40%), radial-gradient(circle at 85% 30%, rgba(6, 182, 212, 0.06) 0%, transparent 40%); }
-    .capsule-card { background: var(--glass-surface); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 32px; }
-    .btn-liquid { background: linear-gradient(90deg, #7c3aed, #2563eb); color: white; border: none; padding: 12px 24px; border-radius: 99px; cursor: pointer; }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Personal Finance Dashboard - Track Your Personal Wealth" />
+    <title>Pymax | Personal Finance</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --bg-void: #020617;
+            --bg-card: rgba(15, 23, 42, 0.6);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --neon-cyan: #60a5fa;
+            --neon-violet: #a78bfa;
+            --neon-emerald: #34d399;
+            --neon-rose: #fb7185;
+            --neon-amber: #fbbf24;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        .nebula-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(251, 191, 36, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(167, 139, 250, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            backdrop-filter: blur(24px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        /* AI Premium Panel */
+        .ai-premium-panel {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1));
+            border: 2px solid rgba(251, 191, 36, 0.3);
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-premium-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #fbbf24, transparent);
+        }
+
+        .ai-lock-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 40px rgba(251, 191, 36, 0.5);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .ai-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        .ai-upgrade-btn {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: #1e293b;
+            padding: 16px 32px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-upgrade-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(251, 191, 36, 0.6);
+        }
+
+        /* Stat Card */
+        .stat-card {
+            padding: 24px;
+            border-radius: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-4px);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .stat-card.income::before { background: linear-gradient(180deg, #34d399, #10b981); }
+        .stat-card.expense::before { background: linear-gradient(180deg, #fb7185, #f43f5e); }
+        .stat-card.savings::before { background: linear-gradient(180deg, #fbbf24, #f59e0b); }
+        .stat-card.net::before { background: linear-gradient(180deg, #60a5fa, #3b82f6); }
+
+        /* Budget Bar */
+        .budget-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 100px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .budget-fill {
+            height: 100%;
+            border-radius: 100px;
+            transition: width 1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .budget-fill.safe {
+            background: linear-gradient(90deg, #34d399, #10b981);
+        }
+
+        .budget-fill.warning {
+            background: linear-gradient(90deg, #fbbf24, #f59e0b);
+        }
+
+        .budget-fill.danger {
+            background: linear-gradient(90deg, #fb7185, #f43f5e);
+        }
+
+        .budget-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Dream Card */
+        .dream-card {
+            padding: 20px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(167, 139, 250, 0.1));
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dream-card:hover {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(167, 139, 250, 0.15));
+            border-color: rgba(251, 191, 36, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Modern Input */
+        .modern-input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px 16px;
+            border-radius: 12px;
+            color: white;
+            outline: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .modern-input:focus {
+            border-color: var(--neon-amber);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.2);
+            background: rgba(15, 23, 42, 0.95);
+        }
+
+        .modern-input::placeholder {
+            color: #64748b;
+        }
+
+        select.modern-input {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Modern Button */
+        .modern-btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #1e293b;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 280px;
+            padding: 20px 10px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: #0b0b14;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 95%;
+            max-width: 600px;
+            max-height: 90vh;
+            border-radius: 24px;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(251, 191, 36, 0.3); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(251, 191, 36, 0.5); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stat-card {
+                padding: 20px;
+            }
+            .chart-container {
+                height: 220px;
+                padding: 10px 5px;
+            }
+        }
+    </style>
 </head>
 
-<body class="flex flex-col min-h-screen">
-  <div class="nebula-bg gpu"></div>
+<body>
+    <div class="nebula-bg"></div>
 
-  <nav class="fixed top-6 left-0 w-full z-50 px-4 md:px-6">
-    <div class="max-w-6xl mx-auto h-16 capsule-card flex justify-between items-center px-8 bg-black/60">
-      <div class="flex items-center gap-6">
-        <div class="flex items-center gap-3 cursor-pointer group" onclick="window.location.href='/'">
-          <span class="text-xl font-bold tracking-tight text-white font-future">PYMAX</span>
-          <div class="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></div>
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-[#020617]/90 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="/" class="flex items-center gap-2 text-slate-400 hover:text-white transition group">
+                    <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/30 transition">
+                        <i class="ph-bold ph-house"></i>
+                    </div>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">Home</span>
+                </a>
+                <div class="h-6 w-px bg-white/10"></div>
+                <h1 class="text-xl font-bold text-white font-display tracking-tight">
+                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">PERSONAL</span>
+                </h1>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <span class="text-[10px] font-bold px-3 py-1.5 rounded-full border border-amber-500/30 text-amber-400 bg-amber-500/10 uppercase tracking-wider">
+                    Personal Mode
+                </span>
+                <button onclick="logout()" class="text-xs font-bold text-slate-400 hover:text-rose-400 transition uppercase px-3 py-2 rounded-lg hover:bg-white/5">
+                    <i class="ph-bold ph-sign-out"></i>
+                    <span class="hidden md:inline ml-1">Logout</span>
+                </button>
+            </div>
         </div>
-      </div>
-      <div class="flex items-center gap-4">
-        <span class="text-[10px] font-bold px-2 py-0.5 rounded border border-amber-500/30 text-amber-400 bg-white/5">PERSONAL</span>
-        <button onclick="cerrarSesion()" class="text-xs text-slate-500 hover:text-red-400 transition">Salir</button>
-      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 md:px-6 pt-24 pb-12 relative z-10">
+
+        <!-- Header -->
+        <div class="mb-8 fade-in">
+            <h2 class="text-3xl font-bold text-white font-display mb-2">Personal Finance Dashboard</h2>
+            <p class="text-slate-400">Track your personal wealth and achieve your dreams</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            
+            <div class="stat-card income fade-in">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Personal Income</p>
+                    <i class="ph-duotone ph-currency-circle-dollar text-emerald-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statIncome">$0</h3>
+                <p class="text-xs text-slate-400">This month</p>
+            </div>
+
+            <div class="stat-card expense fade-in">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Expenses</p>
+                    <i class="ph-duotone ph-wallet text-rose-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statExpense">$0</h3>
+                <p class="text-xs text-slate-400">This month</p>
+            </div>
+
+            <div class="stat-card savings fade-in">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Savings</p>
+                    <i class="ph-duotone ph-piggy-bank text-amber-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statSavings">$0</h3>
+                <p class="text-xs text-slate-400">Accumulated</p>
+            </div>
+
+            <div class="stat-card net fade-in">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Net Worth</p>
+                    <i class="ph-duotone ph-trend-up text-cyan-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statNet">$0</h3>
+                <p class="text-xs text-slate-400" id="statNetChange">+0%</p>
+            </div>
+
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-8">
+
+            <!-- Left Column: Budgets & Expenses -->
+            <div class="lg:col-span-8 space-y-6">
+
+                <!-- Monthly Budget -->
+                <div class="glass-card p-6 fade-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold text-white font-display flex items-center gap-2">
+                            <i class="ph-duotone ph-target text-amber-400"></i>
+                            Monthly Budget
+                        </h3>
+                        <button onclick="openBudgetModal()" class="text-xs font-bold text-amber-400 hover:text-amber-300 transition uppercase">
+                            <i class="ph-bold ph-gear"></i> Configure
+                        </button>
+                    </div>
+
+                    <div class="space-y-4" id="budgetCategories">
+                        <!-- Budget categories will be loaded here -->
+                        <div class="flex items-center justify-center py-12">
+                            <p class="text-sm text-slate-500">Configure your monthly budget to get started</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="glass-card p-6 fade-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold text-white font-display flex items-center gap-2">
+                            <i class="ph-duotone ph-list text-cyan-400"></i>
+                            Recent Transactions
+                        </h3>
+                        <button onclick="addTransaction()" class="modern-btn btn-primary text-xs px-4 py-2">
+                            <i class="ph-bold ph-plus"></i>
+                            Add
+                        </button>
+                    </div>
+
+                    <div id="transactionsList" class="space-y-3 custom-scroll" style="max-height: 500px;">
+                        <div class="flex items-center justify-center py-12">
+                            <p class="text-sm text-slate-500">No transactions yet</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expense Distribution Chart -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-chart-donut text-violet-400"></i>
+                        Expense Distribution
+                    </h3>
+                    
+                    <div class="chart-container">
+                        <canvas id="expenseChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: AI Panel & Dreams -->
+            <div class="lg:col-span-4 space-y-6">
+
+                <!-- AI PREMIUM PANEL - LOCKED -->
+                <div class="ai-premium-panel fade-in">
+                    <div class="ai-lock-icon">
+                        <i class="ph-fill ph-lock-key text-3xl text-white"></i>
+                    </div>
+                    
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-white font-display mb-2">
+                            AI Financial Coach
+                        </h3>
+                        <p class="text-sm text-amber-300 mb-1">Premium Feature</p>
+                        <p class="text-xs text-slate-400">Personal wealth optimization and guidance</p>
+                    </div>
+
+                    <div class="space-y-3 mb-6">
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-brain text-amber-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">AI spending pattern analysis and recommendations</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-chart-line-up text-amber-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Automatic savings optimizer based on your habits</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-sparkle text-amber-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Dream achievement calculator with smart milestones</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-warning text-amber-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Budget alerts before overspending occurs</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-coins text-amber-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Investment suggestions for extra savings</span>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button class="ai-upgrade-btn" onclick="showUpgradeModal()">
+                            <i class="ph-bold ph-rocket-launch"></i>
+                            Upgrade to Premium
+                        </button>
+                        <p class="text-xs text-slate-500 mt-3">Starting at $29/month</p>
+                    </div>
+                </div>
+
+                <!-- Dream Board -->
+                <div class="glass-card p-6 fade-in">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold text-white font-display flex items-center gap-2">
+                            <i class="ph-duotone ph-shooting-star text-amber-400"></i>
+                            My Dreams
+                        </h3>
+                        <button onclick="addDream()" class="text-xs font-bold text-amber-400 hover:text-amber-300 transition uppercase">
+                            <i class="ph-bold ph-plus"></i> Add
+                        </button>
+                    </div>
+                    
+                    <div id="dreamsList" class="space-y-3 custom-scroll" style="max-height: 400px;">
+                        <div class="flex flex-col items-center justify-center py-12 text-center">
+                            <i class="ph-duotone ph-star text-5xl text-slate-700 mb-4"></i>
+                            <p class="text-sm text-slate-500">Add your first dream to start saving</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Tips -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-lightbulb text-emerald-400"></i>
+                        Money Tip
+                    </h3>
+                    
+                    <div class="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                        <p class="text-sm text-slate-300 leading-relaxed" id="moneyTip">
+                            "Save at least 20% of your income. Your future self will thank you."
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Transaction Modal -->
+    <div id="transactionModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="p-6 border-b border-white/10 flex justify-between items-center">
+                <h2 class="text-lg font-bold text-white font-display">
+                    Add Transaction
+                </h2>
+                <button onclick="closeTransactionModal()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto custom-scroll" style="max-height: calc(90vh - 80px);">
+                <form id="transactionForm" class="space-y-4">
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Description</label>
+                        <input type="text" id="txDescription" placeholder="e.g. Groceries, Salary" class="modern-input" required>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Amount</label>
+                            <input type="number" id="txAmount" placeholder="0.00" class="modern-input" step="0.01" required>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Type</label>
+                            <select id="txType" class="modern-input" required>
+                                <option value="income">Income</option>
+                                <option value="expense">Expense</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Category</label>
+                        <select id="txCategory" class="modern-input" required>
+                            <option value="">Select category...</option>
+                            <option value="Salary">Salary</option>
+                            <option value="Freelance">Freelance</option>
+                            <option value="Food">Food & Dining</option>
+                            <option value="Transport">Transportation</option>
+                            <option value="Housing">Housing</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Health">Healthcare</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Education">Education</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="flex gap-3 pt-4">
+                        <button type="submit" class="modern-btn btn-primary flex-1">
+                            <i class="ph-bold ph-floppy-disk"></i>
+                            Save Transaction
+                        </button>
+                        <button type="button" onclick="closeTransactionModal()" class="modern-btn px-6" style="background: rgba(255,255,255,0.05); color: #e2e8f0; border: 1px solid rgba(255,255,255,0.1);">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-  </nav>
 
-  <main class="flex-grow flex items-center justify-center p-6 text-center">
-      <div class="max-w-4xl mx-auto px-6">
-          <div class="inline-block p-6 rounded-full bg-amber-500/10 border border-amber-500/20 mb-8">
-              <svg class="w-16 h-16 text-amber-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-          </div>
-          <h2 class="text-4xl font-bold text-white mb-6 font-future">Módulo Personal en Construcción</h2>
-          <p class="text-slate-400 text-lg mb-8 max-w-2xl mx-auto">
-              Estamos calibrando la IA para tus finanzas personales. Pronto podrás gestionar tus gastos domésticos y mapa de sueños aquí.
-          </p>
-          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-slate-300">
-              <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-              Desarrollo en curso
-          </div>
-      </div>
-  </main>
+    <!-- JavaScript -->
+    <script>
+        // Supabase Configuration
+        const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
+        const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
+        const client = supabase.createClient(SU_URL, SU_KEY);
 
-  <script>
-    const SU_URL_SUPABASE = 'https://haqjuyagyvxynmulanhe.supabase.co'; 
-    const SU_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
-    const supabaseClient = supabase.createClient(SU_URL_SUPABASE, SU_ANON_KEY);
+        let expenseChart = null;
+        const moneyTips = [
+            "Save at least 20% of your income. Your future self will thank you.",
+            "Track every expense. Awareness is the first step to financial freedom.",
+            "Pay yourself first. Automate your savings before spending.",
+            "Invest in yourself. Education and skills pay the best returns.",
+            "Build an emergency fund. Aim for 3-6 months of expenses."
+        ];
 
-    document.addEventListener('DOMContentLoaded', async () => {
-        const { data: { user } } = await supabaseClient.auth.getUser();
-        if (!user) { window.location.href = '/'; }
-    });
+        // Toast Notification
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            background: '#0b0b14',
+            color: '#fff'
+        });
 
-    async function cerrarSesion() {
-        await supabaseClient.auth.signOut();
-        window.location.href = '/';
-    }
-  </script>
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+            loadRandomTip();
+            loadMockData();
+        });
 
+        // Check Auth
+        async function checkAuth() {
+            try {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) {
+                    window.location.href = '/';
+                    return;
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+                window.location.href = '/';
+            }
+        }
+
+        // Load Random Tip
+        function loadRandomTip() {
+            const tip = moneyTips[Math.floor(Math.random() * moneyTips.length)];
+            document.getElementById('moneyTip').textContent = `"${tip}"`;
+        }
+
+        // Load Mock Data (Replace with real Supabase data)
+        function loadMockData() {
+            // Mock statistics
+            document.getElementById('statIncome').textContent = '$5,420';
+            document.getElementById('statExpense').textContent = '$3,280';
+            document.getElementById('statSavings').textContent = '$12,450';
+            document.getElementById('statNet').textContent = '$18,670';
+            document.getElementById('statNetChange').textContent = '+12.5%';
+
+            // Mock budget categories
+            renderBudgetCategories();
+
+            // Mock transactions
+            renderTransactions();
+
+            // Mock expense chart
+            renderExpenseChart();
+
+            // Mock dreams
+            renderDreams();
+        }
+
+        // Render Budget Categories
+        function renderBudgetCategories() {
+            const container = document.getElementById('budgetCategories');
+            
+            const budgets = [
+                { category: 'Food & Dining', spent: 680, limit: 800, color: 'emerald' },
+                { category: 'Transportation', spent: 420, limit: 500, color: 'amber' },
+                { category: 'Entertainment', spent: 290, limit: 300, color: 'rose' },
+                { category: 'Shopping', spent: 550, limit: 600, color: 'cyan' }
+            ];
+
+            container.innerHTML = budgets.map(b => {
+                const percentage = (b.spent / b.limit * 100).toFixed(1);
+                let fillClass = 'safe';
+                if (percentage > 90) fillClass = 'danger';
+                else if (percentage > 75) fillClass = 'warning';
+
+                return `
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-bold text-white">${b.category}</span>
+                            <span class="text-xs text-slate-400">$${b.spent} / $${b.limit}</span>
+                        </div>
+                        <div class="budget-bar">
+                            <div class="budget-fill ${fillClass}" style="width: ${Math.min(percentage, 100)}%"></div>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">${percentage}% used</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render Transactions
+        function renderTransactions() {
+            const container = document.getElementById('transactionsList');
+            
+            const transactions = [
+                { desc: 'Monthly Salary', amount: 5000, type: 'income', category: 'Salary', date: '2024-02-10' },
+                { desc: 'Grocery Shopping', amount: -120, type: 'expense', category: 'Food', date: '2024-02-11' },
+                { desc: 'Freelance Project', amount: 420, type: 'income', category: 'Freelance', date: '2024-02-12' },
+                { desc: 'Uber Rides', amount: -45, type: 'expense', category: 'Transport', date: '2024-02-12' }
+            ];
+
+            container.innerHTML = transactions.map(t => {
+                const isIncome = t.type === 'income';
+                const icon = isIncome ? 'ph-arrow-up' : 'ph-arrow-down';
+                const color = isIncome ? 'emerald' : 'rose';
+
+                return `
+                    <div class="flex items-center justify-between p-4 rounded-lg bg-white/5 hover:bg-white/10 transition border border-white/5">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-${color}-500/20 flex items-center justify-center text-${color}-400">
+                                <i class="ph-bold ${icon}"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-sm">${t.desc}</p>
+                                <p class="text-xs text-slate-400">${t.category} • ${new Date(t.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
+                            </div>
+                        </div>
+                        <span class="text-lg font-bold text-${color}-400">${isIncome ? '+' : ''}$${Math.abs(t.amount)}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render Expense Chart
+        function renderExpenseChart() {
+            if (expenseChart) {
+                expenseChart.destroy();
+            }
+
+            const ctx = document.getElementById('expenseChart');
+            
+            expenseChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Food & Dining', 'Transportation', 'Entertainment', 'Shopping', 'Healthcare', 'Other'],
+                    datasets: [{
+                        data: [680, 420, 290, 550, 180, 160],
+                        backgroundColor: [
+                            '#34d399',
+                            '#fbbf24',
+                            '#fb7185',
+                            '#60a5fa',
+                            '#a78bfa',
+                            '#94a3b8'
+                        ],
+                        borderColor: '#020617',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#94a3b8',
+                                font: { size: 10 },
+                                padding: 12
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#fff',
+                            bodyColor: '#94a3b8',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = (context.parsed / total * 100).toFixed(1);
+                                    return `${context.label}: $${context.parsed} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Render Dreams
+        function renderDreams() {
+            const container = document.getElementById('dreamsList');
+            
+            const dreams = [
+                { title: 'Buy a House', target: 50000, saved: 12450, icon: 'ph-house' },
+                { title: 'Dream Vacation', target: 5000, saved: 2300, icon: 'ph-airplane' },
+                { title: 'New Car', target: 30000, saved: 8900, icon: 'ph-car' }
+            ];
+
+            container.innerHTML = dreams.map(d => {
+                const percentage = (d.saved / d.target * 100).toFixed(1);
+                return `
+                    <div class="dream-card">
+                        <div class="flex items-center gap-4 mb-3">
+                            <div class="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400">
+                                <i class="ph-fill ${d.icon} text-2xl"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-bold text-white text-sm mb-1">${d.title}</p>
+                                <p class="text-xs text-slate-400">$${d.saved.toLocaleString()} / $${d.target.toLocaleString()}</p>
+                            </div>
+                        </div>
+                        <div class="budget-bar">
+                            <div class="budget-fill safe" style="width: ${percentage}%"></div>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-2">${percentage}% completed</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Add Transaction
+        function addTransaction() {
+            document.getElementById('transactionModal').classList.add('active');
+        }
+
+        // Close Transaction Modal
+        function closeTransactionModal() {
+            document.getElementById('transactionModal').classList.remove('active');
+        }
+
+        // Transaction Form Submit
+        document.getElementById('transactionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            Toast.fire({
+                icon: 'success',
+                title: 'Transaction added'
+            });
+            
+            closeTransactionModal();
+            document.getElementById('transactionForm').reset();
+        });
+
+        // Add Dream
+        function addDream() {
+            Swal.fire({
+                title: 'Add New Dream',
+                html: `
+                    <input type="text" id="dreamTitle" class="swal2-input" placeholder="Dream title">
+                    <input type="number" id="dreamTarget" class="swal2-input" placeholder="Target amount">
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#fbbf24',
+                cancelButtonColor: '#3f3f46',
+                confirmButtonText: 'Add Dream',
+                background: '#0b0b14',
+                color: '#fff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Toast.fire({ icon: 'success', title: 'Dream added' });
+                }
+            });
+        }
+
+        // Budget Modal
+        function openBudgetModal() {
+            Toast.fire({ icon: 'info', title: 'Budget configuration coming soon' });
+        }
+
+        // Show Upgrade Modal
+        function showUpgradeModal() {
+            Swal.fire({
+                title: 'Upgrade to Premium',
+                html: `
+                    <div class="text-left space-y-4 p-4">
+                        <p class="text-sm text-slate-400 mb-4">
+                            Unlock AI-powered personal finance coaching and achieve your dreams faster.
+                        </p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">AI Spending Analysis</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Automatic Savings Optimizer</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Dream Achievement Calculator</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Budget Alerts</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Investment Suggestions</span>
+                            </div>
+                        </div>
+                        <div class="mt-6 p-4 bg-amber-500/10 rounded-lg border border-amber-500/30">
+                            <p class="text-center text-2xl font-bold text-white mb-1">$29/month</p>
+                            <p class="text-center text-xs text-slate-400">or $290/year (save 17%)</p>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#fbbf24',
+                cancelButtonColor: '#3f3f46',
+                confirmButtonText: 'Contact Sales',
+                cancelButtonText: 'Maybe Later',
+                background: '#0b0b14',
+                color: '#fff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'mailto:sales@pymax.com?subject=Premium Upgrade Inquiry';
+                }
+            });
+        }
+
+        // Logout
+        async function logout() {
+            try {
+                await client.auth.signOut();
+                window.location.href = '/';
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+
+        // Close modal on outside click
+        document.getElementById('transactionModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                closeTransactionModal();
+            }
+        });
+
+        // Keyboard shortcut
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeTransactionModal();
+            }
+        });
+    </script>
 </body>
 </html>

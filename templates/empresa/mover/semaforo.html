@@ -1,282 +1,869 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Pymax · Semáforo del Negocio</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Financial Health Monitor - Real-time Business Status" />
+    <title>Pymax | Financial Health Monitor</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
-    const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
-    window.supabase = window.supabase.createClient(SU_URL, SU_KEY);
-  </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <style>
-    body {
-      background:
-        radial-gradient(900px 400px at 10% -10%, rgba(79,70,229,.25), transparent 40%),
-        radial-gradient(800px 500px at 90% 10%, rgba(99,102,241,.18), transparent 45%),
-        radial-gradient(700px 400px at 50% 120%, rgba(56,189,248,.12), transparent 40%),
-        #020617;
-    }
+    <style>
+        :root {
+            --bg-void: #020617;
+            --bg-card: rgba(15, 23, 42, 0.6);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
 
-    .glass {
-      background: rgba(15,23,42,0.65);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(148,163,184,0.15);
-    }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    .hover-card {
-      transition: transform .3s ease, box-shadow .3s ease;
-    }
+        body {
+            background: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
 
-    .hover-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 40px rgba(0,0,0,.45);
-    }
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+        }
 
-    /* Animación de Pulso Dinámica */
-    .pulse { animation: pulseGlow 2.5s infinite; }
-    
-    @keyframes pulseGlow {
-      0% { box-shadow: 0 0 0 rgba(0,0,0,0); }
-      50% { box-shadow: 0 0 40px var(--pulse-color, rgba(99,102,241,0.35)); }
-      100% { box-shadow: 0 0 0 rgba(0,0,0,0); }
-    }
-  </style>
+        /* Nebula Background */
+        .nebula-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(96, 165, 250, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(167, 139, 250, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            backdrop-filter: blur(24px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        /* Traffic Light */
+        .traffic-light {
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: 0 auto;
+            transition: all 0.5s ease;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .traffic-light.green {
+            background: radial-gradient(circle, #34d399, #10b981);
+            box-shadow: 0 0 60px rgba(52, 211, 153, 0.6), 0 0 120px rgba(52, 211, 153, 0.3);
+            animation: pulse-green 2s infinite;
+        }
+
+        .traffic-light.yellow {
+            background: radial-gradient(circle, #fbbf24, #f59e0b);
+            box-shadow: 0 0 60px rgba(251, 191, 36, 0.6), 0 0 120px rgba(251, 191, 36, 0.3);
+            animation: pulse-yellow 2s infinite;
+        }
+
+        .traffic-light.red {
+            background: radial-gradient(circle, #fb7185, #f43f5e);
+            box-shadow: 0 0 60px rgba(251, 113, 133, 0.6), 0 0 120px rgba(251, 113, 133, 0.3);
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 0 60px rgba(52, 211, 153, 0.6), 0 0 120px rgba(52, 211, 153, 0.3); }
+            50% { box-shadow: 0 0 80px rgba(52, 211, 153, 0.8), 0 0 150px rgba(52, 211, 153, 0.5); }
+        }
+
+        @keyframes pulse-yellow {
+            0%, 100% { box-shadow: 0 0 60px rgba(251, 191, 36, 0.6), 0 0 120px rgba(251, 191, 36, 0.3); }
+            50% { box-shadow: 0 0 80px rgba(251, 191, 36, 0.8), 0 0 150px rgba(251, 191, 36, 0.5); }
+        }
+
+        @keyframes pulse-red {
+            0%, 100% { box-shadow: 0 0 60px rgba(251, 113, 133, 0.6), 0 0 120px rgba(251, 113, 133, 0.3); }
+            50% { box-shadow: 0 0 80px rgba(251, 113, 133, 0.8), 0 0 150px rgba(251, 113, 133, 0.5); }
+        }
+
+        .status-text {
+            font-size: 3.5rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            color: white;
+        }
+
+        /* Factor Card */
+        .factor-card {
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border-glass);
+            background: rgba(15, 23, 42, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .factor-card:hover {
+            background: rgba(15, 23, 42, 0.6);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .factor-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .factor-card.positive::before { background: #34d399; }
+        .factor-card.warning::before { background: #fbbf24; }
+        .factor-card.negative::before { background: #fb7185; }
+
+        /* Recommendation Card */
+        .recommendation-card {
+            padding: 20px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.1), rgba(167, 139, 250, 0.1));
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            display: flex;
+            gap: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .recommendation-card:hover {
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.15), rgba(167, 139, 250, 0.15));
+            border-color: rgba(96, 165, 250, 0.3);
+            transform: translateX(4px);
+        }
+
+        .recommendation-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            padding: 20px 10px;
+        }
+
+        /* Modern Button */
+        .modern-btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 30px rgba(96, 165, 250, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Loading State */
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(96, 165, 250, 0.2);
+            border-top-color: #60a5fa;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(96, 165, 250, 0.3); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(96, 165, 250, 0.5); }
+
+        /* History Timeline */
+        .timeline-item {
+            position: relative;
+            padding-left: 40px;
+            padding-bottom: 32px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 12px;
+            top: 12px;
+            bottom: -12px;
+            width: 2px;
+            background: rgba(96, 165, 250, 0.2);
+        }
+
+        .timeline-item:last-child::before {
+            display: none;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--bg-void);
+        }
+
+        .timeline-dot.green { background: #34d399; }
+        .timeline-dot.yellow { background: #fbbf24; }
+        .timeline-dot.red { background: #fb7185; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .traffic-light {
+                width: 220px;
+                height: 220px;
+            }
+            .status-text {
+                font-size: 2.5rem;
+            }
+            .chart-container {
+                height: 250px;
+            }
+        }
+    </style>
 </head>
 
-<body class="text-slate-100 min-h-screen font-sans">
+<body>
+    <div class="nebula-bg"></div>
 
-<header class="glass px-8 py-5 flex justify-between items-center border-b border-slate-800 sticky top-0 z-40">
-  <h1 class="text-xl font-semibold text-indigo-400">
-    Pymax · Semáforo del Negocio
-  </h1>
-  <a href="/empresa/mover" class="text-sm text-slate-300 hover:text-white transition border border-slate-600 px-3 py-1 rounded hover:bg-slate-800">
-    ← Volver al panel
-  </a>
-</header>
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-[#020617]/90 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="/empresa/mover" class="flex items-center gap-2 text-slate-400 hover:text-white transition group">
+                    <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/30 transition">
+                        <i class="ph-bold ph-arrow-left"></i>
+                    </div>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">Back</span>
+                </a>
+                <div class="h-6 w-px bg-white/10"></div>
+                <h1 class="text-xl font-bold text-white font-display tracking-tight">
+                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">HEALTH MONITOR</span>
+                </h1>
+            </div>
 
-<main class="max-w-7xl mx-auto px-6 py-10 space-y-14">
+            <button onclick="refreshStatus()" class="flex items-center gap-2 px-3 py-2 rounded-full border border-cyan-500/30 text-cyan-400 bg-cyan-500/5 hover:bg-cyan-500/10 text-[10px] font-bold uppercase transition">
+                <i class="ph-bold ph-arrows-clockwise"></i>
+                <span class="hidden md:inline">Refresh</span>
+            </button>
+        </div>
+    </nav>
 
-  <section class="max-w-4xl">
-    <h2 class="text-3xl font-semibold mb-3">
-      Estado general de tu negocio
-    </h2>
-    <p class="text-slate-300 leading-relaxed">
-      El Semáforo Pymax analiza tus números en tiempo real y te muestra si tu negocio está en una situación saludable, de alerta o de riesgo.
-    </p>
-  </section>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 md:px-6 pt-24 pb-12 relative z-10">
 
-  <section class="flex justify-center">
-    <div id="semaforo-card" class="glass rounded-2xl p-10 text-center pulse max-w-md w-full transition-colors duration-500" style="--pulse-color: rgba(99,102,241,0.35);">
+        <div class="grid lg:grid-cols-12 gap-8">
 
-      <p class="text-sm text-slate-400 mb-2">Estado actual</p>
+            <!-- Left Column: Status Indicator -->
+            <div class="lg:col-span-5 space-y-6">
 
-      <div id="semaforo-titulo" class="text-5xl font-bold text-gray-500 mb-4 tracking-wider">
-        ANALIZANDO...
-      </div>
+                <!-- Main Status -->
+                <div class="glass-card p-8 text-center fade-in">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-6">Current Financial Status</p>
+                    
+                    <div id="trafficLight" class="traffic-light">
+                        <div class="loading-spinner"></div>
+                    </div>
 
-      <p id="semaforo-desc" class="text-slate-300 leading-relaxed text-sm">
-        Conectando con la base de datos financiera...
-      </p>
+                    <div class="mt-8">
+                        <h2 class="text-2xl font-bold text-white font-display mb-2" id="statusTitle">Analyzing...</h2>
+                        <p class="text-sm text-slate-400" id="statusDescription">Please wait while we evaluate your financial health</p>
+                    </div>
+                </div>
 
-    </div>
-  </section>
+                <!-- Key Metrics -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-chart-line text-cyan-400"></i>
+                        Key Metrics
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-slate-400">Total Income</span>
+                            <span class="text-lg font-bold text-emerald-400" id="metricIncome">$0</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-slate-400">Total Expenses</span>
+                            <span class="text-lg font-bold text-rose-400" id="metricExpenses">$0</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-3 border-t border-white/10">
+                            <span class="text-sm font-bold text-white">Cash Flow</span>
+                            <span class="text-xl font-bold" id="metricCashFlow">$0</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-slate-400">Outstanding Debt</span>
+                            <span class="text-lg font-bold text-amber-400" id="metricDebt">$0</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-3 border-t border-white/10">
+                            <span class="text-sm font-bold text-white">Health Score</span>
+                            <span class="text-2xl font-bold text-cyan-400" id="metricScore">0/100</span>
+                        </div>
+                    </div>
+                </div>
 
-  <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="glass rounded-xl p-6 hover-card border-t-2 border-green-500/30">
-      <h3 class="font-semibold text-green-400 mb-2">Verde</h3>
-      <p class="text-slate-300 text-sm">
-        Flujo positivo y solvencia. Tus ingresos cubren gastos y deudas cómodamente. Momento de invertir.
-      </p>
-    </div>
-    <div class="glass rounded-xl p-6 hover-card border-t-2 border-yellow-500/30">
-      <h3 class="font-semibold text-yellow-400 mb-2">Amarillo</h3>
-      <p class="text-slate-300 text-sm">
-        Equilibrio delicado. Tienes ingresos, pero tus deudas u obligaciones consumen casi todo tu margen. Precaución.
-      </p>
-    </div>
-    <div class="glass rounded-xl p-6 hover-card border-t-2 border-red-500/30">
-      <h3 class="font-semibold text-red-400 mb-2">Rojo</h3>
-      <p class="text-slate-300 text-sm">
-        Riesgo. Gastas más de lo que ingresas o tienes deudas vencidas que amenazan la operación. Acción inmediata.
-      </p>
-    </div>
-  </section>
+            </div>
 
-  <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Right Column: Details -->
+            <div class="lg:col-span-7 space-y-6">
 
-    <div class="glass rounded-xl p-6 hover-card">
-      <p class="text-sm text-slate-400">Ingresos Totales</p>
-      <p id="val-ingresos" class="text-2xl font-bold text-green-400 mt-2">Cargando...</p>
-    </div>
+                <!-- Factors Affecting Status -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-list-checks text-violet-400"></i>
+                        Factors Affecting Your Status
+                    </h3>
+                    
+                    <div class="space-y-3" id="factorsContainer">
+                        <div class="flex items-center justify-center py-12">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                </div>
 
-    <div class="glass rounded-xl p-6 hover-card">
-      <p class="text-sm text-slate-400">Dinero Disponible (Flujo)</p>
-      <p id="val-flujo" class="text-2xl font-bold text-indigo-400 mt-2">Cargando...</p>
-    </div>
+                <!-- Actionable Recommendations -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-lightbulb text-amber-400"></i>
+                        Actionable Recommendations
+                    </h3>
+                    
+                    <div class="space-y-3" id="recommendationsContainer">
+                        <div class="flex items-center justify-center py-12">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                </div>
 
-    <div class="glass rounded-xl p-6 hover-card">
-      <p class="text-sm text-slate-400">Deuda Total Pendiente</p>
-      <p id="val-deuda" class="text-2xl font-bold text-red-400 mt-2">Cargando...</p>
-    </div>
+                <!-- Score Evolution Chart -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-chart-line-up text-emerald-400"></i>
+                        Score Evolution
+                    </h3>
+                    
+                    <div class="chart-container">
+                        <canvas id="scoreChart"></canvas>
+                    </div>
+                </div>
 
-  </section>
+                <!-- Status History -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-clock-clockwise text-cyan-400"></i>
+                        Status Change History
+                    </h3>
+                    
+                    <div class="custom-scroll" style="max-height: 400px;" id="historyContainer">
+                        <div class="flex items-center justify-center py-12">
+                            <p class="text-sm text-slate-500">No history data available yet</p>
+                        </div>
+                    </div>
+                </div>
 
-  <section class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
-    <a href="/empresa/mover/flujo-caja" class="glass rounded-xl p-6 hover-card block hover:bg-slate-800/50 transition">
-      <h4 class="font-semibold text-lg mb-2 text-indigo-400">Revisar flujo de caja</h4>
-      <p class="text-slate-300 text-sm">Analiza en detalle tu liquidez diaria.</p>
-      <p class="mt-4 text-white text-sm">Ir al flujo →</p>
-    </a>
-    <a href="/empresa/mover/obligaciones" class="glass rounded-xl p-6 hover-card block hover:bg-slate-800/50 transition">
-      <h4 class="font-semibold text-lg mb-2 text-indigo-400">Ver deudas y obligaciones</h4>
-      <p class="text-slate-300 text-sm">Controla compromisos que afectan tu estado financiero.</p>
-      <p class="mt-4 text-white text-sm">Ir a obligaciones →</p>
-    </a>
-  </section>
+            </div>
 
-  <section class="text-center text-slate-400 text-sm pt-6 pb-10">
-    Claridad financiera para decisiones inteligentes.
-  </section>
+        </div>
 
-</main>
+    </main>
 
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-    
-    // 1. Verificación de Seguridad
-    const { data: { user } } = await window.supabase.auth.getUser();
-    if (!user) {
-        window.location.href = "/";
-        return;
-    }
+    <!-- JavaScript -->
+    <script>
+        // Supabase Configuration
+        const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
+        const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
+        const client = supabase.createClient(SU_URL, SU_KEY);
 
-    calcularSaludFinanciera(user.id);
-});
+        let scoreChart = null;
+        let statusHistory = [];
 
-async function calcularSaludFinanciera(userId) {
-    // === PASO 1: OBTENER DATOS DE SUPABASE ===
-    
-    // A) Traer Operaciones (Ingresos y Gastos) - tabla user_operations
-    const { data: movimientos } = await window.supabase
-        .from('user_operations')
-        .select('type, amount')
-        .eq('user_id', userId);
-
-    // B) Traer Obligaciones (Deudas)
-    const { data: obligaciones } = await window.supabase
-        .from('obligaciones')
-        .select('monto, estado, fecha_pago')
-        .eq('user_id', userId);
-
-    // === PASO 2: CALCULADORA MATEMÁTICA ===
-    let ingresos = 0;
-    let gastos = 0;
-    
-    if (movimientos) {
-        movimientos.forEach(m => {
-            const monto = Number(m.amount) || 0;
-            if (m.type === 'ingreso') ingresos += monto;
-            if (m.type === 'egreso') gastos += monto;
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadFinancialHealth();
         });
-    }
 
-    let deudaPendiente = 0;
-    let deudaVencida = 0;
-    const hoy = new Date().toISOString().split('T')[0];
-
-    if (obligaciones) {
-        obligaciones.forEach(o => {
-            if (o.estado === 'pendiente') {
-                deudaPendiente += o.monto;
-                if (o.fecha_pago < hoy) {
-                    deudaVencida += o.monto;
+        // Load Financial Health
+        async function loadFinancialHealth() {
+            try {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) {
+                    window.location.href = '/';
+                    return;
                 }
+
+                // Load transactions
+                const { data: transactions } = await client
+                    .from('user_operations')
+                    .select('*')
+                    .eq('user_id', user.id);
+
+                // Load obligations
+                const { data: obligations } = await client
+                    .from('obligaciones')
+                    .select('*')
+                    .eq('user_id', user.id);
+
+                calculateHealth(transactions || [], obligations || []);
+
+            } catch (error) {
+                console.error('Error loading financial health:', error);
             }
-        });
-    }
+        }
 
-    // Cálculos Clave
-    const flujoCaja = ingresos - gastos; // Dinero real en mano
-    const solvencia = flujoCaja - deudaPendiente; // Capacidad de pago
+        // Calculate Health
+        function calculateHealth(transactions, obligations) {
+            // Calculate totals
+            const income = transactions
+                .filter(t => t.type === 'ingreso' || t.type === 'income')
+                .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
 
-    // === PASO 3: ACTUALIZAR NÚMEROS EN PANTALLA ===
-    document.getElementById("val-ingresos").innerText = `$${ingresos.toLocaleString()}`;
-    document.getElementById("val-flujo").innerText = `$${flujoCaja.toLocaleString()}`;
-    document.getElementById("val-deuda").innerText = `$${deudaPendiente.toLocaleString()}`;
+            const expenses = transactions
+                .filter(t => t.type === 'egreso' || t.type === 'expense')
+                .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
 
-    // Colores dinámicos para los números
-    document.getElementById("val-flujo").className = flujoCaja >= 0 
-        ? "text-2xl font-bold text-green-400 mt-2" 
-        : "text-2xl font-bold text-red-400 mt-2";
+            const cashFlow = income - expenses;
 
-    // === PASO 4: EL ALGORITMO DEL SEMÁFORO ===
-    const semaforoCard = document.getElementById("semaforo-card");
-    const titulo = document.getElementById("semaforo-titulo");
-    const desc = document.getElementById("semaforo-desc");
+            const today = new Date();
+            const outstandingDebt = obligations
+                .filter(o => o.estado === 'pendiente')
+                .reduce((sum, o) => sum + parseFloat(o.monto || 0), 0);
 
-    // Limpiar clases anteriores
-    titulo.className = "text-5xl font-bold mb-4 tracking-wider transition-all duration-500";
+            const overdueDebt = obligations
+                .filter(o => o.estado === 'pendiente' && new Date(o.fecha_pago) < today)
+                .reduce((sum, o) => sum + parseFloat(o.monto || 0), 0);
 
-    // LÓGICA DE DECISIÓN
-    if (deudaVencida > 0 || flujoCaja < 0) {
-        // ROJO: Si hay deuda vencida O si estás perdiendo dinero
-        titulo.innerText = "ROJO";
-        titulo.classList.add("text-red-500");
-        semaforoCard.style.setProperty('--pulse-color', 'rgba(239, 68, 68, 0.6)'); // Rojo neón
-        semaforoCard.classList.add("border", "border-red-500/50");
-        desc.innerText = deudaVencida > 0 
-            ? "ALERTA: Tienes obligaciones vencidas que requieren atención inmediata." 
-            : "CUIDADO: Tus gastos superan a tus ingresos. Tu flujo de caja es negativo.";
+            // Calculate score (0-100)
+            let score = 50; // Base score
 
-    } else if (solvencia < 0) {
-        // AMARILLO: Tienes flujo positivo, pero debes más de lo que tienes
-        titulo.innerText = "AMARILLO";
-        titulo.classList.add("text-yellow-400");
-        semaforoCard.style.setProperty('--pulse-color', 'rgba(234, 179, 8, 0.6)'); // Amarillo neón
-        semaforoCard.classList.add("border", "border-yellow-500/50");
-        desc.innerText = "PRECAUCIÓN: Tienes dinero en caja, pero tus deudas pendientes superan tu liquidez actual. Planifica tus pagos.";
+            // Positive factors
+            if (cashFlow > 0) score += 20;
+            if (income > expenses * 1.5) score += 15;
+            if (cashFlow > outstandingDebt) score += 15;
 
-    } else {
-        // VERDE: Tienes flujo positivo y cubres tus deudas
-        titulo.innerText = "VERDE";
-        titulo.classList.add("text-green-400");
-        semaforoCard.style.setProperty('--pulse-color', 'rgba(74, 222, 128, 0.6)'); // Verde neón
-        semaforoCard.classList.add("border", "border-green-500/50");
-        desc.innerText = "EXCELENTE: Tu negocio es saludable. Tus ingresos cubren gastos y todas tus deudas pendientes. ¡Sigue así!";
-    }
-}
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Busca TODOS los enlaces (<a>) de tu código original
-    document.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', function(e) {
-            let url = this.getAttribute('href');
-            
-            // Solo actuamos si el enlace apunta a un archivo .html
-            if (url && url.includes('.html')) {
-                e.preventDefault(); // Detiene el error 404
+            // Negative factors
+            if (cashFlow < 0) score -= 30;
+            if (overdueDebt > 0) score -= 20;
+            if (outstandingDebt > cashFlow * 0.8 && cashFlow > 0) score -= 10;
+
+            score = Math.max(0, Math.min(100, score));
+
+            // Determine status
+            let status, statusText, statusDesc, factors, recommendations;
+
+            if (overdueDebt > 0 || cashFlow < 0 || score < 40) {
+                status = 'red';
+                statusText = 'CRITICAL';
+                statusDesc = 'Immediate action required. Your financial situation needs urgent attention.';
                 
-                // 1. Quita la extensión .html automáticamente
-                let nuevaRuta = url.replace('.html', '');
+                factors = [
+                    {
+                        type: 'negative',
+                        icon: 'ph-warning-circle',
+                        text: overdueDebt > 0 
+                            ? `Overdue debt: $${overdueDebt.toLocaleString()}`
+                            : `Negative cash flow: $${Math.abs(cashFlow).toLocaleString()}`
+                    },
+                    {
+                        type: 'negative',
+                        icon: 'ph-trend-down',
+                        text: `Expenses exceed income by ${expenses > income ? ((expenses - income) / income * 100).toFixed(1) : 0}%`
+                    },
+                    {
+                        type: 'warning',
+                        icon: 'ph-coins',
+                        text: `Outstanding debt: $${outstandingDebt.toLocaleString()}`
+                    }
+                ];
 
-                // 2. DICCIONARIO DE CORRECCIONES (Para los botones "Volver")
-                // Aquí le enseñamos a ir a las rutas principales correctas
-                if (url.includes('panel-mover.html')) nuevaRuta = "/empresa/mover";
-                if (url.includes('index-empresa.html')) nuevaRuta = "/empresa";
-                if (url.includes('index.html')) nuevaRuta = "/";
+                recommendations = [
+                    'Immediately address overdue obligations to avoid penalties',
+                    'Review and cut non-essential expenses',
+                    'Create an emergency payment plan for critical debts',
+                    'Contact creditors to negotiate payment terms',
+                    'Focus on generating additional income streams'
+                ];
 
-                // 3. Te envía a la ruta limpia de Python
-                window.location.href = nuevaRuta;
+            } else if (cashFlow > 0 && cashFlow < outstandingDebt * 0.5 || score < 70) {
+                status = 'yellow';
+                statusText = 'CAUTION';
+                statusDesc = 'Your finances are stable but require careful monitoring and planning.';
+                
+                factors = [
+                    {
+                        type: 'warning',
+                        icon: 'ph-warning',
+                        text: `Outstanding debt represents ${outstandingDebt > 0 && income > 0 ? (outstandingDebt / income * 100).toFixed(0) : 0}% of income`
+                    },
+                    {
+                        type: 'positive',
+                        icon: 'ph-trend-up',
+                        text: `Positive cash flow: $${cashFlow.toLocaleString()}`
+                    },
+                    {
+                        type: 'warning',
+                        icon: 'ph-currency-dollar',
+                        text: `Limited liquidity buffer against obligations`
+                    }
+                ];
+
+                recommendations = [
+                    'Build a cash reserve of at least 3 months of expenses',
+                    'Prioritize paying down high-interest debt',
+                    'Review recurring expenses for optimization opportunities',
+                    'Create a structured payment schedule for obligations',
+                    'Monitor cash flow weekly to maintain positive trajectory'
+                ];
+
+            } else {
+                status = 'green';
+                statusText = 'HEALTHY';
+                statusDesc = 'Excellent financial health. Your business is operating optimally.';
+                
+                factors = [
+                    {
+                        type: 'positive',
+                        icon: 'ph-check-circle',
+                        text: `Strong cash flow: $${cashFlow.toLocaleString()}`
+                    },
+                    {
+                        type: 'positive',
+                        icon: 'ph-trend-up',
+                        text: `Income exceeds expenses by ${income > 0 && expenses > 0 ? ((income - expenses) / expenses * 100).toFixed(0) : 0}%`
+                    },
+                    {
+                        type: 'positive',
+                        icon: 'ph-shield-check',
+                        text: `Sufficient liquidity to cover all obligations`
+                    }
+                ];
+
+                recommendations = [
+                    'Consider investing surplus in growth opportunities',
+                    'Build an emergency fund for unexpected expenses',
+                    'Explore expansion or new revenue streams',
+                    'Maintain current financial discipline and monitoring',
+                    'Review pricing strategy for potential optimization'
+                ];
             }
-        });
-    });
-});
-</script>
+
+            // Update UI
+            updateStatus(status, statusText, statusDesc);
+            updateMetrics(income, expenses, cashFlow, outstandingDebt, score);
+            updateFactors(factors);
+            updateRecommendations(recommendations);
+            updateHistory(status, score);
+            updateChart();
+        }
+
+        // Update Status
+        function updateStatus(status, text, description) {
+            const light = document.getElementById('trafficLight');
+            const title = document.getElementById('statusTitle');
+            const desc = document.getElementById('statusDescription');
+
+            light.className = `traffic-light ${status}`;
+            light.innerHTML = `<div class="status-text">${text}</div>`;
+            title.textContent = text + ' STATUS';
+            desc.textContent = description;
+        }
+
+        // Update Metrics
+        function updateMetrics(income, expenses, cashFlow, debt, score) {
+            document.getElementById('metricIncome').textContent = `$${income.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            document.getElementById('metricExpenses').textContent = `$${expenses.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            
+            const cashFlowEl = document.getElementById('metricCashFlow');
+            cashFlowEl.textContent = `$${cashFlow.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            cashFlowEl.className = cashFlow >= 0 ? 'text-xl font-bold text-emerald-400' : 'text-xl font-bold text-rose-400';
+            
+            document.getElementById('metricDebt').textContent = `$${debt.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            document.getElementById('metricScore').textContent = `${Math.round(score)}/100`;
+        }
+
+        // Update Factors
+        function updateFactors(factors) {
+            const container = document.getElementById('factorsContainer');
+            
+            container.innerHTML = factors.map(f => `
+                <div class="factor-card ${f.type}">
+                    <div class="flex items-center gap-3">
+                        <i class="ph-fill ${f.icon} text-xl ${
+                            f.type === 'positive' ? 'text-emerald-400' :
+                            f.type === 'warning' ? 'text-amber-400' :
+                            'text-rose-400'
+                        }"></i>
+                        <p class="text-sm text-slate-300">${f.text}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update Recommendations
+        function updateRecommendations(recommendations) {
+            const container = document.getElementById('recommendationsContainer');
+            
+            container.innerHTML = recommendations.map((rec, index) => `
+                <div class="recommendation-card">
+                    <div class="recommendation-number">${index + 1}</div>
+                    <p class="text-sm text-slate-300 leading-relaxed">${rec}</p>
+                </div>
+            `).join('');
+        }
+
+        // Update History
+        function updateHistory(status, score) {
+            const now = new Date();
+            
+            // Add to history
+            statusHistory.push({
+                status,
+                score,
+                timestamp: now
+            });
+
+            // Keep only last 10 entries
+            if (statusHistory.length > 10) {
+                statusHistory = statusHistory.slice(-10);
+            }
+
+            // Update history UI
+            const container = document.getElementById('historyContainer');
+            
+            if (statusHistory.length === 0) {
+                container.innerHTML = `
+                    <div class="flex items-center justify-center py-12">
+                        <p class="text-sm text-slate-500">No history data available yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = statusHistory.reverse().map((h, index) => `
+                <div class="timeline-item">
+                    <div class="timeline-dot ${h.status}"></div>
+                    <div class="bg-white/5 rounded-lg p-4 hover:bg-white/10 transition">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-bold ${
+                                h.status === 'green' ? 'text-emerald-400' :
+                                h.status === 'yellow' ? 'text-amber-400' :
+                                'text-rose-400'
+                            }">${h.status.toUpperCase()} STATUS</span>
+                            <span class="text-xs text-slate-500">${formatDate(h.timestamp)}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-400">Score:</span>
+                            <span class="text-sm font-bold text-white">${Math.round(h.score)}/100</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update Chart
+        function updateChart() {
+            if (scoreChart) {
+                scoreChart.destroy();
+            }
+
+            if (statusHistory.length === 0) return;
+
+            const ctx = document.getElementById('scoreChart');
+            
+            const chartData = statusHistory.map(h => ({
+                x: h.timestamp,
+                y: Math.round(h.score)
+            }));
+
+            scoreChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: 'Health Score',
+                        data: chartData,
+                        borderColor: '#60a5fa',
+                        backgroundColor: 'rgba(96, 165, 250, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: '#60a5fa',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#fff',
+                            bodyColor: '#94a3b8',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return `Score: ${context.parsed.y}/100`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day',
+                                displayFormats: {
+                                    day: 'MMM d'
+                                }
+                            },
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: { size: 11 }
+                            }
+                        },
+                        y: {
+                            min: 0,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: { size: 11 },
+                                callback: function(value) {
+                                    return value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Format Date
+        function formatDate(date) {
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000); // seconds
+
+            if (diff < 60) return 'Just now';
+            if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
+            if (diff < 604800) return `${Math.floor(diff / 86400)} days ago`;
+            
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        // Refresh Status
+        async function refreshStatus() {
+            await loadFinancialHealth();
+            
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2000,
+                background: '#0b0b14',
+                color: '#fff',
+                icon: 'success',
+                title: 'Status refreshed'
+            });
+        }
+    </script>
 </body>
 </html>

@@ -1,416 +1,1148 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Pymax · Agenda y Calendario</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Financial Calendar & Event Management - Smart Scheduling" />
+    <title>Pymax | Calendar & Events</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg-void: #020617;
+            --bg-card: rgba(15, 23, 42, 0.6);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --neon-cyan: #60a5fa;
+            --neon-violet: #a78bfa;
+            --neon-emerald: #34d399;
+            --neon-rose: #fb7185;
+            --neon-amber: #fbbf24;
+        }
 
-  <script src="/static/js/pymax-core.js"></script>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  <style>
-    body {
-      background:
-        radial-gradient(900px 400px at 10% -10%, rgba(79,70,229,.25), transparent 40%),
-        radial-gradient(800px 500px at 90% 10%, rgba(99,102,241,.18), transparent 45%),
-        radial-gradient(700px 400px at 50% 120%, rgba(56,189,248,.12), transparent 40%),
-        #020617;
-    }
+        body {
+            background: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
 
-    .glass {
-      background: rgba(15,23,42,0.65);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(148,163,184,0.15);
-    }
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+        }
 
-    .hover-card {
-      transition: transform .3s ease, box-shadow .3s ease;
-    }
+        .nebula-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(96, 165, 250, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(167, 139, 250, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
 
-    .hover-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 40px rgba(0,0,0,.45);
-    }
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            backdrop-filter: blur(24px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
 
-    .day {
-      transition: all .25s ease;
-      min-height: 100px; /* Altura suficiente para ver eventos */
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: flex-start;
-    }
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
 
-    .day:hover {
-      background: rgba(99,102,241,.15);
-      transform: scale(1.02);
-      border-color: rgba(99,102,241,0.5);
-    }
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
 
-    /* Scrollbar fina para días con muchos eventos */
-    .day::-webkit-scrollbar { width: 4px; }
-    .day::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 2px; }
-  </style>
+        /* AI Premium Panel */
+        .ai-premium-panel {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(139, 92, 246, 0.1));
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-premium-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #a78bfa, transparent);
+        }
+
+        .ai-lock-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 40px rgba(139, 92, 246, 0.5);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .ai-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        .ai-upgrade-btn {
+            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(124, 58, 237, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-upgrade-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(124, 58, 237, 0.6);
+        }
+
+        /* Calendar Grid */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-header {
+            text-align: center;
+            padding: 12px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 0.5px;
+        }
+
+        .calendar-day {
+            min-height: 100px;
+            padding: 12px;
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .calendar-day:hover {
+            background: rgba(15, 23, 42, 0.6);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.02);
+        }
+
+        .calendar-day.today {
+            background: rgba(96, 165, 250, 0.1);
+            border: 2px solid var(--neon-cyan);
+        }
+
+        .calendar-day.other-month {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .day-number {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 6px;
+        }
+
+        .calendar-day.today .day-number {
+            color: var(--neon-cyan);
+        }
+
+        /* Event Badge */
+        .event-badge {
+            font-size: 0.65rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .event-badge:hover {
+            transform: scale(1.05);
+        }
+
+        .event-badge.payment {
+            background: rgba(251, 113, 133, 0.3);
+            color: #fca5a5;
+            border: 1px solid rgba(251, 113, 133, 0.5);
+        }
+
+        .event-badge.meeting {
+            background: rgba(96, 165, 250, 0.3);
+            color: #93c5fd;
+            border: 1px solid rgba(96, 165, 250, 0.5);
+        }
+
+        .event-badge.event {
+            background: rgba(167, 139, 250, 0.3);
+            color: #c4b5fd;
+            border: 1px solid rgba(167, 139, 250, 0.5);
+        }
+
+        .event-badge.reminder {
+            background: rgba(251, 191, 36, 0.3);
+            color: #fcd34d;
+            border: 1px solid rgba(251, 191, 36, 0.5);
+        }
+
+        /* Modern Input */
+        .modern-input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px 16px;
+            border-radius: 12px;
+            color: white;
+            outline: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .modern-input:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.2);
+            background: rgba(15, 23, 42, 0.95);
+        }
+
+        .modern-input::placeholder {
+            color: #64748b;
+        }
+
+        select.modern-input {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Modern Button */
+        .modern-btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 30px rgba(96, 165, 250, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: #0b0b14;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 95%;
+            max-width: 600px;
+            max-height: 90vh;
+            border-radius: 24px;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* View Toggle */
+        .view-toggle {
+            display: flex;
+            gap: 4px;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 4px;
+            border-radius: 10px;
+            border: 1px solid var(--border-glass);
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            background: transparent;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .view-btn.active {
+            background: rgba(96, 165, 250, 0.2);
+            color: var(--neon-cyan);
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(96, 165, 250, 0.2);
+            border-top-color: var(--neon-cyan);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(96, 165, 250, 0.3); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(96, 165, 250, 0.5); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .calendar-grid {
+                gap: 4px;
+            }
+            .calendar-day {
+                min-height: 80px;
+                padding: 8px;
+            }
+            .day-number {
+                font-size: 0.75rem;
+            }
+            .event-badge {
+                font-size: 0.6rem;
+                padding: 3px 6px;
+            }
+        }
+    </style>
 </head>
 
-<body class="text-slate-100 min-h-screen font-sans">
+<body>
+    <div class="nebula-bg"></div>
 
-<div id="pymax-toast-container" class="fixed top-6 right-6 z-50 space-y-3"></div>
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-[#020617]/90 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="/empresa/mover" class="flex items-center gap-2 text-slate-400 hover:text-white transition group">
+                    <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/30 transition">
+                        <i class="ph-bold ph-arrow-left"></i>
+                    </div>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">Back</span>
+                </a>
+                <div class="h-6 w-px bg-white/10"></div>
+                <h1 class="text-xl font-bold text-white font-display tracking-tight">
+                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">CALENDAR</span>
+                </h1>
+            </div>
 
-<header class="glass px-8 py-5 flex justify-between items-center border-b border-slate-800 sticky top-0 z-40">
-  <h1 class="text-xl font-semibold text-indigo-400">
-    Pymax · Agenda y Calendario
-  </h1>
-  <a href="/empresa/mover" class="text-sm text-slate-300 hover:text-white transition border border-slate-600 px-3 py-1 rounded hover:bg-slate-800">
-    Volver al panel
-  </a>
-</header>
+            <div class="flex items-center gap-3">
+                <button onclick="prevMonth()" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition">
+                    <i class="ph-bold ph-caret-left"></i>
+                </button>
+                <button onclick="resetToToday()" class="text-xs font-bold text-slate-400 hover:text-white px-3 py-2 rounded-lg hover:bg-white/5 transition uppercase">
+                    Today
+                </button>
+                <button onclick="nextMonth()" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition">
+                    <i class="ph-bold ph-caret-right"></i>
+                </button>
+                <div class="h-6 w-px bg-white/10 hidden md:block"></div>
+                <button onclick="addNewEvent()" class="hidden md:flex items-center gap-2 px-3 py-2 rounded-full border border-cyan-500/30 text-cyan-400 bg-cyan-500/5 hover:bg-cyan-500/10 text-[10px] font-bold uppercase transition">
+                    <i class="ph-bold ph-plus"></i> New Event
+                </button>
+            </div>
+        </div>
+    </nav>
 
-<main class="max-w-7xl mx-auto px-6 py-10 space-y-12">
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 md:px-6 pt-24 pb-12 relative z-10">
 
-  <section class="max-w-4xl">
-    <h2 class="text-3xl font-semibold mb-3">
-      Tu agenda inteligente (<span id="mes-actual-titulo" class="text-indigo-400">...</span>)
-    </h2>
-    <p class="text-slate-300 leading-relaxed">
-      Agenda reuniones, pagos y eventos importantes.
-      <span class="text-green-400 font-semibold">Nuevo:</span> El sistema enviará un recordatorio por correo <b>1 día antes</b> de cada actividad.
-    </p>
-  </section>
+        <!-- Current Month Header -->
+        <div class="mb-6 fade-in">
+            <h2 class="text-3xl font-bold text-white font-display mb-2" id="currentMonthTitle">Loading...</h2>
+            <p class="text-slate-400">View and manage all your financial events</p>
+        </div>
 
-  <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid lg:grid-cols-12 gap-8">
 
-    <div class="glass rounded-xl p-6 hover-card border-t-4 border-indigo-500">
-      <p class="text-sm text-slate-400">Actividades este mes</p>
-      <p id="val-total-mes" class="text-3xl font-bold text-indigo-400 mt-2">0</p>
-      <p class="text-xs text-slate-400 mt-2">
-        Reuniones, pagos y eventos agendados.
-      </p>
-    </div>
+            <!-- Left Column: Calendar -->
+            <div class="lg:col-span-8 space-y-6">
 
-    <div class="glass rounded-xl p-6 hover-card border-t-4 border-yellow-500">
-      <p class="text-sm text-slate-400">Próxima actividad</p>
-      <p id="val-proximo" class="text-2xl font-bold text-yellow-400 mt-2 text-sm leading-tight pt-1">—</p>
-      <p class="text-xs text-slate-400 mt-2">
-        Lo más cercano en tu calendario.
-      </p>
-    </div>
+                <!-- View Toggle -->
+                <div class="flex justify-between items-center fade-in">
+                    <div class="view-toggle">
+                        <button class="view-btn active" onclick="setView('month', this)">Month</button>
+                        <button class="view-btn" onclick="setView('week', this)">Week</button>
+                        <button class="view-btn" onclick="setView('day', this)">Day</button>
+                    </div>
 
-    <div class="glass rounded-xl p-6 hover-card border-t-4 border-red-500">
-      <p class="text-sm text-slate-400">Pendientes vencidos</p>
-      <p id="val-vencidos" class="text-3xl font-bold text-red-400 mt-2">0</p>
-      <p class="text-xs text-slate-400 mt-2">
-        Actividades pasadas sin completar.
-      </p>
-    </div>
+                    <div class="flex gap-2">
+                        <button onclick="exportToICS()" class="modern-btn btn-secondary text-xs px-4 py-2">
+                            <i class="ph-bold ph-download-simple"></i>
+                            Export
+                        </button>
+                    </div>
+                </div>
 
-  </section>
+                <!-- Calendar -->
+                <div class="glass-card p-6 fade-in">
+                    <div class="calendar-grid mb-4">
+                        <div class="calendar-header">Mon</div>
+                        <div class="calendar-header">Tue</div>
+                        <div class="calendar-header">Wed</div>
+                        <div class="calendar-header">Thu</div>
+                        <div class="calendar-header">Fri</div>
+                        <div class="calendar-header">Sat</div>
+                        <div class="calendar-header text-rose-400">Sun</div>
+                    </div>
+                    
+                    <div id="calendarDays" class="calendar-grid">
+                        <div class="flex items-center justify-center py-20 col-span-7">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                </div>
 
-  <section class="glass rounded-xl p-8 max-w-5xl">
-    <h3 class="text-xl font-semibold mb-6 flex items-center gap-2 text-indigo-300">
-      Agendar nueva actividad
-    </h3>
+                <!-- Legend -->
+                <div class="glass-card p-4 fade-in">
+                    <div class="flex flex-wrap gap-4 justify-center items-center text-xs">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-cyan-500"></div>
+                            <span class="text-slate-400">Meeting</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-rose-500"></div>
+                            <span class="text-slate-400">Payment</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-violet-500"></div>
+                            <span class="text-slate-400">Event</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-amber-500"></div>
+                            <span class="text-slate-400">Reminder</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+                            <span class="text-slate-400">Completed</span>
+                        </div>
+                    </div>
+                </div>
 
-    <form id="formCalendario" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            </div>
 
-      <div class="md:col-span-3">
-          <input id="inpDesc" type="text" placeholder="Título (Ej: Reunión Cliente, Pagar Luz...)" required
-            class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-3 text-white focus:outline-none focus:border-indigo-500" />
-      </div>
+            <!-- Right Column: AI Panel & Events -->
+            <div class="lg:col-span-4 space-y-6">
 
-      <div class="md:col-span-1">
-          <input id="inpFecha" type="date" required
-            class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-3 text-white focus:outline-none focus:border-indigo-500" />
-      </div>
+                <!-- AI PREMIUM PANEL - LOCKED -->
+                <div class="ai-premium-panel fade-in">
+                    <div class="ai-lock-icon">
+                        <i class="ph-fill ph-lock-key text-3xl text-white"></i>
+                    </div>
+                    
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-white font-display mb-2">
+                            AI Calendar Assistant
+                        </h3>
+                        <p class="text-sm text-violet-300 mb-1">Premium Feature</p>
+                        <p class="text-xs text-slate-400">Intelligent scheduling and smart reminders</p>
+                    </div>
 
-      <div class="md:col-span-1">
-          <select id="inpTipoSelect" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-3 text-white focus:outline-none focus:border-indigo-500">
-            <option value="Reunión"> Reunión</option>
-            <option value="Pago"> Pago</option>
-            <option value="Cobro">Cobro</option>
-            <option value="Evento"> Evento</option>
-            <option value="Recordatorio"> Recordatorio</option>
-          </select>
-      </div>
+                    <div class="space-y-3 mb-6">
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-calendar-check text-violet-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Automatic event scheduling based on cash flow</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-bell-ringing text-violet-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Multi-channel reminders (Email, SMS, WhatsApp)</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-arrows-counter-clockwise text-violet-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Two-way sync with Google Calendar & Outlook</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-warning text-violet-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Automatic conflict detection and resolution</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-users-three text-violet-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">AI meeting optimizer for maximum productivity</span>
+                        </div>
+                    </div>
 
-      <div class="md:col-span-1">
-          <input id="inpMonto" type="number" placeholder="Monto ($0 si no aplica)" step="0.01"
-            class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-3 text-white focus:outline-none focus:border-indigo-500" />
-      </div>
+                    <div class="text-center">
+                        <button class="ai-upgrade-btn" onclick="showUpgradeModal()">
+                            <i class="ph-bold ph-rocket-launch"></i>
+                            Upgrade to Premium
+                        </button>
+                        <p class="text-xs text-slate-500 mt-3">Starting at $49/month</p>
+                    </div>
+                </div>
 
-      <div class="md:col-span-2">
-          <input id="inpEmail" type="email" placeholder=" Email para recordatorio (Opcional)"
-            class="w-full bg-slate-900 border border-indigo-500/30 rounded px-3 py-3 text-white focus:outline-none focus:border-indigo-500" />
-      </div>
+                <!-- Upcoming Events -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-clock text-cyan-400"></i>
+                        Upcoming Events
+                    </h3>
+                    
+                    <div id="upcomingEvents" class="space-y-3 custom-scroll" style="max-height: 400px;">
+                        <div class="flex items-center justify-center py-12">
+                            <p class="text-sm text-slate-500">No upcoming events</p>
+                        </div>
+                    </div>
+                </div>
 
-      <button id="btnGuardar" type="submit"
-        class="bg-indigo-600 hover:bg-indigo-700 transition rounded px-4 py-3 font-semibold md:col-span-4 text-white shadow-lg shadow-indigo-500/20 mt-2">
-        Agendar en Calendario
-      </button>
+                <!-- Quick Stats -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-chart-bar text-violet-400"></i>
+                        This Month
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-slate-400">Total Events</span>
+                            <span class="text-lg font-bold text-white" id="statTotalEvents">0</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-slate-400">Payments Due</span>
+                            <span class="text-lg font-bold text-rose-400" id="statPayments">0</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-slate-400">Meetings</span>
+                            <span class="text-lg font-bold text-cyan-400" id="statMeetings">0</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-3 border-t border-white/10">
+                            <span class="text-xs text-slate-400">Completed</span>
+                            <span class="text-lg font-bold text-emerald-400" id="statCompleted">0</span>
+                        </div>
+                    </div>
+                </div>
 
-    </form>
-  </section>
+            </div>
 
-  <section class="glass rounded-xl p-8">
-    <div class="flex justify-between items-center mb-6">
-        <h3 class="text-xl font-semibold text-indigo-300">Vista mensual</h3>
-        <div class="flex gap-3 text-xs flex-wrap">
-            <span class="flex items-center text-gray-400"><span class="w-2 h-2 bg-indigo-500 rounded-full mr-1"></span> Reunión/Evento</span>
-            <span class="flex items-center text-gray-400"><span class="w-2 h-2 bg-red-500 rounded-full mr-1"></span> Pago Pendiente</span>
-            <span class="flex items-center text-gray-400"><span class="w-2 h-2 bg-green-500 rounded-full mr-1"></span> Completado</span>
+        </div>
+
+    </main>
+
+    <!-- Add Event Modal -->
+    <div id="eventModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="p-6 border-b border-white/10 flex justify-between items-center">
+                <h2 class="text-lg font-bold text-white font-display flex items-center gap-2">
+                    <i class="ph-fill ph-calendar-plus text-cyan-400"></i>
+                    <span id="eventModalTitle">Add New Event</span>
+                </h2>
+                <button onclick="closeEventModal()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto custom-scroll" style="max-height: calc(90vh - 80px);">
+                <form id="eventForm" class="space-y-4">
+                    <input type="hidden" id="editingEventId" value="">
+                    
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Event Title</label>
+                        <input type="text" id="eventTitle" placeholder="e.g. Client Meeting, Pay Taxes" class="modern-input" required>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Date</label>
+                            <input type="date" id="eventDate" class="modern-input" required>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Time</label>
+                            <input type="time" id="eventTime" class="modern-input">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Type</label>
+                            <select id="eventType" class="modern-input" required>
+                                <option value="Meeting">Meeting</option>
+                                <option value="Payment">Payment</option>
+                                <option value="Event">Event</option>
+                                <option value="Reminder">Reminder</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Amount (Optional)</label>
+                            <input type="number" id="eventAmount" placeholder="0.00" class="modern-input" step="0.01">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Description (Optional)</label>
+                        <textarea id="eventDescription" placeholder="Additional details..." class="modern-input" rows="3"></textarea>
+                    </div>
+
+                    <div class="flex gap-3 pt-4">
+                        <button type="submit" class="modern-btn btn-primary flex-1">
+                            <i class="ph-bold ph-floppy-disk"></i>
+                            <span id="btnEventSubmit">Save Event</span>
+                        </button>
+                        <button type="button" onclick="closeEventModal()" class="modern-btn btn-secondary px-6" style="background: rgba(255,255,255,0.05); color: #e2e8f0; border: 1px solid rgba(255,255,255,0.1);">
+                            <i class="ph-bold ph-x"></i>
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
-    <div class="grid grid-cols-7 gap-3 text-center text-sm mb-2">
-      <div class="text-slate-500 font-bold">Lun</div>
-      <div class="text-slate-500 font-bold">Mar</div>
-      <div class="text-slate-500 font-bold">Mié</div>
-      <div class="text-slate-500 font-bold">Jue</div>
-      <div class="text-slate-500 font-bold">Vie</div>
-      <div class="text-slate-500 font-bold">Sáb</div>
-      <div class="text-slate-500 font-bold text-red-400">Dom</div>
-    </div>
+    <!-- JavaScript -->
+    <script>
+        // Supabase Configuration
+        const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
+        const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
+        const client = supabase.createClient(SU_URL, SU_KEY);
 
-    <div id="calendar-grid" class="grid grid-cols-7 gap-3 text-sm">
-        <p class="col-span-7 text-center py-10 text-gray-500">Cargando tu agenda...</p>
-    </div>
-  </section>
+        let currentDate = new Date();
+        let allEvents = [];
+        let currentView = 'month';
 
-  <section class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
+        // Toast Notification
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            background: '#0b0b14',
+            color: '#fff'
+        });
 
-    <a href="/empresa/mover/obligaciones" class="glass rounded-xl p-6 hover-card block hover:bg-slate-800/50 transition">
-      <h4 class="font-semibold text-lg mb-2 text-indigo-400">
-        Ver lista detallada
-      </h4>
-      <p class="text-slate-300 text-sm">
-        Gestiona el estado (pagado/pendiente) de tus compromisos.
-      </p>
-      <p class="mt-4 text-white text-sm font-semibold">
-        Ir a obligaciones →
-      </p>
-    </a>
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadEvents();
+        });
 
-    <a href="/empresa/mover/flujo-caja" class="glass rounded-xl p-6 hover-card block hover:bg-slate-800/50 transition">
-      <h4 class="font-semibold text-lg mb-2 text-indigo-400">
-        Impacto en el flujo de caja
-      </h4>
-      <p class="text-slate-300 text-sm">
-        Visualiza cómo los vencimientos afectan tu liquidez.
-      </p>
-      <p class="mt-4 text-white text-sm font-semibold">
-        Ver flujo →
-      </p>
-    </a>
-
-  </section>
-
-  <section class="text-center text-slate-400 text-sm pt-6 pb-10">
-    Anticiparse es una ventaja competitiva.
-  </section>
-
-</main>
-
-<script>
-// Notificaciones
-function pymaxNotify({ title = "Pymax", message = "", type = "info" }) {
-  const container = document.getElementById("pymax-toast-container");
-  const colors = {
-    info: "from-blue-500/20 to-indigo-500/20 border-blue-400/30",
-    success: "from-emerald-500/20 to-green-500/20 border-emerald-400/30",
-    error: "from-red-500/20 to-pink-500/20 border-red-400/30"
-  };
-  const toast = document.createElement("div");
-  toast.className = `relative overflow-hidden backdrop-blur-xl bg-gradient-to-r ${colors[type]} border text-white px-5 py-4 rounded-xl shadow-xl max-w-sm mb-3 transition-all transform duration-500`;
-  toast.innerHTML = `<div class="font-semibold text-sm mb-1">${title}</div><div class="text-sm text-gray-200">${message}</div>`;
-  container.appendChild(toast);
-  setTimeout(() => {
-    toast.classList.add("opacity-0", "translate-x-5");
-    setTimeout(() => toast.remove(), 400);
-  }, 4000);
-}
-
-// Lógica Calendario
-document.addEventListener("DOMContentLoaded", async () => {
-    if (typeof pymaxGetUser === 'undefined') return;
-    const user = await pymaxGetUser();
-    if (!user) { window.location.href = "/"; return; }
-
-    const fechaActual = new Date();
-    document.getElementById("inpFecha").valueAsDate = fechaActual;
-    if(user.email) document.getElementById("inpEmail").value = user.email;
-
-    // Título Mes
-    const nombreMes = fechaActual.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
-    document.getElementById("mes-actual-titulo").innerText = nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1);
-
-    await cargarCalendario(user.id, fechaActual);
-
-    // GUARDAR
-    document.getElementById("formCalendario").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById("btnGuardar");
-
-        const titulo = document.getElementById("inpDesc").value.trim();
-        const categoria = document.getElementById("inpTipoSelect").value;
-        const montoVal = document.getElementById("inpMonto").value;
-        const monto = montoVal ? parseFloat(montoVal) : 0;
-        const fecha = document.getElementById("inpFecha").value;
-        const email = document.getElementById("inpEmail").value.trim();
-
-        const descripcionFinal = `${categoria}: ${titulo}`;
-
-        if(!titulo || !fecha) return;
-
-        btn.disabled = true; btn.innerText = "Agendando...";
-
-        const { error } = await window.supabase
-            .from('obligaciones')
-            .insert([{
-                user_id: user.id,
-                tipo: descripcionFinal,
-                monto: monto,
-                fecha_pago: fecha,
-                estado: 'pendiente',
-                email_contacto: email || null
-            }]);
-
-        btn.disabled = false; btn.innerText = "Agendar en Calendario";
-
-        if(error) {
-            pymaxNotify({ title: "Error", message: "No se pudo guardar.", type: "error" });
-        } else {
-            pymaxNotify({ title: "Agendado", message: "Actividad guardada.", type: "success" });
-            document.getElementById("inpDesc").value = "";
-            document.getElementById("inpMonto").value = "";
-            await cargarCalendario(user.id, fechaActual);
-        }
-    });
-});
-
-async function cargarCalendario(userId, fechaRef) {
-    const grid = document.getElementById("calendar-grid");
-    grid.innerHTML = ""; 
-
-    const mes = fechaRef.getMonth();
-    const anio = fechaRef.getFullYear();
-    
-    // Obtener datos
-    const { data: obligaciones } = await window.supabase
-        .from('obligaciones')
-        .select('*')
-        .eq('user_id', userId);
-
-    actualizarEstadisticas(obligaciones, mes, anio);
-
-    // DIBUJAR CALENDARIO
-    const primerDiaSemana = new Date(anio, mes, 1).getDay(); 
-    let huecos = primerDiaSemana === 0 ? 6 : primerDiaSemana - 1;
-    const diasEnMes = new Date(anio, mes + 1, 0).getDate();
-
-    // Huecos vacíos
-    for(let i=0; i<huecos; i++) {
-        const div = document.createElement("div");
-        div.className = "rounded-lg bg-slate-900/20 border border-transparent";
-        grid.appendChild(div);
-    }
-
-    const hoyStr = new Date().toISOString().split('T')[0];
-
-    for(let dia=1; dia<=diasEnMes; dia++) {
-        const diaStr = String(dia).padStart(2, '0');
-        const mesStr = String(mes + 1).padStart(2, '0');
-        const fechaCelda = `${anio}-${mesStr}-${diaStr}`;
-
-        const div = document.createElement("div");
-        let clases = "day glass rounded-lg p-2 text-slate-300 border border-slate-700/50 relative overflow-hidden";
-        
-        if (fechaCelda === hoyStr) clases += " ring-2 ring-indigo-500 bg-indigo-500/10";
-        div.className = clases;
-        
-        div.innerHTML = `<span class="font-bold text-xs mb-1 block text-slate-500">${dia}</span>`;
-
-        if(obligaciones) {
-            const eventosDia = obligaciones.filter(o => o.fecha_pago === fechaCelda);
-            
-            eventosDia.forEach(ev => {
-                let color = "bg-indigo-500"; // Color por defecto (Reuniones)
-                
-                // Si es dinero (>0) y pendiente -> Rojo. Si pagado -> Verde.
-                if (ev.monto > 0) {
-                    color = ev.estado === 'pendiente' ? 'bg-red-500' : 'bg-green-500';
+        // Load Events
+        async function loadEvents() {
+            try {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) {
+                    window.location.href = '/';
+                    return;
                 }
 
-                // Etiqueta visual
-                const etiqueta = document.createElement("div");
-                etiqueta.className = `text-[10px] w-full rounded px-1.5 py-0.5 mb-1 truncate text-white ${color} bg-opacity-80 shadow-sm cursor-help`;
-                etiqueta.title = `${ev.tipo} ($${ev.monto})`;
-                etiqueta.innerText = ev.tipo;
+                const { data, error } = await client
+                    .from('obligaciones')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .order('fecha_pago', { ascending: true });
+
+                if (error) throw error;
+
+                allEvents = data || [];
                 
-                div.appendChild(etiqueta);
+                renderCalendar();
+                updateUpcomingEvents();
+                updateMonthStats();
+
+            } catch (error) {
+                console.error('Error loading events:', error);
+            }
+        }
+
+        // Render Calendar
+        function renderCalendar() {
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            document.getElementById('currentMonthTitle').textContent = `${monthNames[month]} ${year}`;
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            
+            // Get first day of week (Monday = 0)
+            let firstDayOfWeek = firstDay.getDay() - 1;
+            if (firstDayOfWeek === -1) firstDayOfWeek = 6;
+            
+            const calendarDays = document.getElementById('calendarDays');
+            calendarDays.innerHTML = '';
+            
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0];
+            
+            // Add empty cells for days before month starts
+            for (let i = 0; i < firstDayOfWeek; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day other-month';
+                calendarDays.appendChild(emptyDay);
+            }
+            
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayStr = String(day).padStart(2, '0');
+                const monthStr = String(month + 1).padStart(2, '0');
+                const dateStr = `${year}-${monthStr}-${dayStr}`;
+                
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-day';
+                
+                if (dateStr === todayStr) {
+                    dayEl.classList.add('today');
+                }
+                
+                dayEl.innerHTML = `<div class="day-number">${day}</div>`;
+                
+                // Add events for this day
+                const dayEvents = allEvents.filter(e => e.fecha_pago === dateStr);
+                
+                dayEvents.forEach(event => {
+                    const eventBadge = document.createElement('div');
+                    const eventType = event.tipo.toLowerCase();
+                    
+                    let badgeClass = 'meeting';
+                    if (eventType.includes('pago') || eventType.includes('payment')) badgeClass = 'payment';
+                    else if (eventType.includes('evento') || eventType.includes('event')) badgeClass = 'event';
+                    else if (eventType.includes('recordatorio') || eventType.includes('reminder')) badgeClass = 'reminder';
+                    
+                    if (event.estado === 'pagada') badgeClass = 'meeting';
+                    
+                    eventBadge.className = `event-badge ${badgeClass}`;
+                    eventBadge.textContent = event.tipo.split(':')[0];
+                    eventBadge.title = event.tipo;
+                    eventBadge.onclick = (e) => {
+                        e.stopPropagation();
+                        showEventDetails(event);
+                    };
+                    
+                    dayEl.appendChild(eventBadge);
+                });
+                
+                dayEl.onclick = () => addEventOnDate(dateStr);
+                calendarDays.appendChild(dayEl);
+            }
+        }
+
+        // Update Upcoming Events
+        function updateUpcomingEvents() {
+            const container = document.getElementById('upcomingEvents');
+            const today = new Date();
+            
+            const upcoming = allEvents
+                .filter(e => {
+                    const eventDate = new Date(e.fecha_pago);
+                    return eventDate >= today && e.estado === 'pendiente';
+                })
+                .slice(0, 10);
+            
+            if (upcoming.length === 0) {
+                container.innerHTML = `
+                    <div class="flex items-center justify-center py-12">
+                        <p class="text-sm text-slate-500">No upcoming events</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = upcoming.map(event => {
+                const eventDate = new Date(event.fecha_pago);
+                const diffDays = Math.ceil((eventDate - today) / (1000 * 60 * 60 * 24));
+                
+                return `
+                    <div class="flex items-center justify-between p-4 rounded-lg bg-white/5 hover:bg-white/10 transition border border-white/5 hover:border-white/10">
+                        <div class="flex-1">
+                            <p class="font-bold text-white text-sm mb-1">${event.tipo}</p>
+                            <p class="text-xs text-slate-400">
+                                ${eventDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                • ${diffDays} day${diffDays !== 1 ? 's' : ''} left
+                            </p>
+                        </div>
+                        ${event.monto > 0 ? `<span class="text-sm font-bold text-amber-400">$${parseFloat(event.monto).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Update Month Stats
+        function updateMonthStats() {
+            const month = currentDate.getMonth();
+            const year = currentDate.getFullYear();
+            
+            const monthEvents = allEvents.filter(e => {
+                const date = new Date(e.fecha_pago);
+                return date.getMonth() === month && date.getFullYear() === year;
+            });
+            
+            const payments = monthEvents.filter(e => 
+                e.tipo.toLowerCase().includes('pago') || 
+                e.tipo.toLowerCase().includes('payment') ||
+                parseFloat(e.monto || 0) > 0
+            );
+            
+            const meetings = monthEvents.filter(e => 
+                e.tipo.toLowerCase().includes('reunión') || 
+                e.tipo.toLowerCase().includes('meeting')
+            );
+            
+            const completed = monthEvents.filter(e => e.estado === 'pagada');
+            
+            document.getElementById('statTotalEvents').textContent = monthEvents.length;
+            document.getElementById('statPayments').textContent = payments.length;
+            document.getElementById('statMeetings').textContent = meetings.length;
+            document.getElementById('statCompleted').textContent = completed.length;
+        }
+
+        // Navigation
+        function prevMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+            updateMonthStats();
+        }
+
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+            updateMonthStats();
+        }
+
+        function resetToToday() {
+            currentDate = new Date();
+            renderCalendar();
+            updateMonthStats();
+        }
+
+        // Set View
+        function setView(view, element) {
+            currentView = view;
+            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            
+            // For now, only month view is implemented
+            if (view !== 'month') {
+                Toast.fire({ icon: 'info', title: 'Week and Day views coming soon' });
+            }
+        }
+
+        // Add New Event
+        function addNewEvent() {
+            document.getElementById('eventModalTitle').textContent = 'Add New Event';
+            document.getElementById('editingEventId').value = '';
+            document.getElementById('eventForm').reset();
+            document.getElementById('eventDate').valueAsDate = new Date();
+            document.getElementById('btnEventSubmit').textContent = 'Save Event';
+            document.getElementById('eventModal').classList.add('active');
+        }
+
+        // Add Event on Specific Date
+        function addEventOnDate(dateStr) {
+            addNewEvent();
+            document.getElementById('eventDate').value = dateStr;
+        }
+
+        // Show Event Details
+        function showEventDetails(event) {
+            const eventDate = new Date(event.fecha_pago);
+            const formattedDate = eventDate.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            Swal.fire({
+                title: event.tipo,
+                html: `
+                    <div class="text-left space-y-3 p-4">
+                        <div>
+                            <p class="text-xs text-slate-400 mb-1">Date</p>
+                            <p class="text-sm text-white">${formattedDate}</p>
+                        </div>
+                        ${event.monto > 0 ? `
+                            <div>
+                                <p class="text-xs text-slate-400 mb-1">Amount</p>
+                                <p class="text-lg font-bold text-amber-400">$${parseFloat(event.monto).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                            </div>
+                        ` : ''}
+                        <div>
+                            <p class="text-xs text-slate-400 mb-1">Status</p>
+                            <p class="text-sm text-white capitalize">${event.estado}</p>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Edit',
+                cancelButtonText: 'Close',
+                confirmButtonColor: '#60a5fa',
+                cancelButtonColor: '#3f3f46',
+                background: '#0b0b14',
+                color: '#fff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Edit event (simplified for now)
+                    Toast.fire({ icon: 'info', title: 'Edit feature coming soon' });
+                }
             });
         }
-        grid.appendChild(div);
-    }
-}
 
-function actualizarEstadisticas(obligaciones, mes, anio) {
-    if(!obligaciones) return;
-    const hoyStr = new Date().toISOString().split('T')[0];
-    let totalMes = 0, vencidos = 0;
-    let proximoFecha = null, proximoTexto = "—";
-
-    obligaciones.forEach(o => {
-        const f = new Date(o.fecha_pago + "T00:00:00");
-        if(f.getMonth() === mes && f.getFullYear() === anio) totalMes++;
-        
-        if (o.estado === 'pendiente' && o.fecha_pago < hoyStr) vencidos++;
-        
-        if (o.estado === 'pendiente' && o.fecha_pago >= hoyStr) {
-            if (!proximoFecha || o.fecha_pago < proximoFecha) {
-                proximoFecha = o.fecha_pago;
-                proximoTexto = `${o.fecha_pago.split('-')[2]}/${o.fecha_pago.split('-')[1]} - ${o.tipo}`;
-            }
+        // Close Event Modal
+        function closeEventModal() {
+            document.getElementById('eventModal').classList.remove('active');
         }
-    });
 
-    document.getElementById("val-total-mes").innerText = totalMes;
-    document.getElementById("val-vencidos").innerText = vencidos;
-    document.getElementById("val-proximo").innerText = proximoTexto;
-    
-    const divVenc = document.getElementById("val-vencidos");
-    if(vencidos > 0) divVenc.className = "text-3xl font-bold text-red-500 mt-2 animate-pulse";
-    else divVenc.className = "text-3xl font-bold text-red-400 mt-2";
-}
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Busca TODOS los enlaces (<a>) de tu código original
-    document.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', function(e) {
-            let url = this.getAttribute('href');
-            
-            // Solo actuamos si el enlace apunta a un archivo .html
-            if (url && url.includes('.html')) {
-                e.preventDefault(); // Detiene el error 404
+        // Form Submit
+        document.getElementById('eventForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            try {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) throw new Error('User not authenticated');
+
+                const title = document.getElementById('eventTitle').value;
+                const date = document.getElementById('eventDate').value;
+                const time = document.getElementById('eventTime').value;
+                const type = document.getElementById('eventType').value;
+                const amount = document.getElementById('eventAmount').value || 0;
+                const description = document.getElementById('eventDescription').value;
+
+                const fullTitle = time ? `${type}: ${title} at ${time}` : `${type}: ${title}`;
+
+                const eventData = {
+                    user_id: user.id,
+                    tipo: fullTitle,
+                    fecha_pago: date,
+                    monto: parseFloat(amount),
+                    estado: 'pendiente',
+                    notes: description
+                };
+
+                const { error } = await client
+                    .from('obligaciones')
+                    .insert(eventData);
+
+                if (error) throw error;
+
+                closeEventModal();
+                await loadEvents();
                 
-                // 1. Quita la extensión .html automáticamente
-                let nuevaRuta = url.replace('.html', '');
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Event added successfully'
+                });
 
-                // 2. DICCIONARIO DE CORRECCIONES (Para los botones "Volver")
-                // Aquí le enseñamos a ir a las rutas principales correctas
-                if (url.includes('panel-mover.html')) nuevaRuta = "/empresa/mover";
-                if (url.includes('index-empresa.html')) nuevaRuta = "/empresa";
-                if (url.includes('index.html')) nuevaRuta = "/";
-
-                // 3. Te envía a la ruta limpia de Python
-                window.location.href = nuevaRuta;
+            } catch (error) {
+                console.error('Error saving event:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: error.message,
+                    icon: 'error',
+                    background: '#0b0b14',
+                    color: '#fff',
+                    confirmButtonColor: '#60a5fa'
+                });
             }
         });
-    });
-});
-</script>
-</body> 
+
+        // Export to ICS
+        function exportToICS() {
+            const pending = allEvents.filter(e => e.estado === 'pendiente');
+            
+            if (pending.length === 0) {
+                Toast.fire({ icon: 'info', title: 'No events to export' });
+                return;
+            }
+            
+            let icsContent = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Pymax//Calendar//EN\n';
+            
+            pending.forEach(event => {
+                const date = event.fecha_pago.replace(/-/g, '');
+                icsContent += `BEGIN:VEVENT\n`;
+                icsContent += `DTSTART:${date}\n`;
+                icsContent += `SUMMARY:${event.tipo}\n`;
+                icsContent += `DESCRIPTION:${event.notes || 'Pymax Event'}\n`;
+                icsContent += `END:VEVENT\n`;
+            });
+            
+            icsContent += 'END:VCALENDAR';
+            
+            const blob = new Blob([icsContent], { type: 'text/calendar' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `pymax-calendar-${new Date().toISOString().split('T')[0]}.ics`;
+            link.click();
+            
+            Toast.fire({ icon: 'success', title: 'Calendar exported' });
+        }
+
+        // Show Upgrade Modal
+        function showUpgradeModal() {
+            Swal.fire({
+                title: 'Upgrade to Premium',
+                html: `
+                    <div class="text-left space-y-4 p-4">
+                        <p class="text-sm text-slate-400 mb-4">
+                            Unlock AI-powered calendar management and never miss an important event.
+                        </p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Automatic Event Scheduling</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Multi-Channel Reminders</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Google Calendar & Outlook Sync</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Conflict Detection</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Meeting Optimizer</span>
+                            </div>
+                        </div>
+                        <div class="mt-6 p-4 bg-violet-500/10 rounded-lg border border-violet-500/30">
+                            <p class="text-center text-2xl font-bold text-white mb-1">$49/month</p>
+                            <p class="text-center text-xs text-slate-400">or $490/year (save 17%)</p>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#7c3aed',
+                cancelButtonColor: '#3f3f46',
+                confirmButtonText: 'Contact Sales',
+                cancelButtonText: 'Maybe Later',
+                background: '#0b0b14',
+                color: '#fff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'mailto:sales@pymax.com?subject=Premium Upgrade Inquiry';
+                }
+            });
+        }
+
+        // Close modal on outside click
+        document.getElementById('eventModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                closeEventModal();
+            }
+        });
+
+        // Keyboard shortcut
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeEventModal();
+            }
+            if (e.ctrlKey && e.key === 'n') {
+                e.preventDefault();
+                addNewEvent();
+            }
+        });
+    </script>
+</body>
 </html>
