@@ -1328,10 +1328,12 @@
                     user_id: user.id,
                     amount: parseFloat(amount),
                     concept: description,
+                    description: description, // Agregado para compatibilidad
                     type: type === 'income' ? 'ingreso' : 'egreso',
                     category: category,
+                    date: date,
                     created_at: new Date(date).toISOString(),
-                    metadata: JSON.stringify({ method, tags })
+                    metadata: { method, tags } // JSONB acepta objetos directamente
                 };
 
                 let result;
