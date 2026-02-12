@@ -1038,13 +1038,14 @@
     let currentUser = null;
     let userRole = null;
 
- // 2. INICIO AUTOMÁTICO (Solo auto-redirige si YA tiene rol configurado)
+ // 2. INICIO - SIN REDIRECCIÓN AUTOMÁTICA
     document.addEventListener('DOMContentLoaded', async () => {
         
-        // PASO 1: VERIFICACIÓN DE SALIDA
+        // PASO 1: LIMPIAR BANDERA DE LOGOUT
         if (localStorage.getItem('pymax_logging_out')) {
-             console.log("🛑 LOGOUT DETECTADO. CANCELANDO REDIRECCIÓN.");
+             console.log("🛑 LOGOUT DETECTADO. LIMPIANDO SESIÓN.");
              localStorage.removeItem('pymax_logging_out');
+             // NO hacer nada más, dejar al usuario en la página de inicio
              return;
         }
 
@@ -1053,16 +1054,13 @@
         const justConfirmed = hashParams.get('access_token') || hashParams.get('type') === 'signup';
         
         if (justConfirmed) {
-            // Si acaba de confirmar email, limpiamos el hash y NO mostramos modal
-            console.log("✅ Email confirmado. Redirigiendo a login manual.");
+            console.log("✅ Email confirmado. Listo para login manual.");
             window.location.hash = '';
-            return; // No hacer nada más, que vea la página normal
+            return;
         }
 
-        // PASO 3: Solo auto-redirigir si el usuario YA TIENE rol configurado
+        // PASO 3: SOLO MOSTRAR BOTÓN SI HAY USUARIO (SIN REDIRIGIR)
         setTimeout(async () => {
-            if (localStorage.getItem('pymax_logging_out')) return;
-
             const { data: { user } } = await supabaseClient.auth.getUser();
 
             if (user) {
@@ -1074,27 +1072,44 @@
                     .eq('id', user.id)
                     .maybeSingle();
 
+                // Si tiene perfil completo, mostrar botón para entrar
                 if (profile && profile.account_type) {
                     userRole = profile.account_type;
-                    
-                    // REDIRECCIÓN AUTOMÁTICA (solo si tiene rol)
-                    if (userRole === 'empresa') {
-                        window.location.href = '/empresa/mover';
-                        return; 
-                    } else if (userRole === 'personal') {
-                        window.location.href = '/personal/dashboard';
-                        return; 
-                    }
+                    mostrarBotonEntrar(user, profile, userRole);
+                } else {
+                    // Si NO tiene rol, mostrar botón configurar
+                    mostrarBotonConfigurar(user, profile);
                 }
-                
-                // Si tiene cuenta pero NO tiene rol, NO abrimos modal automáticamente
-                // Solo mostramos un botón discreto en el nav
-                mostrarBotonConfigurar(user, profile);
             }
-        }, 800);
+        }, 500);
     });
 
-    // 3. UI para usuarios sin rol (NO auto-abre modal)
+    // 3. UI para usuarios CON rol (Botón para entrar manualmente)
+    function mostrarBotonEntrar(user, profile, role) {
+        const userArea = document.getElementById('userArea');
+        const heroActionBtn = document.getElementById('heroActionBtn'); 
+        const nombre = profile?.full_name || user?.email?.split('@')[0] || 'Usuario';
+        const panelURL = role === 'empresa' ? '/empresa/mover' : '/personal/dashboard';
+        const panelNombre = role === 'empresa' ? 'Panel Empresarial' : 'Panel Personal';
+
+        userArea.innerHTML = `
+            <div class="hidden md:flex items-center gap-4">
+                <span class="text-xs text-white font-bold">${nombre}</span>
+                <a href="${panelURL}" class="text-xs bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-full font-bold transition uppercase tracking-wide">Ir a ${panelNombre}</a>
+                <button onclick="logout()" class="text-xs text-slate-500 hover:text-red-400 transition uppercase font-bold cursor-pointer">Salir</button>
+            </div>
+            <button onclick="openMobileMenu()" class="md:hidden text-white p-2">
+                <i class="ph-bold ph-list text-2xl"></i>
+            </button>
+        `;
+        
+        if (heroActionBtn) {
+            heroActionBtn.innerText = "IR AL PANEL";
+            heroActionBtn.onclick = () => window.location.href = panelURL;
+        }
+    }
+
+    // 4. UI para usuarios sin rol (NO auto-abre modal)
     function mostrarBotonConfigurar(user, profile) {
         const userArea = document.getElementById('userArea');
         const heroActionBtn = document.getElementById('heroActionBtn'); 
