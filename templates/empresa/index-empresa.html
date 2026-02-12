@@ -303,30 +303,50 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         
-        // A. MANEJO DEL BOTÓN SALIR (NUCLEAR)
+        // A. MANEJO DEL BOTÓN SALIR (MEJORADO)
         const btnExit = document.getElementById('btnExit');
         if (btnExit) {
             btnExit.addEventListener('click', async (e) => {
-                e.preventDefault(); // Prevenir cualquier navegación por defecto
-                console.log("🛑 EJECUTANDO PROTOCOLO DE SALIDA...");
+                e.preventDefault();
+                e.stopPropagation();
+                console.log("🛑 CERRANDO SESIÓN...");
 
-                // 1. Bandera para Index (Evita redirección automática)
+                // Mostrar confirmación
+                const result = await Swal.fire({
+                    title: '¿Cerrar sesión?',
+                    text: 'Se cerrará tu sesión actual',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Sí, salir',
+                    cancelButtonText: 'Cancelar',
+                    background: '#0b0b14',
+                    color: '#fff'
+                });
+
+                if (!result.isConfirmed) return;
+
+                // 1. Bandera para evitar redirección automática
                 localStorage.setItem('pymax_logging_out', 'true');
 
-                // 2. Limpieza TOTAL del LocalStorage (Borra la sesión local)
-                // OJO: Borramos todo MENOS la bandera de salida
-                localStorage.clear();
-                localStorage.setItem('pymax_logging_out', 'true'); 
-
-                // 3. Cerrar en Supabase (Servidor)
+                // 2. Cerrar sesión en Supabase
                 try {
                     await supabaseClient.auth.signOut();
+                    console.log("✅ Sesión cerrada en Supabase");
                 } catch (error) {
-                    console.warn("Supabase ya estaba cerrado o error menor:", error);
+                    console.warn("Error al cerrar sesión:", error);
                 }
 
-                // 4. REDIRECCIÓN FORZADA (REPLACE)
-                // Usamos 'replace' para que no puedan volver atrás con el botón del navegador
+                // 3. Limpiar almacenamiento local
+                const loggingOutFlag = localStorage.getItem('pymax_logging_out');
+                localStorage.clear();
+                sessionStorage.clear();
+                if (loggingOutFlag) {
+                    localStorage.setItem('pymax_logging_out', 'true');
+                }
+
+                // 4. Redirigir al inicio
                 window.location.replace("/");
             });
         }
