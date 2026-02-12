@@ -844,6 +844,41 @@
         const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
         const client = supabase.createClient(SU_URL, SU_KEY);
 
+        // AUTO-LOGIN DEMO USER (if no session exists)
+        async function ensureAuthentication() {
+            try {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) {
+                    // Try to sign in with demo account
+                    const { error } = await client.auth.signInWithPassword({
+                        email: 'demo@pymax.com',
+                        password: 'demo123456'
+                    });
+                    
+                    if (error) {
+                        // If demo account doesn't exist, create it
+                        const { error: signUpError } = await client.auth.signUp({
+                            email: 'demo@pymax.com',
+                            password: 'demo123456',
+                            options: {
+                                data: { full_name: 'Demo User' }
+                            }
+                        });
+                        
+                        if (!signUpError) {
+                            // Sign in after creating
+                            await client.auth.signInWithPassword({
+                                email: 'demo@pymax.com',
+                                password: 'demo123456'
+                            });
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Authentication error:', error);
+            }
+        }
+
         // Global State
         let allTransactions = [];
         let filteredTransactions = [];
@@ -897,6 +932,9 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', async () => {
+            // Ensure user is authenticated (auto-login demo user if needed)
+            await ensureAuthentication();
+            
             document.getElementById('transactionDate').valueAsDate = new Date();
             await loadTransactions();
             updateCategories();

@@ -190,15 +190,20 @@ def mover_progreso():
 def mover_exportar():
     return render_template('empresa/mover/exportar-excel.html')
 
-# --- MÓDULO 2: TIBURÓN (Ventas - Placeholder) ---
-@app.route('/empresa/tiburon')
+# --- MÓDULO 2: TIBURÓN (Ventas CRM) ---
+@app.route('/empresa/mover/tiburon')
 def tiburon():
-    return render_template('empresa/index-empresa.html')
+    return render_template('empresa/mover/tiburon.html')
 
-# --- MÓDULO 3: HAMBRE (Operaciones - Placeholder) ---
-@app.route('/empresa/hambre')
+# --- MÓDULO 3: HAMBRE (Operaciones) ---
+@app.route('/empresa/mover/hambre')
 def hambre():
-    return render_template('empresa/index-empresa.html')
+    return render_template('empresa/mover/hambre.html')
+
+# --- MÓDULO 4: INVENTARIO/STOCK ---
+@app.route('/empresa/mover/inventario')
+def mover_inventario():
+    return render_template('empresa/mover/inventario.html')
 
 # ==============================================================================
 # API ENDPOINTS - WHATSAPP INTEGRATION

@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Inventory & Stock Management - Real-time Product Tracking" />
+    <title>Pymax | Inventory Management</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --bg-void: #020617;
+            --bg-card: rgba(15, 23, 42, 0.6);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        .nebula-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(52, 211, 153, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(34, 211, 238, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            backdrop-filter: blur(24px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        /* AI Premium Panel */
+        .ai-premium-panel {
+            background: linear-gradient(135deg, rgba(52, 211, 153, 0.1), rgba(34, 211, 238, 0.1));
+            border: 2px solid rgba(52, 211, 153, 0.3);
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-premium-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #34d399, transparent);
+        }
+
+        .ai-lock-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 40px rgba(52, 211, 153, 0.5);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .ai-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(52, 211, 153, 0.1);
+            border: 1px solid rgba(52, 211, 153, 0.2);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        .ai-upgrade-btn {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(52, 211, 153, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-upgrade-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(52, 211, 153, 0.6);
+        }
+
+        /* Product Card */
+        .product-card {
+            padding: 20px;
+            border-radius: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            border-color: rgba(52, 211, 153, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Stock Badge */
+        .stock-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stock-badge.in-stock { background: rgba(52, 211, 153, 0.2); color: #6ee7b7; border: 1px solid rgba(52, 211, 153, 0.3); }
+        .stock-badge.low-stock { background: rgba(251, 191, 36, 0.2); color: #fcd34d; border: 1px solid rgba(251, 191, 36, 0.3); }
+        .stock-badge.out-of-stock { background: rgba(251, 113, 133, 0.2); color: #fca5a5; border: 1px solid rgba(251, 113, 133, 0.3); }
+
+        /* Modern Button */
+        .modern-btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #34d399, #10b981);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 30px rgba(52, 211, 153, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Modern Input */
+        .modern-input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px 16px;
+            border-radius: 12px;
+            color: white;
+            outline: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .modern-input:focus {
+            border-color: #34d399;
+            box-shadow: 0 0 20px rgba(52, 211, 153, 0.2);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: #0b0b14;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 95%;
+            max-width: 600px;
+            max-height: 90vh;
+            border-radius: 24px;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(52, 211, 153, 0.3); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(52, 211, 153, 0.5); }
+    </style>
+</head>
+
+<body>
+    <div class="nebula-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-[#020617]/90 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="/empresa/mover" class="flex items-center gap-2 text-slate-400 hover:text-white transition group">
+                    <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/30 transition">
+                        <i class="ph-bold ph-arrow-left"></i>
+                    </div>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">Volver</span>
+                </a>
+                <div class="h-6 w-px bg-white/10"></div>
+                <h1 class="text-xl font-bold text-white font-display tracking-tight">
+                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">INVENTARIO</span>
+                </h1>
+            </div>
+
+            <button onclick="addProduct()" class="flex items-center gap-2 px-3 py-2 rounded-full border border-emerald-500/30 text-emerald-400 bg-emerald-500/5 hover:bg-emerald-500/10 text-[10px] font-bold uppercase transition">
+                <i class="ph-bold ph-plus"></i>
+                <span class="hidden md:inline">Nuevo Producto</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 md:px-6 pt-24 pb-12 relative z-10">
+
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 fade-in">
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Total Productos</p>
+                    <i class="ph-duotone ph-package text-emerald-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statTotal">0</h3>
+                <p class="text-xs text-slate-400">En catálogo</p>
+            </div>
+
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Valor Stock</p>
+                    <i class="ph-duotone ph-coins text-amber-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statValue">$0</h3>
+                <p class="text-xs text-slate-400">Valor total</p>
+            </div>
+
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Stock Bajo</p>
+                    <i class="ph-duotone ph-warning text-rose-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statLowStock">0</h3>
+                <p class="text-xs text-slate-400">Productos críticos</p>
+            </div>
+
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Sin Stock</p>
+                    <i class="ph-duotone ph-x-circle text-rose-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statOutStock">0</h3>
+                <p class="text-xs text-slate-400">Agotados</p>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-8">
+
+            <!-- Left Column: Products -->
+            <div class="lg:col-span-8 space-y-6">
+
+                <!-- Products List -->
+                <div class="glass-card p-6 fade-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold text-white font-display flex items-center gap-2">
+                            <i class="ph-duotone ph-stack text-emerald-400"></i>
+                            Productos en Stock
+                        </h3>
+                        <div class="flex gap-2">
+                            <select id="filterStock" class="text-xs bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-slate-400" onchange="filterProducts()">
+                                <option value="all">Todos</option>
+                                <option value="in-stock">En Stock</option>
+                                <option value="low-stock">Stock Bajo</option>
+                                <option value="out-of-stock">Sin Stock</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="productsList" class="grid md:grid-cols-2 gap-4 custom-scroll" style="max-height: 700px;">
+                        <div class="col-span-2 flex items-center justify-center py-20">
+                            <div class="text-center">
+                                <i class="ph-duotone ph-package text-6xl text-slate-700 mb-4 block"></i>
+                                <p class="text-slate-500 font-medium">No hay productos en inventario</p>
+                                <button onclick="addProduct()" class="modern-btn btn-primary mt-4 text-xs">
+                                    <i class="ph-bold ph-plus"></i>
+                                    Agregar Primer Producto
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: AI Panel & Quick Actions -->
+            <div class="lg:col-span-4 space-y-6">
+
+                <!-- AI PREMIUM PANEL - LOCKED -->
+                <div class="ai-premium-panel fade-in">
+                    <div class="ai-lock-icon">
+                        <i class="ph-fill ph-lock-key text-3xl text-white"></i>
+                    </div>
+                    
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-white font-display mb-2">
+                            IA Gestión de Stock
+                        </h3>
+                        <p class="text-sm text-emerald-300 mb-1">Función Premium</p>
+                        <p class="text-xs text-slate-400">Optimización inteligente de inventario</p>
+                    </div>
+
+                    <div class="space-y-3 mb-6">
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-chart-line text-emerald-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Predicción de demanda con 94% precisión</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-bell-ringing text-emerald-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Alertas automáticas de reabastecimiento</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-trend-up text-emerald-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Análisis de rotación de productos</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-money text-emerald-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Optimización de precios dinámicos</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-package text-emerald-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Sugerencias de productos más rentables</span>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button class="ai-upgrade-btn" onclick="showUpgradeModal()">
+                            <i class="ph-bold ph-rocket-launch"></i>
+                            Activar Premium
+                        </button>
+                        <p class="text-xs text-slate-500 mt-3">Desde $39/mes</p>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4">Acciones Rápidas</h3>
+                    
+                    <div class="space-y-3">
+                        <button class="w-full modern-btn btn-primary text-xs py-3" onclick="addProduct()">
+                            <i class="ph-bold ph-plus"></i>
+                            Agregar Producto
+                        </button>
+                        <button class="w-full modern-btn text-xs py-3" style="background: rgba(255,255,255,0.05); color: #e2e8f0;" onclick="exportInventory()">
+                            <i class="ph-bold ph-export"></i>
+                            Exportar Inventario
+                        </button>
+                        <button class="w-full modern-btn text-xs py-3" style="background: rgba(255,255,255,0.05); color: #e2e8f0;" onclick="printLabels()">
+                            <i class="ph-bold ph-printer"></i>
+                            Imprimir Etiquetas
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Add Product Modal -->
+    <div id="productModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="p-6 border-b border-white/10 flex justify-between items-center">
+                <h2 class="text-lg font-bold text-white font-display">
+                    <span id="modalTitle">Agregar Producto</span>
+                </h2>
+                <button onclick="closeProductModal()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto custom-scroll" style="max-height: calc(90vh - 80px);">
+                <form id="productForm" class="space-y-4">
+                    <input type="hidden" id="editingId" value="">
+                    
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Nombre del Producto</label>
+                        <input type="text" id="productName" placeholder="Ej: iPhone 15 Pro Max" class="modern-input" required>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Cantidad en Stock</label>
+                            <input type="number" id="productStock" placeholder="0" class="modern-input" min="0" required>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Stock Mínimo</label>
+                            <input type="number" id="productMinStock" placeholder="5" class="modern-input" min="0">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Precio Compra</label>
+                            <input type="number" id="productCost" placeholder="0.00" class="modern-input" step="0.01" required>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Precio Venta</label>
+                            <input type="number" id="productPrice" placeholder="0.00" class="modern-input" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Proveedor (Opcional)</label>
+                        <input type="text" id="productSupplier" placeholder="Nombre del proveedor" class="modern-input">
+                    </div>
+
+                    <div class="flex gap-3 pt-4">
+                        <button type="submit" class="modern-btn btn-primary flex-1">
+                            <i class="ph-bold ph-floppy-disk"></i>
+                            <span id="btnSubmit">Guardar Producto</span>
+                        </button>
+                        <button type="button" onclick="closeProductModal()" class="modern-btn px-6" style="background: rgba(255,255,255,0.05); color: #e2e8f0;">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Supabase Configuration
+        const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
+        const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
+        const client = supabase.createClient(SU_URL, SU_KEY);
+
+        let allProducts = [];
+
+        // Toast Notification
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            background: '#0b0b14',
+            color: '#fff'
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadProducts();
+        });
+
+        // Load Products
+        async function loadProducts() {
+            try {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) {
+                    window.location.href = '/';
+                    return;
+                }
+
+                const { data, error } = await client
+                    .from('user_inventory')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .order('product_name', { ascending: true });
+
+                if (error) throw error;
+
+                allProducts = data || [];
+                
+                renderProducts();
+                updateStatistics();
+
+            } catch (error) {
+                console.error('Error loading products:', error);
+                // Show placeholder if error
+                renderProducts();
+            }
+        }
+
+        // Render Products
+        function renderProducts() {
+            const container = document.getElementById('productsList');
+            
+            if (allProducts.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-2 flex items-center justify-center py-20">
+                        <div class="text-center">
+                            <i class="ph-duotone ph-package text-6xl text-slate-700 mb-4 block"></i>
+                            <p class="text-slate-500 font-medium">No hay productos en inventario</p>
+                            <button onclick="addProduct()" class="modern-btn btn-primary mt-4 text-xs">
+                                <i class="ph-bold ph-plus"></i>
+                                Agregar Primer Producto
+                            </button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = allProducts.map(p => {
+                const stock = parseInt(p.current_stock || 0);
+                const minStock = parseInt(p.min_stock || 5);
+                const cost = parseFloat(p.cost_price || 0);
+                const price = parseFloat(p.sale_price || 0);
+                const profit = price - cost;
+                const profitPercent = cost > 0 ? ((profit / cost) * 100).toFixed(1) : 0;
+                
+                let stockStatus = 'in-stock';
+                let stockBadge = 'En Stock';
+                
+                if (stock === 0) {
+                    stockStatus = 'out-of-stock';
+                    stockBadge = 'Sin Stock';
+                } else if (stock <= minStock) {
+                    stockStatus = 'low-stock';
+                    stockBadge = 'Stock Bajo';
+                }
+
+                return `
+                    <div class="product-card">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white text-base mb-1">${p.product_name}</h4>
+                                <p class="text-xs text-slate-400">${p.supplier || 'Sin proveedor'}</p>
+                            </div>
+                            <span class="stock-badge ${stockStatus}">${stockBadge}</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 mb-3 pt-3 border-t border-white/10">
+                            <div>
+                                <p class="text-xs text-slate-500 mb-1">Cantidad</p>
+                                <p class="text-lg font-bold text-white">${stock} unid.</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 mb-1">Precio Venta</p>
+                                <p class="text-lg font-bold text-emerald-400">$${price.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-3 border-t border-white/10">
+                            <div>
+                                <p class="text-xs text-slate-500">Margen</p>
+                                <p class="text-sm font-bold text-cyan-400">+${profitPercent}%</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="editProduct('${p.id}')" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition">
+                                    <i class="ph-bold ph-pencil"></i>
+                                </button>
+                                <button onclick="deleteProduct('${p.id}')" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-rose-500/20 flex items-center justify-center text-slate-400 hover:text-rose-400 transition">
+                                    <i class="ph-bold ph-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Update Statistics
+        function updateStatistics() {
+            const totalProducts = allProducts.length;
+            let stockValue = 0;
+            let lowStock = 0;
+            let outOfStock = 0;
+
+            allProducts.forEach(p => {
+                const stock = parseInt(p.current_stock || 0);
+                const price = parseFloat(p.cost_price || 0);
+                stockValue += stock * price;
+
+                if (stock === 0) {
+                    outOfStock++;
+                } else if (stock <= (p.min_stock || 5)) {
+                    lowStock++;
+                }
+            });
+
+            document.getElementById('statTotal').textContent = totalProducts;
+            document.getElementById('statValue').textContent = `$${stockValue.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            document.getElementById('statLowStock').textContent = lowStock;
+            document.getElementById('statOutStock').textContent = outOfStock;
+        }
+
+        // Add Product
+        function addProduct() {
+            document.getElementById('modalTitle').textContent = 'Agregar Producto';
+            document.getElementById('editingId').value = '';
+            document.getElementById('productForm').reset();
+            document.getElementById('btnSubmit').textContent = 'Guardar Producto';
+            document.getElementById('productModal').classList.add('active');
+        }
+
+        // Edit Product
+        function editProduct(id) {
+            const product = allProducts.find(p => p.id == id);
+            if (!product) return;
+
+            document.getElementById('modalTitle').textContent = 'Editar Producto';
+            document.getElementById('editingId').value = id;
+            document.getElementById('productName').value = product.product_name;
+            document.getElementById('productStock').value = product.current_stock;
+            document.getElementById('productMinStock').value = product.min_stock || 5;
+            document.getElementById('productCost').value = product.cost_price;
+            document.getElementById('productPrice').value = product.sale_price;
+            document.getElementById('productSupplier').value = product.supplier || '';
+            document.getElementById('btnSubmit').textContent = 'Actualizar Producto';
+            document.getElementById('productModal').classList.add('active');
+        }
+
+        // Close Modal
+        function closeProductModal() {
+            document.getElementById('productModal').classList.remove('active');
+        }
+
+        // Form Submit
+        document.getElementById('productForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            try {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) throw new Error('Usuario no autenticado');
+
+                const editingId = document.getElementById('editingId').value;
+                const productData = {
+                    user_id: user.id,
+                    product_name: document.getElementById('productName').value,
+                    current_stock: parseInt(document.getElementById('productStock').value),
+                    min_stock: parseInt(document.getElementById('productMinStock').value) || 5,
+                    cost_price: parseFloat(document.getElementById('productCost').value),
+                    sale_price: parseFloat(document.getElementById('productPrice').value),
+                    supplier: document.getElementById('productSupplier').value || null
+                };
+
+                let result;
+                if (editingId) {
+                    result = await client
+                        .from('user_inventory')
+                        .update(productData)
+                        .eq('id', editingId);
+                } else {
+                    result = await client
+                        .from('user_inventory')
+                        .insert(productData);
+                }
+
+                if (result.error) throw result.error;
+
+                closeProductModal();
+                await loadProducts();
+                
+                Toast.fire({
+                    icon: 'success',
+                    title: editingId ? 'Producto actualizado' : 'Producto agregado'
+                });
+
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: error.message,
+                    icon: 'error',
+                    background: '#0b0b14',
+                    color: '#fff',
+                    confirmButtonColor: '#34d399'
+                });
+            }
+        });
+
+        // Delete Product
+        async function deleteProduct(id) {
+            const result = await Swal.fire({
+                title: '¿Eliminar producto?',
+                text: 'Esta acción no se puede deshacer',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#fb7185',
+                cancelButtonColor: '#3f3f46',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar',
+                background: '#0b0b14',
+                color: '#fff'
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+                const { error } = await client
+                    .from('user_inventory')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                await loadProducts();
+                Toast.fire({ icon: 'success', title: 'Producto eliminado' });
+
+            } catch (error) {
+                console.error('Error:', error);
+                Toast.fire({ icon: 'error', title: 'Error al eliminar' });
+            }
+        }
+
+        // Filter Products
+        function filterProducts() {
+            // TODO: Implement filtering
+            Toast.fire({ icon: 'info', title: 'Filtro próximamente' });
+        }
+
+        // Export Inventory
+        function exportInventory() {
+            Toast.fire({ icon: 'info', title: 'Exportar próximamente' });
+        }
+
+        // Print Labels
+        function printLabels() {
+            Toast.fire({ icon: 'info', title: 'Etiquetas próximamente' });
+        }
+
+        // Show Upgrade Modal
+        function showUpgradeModal() {
+            Swal.fire({
+                title: 'Activar Premium',
+                html: `
+                    <div class="text-left space-y-4 p-4">
+                        <p class="text-sm text-slate-400 mb-4">
+                            Desbloquea la IA de gestión de inventario y maximiza tus ganancias.
+                        </p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Predicción de Demanda</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Alertas de Reabastecimiento</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Análisis de Rotación</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Optimización de Precios</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
+                                <span class="text-sm text-slate-300">Sugerencias de Productos</span>
+                            </div>
+                        </div>
+                        <div class="mt-6 p-4 bg-emerald-500/10 rounded-lg border border-emerald-500/30">
+                            <p class="text-center text-2xl font-bold text-white mb-1">$39/mes</p>
+                            <p class="text-center text-xs text-slate-400">o $390/año (ahorra 17%)</p>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#34d399',
+                cancelButtonColor: '#3f3f46',
+                confirmButtonText: 'Contactar Ventas',
+                cancelButtonText: 'Tal Vez Después',
+                background: '#0b0b14',
+                color: '#fff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'mailto:sales@pymax.com?subject=Consulta Upgrade Premium';
+                }
+            });
+        }
+
+        // Close modal on outside click
+        document.getElementById('productModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                closeProductModal();
+            }
+        });
+
+        // Keyboard shortcut
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeProductModal();
+            }
+        });
+    </script>
+</body>
+</html>
