@@ -6,10 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <script src="https://cdn.tailwindcss.com"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <script src="{{ url_for('static', filename='js/pymax-core.js') }}"></script>
+  <script>
+    const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
+    const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
+    window.supabase = supabase.createClient(SU_URL, SU_KEY);
+    async function pymaxGetUser() {
+      const { data: { user } } = await window.supabase.auth.getUser();
+      return user;
+    }
+  </script>
   <style>
     body {
       background:
@@ -44,7 +50,7 @@
   <h1 class="text-xl font-semibold text-indigo-400">
     Pymax · Deudas y Obligaciones
   </h1>
-  <a href="panel-mover.html" class="text-sm text-slate-300 hover:text-white transition border border-slate-600 px-3 py-1 rounded hover:bg-slate-800">
+  <a href="/empresa/mover" class="text-sm text-slate-300 hover:text-white transition border border-slate-600 px-3 py-1 rounded hover:bg-slate-800">
     Volver al panel
   </a>
 </header>
@@ -159,7 +165,7 @@
 
   <section class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
 
-    <a href="calendario.html" class="glass rounded-xl p-6 hover-card block">
+    <a href="/empresa/mover/calendario" class="glass rounded-xl p-6 hover-card block">
       <h4 class="font-semibold text-lg mb-2">
         Ver calendario financiero
       </h4>
@@ -171,7 +177,7 @@
       </p>
     </a>
 
-    <a href="flujo-caja.html" class="glass rounded-xl p-6 hover-card block">
+    <a href="/empresa/mover/flujo-caja" class="glass rounded-xl p-6 hover-card block">
       <h4 class="font-semibold text-lg mb-2">
         Impacto en el flujo de caja
       </h4>
@@ -238,7 +244,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 1. Verificar Usuario
     if (typeof pymaxGetUser === 'undefined') return;
     const user = await pymaxGetUser();
-    if (!user) { window.location.href = "../index.html"; return; }
+    if (!user) { window.location.href = "/"; return; }
 
     // Fecha por defecto hoy
     document.getElementById("inpFecha").valueAsDate = new Date();

@@ -149,7 +149,7 @@ function enviarPrueba() {
 // ===== Pago simulado =====
 function pagarPremium() {
   alert(' Simulando pago con Stripe (modo demo)... Redirigiendo al panel Premium');
-  window.location.href = 'premium.html';
+  window.location.href = '/empresa';
 }
 
 // ===== Iniciar sesión (REAL contra el backend) =====

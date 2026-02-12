@@ -9,7 +9,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <script src="../pymax-core.js"></script>
+  <script src="/static/js/pymax-core.js"></script>
 
   <style>
     body {
@@ -64,7 +64,7 @@
   <h1 class="text-xl font-semibold text-indigo-400">
     Pymax · Agenda y Calendario
   </h1>
-  <a href="panel-mover.html" class="text-sm text-slate-300 hover:text-white transition border border-slate-600 px-3 py-1 rounded hover:bg-slate-800">
+  <a href="/empresa/mover" class="text-sm text-slate-300 hover:text-white transition border border-slate-600 px-3 py-1 rounded hover:bg-slate-800">
     Volver al panel
   </a>
 </header>
@@ -181,7 +181,7 @@
 
   <section class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
 
-    <a href="obligaciones.html" class="glass rounded-xl p-6 hover-card block hover:bg-slate-800/50 transition">
+    <a href="/empresa/mover/obligaciones" class="glass rounded-xl p-6 hover-card block hover:bg-slate-800/50 transition">
       <h4 class="font-semibold text-lg mb-2 text-indigo-400">
         Ver lista detallada
       </h4>
@@ -193,7 +193,7 @@
       </p>
     </a>
 
-    <a href="flujo-caja.html" class="glass rounded-xl p-6 hover-card block hover:bg-slate-800/50 transition">
+    <a href="/empresa/mover/flujo-caja" class="glass rounded-xl p-6 hover-card block hover:bg-slate-800/50 transition">
       <h4 class="font-semibold text-lg mb-2 text-indigo-400">
         Impacto en el flujo de caja
       </h4>
@@ -236,7 +236,7 @@ function pymaxNotify({ title = "Pymax", message = "", type = "info" }) {
 document.addEventListener("DOMContentLoaded", async () => {
     if (typeof pymaxGetUser === 'undefined') return;
     const user = await pymaxGetUser();
-    if (!user) { window.location.href = "../index.html"; return; }
+    if (!user) { window.location.href = "/"; return; }
 
     const fechaActual = new Date();
     document.getElementById("inpFecha").valueAsDate = fechaActual;

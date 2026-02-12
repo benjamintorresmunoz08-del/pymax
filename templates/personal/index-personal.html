@@ -27,7 +27,7 @@
   <nav class="fixed top-6 left-0 w-full z-50 px-4 md:px-6">
     <div class="max-w-6xl mx-auto h-16 capsule-card flex justify-between items-center px-8 bg-black/60">
       <div class="flex items-center gap-6">
-        <div class="flex items-center gap-3 cursor-pointer group" onclick="window.location.href='index.html'">
+        <div class="flex items-center gap-3 cursor-pointer group" onclick="window.location.href='/'">
           <span class="text-xl font-bold tracking-tight text-white font-future">PYMAX</span>
           <div class="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></div>
         </div>
@@ -58,16 +58,16 @@
   <script>
     const SU_URL_SUPABASE = 'https://haqjuyagyvxynmulanhe.supabase.co'; 
     const SU_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
-    const supabaseClient = window.supabase.createClient(SU_URL_SUPABASE, SU_ANON_KEY);
+    const supabaseClient = supabase.createClient(SU_URL_SUPABASE, SU_ANON_KEY);
 
     document.addEventListener('DOMContentLoaded', async () => {
         const { data: { user } } = await supabaseClient.auth.getUser();
-        if (!user) { window.location.href = 'index.html'; }
+        if (!user) { window.location.href = '/'; }
     });
 
     async function cerrarSesion() {
         await supabaseClient.auth.signOut();
-        window.location.href = 'index.html';
+        window.location.href = '/';
     }
   </script>
 

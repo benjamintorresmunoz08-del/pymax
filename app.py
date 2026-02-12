@@ -1,26 +1,36 @@
-import os
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, timedelta
+from datetime import timedelta, datetime
+import os
+from dotenv import load_dotenv
+from pathlib import Path
 
-# ==============================================================================
-# CONFIGURACIÓN DEL SISTEMA (NIVEL ENTERPRISE)
-# ==============================================================================
+# 1. CARGA DEL BÚNKER (.ENV)
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path)
+
 app = Flask(__name__)
 
-# 1. SEGURIDAD
-app.secret_key = 'CLAVE_MAESTRA_PYMAX_SEGURIDAD_TOTAL_2026' 
+# 2. SEGURIDAD (claves solo desde variables de entorno, nunca en código)
+secret = os.getenv('SECRET_KEY')
+if not secret or not secret.strip():
+    raise RuntimeError("SECRET_KEY es obligatorio. Añádelo en Render > Environment o en .env")
+app.secret_key = secret
+app.permanent_session_lifetime = timedelta(days=36500)
 
-# CORRECCIÓN: 36500 días son 100 años. Es "eterno" para el usuario,
-# pero un número seguro para que el servidor no falle.
-app.permanent_session_lifetime = timedelta(days=36500) 
+# 3. CONEXIÓN (100% cloud - Supabase/PostgreSQL. Sin fallbacks locales)
+database_url = os.getenv('DATABASE_URL')
+if not database_url or not database_url.strip():
+    raise RuntimeError("DATABASE_URL es obligatorio. Configúralo en Render o en .env para producción.")
 
-# 2. CONEXIÓN A BASE DE DATOS (SUPABASE)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres.haqjuyagyvxynmulanhe:kedlO3vlVNh9luLO@aws-1-sa-east-1.pooler.supabase.com:5432/postgres"
+# Pequeña corrección de formato (postgres:// -> postgresql://)
+if database_url and database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
-
 # ==============================================================================
 # MODELOS DE DATOS (LA MEMORIA DE PYMAX)
 # ==============================================================================
@@ -200,14 +210,23 @@ def personal_home():
         session['departamento'] = 'personal'
     return render_template('personal/index-personal.html')
 
+@app.route('/personal/dashboard')
+def personal_dashboard():
+    """Dashboard personal - ruta usada por index.html al seleccionar rol personal"""
+    if session.get('departamento') != 'personal':
+        session['departamento'] = 'personal'
+    return render_template('personal/index-personal.html')
+
 # ==============================================================================
 # ARRANQUE DEL SISTEMA
 # ==============================================================================
 
 if __name__ == '__main__':
     with app.app_context():
-        # ESTA LÍNEA ES MÁGICA: SI VE COLUMNAS NUEVAS, LAS AGREGA SIN BORRAR DATOS
         db.create_all()
         print("✅ SISTEMA ACTUALIZADO Y SEGURO")
     
-    app.run(debug=True, port=5000)
+    # Puerto dinámico para Render (PORT) o 5000 local
+    port = int(os.environ.get('PORT', 5000))
+    debug = os.environ.get('FLASK_ENV') != 'production'
+    app.run(host='0.0.0.0', port=port, debug=debug)

@@ -100,8 +100,8 @@
         const { data: { user } } = await cliente.auth.getUser();
         if(!user) return;
 
-        // 1. CARGAR META PRINCIPAL (Tabla: user_goals)
-        const { data: mainGoal } = await cliente.from('user_goals').select('goal_text').eq('user_id', user.id).single();
+        // 1. CARGAR META PRINCIPAL (Tabla: user_goals) - maybeSingle evita error si no existe
+        const { data: mainGoal } = await cliente.from('user_goals').select('goal_text').eq('user_id', user.id).maybeSingle();
         if(mainGoal) updateCardUI(1, mainGoal.goal_text);
 
         // 2. CARGAR METAS EXTRA (Tabla: user_goals_extra)

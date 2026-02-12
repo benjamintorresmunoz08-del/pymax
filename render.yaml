@@ -1,0 +1,21 @@
+# ============================================================
+# PYMAX - CONFIGURACIÓN RENDER
+# ============================================================
+# Conecta tu repo de GitHub y Render usará esto automáticamente.
+# IMPORTANTE: Añade las variables en Render > Environment
+# ============================================================
+
+services:
+  - type: web
+    name: pymax-app
+    runtime: python
+
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      # Añade DATABASE_URL manualmente en Render > Environment con tu URL de Supabase

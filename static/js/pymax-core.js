@@ -30,7 +30,7 @@ async function pymaxGetUser() {
 async function pymaxLogout() {
     if (window.supabase && window.supabase.auth) {
         await window.supabase.auth.signOut();
-        window.location.href = "index.html";
+        window.location.href = "/";
     }
 }
 

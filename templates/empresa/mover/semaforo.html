@@ -6,10 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <script src="https://cdn.tailwindcss.com"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <script src="../pymax-core.js"></script>
+  <script>
+    const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
+    const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
+    window.supabase = window.supabase.createClient(SU_URL, SU_KEY);
+  </script>
 
   <style>
     body {
@@ -52,7 +54,7 @@
   <h1 class="text-xl font-semibold text-indigo-400">
     Pymax · Semáforo del Negocio
   </h1>
-  <a href="panel-mover.html" class="text-sm text-slate-300 hover:text-white transition border border-slate-600 px-3 py-1 rounded hover:bg-slate-800">
+  <a href="/empresa/mover" class="text-sm text-slate-300 hover:text-white transition border border-slate-600 px-3 py-1 rounded hover:bg-slate-800">
     ← Volver al panel
   </a>
 </header>
@@ -125,12 +127,12 @@
   </section>
 
   <section class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
-    <a href="flujo-caja.html" class="glass rounded-xl p-6 hover-card block hover:bg-slate-800/50 transition">
+    <a href="/empresa/mover/flujo-caja" class="glass rounded-xl p-6 hover-card block hover:bg-slate-800/50 transition">
       <h4 class="font-semibold text-lg mb-2 text-indigo-400">Revisar flujo de caja</h4>
       <p class="text-slate-300 text-sm">Analiza en detalle tu liquidez diaria.</p>
       <p class="mt-4 text-white text-sm">Ir al flujo →</p>
     </a>
-    <a href="obligaciones.html" class="glass rounded-xl p-6 hover-card block hover:bg-slate-800/50 transition">
+    <a href="/empresa/mover/obligaciones" class="glass rounded-xl p-6 hover-card block hover:bg-slate-800/50 transition">
       <h4 class="font-semibold text-lg mb-2 text-indigo-400">Ver deudas y obligaciones</h4>
       <p class="text-slate-300 text-sm">Controla compromisos que afectan tu estado financiero.</p>
       <p class="mt-4 text-white text-sm">Ir a obligaciones →</p>
@@ -147,10 +149,9 @@
 document.addEventListener("DOMContentLoaded", async () => {
     
     // 1. Verificación de Seguridad
-    if (typeof pymaxGetUser === 'undefined') return;
-    const user = await pymaxGetUser();
+    const { data: { user } } = await window.supabase.auth.getUser();
     if (!user) {
-        window.location.href = "../index.html";
+        window.location.href = "/";
         return;
     }
 
@@ -160,10 +161,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function calcularSaludFinanciera(userId) {
     // === PASO 1: OBTENER DATOS DE SUPABASE ===
     
-    // A) Traer Movimientos (Ingresos y Gastos)
+    // A) Traer Operaciones (Ingresos y Gastos) - tabla user_operations
     const { data: movimientos } = await window.supabase
-        .from('movimientos')
-        .select('tipo, monto')
+        .from('user_operations')
+        .select('type, amount')
         .eq('user_id', userId);
 
     // B) Traer Obligaciones (Deudas)
@@ -178,8 +179,9 @@ async function calcularSaludFinanciera(userId) {
     
     if (movimientos) {
         movimientos.forEach(m => {
-            if (m.tipo === 'ingreso') ingresos += m.monto;
-            if (m.tipo === 'gasto') gastos += m.monto;
+            const monto = Number(m.amount) || 0;
+            if (m.type === 'ingreso') ingresos += monto;
+            if (m.type === 'egreso') gastos += monto;
         });
     }
 
