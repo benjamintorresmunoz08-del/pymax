@@ -88,25 +88,24 @@
         </a>
       </div>
       <div class="hidden md:flex gap-10 text-xs font-bold text-slate-400 uppercase tracking-widest">
-        <a href="#apps" class="hover:text-white transition">Aplicaciones</a>
-        <a href="#ecosistema" class="hover:text-white transition">Sistema</a>
-        <a href="#precios" class="hover:text-white transition">Planes</a>
+        <a href="#apps" class="hover:text-white transition" data-i18n="apps">Aplicaciones</a>
+        <a href="#ecosistema" class="hover:text-white transition" data-i18n="ecosystem">Sistema</a>
+        <a href="#precios" class="hover:text-white transition" data-i18n="plans">Planes</a>
       </div>
       <div class="flex items-center gap-4">
         <!-- Language Selector -->
         <div class="relative">
-          <select id="languageSelector" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-white/20 transition cursor-pointer">
-            <option value="es">🇪🇸 Español</option>
-            <option value="en">🇬🇧 English</option>
-            <option value="pt">🇧🇷 Português</option>
-            <option value="fr">🇫🇷 Français</option>
+          <select id="languageSelector" onchange="changeLanguage(this.value)" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-white/20 transition cursor-pointer">
+            <option value="es">ES</option>
+            <option value="en">EN</option>
+            <option value="pt">PT</option>
           </select>
         </div>
         
         <span class="text-[10px] font-bold px-2 py-0.5 rounded border border-cyan-500/30 text-cyan-400 bg-white/5">EMPRESA</span>
         
         <button id="btnExit" class="text-xs text-slate-500 hover:text-red-400 transition flex items-center gap-1 cursor-pointer bg-transparent border-none">
-            Salir <i class="ph-bold ph-sign-out"></i>
+            <span data-i18n="exit">Salir</span> <i class="ph-bold ph-sign-out"></i>
         </button>
       </div>
     </div>
@@ -349,6 +348,75 @@
                 }
             });
         });
+
+        // C. SISTEMA DE INTERNACIONALIZACIÓN
+        const translations = {
+            es: {
+                exit: 'Salir',
+                apps: 'Aplicaciones',
+                ecosystem: 'Sistema',
+                plans: 'Planes'
+            },
+            en: {
+                exit: 'Exit',
+                apps: 'Apps',
+                ecosystem: 'Ecosystem',
+                plans: 'Plans'
+            },
+            pt: {
+                exit: 'Sair',
+                apps: 'Aplicações',
+                ecosystem: 'Sistema',
+                plans: 'Planos'
+            }
+        };
+
+        // Load saved language or default to Spanish
+        const savedLang = localStorage.getItem('pymax_language') || 'es';
+        document.getElementById('languageSelector').value = savedLang;
+        applyLanguage(savedLang);
+
+        window.changeLanguage = function(lang) {
+            localStorage.setItem('pymax_language', lang);
+            applyLanguage(lang);
+            
+            // Show confirmation
+            const langNames = { es: 'Español', en: 'English', pt: 'Português' };
+            const msg = {
+                es: `Idioma cambiado a ${langNames[lang]}`,
+                en: `Language changed to ${langNames[lang]}`,
+                pt: `Idioma alterado para ${langNames[lang]}`
+            };
+            
+            // Simple toast notification
+            const toast = document.createElement('div');
+            toast.style.cssText = 'position:fixed;top:20px;right:20px;background:#10b981;color:white;padding:12px 20px;border-radius:8px;font-size:14px;z-index:9999;animation:slideIn 0.3s ease;';
+            toast.textContent = msg[lang];
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        };
+
+        function applyLanguage(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(elem => {
+                const key = elem.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    elem.textContent = translations[lang][key];
+                }
+            });
+        }
     });
 </script>
+<style>
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+</style>
 </html>
