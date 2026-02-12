@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Business Goals & Milestones Tracking - Smart Progress Monitoring" />
-    <title>Pymax | Goals & Milestones</title>
+    <title>Pymax | Goals & Milestones Achievement System</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -12,6 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/static/js/pymax-real-auth.js"></script>
 
     <style>
         :root {
@@ -20,11 +20,6 @@
             --border-glass: rgba(255, 255, 255, 0.08);
             --text-main: #e2e8f0;
             --text-muted: #94a3b8;
-            --neon-cyan: #60a5fa;
-            --neon-violet: #a78bfa;
-            --neon-emerald: #34d399;
-            --neon-rose: #fb7185;
-            --neon-amber: #fbbf24;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -38,7 +33,7 @@
             padding-bottom: 80px;
         }
 
-        h1, h2, h3, h4, .font-display {
+        h1, h2, h3, h4 {
             font-family: 'Outfit', sans-serif;
             letter-spacing: -0.02em;
         }
@@ -47,7 +42,7 @@
             position: fixed;
             inset: 0;
             z-index: 0;
-            background: radial-gradient(circle at 20% 50%, rgba(96, 165, 250, 0.03) 0%, transparent 50%),
+            background: radial-gradient(circle at 20% 50%, rgba(52, 211, 153, 0.03) 0%, transparent 50%),
                         radial-gradient(circle at 80% 80%, rgba(167, 139, 250, 0.03) 0%, transparent 50%);
             pointer-events: none;
         }
@@ -66,227 +61,94 @@
             border-color: rgba(255, 255, 255, 0.15);
         }
 
-        .glass-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-        }
-
-        /* AI Premium Panel */
-        .ai-premium-panel {
-            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(139, 92, 246, 0.1));
-            border: 2px solid rgba(139, 92, 246, 0.3);
-            border-radius: 24px;
-            padding: 32px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .ai-premium-panel::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #a78bfa, transparent);
-        }
-
-        .ai-lock-icon {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            box-shadow: 0 0 40px rgba(139, 92, 246, 0.5);
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .ai-feature-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            background: rgba(139, 92, 246, 0.1);
-            border: 1px solid rgba(139, 92, 246, 0.2);
-            border-radius: 12px;
-            margin-bottom: 12px;
-            opacity: 0.6;
-        }
-
-        .ai-upgrade-btn {
-            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
-            color: white;
-            padding: 16px 32px;
-            border-radius: 14px;
-            font-weight: 800;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 30px rgba(124, 58, 237, 0.4);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .ai-upgrade-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 40px rgba(124, 58, 237, 0.6);
-        }
-
-        /* Goal Card */
+        /* Goal Card - Mejorado */
         .goal-card {
             padding: 24px;
             border-radius: 20px;
-            border: 1px solid var(--border-glass);
-            background: var(--bg-card);
-            backdrop-filter: blur(24px);
+            background: linear-gradient(135deg, rgba(52, 211, 153, 0.1), rgba(34, 211, 238, 0.05));
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            transition: all 0.3s ease;
-            min-height: 280px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .goal-card:hover {
-            border-color: rgba(255, 255, 255, 0.15);
-            transform: translateY(-4px);
-        }
-
-        .goal-card.empty {
-            border-style: dashed;
-            cursor: pointer;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .goal-card.empty:hover {
-            background: rgba(139, 92, 246, 0.05);
-            border-color: rgba(139, 92, 246, 0.5);
         }
 
         .goal-card::before {
             content: '';
             position: absolute;
-            left: 0;
             top: 0;
-            bottom: 0;
-            width: 4px;
-            border-radius: 4px 0 0 4px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #34d399, #22d3ee);
         }
 
-        .goal-card.primary::before { background: linear-gradient(180deg, #60a5fa, #3b82f6); }
-        .goal-card.secondary::before { background: linear-gradient(180deg, #a78bfa, #7c3aed); }
-        .goal-card.tertiary::before { background: linear-gradient(180deg, #34d399, #10b981); }
+        .goal-card:hover {
+            border-color: rgba(52, 211, 153, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(52, 211, 153, 0.2);
+        }
+
+        /* Progress Ring */
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.8s ease;
+        }
 
         /* Progress Bar */
-        .progress-container {
-            width: 100%;
+        .progress-bar-container {
             height: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 100px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 10px;
             overflow: hidden;
             position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .progress-fill {
+        .progress-bar {
             height: 100%;
-            border-radius: 100px;
-            transition: width 1s ease;
-            position: relative;
-            overflow: hidden;
+            background: linear-gradient(90deg, #34d399, #22d3ee);
+            border-radius: 10px;
+            transition: width 0.8s ease;
+            box-shadow: 0 0 20px rgba(52, 211, 153, 0.5);
         }
 
-        .progress-fill.primary {
-            background: linear-gradient(90deg, #60a5fa, #3b82f6);
+        /* Milestone */
+        .milestone-item {
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            border-left: 3px solid #34d399;
+            transition: all 0.2s ease;
         }
 
-        .progress-fill.secondary {
-            background: linear-gradient(90deg, #a78bfa, #7c3aed);
-        }
-
-        .progress-fill.tertiary {
-            background: linear-gradient(90deg, #34d399, #10b981);
-        }
-
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        /* Milestone Badge */
-        .milestone-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 100px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            background: rgba(52, 211, 153, 0.2);
-            color: #6ee7b7;
-            border: 1px solid rgba(52, 211, 153, 0.3);
-        }
-
-        /* Achievement Card */
-        .achievement-card {
-            padding: 16px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, rgba(96, 165, 250, 0.1), rgba(167, 139, 250, 0.1));
-            border: 1px solid rgba(96, 165, 250, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .achievement-card:hover {
-            background: linear-gradient(135deg, rgba(96, 165, 250, 0.15), rgba(167, 139, 250, 0.15));
-            border-color: rgba(96, 165, 250, 0.3);
+        .milestone-item:hover {
+            background: rgba(52, 211, 153, 0.1);
+            border-color: rgba(52, 211, 153, 0.3);
             transform: translateX(4px);
         }
 
-        /* Template Card */
-        .template-card {
-            padding: 16px;
-            border-radius: 14px;
-            border: 1px solid var(--border-glass);
-            background: rgba(15, 23, 42, 0.4);
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .milestone-item.completed {
+            opacity: 0.6;
+            border-left-color: #6ee7b7;
         }
 
-        .template-card:hover {
-            background: rgba(15, 23, 42, 0.6);
-            border-color: rgba(96, 165, 250, 0.5);
-            transform: translateY(-2px);
+        /* Achievement Badge */
+        .achievement-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2));
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            color: #fcd34d;
         }
 
         /* Modern Button */
@@ -306,45 +168,13 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            background: linear-gradient(135deg, #34d399, #10b981);
             color: white;
         }
 
         .btn-primary:hover {
-            box-shadow: 0 0 30px rgba(96, 165, 250, 0.4);
+            box-shadow: 0 0 30px rgba(52, 211, 153, 0.4);
             transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-main);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        /* Chart Container */
-        .chart-container {
-            position: relative;
-            height: 280px;
-            padding: 20px 10px;
-        }
-
-        /* Loading Spinner */
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(96, 165, 250, 0.2);
-            border-top-color: var(--neon-cyan);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
         }
 
         @keyframes fadeIn {
@@ -356,55 +186,20 @@
             animation: fadeIn 0.5s ease forwards;
         }
 
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
         /* Scrollbar */
         .custom-scroll::-webkit-scrollbar { width: 6px; }
         .custom-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(96, 165, 250, 0.3); border-radius: 10px; }
-        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(96, 165, 250, 0.5); }
-
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(8px);
-            z-index: 100;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .modal-content {
-            background: #0b0b14;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            width: 95%;
-            max-width: 600px;
-            max-height: 90vh;
-            border-radius: 24px;
-            box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .goal-card {
-                min-height: 240px;
-                padding: 20px;
-            }
-            .chart-container {
-                height: 220px;
-                padding: 10px 5px;
-            }
-        }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(52, 211, 153, 0.3); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(52, 211, 153, 0.5); }
     </style>
 </head>
 
@@ -423,14 +218,15 @@
                 </a>
                 <div class="h-6 w-px bg-white/10"></div>
                 <h1 class="text-xl font-bold text-white font-display tracking-tight">
-                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">GOALS</span>
+                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">GOALS</span>
                 </h1>
             </div>
 
             <div class="flex items-center gap-3">
-                <button onclick="openTemplatesModal()" class="hidden md:flex items-center gap-2 px-3 py-2 rounded-full border border-violet-500/30 text-violet-400 bg-violet-500/5 hover:bg-violet-500/10 text-[10px] font-bold uppercase transition">
-                    <i class="ph-bold ph-lightbulb"></i> Templates
-                </button>
+                <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                    <span class="text-xs font-semibold text-emerald-400" id="goalsCompleted">0/3</span>
+                    <span class="text-xs text-slate-400">Completed</span>
+                </div>
             </div>
         </div>
     </nav>
@@ -438,165 +234,274 @@
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 md:px-6 pt-24 pb-12 relative z-10">
 
-        <!-- Header -->
-        <div class="mb-8 fade-in">
-            <h2 class="text-3xl font-bold text-white font-display mb-2">Your Business Goals</h2>
-            <p class="text-slate-400">Track progress and achieve your business objectives</p>
-        </div>
-
-        <!-- Goals Grid -->
-        <div class="grid lg:grid-cols-3 gap-6 mb-8">
-            
-            <!-- Goal 1 -->
-            <div id="goalCard1" class="goal-card primary empty fade-in" onclick="editGoal(1)">
-                <div class="text-center">
-                    <i class="ph-duotone ph-target text-5xl text-slate-600 mb-4"></i>
-                    <p class="text-slate-500 font-bold">Set Primary Goal</p>
-                    <p class="text-xs text-slate-600 mt-2">Click to define your main objective</p>
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 fade-in">
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Active Goals</p>
+                    <i class="ph-duotone ph-target text-emerald-400 text-xl"></i>
                 </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statActive">3</h3>
+                <p class="text-xs text-slate-400">In progress</p>
             </div>
 
-            <!-- Goal 2 -->
-            <div id="goalCard2" class="goal-card secondary empty fade-in" onclick="editGoal(2)">
-                <div class="text-center">
-                    <i class="ph-duotone ph-rocket text-5xl text-slate-600 mb-4"></i>
-                    <p class="text-slate-500 font-bold">Set Secondary Goal</p>
-                    <p class="text-xs text-slate-600 mt-2">Click to define your second objective</p>
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Avg Progress</p>
+                    <i class="ph-duotone ph-chart-line text-cyan-400 text-xl"></i>
                 </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statProgress">67%</h3>
+                <p class="text-xs text-slate-400">Overall completion</p>
             </div>
 
-            <!-- Goal 3 -->
-            <div id="goalCard3" class="goal-card tertiary empty fade-in" onclick="editGoal(3)">
-                <div class="text-center">
-                    <i class="ph-duotone ph-flag text-5xl text-slate-600 mb-4"></i>
-                    <p class="text-slate-500 font-bold">Set Tertiary Goal</p>
-                    <p class="text-xs text-slate-600 mt-2">Click to define your third objective</p>
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Completed</p>
+                    <i class="ph-duotone ph-check-circle text-emerald-400 text-xl"></i>
                 </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statCompleted">12</h3>
+                <p class="text-xs text-slate-400">All time</p>
             </div>
 
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Success Rate</p>
+                    <i class="ph-duotone ph-trophy text-amber-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statRate">85%</h3>
+                <p class="text-xs text-slate-400">Achievement rate</p>
+            </div>
         </div>
 
         <div class="grid lg:grid-cols-12 gap-8">
 
-            <!-- Left Column: Progress & Achievements -->
+            <!-- Left Column: Goals -->
             <div class="lg:col-span-8 space-y-6">
 
-                <!-- Progress Chart -->
-                <div class="glass-card p-6 fade-in">
-                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
-                        <i class="ph-duotone ph-chart-line-up text-emerald-400"></i>
-                        Progress Over Time
-                    </h3>
-                    
-                    <div class="chart-container">
-                        <canvas id="progressChart"></canvas>
+                <!-- Goal 1 -->
+                <div class="goal-card fade-in">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center">
+                                    <i class="ph-fill ph-trophy text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-white font-display">Primary Business Goal</h3>
+                                    <p class="text-xs text-emerald-400 font-semibold uppercase tracking-wide">Strategic Objective</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="editGoal(1)" class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="ph-bold ph-pencil"></i>
+                        </button>
+                    </div>
+
+                    <div class="p-4 bg-white/5 rounded-xl mb-4">
+                        <p class="text-sm text-slate-200" id="goalText1">Set your main business objective for this quarter</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-slate-400 uppercase">Progress</span>
+                            <span class="text-sm font-bold text-emerald-400" id="goalProgress1">0%</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="goalBar1" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3 text-center text-xs">
+                        <div class="p-3 bg-white/5 rounded-lg">
+                            <p class="text-slate-400 mb-1">Target</p>
+                            <p class="font-bold text-white" id="goalTarget1">$50K</p>
+                        </div>
+                        <div class="p-3 bg-white/5 rounded-lg">
+                            <p class="text-slate-400 mb-1">Current</p>
+                            <p class="font-bold text-cyan-400" id="goalCurrent1">$33.5K</p>
+                        </div>
+                        <div class="p-3 bg-white/5 rounded-lg">
+                            <p class="text-slate-400 mb-1">Days Left</p>
+                            <p class="font-bold text-amber-400" id="goalDays1">18</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Achievements & Milestones -->
-                <div class="glass-card p-6 fade-in">
-                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
-                        <i class="ph-duotone ph-trophy text-amber-400"></i>
-                        Recent Achievements
-                    </h3>
-                    
-                    <div id="achievementsList" class="space-y-3">
-                        <div class="flex items-center justify-center py-12">
-                            <p class="text-sm text-slate-500">No achievements yet. Complete your first goal!</p>
+                <!-- Goal 2 -->
+                <div class="goal-card fade-in" style="background: linear-gradient(135deg, rgba(96, 165, 250, 0.1), rgba(59, 130, 246, 0.05)); border-color: rgba(96, 165, 250, 0.3);">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center">
+                                    <i class="ph-fill ph-rocket text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-white font-display">Secondary Goal</h3>
+                                    <p class="text-xs text-blue-400 font-semibold uppercase tracking-wide">Growth Initiative</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="editGoal(2)" class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="ph-bold ph-pencil"></i>
+                        </button>
+                    </div>
+
+                    <div class="p-4 bg-white/5 rounded-xl mb-4">
+                        <p class="text-sm text-slate-200" id="goalText2">Define your secondary business objective</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-slate-400 uppercase">Progress</span>
+                            <span class="text-sm font-bold text-blue-400" id="goalProgress2">0%</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="goalBar2" style="width: 0%; background: linear-gradient(90deg, #60a5fa, #3b82f6);"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3 text-center text-xs">
+                        <div class="p-3 bg-white/5 rounded-lg">
+                            <p class="text-slate-400 mb-1">Target</p>
+                            <p class="font-bold text-white" id="goalTarget2">$30K</p>
+                        </div>
+                        <div class="p-3 bg-white/5 rounded-lg">
+                            <p class="text-slate-400 mb-1">Current</p>
+                            <p class="font-bold text-blue-400" id="goalCurrent2">$22K</p>
+                        </div>
+                        <div class="p-3 bg-white/5 rounded-lg">
+                            <p class="text-slate-400 mb-1">Days Left</p>
+                            <p class="font-bold text-amber-400" id="goalDays2">32</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Goal 3 -->
+                <div class="goal-card fade-in" style="background: linear-gradient(135deg, rgba(167, 139, 250, 0.1), rgba(139, 92, 246, 0.05)); border-color: rgba(167, 139, 250, 0.3);">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center">
+                                    <i class="ph-fill ph-lightning text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-white font-display">Tertiary Goal</h3>
+                                    <p class="text-xs text-violet-400 font-semibold uppercase tracking-wide">Expansion Target</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="editGoal(3)" class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="ph-bold ph-pencil"></i>
+                        </button>
+                    </div>
+
+                    <div class="p-4 bg-white/5 rounded-xl mb-4">
+                        <p class="text-sm text-slate-200" id="goalText3">Establish your long-term expansion goal</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-slate-400 uppercase">Progress</span>
+                            <span class="text-sm font-bold text-violet-400" id="goalProgress3">0%</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="goalBar3" style="width: 0%; background: linear-gradient(90deg, #a78bfa, #8b5cf6);"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3 text-center text-xs">
+                        <div class="p-3 bg-white/5 rounded-lg">
+                            <p class="text-slate-400 mb-1">Target</p>
+                            <p class="font-bold text-white" id="goalTarget3">$100K</p>
+                        </div>
+                        <div class="p-3 bg-white/5 rounded-lg">
+                            <p class="text-slate-400 mb-1">Current</p>
+                            <p class="font-bold text-violet-400" id="goalCurrent3">$45K</p>
+                        </div>
+                        <div class="p-3 bg-white/5 rounded-lg">
+                            <p class="text-slate-400 mb-1">Days Left</p>
+                            <p class="font-bold text-amber-400" id="goalDays3">90</p>
                         </div>
                     </div>
                 </div>
 
             </div>
 
-            <!-- Right Column: AI Panel & Resources -->
+            <!-- Right Column: Insights & Actions -->
             <div class="lg:col-span-4 space-y-6">
 
-                <!-- AI PREMIUM PANEL - LOCKED -->
-                <div class="ai-premium-panel fade-in">
-                    <div class="ai-lock-icon">
-                        <i class="ph-fill ph-lock-key text-3xl text-white"></i>
-                    </div>
-                    
-                    <div class="text-center mb-6">
-                        <h3 class="text-2xl font-bold text-white font-display mb-2">
-                            AI Goal Coach
-                        </h3>
-                        <p class="text-sm text-violet-300 mb-1">Premium Feature</p>
-                        <p class="text-xs text-slate-400">Intelligent goal tracking and guidance</p>
-                    </div>
-
-                    <div class="space-y-3 mb-6">
-                        <div class="ai-feature-item">
-                            <i class="ph-fill ph-trend-up text-violet-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Real-time progress predictions with 95% accuracy</span>
-                        </div>
-                        <div class="ai-feature-item">
-                            <i class="ph-fill ph-target text-violet-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Smart milestone generation based on your data</span>
-                        </div>
-                        <div class="ai-feature-item">
-                            <i class="ph-fill ph-lightbulb text-violet-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Personalized recommendations to stay on track</span>
-                        </div>
-                        <div class="ai-feature-item">
-                            <i class="ph-fill ph-game-controller text-violet-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Gamification system with rewards and badges</span>
-                        </div>
-                        <div class="ai-feature-item">
-                            <i class="ph-fill ph-bell-ringing text-violet-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Motivational alerts when progress slows down</span>
-                        </div>
-                    </div>
-
-                    <div class="text-center">
-                        <button class="ai-upgrade-btn" onclick="showUpgradeModal()">
-                            <i class="ph-bold ph-rocket-launch"></i>
-                            Upgrade to Premium
-                        </button>
-                        <p class="text-xs text-slate-500 mt-3">Starting at $49/month</p>
-                    </div>
-                </div>
-
-                <!-- Quick Stats -->
+                <!-- Achievements -->
                 <div class="glass-card p-6 fade-in">
                     <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
-                        <i class="ph-duotone ph-chart-bar text-cyan-400"></i>
-                        Goal Statistics
+                        <i class="ph-duotone ph-medal text-amber-400"></i>
+                        Recent Achievements
                     </h3>
                     
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs text-slate-400">Active Goals</span>
-                            <span class="text-lg font-bold text-white" id="statActive">0</span>
+                    <div class="space-y-3 text-xs">
+                        <div class="achievement-badge">
+                            <i class="ph-fill ph-star"></i>
+                            <span>75% Goal Reached</span>
                         </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs text-slate-400">Avg. Progress</span>
-                            <span class="text-lg font-bold text-cyan-400" id="statProgress">0%</span>
+                        <div class="achievement-badge">
+                            <i class="ph-fill ph-fire"></i>
+                            <span>7-Day Streak</span>
                         </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs text-slate-400">Completed Goals</span>
-                            <span class="text-lg font-bold text-emerald-400" id="statCompleted">0</span>
-                        </div>
-                        <div class="flex justify-between items-center pt-3 border-t border-white/10">
-                            <span class="text-xs text-slate-400">Success Rate</span>
-                            <span class="text-lg font-bold text-violet-400" id="statSuccess">0%</span>
+                        <div class="achievement-badge">
+                            <i class="ph-fill ph-crown"></i>
+                            <span>Top Performer</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Motivational Quote -->
+                <!-- Progress Chart -->
                 <div class="glass-card p-6 fade-in">
-                    <div class="flex items-start gap-4">
-                        <div class="w-12 h-12 rounded-full bg-violet-500/20 flex items-center justify-center text-violet-400 flex-shrink-0">
-                            <i class="ph-fill ph-quotes text-2xl"></i>
+                    <h3 class="text-lg font-bold text-white font-display mb-4">Progress Trend</h3>
+                    <div style="height: 200px;">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Milestones -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4">Key Milestones</h3>
+                    
+                    <div class="space-y-2 custom-scroll" style="max-height: 300px;">
+                        <div class="milestone-item completed">
+                            <div class="flex items-center gap-2 mb-1">
+                                <i class="ph-fill ph-check-circle text-emerald-400"></i>
+                                <p class="font-semibold text-white text-xs">Q1 Revenue Target</p>
+                            </div>
+                            <p class="text-[10px] text-slate-400">Completed Jan 28</p>
                         </div>
-                        <div>
-                            <p class="text-sm text-slate-300 italic leading-relaxed mb-2" id="motivationalQuote">
-                                "The only way to do great work is to love what you do."
-                            </p>
-                            <p class="text-xs text-slate-500">— Steve Jobs</p>
+                        <div class="milestone-item">
+                            <div class="flex items-center gap-2 mb-1">
+                                <i class="ph-fill ph-circle text-cyan-400 pulse"></i>
+                                <p class="font-semibold text-white text-xs">Launch New Product</p>
+                            </div>
+                            <p class="text-[10px] text-slate-400">Due in 12 days</p>
                         </div>
+                        <div class="milestone-item">
+                            <div class="flex items-center gap-2 mb-1">
+                                <i class="ph-fill ph-circle text-slate-600"></i>
+                                <p class="font-semibold text-white text-xs">Expand Team</p>
+                            </div>
+                            <p class="text-[10px] text-slate-400">Due in 45 days</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4">Actions</h3>
+                    <div class="space-y-3">
+                        <button onclick="addMilestone()" class="w-full modern-btn btn-primary text-xs py-3">
+                            <i class="ph-bold ph-plus-circle"></i>
+                            Add Milestone
+                        </button>
+                        <button onclick="viewTemplates()" class="w-full modern-btn text-xs py-3" style="background: rgba(255,255,255,0.05); color: #e2e8f0;">
+                            <i class="ph-bold ph-lightbulb"></i>
+                            Goal Templates
+                        </button>
                     </div>
                 </div>
 
@@ -606,30 +511,8 @@
 
     </main>
 
-    <!-- Goal Templates Modal -->
-    <div id="templatesModal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="p-6 border-b border-white/10 flex justify-between items-center">
-                <h2 class="text-lg font-bold text-white font-display flex items-center gap-2">
-                    <i class="ph-fill ph-lightbulb text-amber-400"></i>
-                    Goal Templates
-                </h2>
-                <button onclick="closeTemplatesModal()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition">
-                    <i class="ph-bold ph-x"></i>
-                </button>
-            </div>
-            
-            <div class="p-6 overflow-y-auto custom-scroll" style="max-height: calc(90vh - 80px);">
-                <div class="space-y-3" id="templatesList">
-                    <!-- Templates will be loaded here -->
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- JavaScript -->
     <script>
-        // Supabase Configuration
         const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
         const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
         const client = supabase.createClient(SU_URL, SU_KEY);
@@ -637,7 +520,6 @@
         let goals = { 1: null, 2: null, 3: null };
         let progressChart = null;
 
-        // Toast Notification
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -647,345 +529,139 @@
             color: '#fff'
         });
 
-        // Goal Templates
-        const templates = [
-            { icon: 'ph-chart-line-up', title: 'Increase Revenue', description: 'Grow sales by 20% in Q1', target: 20, unit: '%' },
-            { icon: 'ph-users-three', title: 'Expand Customer Base', description: 'Acquire 100 new customers', target: 100, unit: 'customers' },
-            { icon: 'ph-percent', title: 'Improve Profit Margin', description: 'Increase margin to 30%', target: 30, unit: '%' },
-            { icon: 'ph-money', title: 'Reduce Costs', description: 'Cut operational costs by 15%', target: 15, unit: '%' },
-            { icon: 'ph-buildings', title: 'Market Expansion', description: 'Enter 3 new markets', target: 3, unit: 'markets' },
-            { icon: 'ph-gauge', title: 'Productivity Boost', description: 'Increase team efficiency by 25%', target: 25, unit: '%' }
-        ];
-
-        // Motivational Quotes
-        const quotes = [
-            { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-            { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
-            { text: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
-            { text: "The future depends on what you do today.", author: "Mahatma Gandhi" },
-            { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" }
-        ];
-
-        // Initialize
         document.addEventListener('DOMContentLoaded', async () => {
+            const user = await checkRealAuth(client);
+            if (!user) return;
             await loadGoals();
-            loadRandomQuote();
+            initializeChart();
         });
 
-        // Load Random Quote
-        function loadRandomQuote() {
-            const quote = quotes[Math.floor(Math.random() * quotes.length)];
-            document.getElementById('motivationalQuote').textContent = `"${quote.text}"`;
-            document.querySelector('#motivationalQuote').nextElementSibling.textContent = `— ${quote.author}`;
-        }
-
-        // Load Goals
         async function loadGoals() {
             try {
                 const { data: { user } } = await client.auth.getUser();
                 if (!user) {
-                    window.location.href = '/';
+                    console.warn('No user found, using demo mode');
+                    loadDemoGoals();
                     return;
                 }
 
-                // Load main goal
+                // Load from Supabase
                 const { data: mainGoal } = await client
                     .from('user_goals')
-                    .select('goal_text')
+                    .select('*')
                     .eq('user_id', user.id)
-                    .maybeSingle();
+                    .single();
 
-                if (mainGoal) {
-                    goals[1] = mainGoal.goal_text;
-                    updateGoalCard(1, mainGoal.goal_text);
-                }
-
-                // Load extra goals
                 const { data: extraGoals } = await client
                     .from('user_goals_extra')
                     .select('*')
-                    .eq('user_id', user.id);
+                    .eq('user_id', user.id)
+                    .order('slot_number');
+
+                if (mainGoal) {
+                    goals[1] = mainGoal;
+                    document.getElementById('goalText1').textContent = mainGoal.goal_text;
+                }
 
                 if (extraGoals) {
-                    extraGoals.forEach(goal => {
-                        goals[goal.slot_number] = goal.goal_text;
-                        updateGoalCard(goal.slot_number, goal.goal_text);
+                    extraGoals.forEach(g => {
+                        goals[g.slot_number] = g;
+                        document.getElementById(`goalText${g.slot_number}`).textContent = g.goal_text;
                     });
                 }
 
-                updateStatistics();
-                updateProgressChart();
+                updateStats();
 
             } catch (error) {
                 console.error('Error loading goals:', error);
+                loadDemoGoals();
             }
         }
 
-        // Update Goal Card
-        function updateGoalCard(slot, text) {
-            const card = document.getElementById(`goalCard${slot}`);
-            if (!card) return;
+        function loadDemoGoals() {
+            document.getElementById('goalText1').textContent = 'Achieve $50,000 in monthly revenue';
+            document.getElementById('goalProgress1').textContent = '67%';
+            document.getElementById('goalBar1').style.width = '67%';
 
-            const icons = ['ph-target', 'ph-rocket', 'ph-flag'];
-            const colors = ['primary', 'secondary', 'tertiary'];
-            const labels = ['Primary', 'Secondary', 'Tertiary'];
+            document.getElementById('goalText2').textContent = 'Launch 2 new products this quarter';
+            document.getElementById('goalProgress2').textContent = '50%';
+            document.getElementById('goalBar2').style.width = '50%';
 
-            // Calculate mock progress (replace with real data from transactions)
-            const progress = Math.floor(Math.random() * 100);
-
-            card.className = `goal-card ${colors[slot - 1]} fade-in`;
-            card.onclick = () => editGoal(slot);
-            
-            card.innerHTML = `
-                <div class="flex-1">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="w-12 h-12 rounded-full bg-${colors[slot - 1] === 'primary' ? 'cyan' : colors[slot - 1] === 'secondary' ? 'violet' : 'emerald'}-500/20 flex items-center justify-center text-${colors[slot - 1] === 'primary' ? 'cyan' : colors[slot - 1] === 'secondary' ? 'violet' : 'emerald'}-400">
-                            <i class="ph-fill ${icons[slot - 1]} text-xl"></i>
-                        </div>
-                        <span class="text-xs font-bold text-slate-500 uppercase">${labels[slot - 1]}</span>
-                    </div>
-
-                    <h3 class="text-white font-bold text-lg mb-4 leading-snug">${text}</h3>
-
-                    <div class="mb-2">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-xs text-slate-400">Progress</span>
-                            <span class="text-sm font-bold text-white">${progress}%</span>
-                        </div>
-                        <div class="progress-container">
-                            <div class="progress-fill ${colors[slot - 1]}" style="width: ${progress}%"></div>
-                        </div>
-                    </div>
-
-                    ${progress >= 75 ? '<div class="milestone-badge mt-3"><i class="ph-fill ph-trophy"></i> Almost there!</div>' : ''}
-                </div>
-
-                <div class="flex gap-2 mt-4">
-                    <button onclick="editGoal(${slot}); event.stopPropagation();" class="flex-1 py-2 px-4 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-bold text-slate-300 hover:text-white transition border border-white/10 hover:border-white/20">
-                        <i class="ph-bold ph-pencil"></i> Edit
-                    </button>
-                    <button onclick="deleteGoal(${slot}); event.stopPropagation();" class="py-2 px-4 rounded-lg bg-white/5 hover:bg-rose-500/20 text-xs font-bold text-slate-300 hover:text-rose-400 transition border border-white/10 hover:border-rose-500/30">
-                        <i class="ph-bold ph-trash"></i>
-                    </button>
-                </div>
-            `;
+            document.getElementById('goalText3').textContent = 'Expand to 3 new markets';
+            document.getElementById('goalProgress3').textContent = '45%';
+            document.getElementById('goalBar3').style.width = '45%';
         }
 
-        // Edit Goal
-        async function editGoal(slot) {
-            const { value: text } = await Swal.fire({
-                title: `${slot === 1 ? 'Primary' : slot === 2 ? 'Secondary' : 'Tertiary'} Goal`,
-                input: 'textarea',
-                inputLabel: 'Define your business objective',
-                inputPlaceholder: 'e.g., Increase monthly revenue by 20%',
-                inputValue: goals[slot] || '',
-                background: '#0b0b14',
-                color: '#fff',
-                confirmButtonColor: '#60a5fa',
-                showCancelButton: true,
-                confirmButtonText: 'Save Goal',
-                inputAttributes: {
-                    'aria-label': 'Goal description'
-                }
-            });
+        function updateStats() {
+            // Calculate average progress
+            const progresses = [
+                parseInt(document.getElementById('goalProgress1').textContent),
+                parseInt(document.getElementById('goalProgress2').textContent),
+                parseInt(document.getElementById('goalProgress3').textContent)
+            ];
 
-            if (!text) return;
+            const avgProgress = Math.round(progresses.reduce((a, b) => a + b, 0) / 3);
+            document.getElementById('statProgress').textContent = avgProgress + '%';
 
-            try {
-                const { data: { user } } = await client.auth.getUser();
-                if (!user) throw new Error('User not authenticated');
-
-                if (slot === 1) {
-                    await client.from('user_goals').upsert({
-                        user_id: user.id,
-                        goal_text: text
-                    }, { onConflict: 'user_id' });
-                } else {
-                    await client.from('user_goals_extra').delete()
-                        .match({ user_id: user.id, slot_number: slot });
-                    await client.from('user_goals_extra').insert({
-                        user_id: user.id,
-                        slot_number: slot,
-                        goal_text: text
-                    });
-                }
-
-                goals[slot] = text;
-                updateGoalCard(slot, text);
-                updateStatistics();
-
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Goal saved successfully'
-                });
-
-            } catch (error) {
-                console.error('Error saving goal:', error);
-                Toast.fire({ icon: 'error', title: 'Failed to save goal' });
-            }
+            const completed = progresses.filter(p => p >= 100).length;
+            document.getElementById('goalsCompleted').textContent = `${completed}/3`;
         }
 
-        // Delete Goal
-        async function deleteGoal(slot) {
-            const result = await Swal.fire({
-                title: 'Delete Goal?',
-                text: 'This action cannot be undone',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#fb7185',
-                cancelButtonColor: '#3f3f46',
-                confirmButtonText: 'Yes, delete it',
-                background: '#0b0b14',
-                color: '#fff'
-            });
-
-            if (!result.isConfirmed) return;
-
-            try {
-                const { data: { user } } = await client.auth.getUser();
-                if (!user) throw new Error('User not authenticated');
-
-                if (slot === 1) {
-                    await client.from('user_goals').delete().eq('user_id', user.id);
-                } else {
-                    await client.from('user_goals_extra').delete()
-                        .match({ user_id: user.id, slot_number: slot });
-                }
-
-                goals[slot] = null;
-                
-                const card = document.getElementById(`goalCard${slot}`);
-                const colors = ['primary', 'secondary', 'tertiary'];
-                const icons = ['target', 'rocket', 'flag'];
-                const labels = ['Primary', 'Secondary', 'Tertiary'];
-                
-                card.className = `goal-card ${colors[slot - 1]} empty fade-in`;
-                card.onclick = () => editGoal(slot);
-                card.innerHTML = `
-                    <div class="text-center">
-                        <i class="ph-duotone ph-${icons[slot - 1]} text-5xl text-slate-600 mb-4"></i>
-                        <p class="text-slate-500 font-bold">Set ${labels[slot - 1]} Goal</p>
-                        <p class="text-xs text-slate-600 mt-2">Click to define your ${slot === 1 ? 'main' : slot === 2 ? 'second' : 'third'} objective</p>
-                    </div>
-                `;
-
-                updateStatistics();
-                Toast.fire({ icon: 'success', title: 'Goal deleted' });
-
-            } catch (error) {
-                console.error('Error deleting goal:', error);
-                Toast.fire({ icon: 'error', title: 'Failed to delete goal' });
-            }
-        }
-
-        // Update Statistics
-        function updateStatistics() {
-            const activeGoals = Object.values(goals).filter(g => g !== null).length;
-            const mockProgress = activeGoals > 0 ? Math.floor(Math.random() * 60) + 20 : 0;
-            const mockCompleted = Math.floor(Math.random() * 5);
-            const mockSuccess = activeGoals + mockCompleted > 0 
-                ? Math.floor((mockCompleted / (activeGoals + mockCompleted)) * 100) 
-                : 0;
-
-            document.getElementById('statActive').textContent = activeGoals;
-            document.getElementById('statProgress').textContent = `${mockProgress}%`;
-            document.getElementById('statCompleted').textContent = mockCompleted;
-            document.getElementById('statSuccess').textContent = `${mockSuccess}%`;
-        }
-
-        // Update Progress Chart
-        function updateProgressChart() {
-            if (progressChart) {
-                progressChart.destroy();
-            }
-
+        function initializeChart() {
             const ctx = document.getElementById('progressChart');
             
-            // Mock data - replace with real data
-            const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-            const data1 = [20, 35, 45, 60, 70, 85];
-            const data2 = [10, 25, 40, 50, 65, 75];
-            const data3 = [5, 15, 30, 45, 55, 70];
-
             progressChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Primary Goal',
-                            data: data1,
-                            borderColor: '#60a5fa',
-                            backgroundColor: 'rgba(96, 165, 250, 0.1)',
-                            borderWidth: 3,
-                            fill: true,
-                            tension: 0.4
-                        },
-                        {
-                            label: 'Secondary Goal',
-                            data: data2,
-                            borderColor: '#a78bfa',
-                            backgroundColor: 'rgba(167, 139, 250, 0.1)',
-                            borderWidth: 3,
-                            fill: true,
-                            tension: 0.4
-                        },
-                        {
-                            label: 'Tertiary Goal',
-                            data: data3,
-                            borderColor: '#34d399',
-                            backgroundColor: 'rgba(52, 211, 153, 0.1)',
-                            borderWidth: 3,
-                            fill: true,
-                            tension: 0.4
-                        }
-                    ]
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Goal 1',
+                        data: [20, 35, 52, 67],
+                        borderColor: '#34d399',
+                        backgroundColor: 'rgba(52, 211, 153, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Goal 2',
+                        data: [15, 28, 40, 50],
+                        borderColor: '#60a5fa',
+                        backgroundColor: 'rgba(96, 165, 250, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Goal 3',
+                        data: [10, 22, 35, 45],
+                        borderColor: '#a78bfa',
+                        backgroundColor: 'rgba(167, 139, 250, 0.1)',
+                        tension: 0.4
+                    }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false
-                    },
                     plugins: {
                         legend: {
-                            position: 'bottom',
-                            labels: {
-                                color: '#94a3b8',
-                                font: { size: 11 },
-                                padding: 15
-                            }
+                            display: true,
+                            labels: { color: '#94a3b8', font: { size: 11 } }
                         },
                         tooltip: {
                             backgroundColor: 'rgba(15, 23, 42, 0.95)',
                             titleColor: '#fff',
                             bodyColor: '#94a3b8',
                             borderColor: 'rgba(255, 255, 255, 0.1)',
-                            borderWidth: 1,
-                            padding: 12,
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.dataset.label}: ${context.parsed.y}%`;
-                                }
-                            }
+                            borderWidth: 1
                         }
                     },
                     scales: {
                         x: {
                             grid: { display: false },
-                            ticks: { color: '#64748b', font: { size: 11 } }
+                            ticks: { color: '#64748b', font: { size: 10 } }
                         },
                         y: {
-                            min: 0,
+                            beginAtZero: true,
                             max: 100,
                             grid: { color: 'rgba(255, 255, 255, 0.05)' },
                             ticks: { 
-                                color: '#64748b', 
-                                font: { size: 11 },
-                                callback: function(value) {
-                                    return value + '%';
-                                }
+                                color: '#64748b',
+                                callback: value => value + '%'
                             }
                         }
                     }
@@ -993,124 +669,58 @@
             });
         }
 
-        // Open Templates Modal
-        function openTemplatesModal() {
-            const modal = document.getElementById('templatesModal');
-            const list = document.getElementById('templatesList');
-            
-            list.innerHTML = templates.map(template => `
-                <div class="template-card" onclick="useTemplate('${template.title}')">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 flex-shrink-0">
-                            <i class="ph-duotone ${template.icon} text-2xl"></i>
-                        </div>
-                        <div class="flex-1">
-                            <p class="font-bold text-white text-sm mb-1">${template.title}</p>
-                            <p class="text-xs text-slate-400">${template.description}</p>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-            
-            modal.classList.add('active');
-        }
-
-        // Close Templates Modal
-        function closeTemplatesModal() {
-            document.getElementById('templatesModal').classList.remove('active');
-        }
-
-        // Use Template
-        async function useTemplate(title) {
-            const template = templates.find(t => t.title === title);
-            if (!template) return;
-
-            closeTemplatesModal();
-
-            const { value: slot } = await Swal.fire({
-                title: 'Select Goal Slot',
-                input: 'select',
-                inputOptions: {
-                    '1': 'Primary Goal',
-                    '2': 'Secondary Goal',
-                    '3': 'Tertiary Goal'
-                },
-                inputPlaceholder: 'Choose a slot',
-                showCancelButton: true,
-                background: '#0b0b14',
-                color: '#fff',
-                confirmButtonColor: '#60a5fa'
-            });
-
-            if (slot) {
-                await editGoal(parseInt(slot));
-            }
-        }
-
-        // Show Upgrade Modal
-        function showUpgradeModal() {
+        function editGoal(goalNumber) {
             Swal.fire({
-                title: 'Upgrade to Premium',
-                html: `
-                    <div class="text-left space-y-4 p-4">
-                        <p class="text-sm text-slate-400 mb-4">
-                            Unlock AI-powered goal tracking and achieve your objectives faster.
-                        </p>
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
-                                <span class="text-sm text-slate-300">Real-time Progress Predictions</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
-                                <span class="text-sm text-slate-300">Smart Milestone Generation</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
-                                <span class="text-sm text-slate-300">Personalized Recommendations</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
-                                <span class="text-sm text-slate-300">Gamification & Rewards</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
-                                <span class="text-sm text-slate-300">Motivational Alerts</span>
-                            </div>
-                        </div>
-                        <div class="mt-6 p-4 bg-violet-500/10 rounded-lg border border-violet-500/30">
-                            <p class="text-center text-2xl font-bold text-white mb-1">$49/month</p>
-                            <p class="text-center text-xs text-slate-400">or $490/year (save 17%)</p>
-                        </div>
-                    </div>
-                `,
+                title: `Edit Goal ${goalNumber}`,
+                input: 'textarea',
+                inputValue: document.getElementById(`goalText${goalNumber}`).textContent,
+                inputPlaceholder: 'Enter your goal description...',
                 showCancelButton: true,
-                confirmButtonColor: '#7c3aed',
+                confirmButtonColor: '#34d399',
                 cancelButtonColor: '#3f3f46',
-                confirmButtonText: 'Contact Sales',
-                cancelButtonText: 'Maybe Later',
+                confirmButtonText: 'Save Goal',
+                cancelButtonText: 'Cancel',
                 background: '#0b0b14',
                 color: '#fff'
             }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = 'mailto:sales@pymax.com?subject=Premium Upgrade Inquiry';
+                if (result.isConfirmed && result.value) {
+                    document.getElementById(`goalText${goalNumber}`).textContent = result.value;
+                    Toast.fire({ icon: 'success', title: 'Goal updated' });
                 }
             });
         }
 
-        // Close modal on outside click
-        document.getElementById('templatesModal').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) {
-                closeTemplatesModal();
-            }
-        });
+        function addMilestone() {
+            Toast.fire({ icon: 'info', title: 'Milestone creation coming soon' });
+        }
 
-        // Keyboard shortcut
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeTemplatesModal();
-            }
-        });
+        function viewTemplates() {
+            Swal.fire({
+                title: 'Goal Templates',
+                html: `
+                    <div class="text-left space-y-3">
+                        <div class="p-3 bg-emerald-500/10 rounded-lg border border-emerald-500/30 cursor-pointer hover:bg-emerald-500/20 transition">
+                            <p class="font-bold text-emerald-400 text-sm mb-1">Revenue Growth</p>
+                            <p class="text-xs text-slate-400">Increase monthly revenue by 25%</p>
+                        </div>
+                        <div class="p-3 bg-blue-500/10 rounded-lg border border-blue-500/30 cursor-pointer hover:bg-blue-500/20 transition">
+                            <p class="font-bold text-blue-400 text-sm mb-1">Market Expansion</p>
+                            <p class="text-xs text-slate-400">Enter 2 new geographic markets</p>
+                        </div>
+                        <div class="p-3 bg-violet-500/10 rounded-lg border border-violet-500/30 cursor-pointer hover:bg-violet-500/20 transition">
+                            <p class="font-bold text-violet-400 text-sm mb-1">Product Launch</p>
+                            <p class="text-xs text-slate-400">Launch 3 new products this quarter</p>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: false,
+                confirmButtonColor: '#34d399',
+                confirmButtonText: 'Close',
+                background: '#0b0b14',
+                color: '#fff',
+                width: '500px'
+            });
+        }
     </script>
 </body>
 </html>

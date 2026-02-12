@@ -844,53 +844,27 @@
         const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
         const client = supabase.createClient(SU_URL, SU_KEY);
 
-        // SIMULATED USER FOR DEMO (No Supabase Auth Required)
-        let DEMO_USER = null;
-
-        async function ensureAuthentication() {
-            try {
-                // First check if there's a real Supabase user
-                const { data: { user } } = await client.auth.getUser();
-                if (user) {
-                    DEMO_USER = user;
-                    return;
-                }
-
-                // If no real user, create a demo session
-                DEMO_USER = {
-                    id: 'demo-user-' + Date.now(),
-                    email: 'demo@pymax.local',
-                    user_metadata: { full_name: 'Demo User' }
-                };
-                
-                // Save to localStorage for persistence
-                localStorage.setItem('pymax_demo_user', JSON.stringify(DEMO_USER));
-                console.log('Demo user created:', DEMO_USER.id);
-            } catch (error) {
-                // Even if Supabase fails, use demo mode
-                const stored = localStorage.getItem('pymax_demo_user');
-                if (stored) {
-                    DEMO_USER = JSON.parse(stored);
-                } else {
-                    DEMO_USER = {
-                        id: 'demo-user-local',
-                        email: 'demo@pymax.local',
-                        user_metadata: { full_name: 'Demo User' }
-                    };
-                    localStorage.setItem('pymax_demo_user', JSON.stringify(DEMO_USER));
-                }
-                console.log('Using demo mode due to error:', error.message);
+        // Verificar autenticación REAL
+        async function checkAuthentication() {
+            const { data: { user }, error } = await client.auth.getUser();
+            
+            if (error || !user) {
+                Swal.fire({
+                    title: 'Sesión requerida',
+                    text: 'Debes iniciar sesión para acceder a este módulo',
+                    icon: 'warning',
+                    confirmButtonText: 'Ir a login',
+                    background: '#0b0b14',
+                    color: '#fff'
+                }).then(() => {
+                    window.location.href = '/';
+                });
+                return null;
             }
+            
+            console.log('Usuario autenticado:', user.email);
+            return user;
         }
-
-        // Override client.auth.getUser to return demo user
-        const originalGetUser = client.auth.getUser.bind(client.auth);
-        client.auth.getUser = async function() {
-            if (DEMO_USER) {
-                return { data: { user: DEMO_USER }, error: null };
-            }
-            return originalGetUser();
-        };
 
         // Global State
         let allTransactions = [];
@@ -945,8 +919,9 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', async () => {
-            // Ensure user is authenticated (auto-login demo user if needed)
-            await ensureAuthentication();
+            // Verificar que el usuario esté autenticado
+            const user = await checkAuthentication();
+            if (!user) return; // Si no hay usuario, checkAuthentication ya redirige al login
             
             document.getElementById('transactionDate').valueAsDate = new Date();
             await loadTransactions();

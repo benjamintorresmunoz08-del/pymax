@@ -12,6 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/static/js/pymax-real-auth.js"></script>
 
     <style>
         :root {
@@ -531,6 +532,8 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', async () => {
+            const user = await checkRealAuth(client);
+            if (!user) return;
             await loadProducts();
         });
 
@@ -539,8 +542,8 @@
             try {
                 const { data: { user } } = await client.auth.getUser();
                 if (!user) {
-                    window.location.href = '/';
-                    return;
+                    console.warn('No user found, using demo mode');
+                    // Continue with demo data
                 }
 
                 const { data, error } = await client

@@ -1,332 +1,544 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Pymax · Avance de Orden Financiero</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pymax | Financial Progress Dashboard</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/static/js/pymax-real-auth.js"></script>
 
-  <style>
-    body {
-      background:
-        radial-gradient(900px 400px at 15% -10%, rgba(79,70,229,.25), transparent 40%),
-        radial-gradient(800px 500px at 85% 15%, rgba(99,102,241,.2), transparent 45%),
-        radial-gradient(700px 400px at 50% 120%, rgba(56,189,248,.12), transparent 40%),
-        #020617;
-    }
+    <style>
+        :root {
+            --bg-void: #020617;
+            --bg-card: rgba(15, 23, 42, 0.6);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
 
-    .glass {
-      background: rgba(15,23,42,0.65);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(148,163,184,0.15);
-    }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    .hover-card {
-      transition: transform .3s ease, box-shadow .3s ease;
-    }
+        body {
+            background: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
 
-    .hover-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 40px rgba(0,0,0,.45);
-    }
+        h1, h2, h3, h4 {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+        }
 
-    .progress-bar {
-      transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-  </style>
+        .nebula-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.04) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(56, 189, 248, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            backdrop-filter: blur(24px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Progress Circle */
+        .progress-circle-container {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto;
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-bg {
+            stroke: rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-ring-fill {
+            stroke: url(#gradient-primary);
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease;
+        }
+
+        .progress-percentage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Progress Bar */
+        .progress-bar-container {
+            height: 12px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1, #38bdf8);
+            border-radius: 10px;
+            transition: width 1s ease;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Timeline Item */
+        .timeline-item {
+            padding: 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            border-left: 3px solid;
+            transition: all 0.2s ease;
+        }
+
+        .timeline-item.completed { border-left-color: #22c55e; }
+        .timeline-item.current { border-left-color: #38bdf8; }
+        .timeline-item.pending { border-left-color: #64748b; }
+
+        .timeline-item:hover {
+            background: rgba(99, 102, 241, 0.1);
+            transform: translateX(4px);
+        }
+
+        /* Stat Card */
+        .stat-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(56, 189, 248, 0.05));
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.3); border-radius: 10px; }
+    </style>
 </head>
 
-<body class="text-slate-100 min-h-screen">
+<body>
+    <div class="nebula-bg"></div>
 
-<header class="glass px-8 py-5 flex justify-between items-center border-b border-slate-800">
-  <h1 class="text-xl font-semibold text-indigo-400">
-    Pymax · Avance de Orden Financiero
-  </h1>
-  <a href="/empresa/mover" class="text-sm text-slate-300 hover:text-white transition">
-    Volver al panel
-  </a>
-</header>
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-[#020617]/90 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="/empresa/mover" class="flex items-center gap-2 text-slate-400 hover:text-white transition group">
+                    <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/30 transition">
+                        <i class="ph-bold ph-arrow-left"></i>
+                    </div>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">Back</span>
+                </a>
+                <div class="h-6 w-px bg-white/10"></div>
+                <h1 class="text-xl font-bold text-white font-display tracking-tight">
+                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">PROGRESS</span>
+                </h1>
+            </div>
 
-<main class="max-w-7xl mx-auto px-6 py-10 space-y-14">
+            <div class="flex items-center gap-3">
+                <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
+                    <div class="w-2 h-2 bg-indigo-400 rounded-full animate-pulse"></div>
+                    <span class="text-xs font-semibold text-indigo-400">Tracking Active</span>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-  <section class="max-w-4xl">
-    <h2 class="text-3xl font-semibold mb-3">
-      Control, disciplina y progreso medible
-    </h2>
-    <p class="text-slate-300 leading-relaxed">
-      Pymax evalúa tu nivel de orden financiero considerando registros,
-      obligaciones, flujo de caja y consistencia. Este indicador refleja
-      qué tan preparado está tu negocio para crecer.
-    </p>
-  </section>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 md:px-6 pt-24 pb-12 relative z-10">
 
-  <section class="glass rounded-xl p-8 max-w-5xl relative overflow-hidden">
-    <div id="loadingOverlay" class="absolute inset-0 bg-slate-900/80 z-10 flex items-center justify-center">
-        <span class="text-indigo-400 animate-pulse">Analizando datos de la empresa...</span>
-    </div>
+        <div class="grid lg:grid-cols-12 gap-8">
 
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-      <div>
-        <h3 class="text-xl font-semibold">
-          Nivel de orden financiero
-        </h3>
-        <p class="text-slate-400 text-sm">
-          Calculado en tiempo real basado en tus registros.
-        </p>
-      </div>
+            <!-- Left Column: Main Progress -->
+            <div class="lg:col-span-5 space-y-6">
 
-      <div id="scoreNumber" class="text-4xl font-bold text-indigo-400 mt-4 md:mt-0 drop-shadow-lg">
-        0%
-      </div>
-    </div>
+                <!-- Overall Progress Circle -->
+                <div class="glass-card p-8 text-center fade-in">
+                    <h2 class="text-sm font-bold uppercase tracking-widest text-slate-500 mb-6">Overall Financial Progress</h2>
+                    
+                    <div class="progress-circle-container mb-6">
+                        <svg width="180" height="180" class="progress-ring">
+                            <defs>
+                                <linearGradient id="gradient-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#38bdf8;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <circle class="progress-ring-bg" cx="90" cy="90" r="75" fill="none" stroke-width="12"/>
+                            <circle class="progress-ring-fill" id="mainProgressCircle" cx="90" cy="90" r="75" fill="none" stroke-width="12" 
+                                    stroke-dasharray="471" stroke-dashoffset="141"/>
+                        </svg>
+                        <div class="progress-percentage" id="mainProgressPercentage">70%</div>
+                    </div>
 
-    <div class="w-full bg-slate-900 rounded-full h-5 overflow-hidden border border-slate-700">
-      <div
-        id="progressBar"
-        class="bg-gradient-to-r from-indigo-600 to-blue-500 h-5 rounded-full progress-bar shadow-[0_0_15px_rgba(79,70,229,0.5)]"
-        style="width: 0%;">
-      </div>
-    </div>
+                    <p class="text-sm text-slate-400 mb-4">You've completed 7 out of 10 financial milestones</p>
 
-    <p id="statusText" class="text-slate-400 text-sm mt-3">
-      Cargando análisis...
-    </p>
+                    <div class="grid grid-cols-2 gap-4 text-xs">
+                        <div class="p-3 bg-white/5 rounded-lg">
+                            <p class="text-slate-400 mb-1">Days Active</p>
+                            <p class="text-xl font-bold text-white">42</p>
+                        </div>
+                        <div class="p-3 bg-white/5 rounded-lg">
+                            <p class="text-slate-400 mb-1">Success Rate</p>
+                            <p class="text-xl font-bold text-cyan-400">92%</p>
+                        </div>
+                    </div>
+                </div>
 
-  </section>
+                <!-- Category Progress -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4">Progress by Category</h3>
 
-  <section class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl">
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-2 text-xs">
+                                <span class="font-bold text-slate-300">Cash Flow Management</span>
+                                <span class="font-bold text-indigo-400">85%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: 85%"></div>
+                            </div>
+                        </div>
 
-    <div class="glass rounded-xl p-6 hover-card">
-      <h4 class="font-semibold text-indigo-400 mb-2">
-        Registro financiero
-      </h4>
-      <p class="text-slate-300 text-sm">
-        Ingresos y gastos ingresados de forma regular y ordenada.
-      </p>
-      <p class="text-emerald-400 text-xs mt-3">Impacto Alto</p>
-    </div>
+                        <div>
+                            <div class="flex justify-between mb-2 text-xs">
+                                <span class="font-bold text-slate-300">Debt Reduction</span>
+                                <span class="font-bold text-cyan-400">72%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: 72%; background: linear-gradient(90deg, #06b6d4, #0ea5e9);"></div>
+                            </div>
+                        </div>
 
-    <div class="glass rounded-xl p-6 hover-card">
-      <h4 class="font-semibold text-indigo-400 mb-2">
-        Flujo de caja actualizado
-      </h4>
-      <p class="text-slate-300 text-sm">
-        Control diario de liquidez y capacidad operativa.
-      </p>
-      <p class="text-emerald-400 text-xs mt-3">Impacto Alto</p>
-    </div>
+                        <div>
+                            <div class="flex justify-between mb-2 text-xs">
+                                <span class="font-bold text-slate-300">Savings Goals</span>
+                                <span class="font-bold text-emerald-400">68%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: 68%; background: linear-gradient(90deg, #10b981, #34d399);"></div>
+                            </div>
+                        </div>
 
-    <div class="glass rounded-xl p-6 hover-card">
-      <h4 class="font-semibold text-indigo-400 mb-2">
-        Deudas y obligaciones
-      </h4>
-      <p class="text-slate-300 text-sm">
-        Registro claro de compromisos financieros y fechas.
-      </p>
-      <p class="text-yellow-400 text-xs mt-3">Impacto Medio</p>
-    </div>
+                        <div>
+                            <div class="flex justify-between mb-2 text-xs">
+                                <span class="font-bold text-slate-300">Budget Compliance</span>
+                                <span class="font-bold text-amber-400">55%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: 55%; background: linear-gradient(90deg, #f59e0b, #fbbf24);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    <div class="glass rounded-xl p-6 hover-card">
-      <h4 class="font-semibold text-indigo-400 mb-2">
-        Consistencia mensual
-      </h4>
-      <p class="text-slate-300 text-sm">
-        Uso continuo de la plataforma sin largos periodos de inactividad.
-      </p>
-      <p class="text-yellow-400 text-xs mt-3">Impacto Medio</p>
-    </div>
+                <!-- Monthly Comparison -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4">Monthly Progress Trend</h3>
+                    <div style="height: 200px;">
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+                </div>
 
-  </section>
+            </div>
 
-  <section class="glass rounded-xl p-8 max-w-5xl border-t-2 border-indigo-500/20">
+            <!-- Right Column: Timeline & Stats -->
+            <div class="lg:col-span-7 space-y-6">
 
-    <div class="flex items-center gap-3 mb-4">
-        <div class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></div>
-        <h3 class="text-xl font-semibold text-white">
-        Análisis Inteligente Pymax
-        </h3>
-    </div>
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 fade-in">
+                    <div class="stat-card">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-xs font-bold uppercase tracking-wide text-slate-400">Completed</p>
+                            <i class="ph-duotone ph-check-circle text-emerald-400 text-xl"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-white font-display">7</p>
+                        <p class="text-xs text-emerald-400 mt-1">+2 this week</p>
+                    </div>
 
-    <div id="aiTipsContainer" class="space-y-3 text-slate-300 text-sm">
-      <p class="text-slate-500 italic">Generando estrategia personalizada...</p>
-    </div>
+                    <div class="stat-card">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-xs font-bold uppercase tracking-wide text-slate-400">In Progress</p>
+                            <i class="ph-duotone ph-spinner text-cyan-400 text-xl"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-white font-display">3</p>
+                        <p class="text-xs text-cyan-400 mt-1">On track</p>
+                    </div>
 
-  </section>
+                    <div class="stat-card">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-xs font-bold uppercase tracking-wide text-slate-400">Pending</p>
+                            <i class="ph-duotone ph-clock text-slate-400 text-xl"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-white font-display">5</p>
+                        <p class="text-xs text-slate-400 mt-1">Scheduled</p>
+                    </div>
+                </div>
 
-  <section class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl">
+                <!-- Progress Timeline -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-list-checks text-indigo-400"></i>
+                        Financial Milestones Timeline
+                    </h3>
 
-    <a href="/empresa/mover/flujo-caja" class="glass rounded-xl p-6 hover-card block group">
-      <h4 class="font-semibold mb-2 group-hover:text-indigo-300 transition">Flujo de caja</h4>
-      <p class="text-slate-300 text-sm">Impacto directo en tu nivel de orden.</p>
-      <p class="mt-4 text-indigo-400 text-sm">Ir al flujo →</p>
-    </a>
+                    <div class="space-y-3 custom-scroll" style="max-height: 500px;">
+                        <div class="timeline-item completed">
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                                    <i class="ph-fill ph-check text-emerald-400 text-lg"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-white text-sm mb-1">Emergency Fund Established</p>
+                                    <p class="text-xs text-slate-400 mb-2">Saved $5,000 for emergency expenses</p>
+                                    <div class="flex items-center gap-2 text-[10px]">
+                                        <span class="px-2 py-1 bg-emerald-500/20 text-emerald-400 rounded-full font-semibold">COMPLETED</span>
+                                        <span class="text-slate-500">Jan 15, 2026</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-    <a href="/empresa/mover/semaforo" class="glass rounded-xl p-6 hover-card block group">
-      <h4 class="font-semibold mb-2 group-hover:text-indigo-300 transition">Semáforo Pymax</h4>
-      <p class="text-slate-300 text-sm">Evalúa la salud general del negocio.</p>
-      <p class="mt-4 text-indigo-400 text-sm">Ver estado →</p>
-    </a>
+                        <div class="timeline-item completed">
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                                    <i class="ph-fill ph-check text-emerald-400 text-lg"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-white text-sm mb-1">Credit Card Debt Reduced</p>
+                                    <p class="text-xs text-slate-400 mb-2">Paid off 50% of total credit card debt</p>
+                                    <div class="flex items-center gap-2 text-[10px]">
+                                        <span class="px-2 py-1 bg-emerald-500/20 text-emerald-400 rounded-full font-semibold">COMPLETED</span>
+                                        <span class="text-slate-500">Jan 28, 2026</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-    <a href="/empresa/mover/ia-apoyo" class="glass rounded-xl p-6 hover-card block group">
-      <h4 class="font-semibold mb-2 group-hover:text-indigo-300 transition">IA de apoyo</h4>
-      <p class="text-slate-300 text-sm">Obtén orientación para mejorar tu puntaje.</p>
-      <p class="mt-4 text-indigo-400 text-sm">Consultar →</p>
-    </a>
+                        <div class="timeline-item current">
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-cyan-500/20 flex items-center justify-center flex-shrink-0">
+                                    <i class="ph-fill ph-circle-dashed text-cyan-400 text-lg pulse"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-white text-sm mb-1">Monthly Budget Optimization</p>
+                                    <p class="text-xs text-slate-400 mb-2">Reduce monthly expenses by 15%</p>
+                                    <div class="flex items-center gap-2 text-[10px] mb-2">
+                                        <span class="px-2 py-1 bg-cyan-500/20 text-cyan-400 rounded-full font-semibold">IN PROGRESS</span>
+                                        <span class="text-slate-400">Due: Feb 28</span>
+                                    </div>
+                                    <div class="progress-bar-container h-2">
+                                        <div class="progress-bar" style="width: 62%; height: 100%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-  </section>
+                        <div class="timeline-item pending">
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-slate-500/20 flex items-center justify-center flex-shrink-0">
+                                    <i class="ph-fill ph-circle text-slate-400 text-lg"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-white text-sm mb-1">Investment Portfolio Started</p>
+                                    <p class="text-xs text-slate-400 mb-2">Allocate $1,000 to diversified investments</p>
+                                    <div class="flex items-center gap-2 text-[10px]">
+                                        <span class="px-2 py-1 bg-slate-500/20 text-slate-400 rounded-full font-semibold">PENDING</span>
+                                        <span class="text-slate-500">Due: Mar 15</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-  <section class="text-center text-slate-400 text-sm pt-6">
-    El orden financiero es la base del crecimiento sostenible.
-  </section>
+                        <div class="timeline-item pending">
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-slate-500/20 flex items-center justify-center flex-shrink-0">
+                                    <i class="ph-fill ph-circle text-slate-400 text-lg"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-white text-sm mb-1">Retirement Contribution Increase</p>
+                                    <p class="text-xs text-slate-400 mb-2">Increase monthly retirement savings by 25%</p>
+                                    <div class="flex items-center gap-2 text-[10px]">
+                                        <span class="px-2 py-1 bg-slate-500/20 text-slate-400 rounded-full font-semibold">PENDING</span>
+                                        <span class="text-slate-500">Due: Apr 1</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-</main>
+                <!-- Achievements -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-trophy text-amber-400"></i>
+                        Recent Achievements
+                    </h3>
 
-<script src="/static/js/pymax-core.js"></script>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="p-4 bg-gradient-to-br from-amber-500/10 to-orange-500/5 rounded-xl border border-amber-500/20">
+                            <div class="flex items-center gap-3 mb-2">
+                                <i class="ph-fill ph-medal text-amber-400 text-2xl"></i>
+                                <div>
+                                    <p class="font-bold text-amber-300 text-xs">Debt Destroyer</p>
+                                    <p class="text-[10px] text-slate-400">Paid off $10K debt</p>
+                                </div>
+                            </div>
+                        </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-    
-    // 1. REFERENCIAS AL DOM
-    const scoreEl = document.getElementById("scoreNumber");
-    const barEl = document.getElementById("progressBar");
-    const statusEl = document.getElementById("statusText");
-    const aiContainer = document.getElementById("aiTipsContainer");
-    const loading = document.getElementById("loadingOverlay");
+                        <div class="p-4 bg-gradient-to-br from-emerald-500/10 to-teal-500/5 rounded-xl border border-emerald-500/20">
+                            <div class="flex items-center gap-3 mb-2">
+                                <i class="ph-fill ph-fire text-emerald-400 text-2xl"></i>
+                                <div>
+                                    <p class="font-bold text-emerald-300 text-xs">30-Day Streak</p>
+                                    <p class="text-[10px] text-slate-400">Daily tracking</p>
+                                </div>
+                            </div>
+                        </div>
 
-    // 2. SIMULACIÓN DE DATOS DEL BACKEND (Supabase)
-    // Aquí es donde conectarías con: await supabase.from('transacciones').select('*')...
-    // Por ahora, simulamos que leemos la base de datos y calculamos un puntaje.
-    
-    async function obtenerDatosFinancieros() {
-        // Simulación de demora de red
-        await new Promise(r => setTimeout(r, 1500)); 
+                        <div class="p-4 bg-gradient-to-br from-indigo-500/10 to-violet-500/5 rounded-xl border border-indigo-500/20">
+                            <div class="flex items-center gap-3 mb-2">
+                                <i class="ph-fill ph-rocket text-indigo-400 text-2xl"></i>
+                                <div>
+                                    <p class="font-bold text-indigo-300 text-xs">Fast Grower</p>
+                                    <p class="text-[10px] text-slate-400">+40% savings</p>
+                                </div>
+                            </div>
+                        </div>
 
-        // ESTOS DATOS VENDRÍAN DE TU DB REAL
-        const datosSimulados = {
-            registrosTotales: 15,    // Cuántos movimientos ha registrado el usuario
-            diasActivo: 5,           // Cuántos días ha entrado
-            flujoPositivo: true,     // ¿Tiene ganancias?
-            deudasPendientes: 1      // ¿Deudas sin pagar?
-        };
+                        <div class="p-4 bg-gradient-to-br from-cyan-500/10 to-blue-500/5 rounded-xl border border-cyan-500/20">
+                            <div class="flex items-center gap-3 mb-2">
+                                <i class="ph-fill ph-crown text-cyan-400 text-2xl"></i>
+                                <div>
+                                    <p class="font-bold text-cyan-300 text-xs">Top Performer</p>
+                                    <p class="text-[10px] text-slate-400">Above 90% goals</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        return datosSimulados;
-    }
+            </div>
 
-    // 3. CÁLCULO DEL PUNTAJE (Lógica de Negocio)
-    function calcularPuntaje(datos) {
-        let score = 0;
-        
-        // Regla 1: Actividad (Máx 40%)
-        if (datos.registrosTotales > 0) score += 10;
-        if (datos.registrosTotales > 10) score += 20;
-        if (datos.diasActivo > 3) score += 10;
+        </div>
 
-        // Regla 2: Salud (Máx 40%)
-        if (datos.flujoPositivo) score += 40;
+    </main>
 
-        // Regla 3: Limpieza (Máx 20%)
-        if (datos.deudasPendientes === 0) score += 20;
-        if (datos.deudasPendientes > 0 && datos.deudasPendientes < 3) score += 10;
+    <!-- JavaScript -->
+    <script>
+        const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
+        const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
+        const client = supabase.createClient(SU_URL, SU_KEY);
 
-        return score; // Retorna número entre 0 y 100
-    }
+        let monthlyChart = null;
 
-    // 4. GENERADOR DE CONSEJOS IA (Aquí conectarás a Gemini después)
-    // Actualmente usa lógica condicional para simular inteligencia.
-    function generarConsejoIA(puntaje) {
-        let consejoHTML = "";
-
-        if (puntaje < 30) {
-            consejoHTML = `
-                <ul class="space-y-3">
-                    <li class="flex gap-2"><span class="text-red-400">⚠</span> <strong>Prioridad Crítica:</strong> Tu volumen de registros es muy bajo. La IA no puede ayudarte si no alimentas el sistema.</li>
-                    <li class="flex gap-2"><span class="text-indigo-300">💡</span> <strong>Acción Inmediata:</strong> Dedica 10 minutos hoy a subir tus gastos de la semana pasada.</li>
-                </ul>`;
-        } else if (puntaje < 70) {
-            consejoHTML = `
-                <ul class="space-y-3">
-                    <li class="flex gap-2"><span class="text-yellow-400">⚠</span> <strong>Atención:</strong> Vas por buen camino, pero tu consistencia es irregular.</li>
-                    <li class="flex gap-2"><span class="text-indigo-300">💡</span> <strong>Recomendación IA:</strong> Revisa tu flujo de caja los viernes. Tienes algunas obligaciones pendientes que podrían afectar tu liquidez.</li>
-                </ul>`;
-        } else {
-            consejoHTML = `
-                <ul class="space-y-3">
-                    <li class="flex gap-2"><span class="text-emerald-400">✓</span> <strong>Excelente Estado:</strong> Tu orden financiero es sólido. Estás listo para tomar decisiones de inversión.</li>
-                    <li class="flex gap-2"><span class="text-indigo-300">💡</span> <strong>Estrategia:</strong> Según tus datos, podrías reinvertir un 10% de tu excedente este mes. Consúltalo en el chat de IA.</li>
-                </ul>`;
-        }
-        return consejoHTML;
-    }
-
-    // 5. EJECUCIÓN PRINCIPAL
-    try {
-        const datos = await obtenerDatosFinancieros();
-        const puntajeFinal = calcularPuntaje(datos);
-        
-        // Actualizar UI
-        loading.classList.add("hidden"); // Quitar pantalla de carga
-        
-        // Animación de números
-        let currentNum = 0;
-        const interval = setInterval(() => {
-            if(currentNum >= puntajeFinal) {
-                clearInterval(interval);
-                // Mostrar consejo IA al terminar de contar
-                aiContainer.innerHTML = generarConsejoIA(puntajeFinal);
-                aiContainer.classList.add("animate-pulse"); // Efecto visual suave
-                setTimeout(() => aiContainer.classList.remove("animate-pulse"), 1000);
-            } else {
-                currentNum++;
-                scoreEl.innerText = currentNum + "%";
-                barEl.style.width = currentNum + "%";
-                
-                // Cambiar color de barra según progreso
-                if(currentNum < 30) barEl.className = "bg-red-600 h-5 rounded-full progress-bar";
-                else if(currentNum < 70) barEl.className = "bg-yellow-500 h-5 rounded-full progress-bar";
-                else barEl.className = "bg-emerald-500 h-5 rounded-full progress-bar";
-            }
-        }, 20); // Velocidad de la animación
-
-        // Texto de estado
-        if(puntajeFinal < 30) statusEl.innerText = "Nivel crítico. Requiere atención inmediata.";
-        else if(puntajeFinal < 70) statusEl.innerText = "Nivel regular. Mejora la consistencia.";
-        else statusEl.innerText = "Nivel óptimo. ¡Sigue así!";
-
-    } catch (error) {
-        console.error("Error cargando progreso:", error);
-        loading.innerHTML = "<span class='text-red-400'>Error de conexión</span>";
-    }
-
-});
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Busca TODOS los enlaces (<a>) de tu código original
-    document.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', function(e) {
-            let url = this.getAttribute('href');
-            
-            // Solo actuamos si el enlace apunta a un archivo .html
-            if (url && url.includes('.html')) {
-                e.preventDefault(); // Detiene el error 404
-                
-                // 1. Quita la extensión .html automáticamente
-                let nuevaRuta = url.replace('.html', '');
-
-                // 2. DICCIONARIO DE CORRECCIONES (Para los botones "Volver")
-                // Aquí le enseñamos a ir a las rutas principales correctas
-                if (url.includes('panel-mover.html')) nuevaRuta = "/empresa/mover";
-                if (url.includes('index-empresa.html')) nuevaRuta = "/empresa";
-                if (url.includes('index.html')) nuevaRuta = "/";
-
-                // 3. Te envía a la ruta limpia de Python
-                window.location.href = nuevaRuta;
-            }
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await checkRealAuth(client);
+            if (!user) return;
+            initializeCharts();
         });
-    });
-});
-</script>
+
+        function initializeCharts() {
+            const ctx = document.getElementById('monthlyChart');
+            
+            monthlyChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+                    datasets: [{
+                        label: 'Progress',
+                        data: [45, 58, 65, 70],
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        tension: 0.4,
+                        borderWidth: 3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#fff',
+                            bodyColor: '#94a3b8'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#64748b' }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { 
+                                color: '#64748b',
+                                callback: value => value + '%'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 </html>
