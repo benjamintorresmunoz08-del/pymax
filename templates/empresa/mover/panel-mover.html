@@ -959,7 +959,10 @@ function loadCashFlowChart(operations) {
 function renderRecentTransactions(operations) {
   const container = document.getElementById('recentTransactionsContainer');
   
+  console.log('📋 Renderizando transacciones:', operations);
+  
   if (!operations || operations.length === 0) {
+    console.log('⚠️ No hay transacciones para mostrar');
     container.innerHTML = `
       <div class="text-center py-8">
         <i class="ph ph-empty text-5xl text-slate-600 mb-3"></i>
@@ -971,6 +974,8 @@ function renderRecentTransactions(operations) {
     `;
     return;
   }
+  
+  console.log('✅ Mostrando', operations.length, 'transacciones');
   
   // Últimas 5 transacciones
   const recent = operations.slice(0, 5);
@@ -1100,17 +1105,21 @@ async function handleFiles(files) {
     document.getElementById('progressBar').style.width = '100%';
     
     // Éxito
-    alert(`✅ ${transactions.length} transacciones importadas correctamente`);
+    console.log(`✅ ${transactions.length} transacciones importadas`);
+    document.getElementById('uploadStatus').textContent = `✅ ${transactions.length} transacciones importadas`;
     
     // Recargar datos
     setTimeout(async () => {
+      console.log('🔄 Recargando datos después de import...');
       await pymaxData.loadAllData();
       await loadStats();
       const ops = pymaxData.getData('operations');
+      console.log('📊 Operaciones después de import:', ops.length);
       renderRecentTransactions(ops);
       document.getElementById('uploadProgress').classList.add('hidden');
       fileInput.value = ''; // Reset input
-    }, 1000);
+      alert(`✅ ${transactions.length} transacciones importadas correctamente`);
+    }, 1500);
     
   } catch (error) {
     console.error('Error importing file:', error);
@@ -1238,45 +1247,56 @@ async function uploadToSupabase(transactions) {
 }
 
 // Inicializar
-(async function init() {
+(async function initApp() {
   try {
-    console.log('Iniciando aplicación...');
+    console.log('🚀 Iniciando aplicación...');
     
-    // CRÍTICO: Autenticar PRIMERO
+    // PASO 1: Autenticar
     await ensureAuthentication();
     
     if (!DEMO_USER) {
-      console.error('ERROR: DEMO_USER es null después de ensureAuthentication');
+      console.error('❌ ERROR: DEMO_USER es null');
       alert('Error de autenticación. Recarga la página.');
       return;
     }
     
-    console.log('Usuario listo:', DEMO_USER.id);
+    console.log('✅ Usuario listo:', DEMO_USER.id);
     
-    // Cargar datos
-    await pymaxData.loadAllData();
-    console.log('Datos cargados');
+    // PASO 2: Inicializar Data Manager con supabase
+    console.log('🔄 Inicializando Data Manager...');
+    const initSuccess = await pymaxData.init(supabase);
     
-    // Cargar stats
+    if (!initSuccess) {
+      console.error('❌ Error inicializando Data Manager');
+      // Forzar usuario demo en pymaxData
+      pymaxData.supabase = supabase;
+      pymaxData.user = DEMO_USER;
+      await pymaxData.loadAllData();
+    }
+    
+    console.log('✅ Data Manager listo');
+    
+    // PASO 3: Cargar stats
     await loadStats();
-    console.log('Stats cargados');
+    console.log('✅ Stats cargados');
     
-    // Renderizar transacciones recientes
+    // PASO 4: Renderizar transacciones recientes
     const operations = pymaxData.getData('operations');
-    console.log('Operaciones encontradas:', operations.length);
+    console.log('📊 Operaciones encontradas:', operations ? operations.length : 0);
     renderRecentTransactions(operations);
     
-    // Listener para actualizaciones
+    // PASO 5: Listener para actualizaciones
     document.addEventListener('data_updated', () => {
+      console.log('🔄 Datos actualizados, recargando UI...');
       loadStats();
       const ops = pymaxData.getData('operations');
       renderRecentTransactions(ops);
     });
     
-    console.log('Inicialización completa');
+    console.log('✅ Inicialización completa');
     
   } catch (error) {
-    console.error('Error en inicialización:', error);
+    console.error('❌ Error fatal en inicialización:', error);
     alert('Error al cargar la aplicación: ' + error.message);
   }
 })();
