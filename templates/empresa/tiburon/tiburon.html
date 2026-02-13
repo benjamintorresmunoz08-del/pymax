@@ -518,7 +518,7 @@
         // Credenciales desde variables de entorno (configuradas en Render)
         const SU_URL = '{{ SUPABASE_URL or "https://haqjuyagyvxynmulanhe.supabase.co" }}';
         const SU_KEY = '{{ SUPABASE_KEY or "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g" }}';
-        const supabase = supabase.createClient(SU_URL, SU_KEY);
+        const client = window.supabase.createClient(SU_URL, SU_KEY);
 
         let conversionChart = null;
 
@@ -544,9 +544,9 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', async () => {
-            const user = await checkRealAuth(supabase);
+            const user = await checkRealAuth(client);
             if (!user) return;
-            await pymaxData.init(supabase);
+            await pymaxData.init(client);
             pymaxData.on('data_updated', () => loadLeads());
             window.addEventListener('languageChanged', () => updateUI());
             loadLeads();

@@ -521,11 +521,10 @@
   </footer>
 
 <script>
-// Configuración Supabase
-// Credenciales desde variables de entorno (configuradas en Render)
+// Configuración Supabase (var evita "Identifier 'supabase' has already been declared")
 const SU_URL = '{{ SUPABASE_URL or "https://haqjuyagyvxynmulanhe.supabase.co" }}';
 const SU_KEY = '{{ SUPABASE_KEY or "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g" }}';
-const supabase = window.supabase.createClient(SU_URL, SU_KEY);
+var supabase = window.__pymaxSupabaseClient || (window.__pymaxSupabaseClient = window.supabase.createClient(SU_URL, SU_KEY));
 
 // SIMULATED USER FOR DEMO
 let DEMO_USER = null;

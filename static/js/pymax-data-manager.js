@@ -85,35 +85,42 @@ class PymaxDataManager {
                 .eq('user_id', userId)
                 .maybeSingle();
             
-            const { data: extraGoals, error: extraError } = await this.supabase
-                .from('user_goals_extra')
-                .select('*')
-                .eq('user_id', userId)
-                .order('slot_number');
+            let extraGoals = [];
+            let extraError = null;
+            if (!sessionStorage.getItem('pymax_goals_extra_disabled')) {
+                try {
+                    const result = await this.supabase
+                        .from('user_goals_extra')
+                        .select('*')
+                        .eq('user_id', userId)
+                        .order('slot_number');
+                    extraGoals = result.data || [];
+                    extraError = result.error;
+                    if (result.error) sessionStorage.setItem('pymax_goals_extra_disabled', '1');
+                } catch (e) {
+                    extraError = e;
+                    sessionStorage.setItem('pymax_goals_extra_disabled', '1');
+                    console.warn('user_goals_extra no disponible:', e?.message || e);
+                }
+            }
             
             this.cache.goals = { 1: null, 2: null, 3: null };
             if (!mainError && mainGoal) this.cache.goals[1] = mainGoal;
-            if (!extraError && extraGoals) {
+            if (!extraError && extraGoals && extraGoals.length > 0) {
                 extraGoals.forEach(g => { this.cache.goals[g.slot_number] = g; });
             }
             
-            // Cargar leads (CRM - Tiburón)
-            const { data: leads, error: leadsError } = await this.supabase
-                .from('user_leads')
-                .select('*')
-                .eq('user_id', userId)
-                .order('created_at', { ascending: false });
+            // Cargar leads (CRM - Tiburón) - tolerante si tabla no existe
+            try {
+                const rLeads = await this.supabase.from('user_leads').select('*').eq('user_id', userId).order('created_at', { ascending: false });
+                if (!rLeads.error) this.cache.leads = rLeads.data || [];
+            } catch (e) { console.warn('user_leads no disponible:', e?.message || e); }
             
-            if (!leadsError) this.cache.leads = leads || [];
-            
-            // Cargar tareas (Operations - Hambre)
-            const { data: tasks, error: tasksError } = await this.supabase
-                .from('user_tasks')
-                .select('*')
-                .eq('user_id', userId)
-                .order('created_at', { ascending: false });
-            
-            if (!tasksError) this.cache.tasks = tasks || [];
+            // Cargar tareas (Operations - Hambre) - tolerante si tabla no existe
+            try {
+                const rTasks = await this.supabase.from('user_tasks').select('*').eq('user_id', userId).order('created_at', { ascending: false });
+                if (!rTasks.error) this.cache.tasks = rTasks.data || [];
+            } catch (e) { console.warn('user_tasks no disponible:', e?.message || e); }
             
             this.cache.lastUpdate = new Date();
             
