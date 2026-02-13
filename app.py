@@ -15,6 +15,18 @@ secret = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
 app.secret_key = secret
 app.permanent_session_lifetime = timedelta(days=365)
 
+# CONFIGURACIÓN SUPABASE (para pasar a templates)
+SUPABASE_URL = os.getenv('SUPABASE_URL', '')
+SUPABASE_KEY = os.getenv('SUPABASE_KEY', '')
+
+# Context processor para hacer las variables disponibles en todos los templates
+@app.context_processor
+def inject_config():
+    return {
+        'SUPABASE_URL': SUPABASE_URL,
+        'SUPABASE_KEY': SUPABASE_KEY
+    }
+
 # ==============================================================================
 # RUTAS PRINCIPALES
 # ==============================================================================

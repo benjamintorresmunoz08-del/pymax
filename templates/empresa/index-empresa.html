@@ -296,10 +296,10 @@
 </body>
 
 <script>
-    // 1. CONFIGURACIÓN SUPABASE
-    const SU_URL_INDEX = 'https://haqjuyagyvxynmulanhe.supabase.co';
-    const SU_KEY_INDEX = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
-    const supabaseClient = window.supabase.createClient(SU_URL_INDEX, SU_KEY_INDEX);
+    // Credenciales desde variables de entorno (configuradas en Render)
+    const SU_URL = '{{ SUPABASE_URL }}';
+    const SU_KEY = '{{ SUPABASE_KEY }}';
+    const supabaseClient = window.supabase.createClient(SU_URL, SU_KEY);
 
     document.addEventListener('DOMContentLoaded', () => {
         
