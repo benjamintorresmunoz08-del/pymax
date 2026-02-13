@@ -18,6 +18,7 @@
   <!-- PYMAX CORE SYSTEMS -->
   <script src="/static/js/pymax-performance.js"></script>
   <script src="/static/js/pymax-i18n.js"></script>
+  <script src="/static/js/pymax-company-manager.js"></script>
   <script src="/static/js/pymax-data-manager.js"></script>
   <script src="/static/js/pymax-notifications.js"></script>
   <link rel="stylesheet" href="/static/css/pymax-notifications.css">
@@ -1227,14 +1228,21 @@ function parseFileData(data, fileName) {
       }
     }
     
-    transactions.push({
+    const transaction = {
       type,
       amount,
       concept,
       category: 'Importado',
       created_at: date.toISOString(),
       user_id: DEMO_USER.id
-    });
+    };
+    
+    // Agregar company_id si existe
+    if (pymaxData.company?.id) {
+      transaction.company_id = pymaxData.company.id;
+    }
+    
+    transactions.push(transaction);
   }
   
   return transactions;
@@ -1273,7 +1281,20 @@ async function uploadToSupabase(transactions) {
     
     console.log('✅ Usuario listo:', DEMO_USER.id);
     
-    // PASO 2: Inicializar Data Manager con supabase
+    // PASO 2: Inicializar Company Manager
+    pymaxCompany.init(supabase);
+    const companyResult = await pymaxCompany.getCurrentCompany();
+    
+    // Si no tiene empresa, redirigir a onboarding
+    if (!companyResult || !companyResult.company) {
+      console.warn('⚠️ Usuario sin empresa, redirigiendo a onboarding...');
+      window.location.href = '/onboarding';
+      return;
+    }
+    
+    console.log('✅ Empresa:', companyResult.company.name);
+    
+    // PASO 3: Inicializar Data Manager con supabase
     console.log('🔄 Inicializando Data Manager...');
     const initSuccess = await pymaxData.init(supabase);
     
@@ -1282,6 +1303,7 @@ async function uploadToSupabase(transactions) {
       // Forzar usuario demo en pymaxData
       pymaxData.supabase = supabase;
       pymaxData.user = DEMO_USER;
+      pymaxData.company = companyResult.company;
       await pymaxData.loadAllData();
     }
     

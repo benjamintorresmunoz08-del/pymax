@@ -51,6 +51,10 @@ def personal_home():
 def empresa_home():
     return render_template('empresa/index-empresa.html')
 
+@app.route('/onboarding')
+def onboarding():
+    return render_template('onboarding.html')
+
 # ==============================================================================
 # RUTAS MOVER (Servicio Básico)
 # ==============================================================================

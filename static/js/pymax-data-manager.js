@@ -8,6 +8,7 @@ class PymaxDataManager {
     constructor() {
         this.supabase = null;
         this.user = null;
+        this.company = null;
         this.listeners = {};
         this.cache = {
             operations: [],
@@ -37,6 +38,24 @@ class PymaxDataManager {
         this.user = user;
         console.log('✅ Data Manager initialized for user:', user.email);
         
+        // Obtener empresa del usuario
+        const { data: membership, error: memberError } = await this.supabase
+            .from('company_members')
+            .select(`
+                *,
+                company:companies(*)
+            `)
+            .eq('user_id', user.id)
+            .single();
+
+        if (memberError) {
+            console.warn('⚠️ Usuario no tiene empresa asignada');
+            this.company = null;
+        } else {
+            this.company = membership.company;
+            console.log('✅ Empresa cargada:', this.company.name);
+        }
+        
         // Cargar datos iniciales
         await this.loadAllData();
         
@@ -52,13 +71,21 @@ class PymaxDataManager {
     async loadAllData() {
         try {
             const userId = this.user.id;
+            const companyId = this.company?.id;
             
-            // Cargar operaciones
-            const { data: operations, error: opError } = await this.supabase
+            // Cargar operaciones (filtrar por company_id si existe)
+            let operationsQuery = this.supabase
                 .from('user_operations')
                 .select('*')
-                .eq('user_id', userId)
                 .order('created_at', { ascending: false });
+            
+            if (companyId) {
+                operationsQuery = operationsQuery.eq('company_id', companyId);
+            } else {
+                operationsQuery = operationsQuery.eq('user_id', userId);
+            }
+            
+            const { data: operations, error: opError } = await operationsQuery;
             
             if (!opError) this.cache.operations = operations || [];
             
@@ -199,12 +226,19 @@ class PymaxDataManager {
      */
     async addOperation(operationData) {
         try {
+            const insertData = {
+                ...operationData,
+                user_id: this.user.id
+            };
+            
+            // Agregar company_id si existe
+            if (this.company?.id) {
+                insertData.company_id = this.company.id;
+            }
+            
             const { data, error } = await this.supabase
                 .from('user_operations')
-                .insert({
-                    ...operationData,
-                    user_id: this.user.id
-                })
+                .insert(insertData)
                 .select()
                 .single();
             
