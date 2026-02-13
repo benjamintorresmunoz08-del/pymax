@@ -181,13 +181,13 @@ class PymaxDataManager {
             .reduce((sum, op) => sum + parseFloat(op.amount || 0), 0);
         
         const balance = income - expenses;
-        const margin = income > 0 ? ((income - expenses) / income * 100).toFixed(1) : 0;
+        const margin = income > 0 ? ((income - expenses) / income * 100) : 0;
         
         return {
             income,
             expenses,
             balance,
-            margin,
+            margin: isNaN(margin) || !isFinite(margin) ? 0 : margin,
             operations: operations.length,
             incomeCount: operations.filter(op => op.type === 'ingreso' || op.type === 'income').length,
             expensesCount: operations.filter(op => op.type === 'egreso' || op.type === 'expense').length

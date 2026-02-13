@@ -776,7 +776,9 @@ async function loadStats() {
     const stats = pymaxData.getFinancialStats('month');
     const operations = pymaxData.getData('operations');
     
-    if (stats.operations === 0) {
+    console.log('📊 Stats calculados:', stats);
+    
+    if (!stats || stats.operations === 0) {
       document.getElementById('currentBalance').textContent = formatCurrency(0);
       document.getElementById('monthIncome').textContent = formatCurrency(0);
       document.getElementById('monthExpenses').textContent = formatCurrency(0);
@@ -810,11 +812,13 @@ async function loadStats() {
       return;
     }
     
-    // Actualizar UI
-    document.getElementById('currentBalance').textContent = formatCurrency(stats.balance);
-    document.getElementById('monthIncome').textContent = formatCurrency(stats.income);
-    document.getElementById('monthExpenses').textContent = formatCurrency(stats.expenses);
-    document.getElementById('netMargin').textContent = stats.margin.toFixed(1) + '%';
+    // Actualizar UI con validación
+    document.getElementById('currentBalance').textContent = formatCurrency(stats.balance || 0);
+    document.getElementById('monthIncome').textContent = formatCurrency(stats.income || 0);
+    document.getElementById('monthExpenses').textContent = formatCurrency(stats.expenses || 0);
+    
+    const marginValue = (typeof stats.margin === 'number' && isFinite(stats.margin)) ? stats.margin : 0;
+    document.getElementById('netMargin').textContent = marginValue.toFixed(1) + '%';
     
     document.getElementById('balanceChange').innerHTML = '<i class="ph ph-trend-up"></i><span>Este mes</span>';
     document.getElementById('incomeChange').innerHTML = `<i class="ph ph-trend-up"></i><span>+${stats.incomeCount} trans.</span>`;
