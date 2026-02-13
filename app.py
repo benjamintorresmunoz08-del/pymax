@@ -111,6 +111,11 @@ def mover_export_excel():
 def tiburon():
     return render_template('empresa/tiburon/tiburon.html')
 
+# DEMO - Futuro simulado de Tiburón
+@app.route('/empresa/tiburon/demo')
+def tiburon_demo():
+    return render_template('empresa/tiburon/demo.html')
+
 # ==============================================================================
 # RUTAS HAMBRE (Operations Premium)
 # ==============================================================================
@@ -118,6 +123,11 @@ def tiburon():
 @app.route('/empresa/hambre')
 def hambre():
     return render_template('empresa/hambre/hambre.html')
+
+# DEMO - Futuro simulado de Hambre
+@app.route('/empresa/hambre/demo')
+def hambre_demo():
+    return render_template('empresa/hambre/demo.html')
 
 # ==============================================================================
 # ERROR HANDLERS
