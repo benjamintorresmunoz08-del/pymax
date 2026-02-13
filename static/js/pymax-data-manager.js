@@ -85,24 +85,26 @@ class PymaxDataManager {
                 .eq('user_id', userId)
                 .maybeSingle();
             
+            // DESHABILITADO: user_goals_extra (tabla no existe)
+            // Para habilitar: crear tabla con database/CREAR_USER_GOALS_EXTRA.sql
             let extraGoals = [];
             let extraError = null;
-            if (!sessionStorage.getItem('pymax_goals_extra_disabled')) {
-                try {
-                    const result = await this.supabase
-                        .from('user_goals_extra')
-                        .select('*')
-                        .eq('user_id', userId)
-                        .order('slot_number');
-                    extraGoals = result.data || [];
-                    extraError = result.error;
-                    if (result.error) sessionStorage.setItem('pymax_goals_extra_disabled', '1');
-                } catch (e) {
-                    extraError = e;
-                    sessionStorage.setItem('pymax_goals_extra_disabled', '1');
-                    console.warn('user_goals_extra no disponible:', e?.message || e);
-                }
-            }
+            // if (!sessionStorage.getItem('pymax_goals_extra_disabled')) {
+            //     try {
+            //         const result = await this.supabase
+            //             .from('user_goals_extra')
+            //             .select('*')
+            //             .eq('user_id', userId)
+            //             .order('slot_number');
+            //         extraGoals = result.data || [];
+            //         extraError = result.error;
+            //         if (result.error) sessionStorage.setItem('pymax_goals_extra_disabled', '1');
+            //     } catch (e) {
+            //         extraError = e;
+            //         sessionStorage.setItem('pymax_goals_extra_disabled', '1');
+            //         console.warn('user_goals_extra no disponible:', e?.message || e);
+            //     }
+            // }
             
             this.cache.goals = { 1: null, 2: null, 3: null };
             if (!mainError && mainGoal) this.cache.goals[1] = mainGoal;
