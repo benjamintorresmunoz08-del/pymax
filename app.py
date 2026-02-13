@@ -103,6 +103,11 @@ def mover_ia():
 def mover_export_excel():
     return render_template('empresa/mover/exportar-excel.html')
 
+# DEMO - Futuro simulado de Mover
+@app.route('/empresa/mover/demo')
+def mover_demo():
+    return render_template('empresa/mover/demo.html')
+
 # ==============================================================================
 # RUTAS TIBURÓN (CRM Premium)
 # ==============================================================================
