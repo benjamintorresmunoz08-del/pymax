@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Financial Audit Ledger - Complete Transaction History" />
+    <title>Pymax | Audit Ledger</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- PYMAX CORE SYSTEMS -->
+    <script src="/static/js/pymax-performance.js"></script>
+    <script src="/static/js/pymax-i18n.js"></script>
+    <script src="/static/js/pymax-data-manager.js"></script>
+    <script src="/static/js/pymax-real-auth.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <style>
+        :root {
+            --bg-void: #020617;
+            --bg-card: rgba(15, 23, 42, 0.6);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --neon-cyan: #60a5fa;
+            --neon-violet: #a78bfa;
+            --neon-emerald: #34d399;
+            --neon-rose: #fb7185;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        .nebula-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(96, 165, 250, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(167, 139, 250, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            backdrop-filter: blur(24px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        /* AI Panel */
+        .ai-premium-panel {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(139, 92, 246, 0.1));
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-premium-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #a78bfa, transparent);
+        }
+
+        .ai-lock-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 40px rgba(139, 92, 246, 0.5);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .ai-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        .ai-upgrade-btn {
+            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(124, 58, 237, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-upgrade-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(124, 58, 237, 0.6);
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 16px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border-glass);
+            background: rgba(15, 23, 42, 0.8);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        th:hover {
+            color: white;
+            background: rgba(15, 23, 42, 0.95);
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #cbd5e1;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Badge */
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .type-badge.income {
+            background: rgba(52, 211, 153, 0.2);
+            color: #6ee7b7;
+            border: 1px solid rgba(52, 211, 153, 0.3);
+        }
+
+        .type-badge.expense {
+            background: rgba(251, 113, 133, 0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(251, 113, 133, 0.3);
+        }
+
+        /* Modern Input */
+        .modern-input {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: white;
+            outline: none;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .modern-input:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.2);
+        }
+
+        select.modern-input {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Modern Button */
+        .modern-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 30px rgba(96, 165, 250, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 280px;
+            padding: 20px 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(96, 165, 250, 0.3); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(96, 165, 250, 0.5); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            table { font-size: 0.8rem; }
+            th, td { padding: 12px 8px; }
+            .chart-container { height: 220px; padding: 10px 5px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="nebula-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-[#020617]/90 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="/empresa/mover" class="flex items-center gap-2 text-slate-400 hover:text-white transition group">
+                    <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/30 transition">
+                        <i class="ph-bold ph-arrow-left"></i>
+                    </div>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest" data-i18n="back">Back</span>
+                </a>
+                <div class="h-6 w-px bg-white/10"></div>
+                <h1 class="text-xl font-bold text-white font-display tracking-tight">
+                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400" data-i18n="audit_ledger">AUDIT LEDGER</span>
+                </h1>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <!-- Language Selector -->
+                <select data-language-selector class="text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-white/20 transition cursor-pointer">
+                    <option value="es">ES</option>
+                    <option value="en">EN</option>
+                    <option value="pt">PT</option>
+                </select>
+                <button onclick="exportToExcel()" class="flex items-center gap-2 px-3 py-2 rounded-full border border-emerald-500/30 text-emerald-400 bg-emerald-500/5 hover:bg-emerald-500/10 text-[10px] font-bold uppercase transition">
+                    <i class="ph-bold ph-file-xls"></i>
+                    <span class="hidden md:inline" data-i18n="export_excel">Export Excel</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 md:px-6 pt-24 pb-12 relative z-10">
+
+        <div class="grid lg:grid-cols-12 gap-8">
+
+            <!-- Left Column: Table -->
+            <div class="lg:col-span-8 space-y-6">
+
+                <!-- Filters & Search -->
+                <div class="glass-card p-6 fade-in">
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <div class="md:col-span-2">
+                            <div class="relative">
+                                <i class="ph-bold ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                                <input type="text" id="searchInput" data-i18n-placeholder="search_transactions" placeholder="Search transactions..." class="modern-input pl-11 text-sm" onkeyup="filterTable()">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <select id="filterType" class="modern-input text-sm" onchange="filterTable()">
+                                <option value="all" data-i18n="all_types">All Types</option>
+                                <option value="ingreso" data-i18n="income">Income</option>
+                                <option value="egreso" data-i18n="expense">Expenses</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <select id="filterCategory" class="modern-input text-sm" onchange="filterTable()">
+                                <option value="all" data-i18n="all_categories">All Categories</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transactions Table -->
+                <div class="glass-card fade-in">
+                    <div class="p-6 border-b border-white/10 flex justify-between items-center">
+                        <h2 class="text-lg font-bold text-white font-display flex items-center gap-2">
+                            <i class="ph-duotone ph-list-dashes text-cyan-400"></i>
+                            <span data-i18n="transaction_history">Transaction History</span>
+                        </h2>
+                        <p class="text-xs text-slate-500">
+                            <span data-i18n="total">Total</span>: <span id="totalRecords" class="font-bold text-white">0</span> <span data-i18n="records">records</span>
+                        </p>
+                    </div>
+                    
+                    <div class="overflow-x-auto custom-scroll" style="max-height: 800px;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th onclick="sortTable('date')">
+                                        <span data-i18n="date">Date</span> <i class="ph-bold ph-caret-up-down text-xs ml-1"></i>
+                                    </th>
+                                    <th onclick="sortTable('concept')">
+                                        <span data-i18n="description">Description</span> <i class="ph-bold ph-caret-up-down text-xs ml-1"></i>
+                                    </th>
+                                    <th onclick="sortTable('category')">
+                                        <span data-i18n="category">Category</span> <i class="ph-bold ph-caret-up-down text-xs ml-1"></i>
+                                    </th>
+                                    <th><span data-i18n="type">Type</span></th>
+                                    <th onclick="sortTable('amount')" style="text-align: right;">
+                                        <span data-i18n="amount">Amount</span> <i class="ph-bold ph-caret-up-down text-xs ml-1"></i>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <tr>
+                                    <td colspan="5" class="text-center py-20">
+                                        <div class="flex flex-col items-center">
+                                            <div class="loading-spinner mb-4"></div>
+                                            <p class="text-sm text-slate-500" data-i18n="loading_transactions">Loading transactions...</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="p-4 border-t border-white/10 bg-[#0f172a]/40 flex justify-between items-center">
+                        <p class="text-xs text-slate-500">
+                            <span data-i18n="showing">Showing</span> <span id="showingCount">0</span> <span data-i18n="of">of</span> <span id="totalCount">0</span> <span data-i18n="transactions">transactions</span>
+                        </p>
+                        <div class="flex gap-3">
+                            <button onclick="exportToCSV()" class="text-xs font-bold text-cyan-400 hover:text-cyan-300 transition uppercase" data-i18n="export_csv">Export CSV</button>
+                            <button onclick="exportToPDF()" class="text-xs font-bold text-violet-400 hover:text-violet-300 transition uppercase" data-i18n="export_pdf">Export PDF</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: AI Panel & Analytics -->
+            <div class="lg:col-span-4 space-y-6">
+
+                <!-- AI AUDIT INTELLIGENCE - ACTIVE -->
+                <div class="ai-premium-panel fade-in">
+                    <div class="flex items-center justify-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                            <i class="ph-fill ph-brain text-2xl text-white"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-white font-display mb-2" data-i18n="ai_audit_intelligence">
+                            AI Audit Intelligence
+                        </h3>
+                        <p class="text-sm text-emerald-400 mb-1 flex items-center justify-center gap-2">
+                            <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                            <span data-i18n="active_monitoring">Active & Monitoring</span>
+                        </p>
+                        <p class="text-xs text-slate-400" data-i18n="advanced_financial_analysis">Advanced financial analysis included</p>
+                    </div>
+
+                    <div class="space-y-3 mb-6">
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-shield-check text-emerald-400 text-xl"></i>
+                            <span class="text-sm text-slate-300" data-i18n="fraud_detection_active">Real-time fraud detection active</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-detective text-emerald-400 text-xl"></i>
+                            <span class="text-sm text-slate-300" data-i18n="pattern_recognition_enabled">Pattern recognition enabled</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-warning-circle text-emerald-400 text-xl"></i>
+                            <span class="text-sm text-slate-300" data-i18n="anomaly_alerts_configured">Anomaly alerts configured</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-calculator text-emerald-400 text-xl"></i>
+                            <span class="text-sm text-slate-300" data-i18n="tax_optimization_available">Tax optimization available</span>
+                        </div>
+                        <div class="ai-feature-item">
+                            <i class="ph-fill ph-crystal-ball text-emerald-400 text-xl"></i>
+                            <span class="text-sm text-slate-300" data-i18n="forecasting_risk_ready">Forecasting & risk assessment ready</span>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <a href="{{ url_for('mover_ia') }}" class="ai-upgrade-btn inline-flex items-center gap-2">
+                            <i class="ph-bold ph-chats-circle"></i>
+                            <span data-i18n="chat_with_ai_assistant">Chat with AI Assistant</span>
+                        </a>
+                        <p class="text-xs text-slate-500 mt-3" data-i18n="included_with_pymax_plan">Included with your PYMAX plan</p>
+                    </div>
+                </div>
+
+                <!-- Summary Stats -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-chart-bar text-emerald-400"></i>
+                        <span data-i18n="summary">Summary</span>
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+                            <p class="text-xs font-bold uppercase tracking-widest text-emerald-400 mb-1" data-i18n="total_income">Total Income</p>
+                            <p class="text-2xl font-bold text-white font-display" id="summaryIncome">$0</p>
+                        </div>
+                        
+                        <div class="p-4 rounded-lg bg-rose-500/10 border border-rose-500/30">
+                            <p class="text-xs font-bold uppercase tracking-widest text-rose-400 mb-1" data-i18n="total_expenses">Total Expenses</p>
+                            <p class="text-2xl font-bold text-white font-display" id="summaryExpenses">$0</p>
+                        </div>
+                        
+                        <div class="p-4 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
+                            <p class="text-xs font-bold uppercase tracking-widest text-cyan-400 mb-1" data-i18n="net_balance">Net Balance</p>
+                            <p class="text-2xl font-bold text-white font-display" id="summaryNet">$0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Distribution Chart -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-chart-donut text-violet-400"></i>
+                        <span data-i18n="distribution">Distribution</span>
+                    </h3>
+                    
+                    <div class="chart-container">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Loading Spinner CSS -->
+    <style>
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(96, 165, 250, 0.2);
+            border-top-color: var(--neon-cyan);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+
+    <!-- JavaScript -->
+    <script>
+        // Supabase Configuration
+        // Credenciales desde variables de entorno (configuradas en Render)
+        const SU_URL = '{{ SUPABASE_URL or "https://haqjuyagyvxynmulanhe.supabase.co" }}';
+        const SU_KEY = '{{ SUPABASE_KEY or "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g" }}';
+        const client = supabase.createClient(SU_URL, SU_KEY);
+
+        let allTransactions = [];
+        let filteredTransactions = [];
+        let sortAscending = true;
+        let distributionChart = null;
+
+        // Toast Notification
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            background: '#0b0b14',
+            color: '#fff'
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await checkRealAuth(client);
+            if (!user) return;
+
+            const initOk = await pymaxData.init(client);
+            if (!initOk) return;
+
+            pymaxData.on('data_updated', () => loadTransactions());
+
+            window.addEventListener('languageChanged', () => {
+                populateCategories();
+                renderTable();
+            });
+
+            await loadTransactions();
+        });
+
+        // Load Transactions
+        async function loadTransactions() {
+            try {
+                const ops = pymaxData.getData('operations') || [];
+                allTransactions = [...ops];
+                filteredTransactions = allTransactions;
+                
+                populateCategories();
+                renderTable();
+                updateSummary();
+                updateDistributionChart();
+
+            } catch (error) {
+                console.error('Error loading transactions:', error);
+                Toast.fire({ icon: 'error', title: window.i18n?.t('failed_load_transactions') || 'Failed to load transactions' });
+            }
+        }
+
+        // Populate Categories
+        function populateCategories() {
+            const categories = [...new Set(allTransactions.map(t => t.category))].filter(c => c).sort();
+            const select = document.getElementById('filterCategory');
+            const t = key => window.i18n?.t(key) || key;
+            
+            select.innerHTML = `<option value="all">${t('all_categories')}</option>`;
+            categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat;
+                option.textContent = cat;
+                select.appendChild(option);
+            });
+        }
+
+        // Render Table
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            
+            if (filteredTransactions.length === 0) {
+                const noTrans = window.i18n?.t('no_transactions') || 'No transactions found';
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center py-20">
+                            <i class="ph-duotone ph-archive text-5xl text-slate-700 mb-4 block"></i>
+                            <p class="text-slate-500">${noTrans}</p>
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('showingCount').textContent = '0';
+                document.getElementById('totalCount').textContent = '0';
+                return;
+            }
+
+            tbody.innerHTML = filteredTransactions.map(t => {
+                const isIncome = t.type === 'ingreso' || t.type === 'income';
+                const date = new Date(t.created_at);
+                const formattedDate = date.toLocaleDateString('en-US', { 
+                    year: 'numeric',
+                    month: 'short', 
+                    day: 'numeric'
+                });
+                const amount = parseFloat(t.amount || 0);
+
+                return `
+                    <tr>
+                        <td class="font-mono text-slate-400 text-sm">${formattedDate}</td>
+                        <td class="font-semibold text-white">${t.concept || 'Untitled'}</td>
+                        <td>
+                            <span class="text-xs text-cyan-400 bg-cyan-500/10 px-2 py-1 rounded border border-cyan-500/20">
+                                ${t.category || 'Uncategorized'}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="type-badge ${isIncome ? 'income' : 'expense'}">
+                                ${isIncome ? 'Income' : 'Expense'}
+                            </span>
+                        </td>
+                        <td class="font-mono font-bold text-lg text-right ${isIncome ? 'text-emerald-400' : 'text-rose-400'}">
+                            ${isIncome ? '+' : '-'} $${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('showingCount').textContent = filteredTransactions.length;
+            document.getElementById('totalCount').textContent = allTransactions.length;
+            document.getElementById('totalRecords').textContent = filteredTransactions.length;
+        }
+
+        // Filter Table
+        function filterTable() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const typeFilter = document.getElementById('filterType').value;
+            const categoryFilter = document.getElementById('filterCategory').value;
+
+            filteredTransactions = allTransactions.filter(t => {
+                const matchesSearch = !searchTerm || 
+                    (t.concept || '').toLowerCase().includes(searchTerm) ||
+                    (t.category || '').toLowerCase().includes(searchTerm) ||
+                    (t.amount || '').toString().includes(searchTerm);
+
+                const matchesType = typeFilter === 'all' || t.type === typeFilter;
+                const matchesCategory = categoryFilter === 'all' || t.category === categoryFilter;
+
+                return matchesSearch && matchesType && matchesCategory;
+            });
+
+            renderTable();
+            updateSummary();
+            updateDistributionChart();
+        }
+
+        // Sort Table
+        function sortTable(key) {
+            sortAscending = !sortAscending;
+
+            filteredTransactions.sort((a, b) => {
+                let valA, valB;
+
+                if (key === 'amount') {
+                    valA = parseFloat(a.amount || 0);
+                    valB = parseFloat(b.amount || 0);
+                } else if (key === 'date') {
+                    valA = new Date(a.created_at);
+                    valB = new Date(b.created_at);
+                } else {
+                    valA = (a[key] || '').toLowerCase();
+                    valB = (b[key] || '').toLowerCase();
+                }
+
+                if (valA < valB) return sortAscending ? -1 : 1;
+                if (valA > valB) return sortAscending ? 1 : -1;
+                return 0;
+            });
+
+            renderTable();
+        }
+
+        // Update Summary
+        function updateSummary() {
+            const income = filteredTransactions
+                .filter(t => t.type === 'ingreso' || t.type === 'income')
+                .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
+
+            const expenses = filteredTransactions
+                .filter(t => t.type === 'egreso' || t.type === 'expense')
+                .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
+
+            const net = income - expenses;
+
+            document.getElementById('summaryIncome').textContent = `$${income.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            document.getElementById('summaryExpenses').textContent = `$${expenses.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            document.getElementById('summaryNet').textContent = `$${net.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+        }
+
+        // Update Distribution Chart
+        function updateDistributionChart() {
+            if (distributionChart) {
+                distributionChart.destroy();
+            }
+
+            const expenses = filteredTransactions.filter(t => t.type === 'egreso' || t.type === 'expense');
+            
+            if (expenses.length === 0) {
+                return;
+            }
+
+            const categoryData = {};
+            expenses.forEach(t => {
+                const category = t.category || 'Uncategorized';
+                categoryData[category] = (categoryData[category] || 0) + parseFloat(t.amount || 0);
+            });
+
+            const sortedCategories = Object.entries(categoryData)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 6);
+
+            const labels = sortedCategories.map(c => c[0]);
+            const values = sortedCategories.map(c => c[1]);
+
+            const ctx = document.getElementById('distributionChart');
+
+            distributionChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: [
+                            '#60a5fa',
+                            '#a78bfa',
+                            '#34d399',
+                            '#fb7185',
+                            '#fbbf24',
+                            '#818cf8'
+                        ],
+                        borderColor: '#020617',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#94a3b8',
+                                font: { size: 10 },
+                                padding: 12
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#fff',
+                            bodyColor: '#94a3b8',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    const total = values.reduce((a, b) => a + b, 0);
+                                    const percentage = (context.parsed / total * 100).toFixed(1);
+                                    return `${context.label}: $${context.parsed.toLocaleString('en-US', { minimumFractionDigits: 2 })} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            const csv = ['Date,Description,Category,Type,Amount'];
+            
+            filteredTransactions.forEach(t => {
+                const date = new Date(t.created_at).toLocaleDateString();
+                const type = (t.type === 'ingreso' || t.type === 'income') ? 'Income' : 'Expense';
+                const amount = parseFloat(t.amount || 0);
+                csv.push(`${date},"${t.concept}","${t.category}",${type},${amount}`);
+            });
+
+            const blob = new Blob([csv.join('\n')], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Pymax_Audit_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+            
+            Toast.fire({ icon: 'success', title: 'CSV exported' });
+        }
+
+        // Export to Excel
+        function exportToExcel() {
+            const exportData = filteredTransactions.map(t => ({
+                Date: new Date(t.created_at).toLocaleDateString(),
+                Description: t.concept,
+                Category: t.category,
+                Type: (t.type === 'ingreso' || t.type === 'income') ? 'Income' : 'Expense',
+                Amount: parseFloat(t.amount || 0)
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Audit_Ledger");
+            XLSX.writeFile(wb, `Pymax_Audit_${new Date().toISOString().split('T')[0]}.xlsx`);
+            
+            Toast.fire({ icon: 'success', title: window.i18n?.t('excel_exported') || 'Excel exported' });
+        }
+
+        // Export to PDF (Placeholder)
+        function exportToPDF() {
+            Toast.fire({ icon: 'info', title: window.i18n?.t('pdf_export_coming_soon') || 'PDF export coming soon' });
+        }
+
+        // AI features are included - no upgrade needed
+    </script>
+</body>
+</html>

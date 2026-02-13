@@ -43,6 +43,10 @@ def inject_config():
 def index():
     return render_template('index.html')
 
+@app.route('/personal')
+def personal_home():
+    return render_template('personal/index-personal.html')
+
 @app.route('/empresa')
 def empresa_home():
     return render_template('empresa/index-empresa.html')
@@ -74,6 +78,30 @@ def mover_metas():
 @app.route('/empresa/mover/inventario')
 def mover_inventario():
     return render_template('empresa/mover/inventario.html')
+
+@app.route('/empresa/mover/auditoria')
+def mover_auditoria():
+    return render_template('empresa/mover/auditoria.html')
+
+@app.route('/empresa/mover/semaforo')
+def mover_semaforo():
+    return render_template('empresa/mover/semaforo.html')
+
+@app.route('/empresa/mover/progreso')
+def mover_progreso():
+    return render_template('empresa/mover/progreso.html')
+
+@app.route('/empresa/mover/calendario')
+def mover_calendario():
+    return render_template('empresa/mover/calendario.html')
+
+@app.route('/empresa/mover/ia-apoyo')
+def mover_ia():
+    return render_template('empresa/mover/ia-apoyo.html')
+
+@app.route('/empresa/mover/exportar-excel')
+def mover_export_excel():
+    return render_template('empresa/mover/exportar-excel.html')
 
 # ==============================================================================
 # RUTAS TIBURÓN (CRM Premium)
