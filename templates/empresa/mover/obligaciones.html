@@ -568,49 +568,54 @@
             <!-- Right Column: AI Panel & Analytics -->
             <div class="lg:col-span-4 space-y-6">
 
-                <!-- AI PREMIUM PANEL - LOCKED -->
+                <!-- AI DEBT ADVISOR - ACTIVE -->
                 <div class="ai-premium-panel fade-in">
-                    <div class="ai-lock-icon">
-                        <i class="ph-fill ph-lock-key text-3xl text-white"></i>
+                    <div class="flex items-center justify-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                            <i class="ph-fill ph-brain text-2xl text-white"></i>
+                        </div>
                     </div>
                     
                     <div class="text-center mb-6">
                         <h3 class="text-2xl font-bold text-white font-display mb-2">
                             AI Debt Advisor
                         </h3>
-                        <p class="text-sm text-violet-300 mb-1">Premium Feature</p>
-                        <p class="text-xs text-slate-400">Intelligent debt optimization and management</p>
+                        <p class="text-sm text-emerald-400 mb-1 flex items-center justify-center gap-2">
+                            <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                            Active & Optimizing
+                        </p>
+                        <p class="text-xs text-slate-400">Included with your PYMAX plan</p>
                     </div>
 
                     <div class="space-y-3 mb-6">
                         <div class="ai-feature-item">
-                            <i class="ph-fill ph-brain text-violet-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Smart payment prioritization based on cash flow</span>
+                            <i class="ph-fill ph-brain text-emerald-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Smart payment prioritization enabled</span>
                         </div>
                         <div class="ai-feature-item">
-                            <i class="ph-fill ph-chart-line text-violet-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Predictive alerts 30 days before due dates</span>
+                            <i class="ph-fill ph-chart-line text-emerald-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Predictive alerts configured</span>
                         </div>
                         <div class="ai-feature-item">
-                            <i class="ph-fill ph-money text-violet-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Automatic negotiation suggestions with creditors</span>
+                            <i class="ph-fill ph-money text-emerald-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Negotiation suggestions available</span>
                         </div>
                         <div class="ai-feature-item">
-                            <i class="ph-fill ph-lightning text-violet-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Real-time debt consolidation opportunities</span>
+                            <i class="ph-fill ph-lightning text-emerald-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Consolidation opportunities tracked</span>
                         </div>
                         <div class="ai-feature-item">
-                            <i class="ph-fill ph-bell-ringing text-violet-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Multi-channel payment reminders (Email, SMS, WhatsApp)</span>
+                            <i class="ph-fill ph-bell-ringing text-emerald-400 text-xl"></i>
+                            <span class="text-sm text-slate-300">Multi-channel reminders ready</span>
                         </div>
                     </div>
 
                     <div class="text-center">
-                        <button class="ai-upgrade-btn" onclick="showUpgradeModal()">
-                            <i class="ph-bold ph-rocket-launch"></i>
-                            Upgrade to Premium
-                        </button>
-                        <p class="text-xs text-slate-500 mt-3">Starting at $49/month</p>
+                        <a href="{{ url_for('mover_ia') }}" class="ai-upgrade-btn inline-flex items-center gap-2">
+                            <i class="ph-bold ph-chats-circle"></i>
+                            Consult AI Advisor
+                        </a>
+                        <p class="text-xs text-slate-500 mt-3">Included with your plan</p>
                     </div>
                 </div>
 
@@ -1257,56 +1262,7 @@
             }
         }
 
-        // Show Upgrade Modal
-        function showUpgradeModal() {
-            Swal.fire({
-                title: 'Upgrade to Premium',
-                html: `
-                    <div class="text-left space-y-4 p-4">
-                        <p class="text-sm text-slate-400 mb-4">
-                            Unlock AI-powered debt management and save time with intelligent automation.
-                        </p>
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
-                                <span class="text-sm text-slate-300">AI Payment Prioritization</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
-                                <span class="text-sm text-slate-300">Predictive Alerts & Reminders</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
-                                <span class="text-sm text-slate-300">Automatic Negotiation Suggestions</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
-                                <span class="text-sm text-slate-300">Multi-Channel Notifications</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
-                                <span class="text-sm text-slate-300">Priority Support</span>
-                            </div>
-                        </div>
-                        <div class="mt-6 p-4 bg-violet-500/10 rounded-lg border border-violet-500/30">
-                            <p class="text-center text-2xl font-bold text-white mb-1">$49/month</p>
-                            <p class="text-center text-xs text-slate-400">or $490/year (save 17%)</p>
-                        </div>
-                    </div>
-                `,
-                showCancelButton: true,
-                confirmButtonColor: '#7c3aed',
-                cancelButtonColor: '#3f3f46',
-                confirmButtonText: 'Contact Sales',
-                cancelButtonText: 'Maybe Later',
-                background: '#0b0b14',
-                color: '#fff'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = 'mailto:sales@pymax.com?subject=Premium Upgrade Inquiry';
-                }
-            });
-        }
+        // AI debt management included - no upgrade needed
 
         // Close modal on outside click
         document.getElementById('obligationModal').addEventListener('click', (e) => {

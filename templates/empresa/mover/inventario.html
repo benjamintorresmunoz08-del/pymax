@@ -377,49 +377,54 @@
             <!-- Right Column: AI Panel & Quick Actions -->
             <div class="lg:col-span-4 space-y-6">
 
-                <!-- AI PREMIUM PANEL - LOCKED -->
+                <!-- AI INVENTORY INTELLIGENCE - ACTIVE -->
                 <div class="ai-premium-panel fade-in">
-                    <div class="ai-lock-icon">
-                        <i class="ph-fill ph-lock-key text-3xl text-white"></i>
+                    <div class="flex items-center justify-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+                            <i class="ph-fill ph-package text-2xl text-white"></i>
+                        </div>
                     </div>
                     
                     <div class="text-center mb-6">
                         <h3 class="text-2xl font-bold text-white font-display mb-2">
                             IA Gestión de Stock
                         </h3>
-                        <p class="text-sm text-emerald-300 mb-1">Función Premium</p>
-                        <p class="text-xs text-slate-400">Optimización inteligente de inventario</p>
+                        <p class="text-sm text-emerald-400 mb-1 flex items-center justify-center gap-2">
+                            <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                            Activa & Optimizando
+                        </p>
+                        <p class="text-xs text-slate-400">Incluido en tu plan PYMAX</p>
                     </div>
 
                     <div class="space-y-3 mb-6">
                         <div class="ai-feature-item">
                             <i class="ph-fill ph-chart-line text-emerald-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Predicción de demanda con 94% precisión</span>
+                            <span class="text-sm text-slate-300">Predicción de demanda activa</span>
                         </div>
                         <div class="ai-feature-item">
                             <i class="ph-fill ph-bell-ringing text-emerald-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Alertas automáticas de reabastecimiento</span>
+                            <span class="text-sm text-slate-300">Alertas automáticas configuradas</span>
                         </div>
                         <div class="ai-feature-item">
                             <i class="ph-fill ph-trend-up text-emerald-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Análisis de rotación de productos</span>
+                            <span class="text-sm text-slate-300">Análisis de rotación habilitado</span>
                         </div>
                         <div class="ai-feature-item">
                             <i class="ph-fill ph-money text-emerald-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Optimización de precios dinámicos</span>
+                            <span class="text-sm text-slate-300">Optimización de precios disponible</span>
                         </div>
                         <div class="ai-feature-item">
                             <i class="ph-fill ph-package text-emerald-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Sugerencias de productos más rentables</span>
+                            <span class="text-sm text-slate-300">Sugerencias de productos listas</span>
                         </div>
                     </div>
 
                     <div class="text-center">
-                        <button class="ai-upgrade-btn" onclick="showUpgradeModal()">
-                            <i class="ph-bold ph-rocket-launch"></i>
-                            Activar Premium
-                        </button>
-                        <p class="text-xs text-slate-500 mt-3">Desde $39/mes</p>
+                        <a href="{{ url_for('mover_ia') }}" class="ai-upgrade-btn inline-flex items-center gap-2">
+                            <i class="ph-bold ph-chats-circle"></i>
+                            Consultar con IA
+                        </a>
+                        <p class="text-xs text-slate-500 mt-3">Incluido con tu plan</p>
                     </div>
                 </div>
 
@@ -805,56 +810,7 @@
             Toast.fire({ icon: 'info', title: 'Etiquetas próximamente' });
         }
 
-        // Show Upgrade Modal
-        function showUpgradeModal() {
-            Swal.fire({
-                title: 'Activar Premium',
-                html: `
-                    <div class="text-left space-y-4 p-4">
-                        <p class="text-sm text-slate-400 mb-4">
-                            Desbloquea la IA de gestión de inventario y maximiza tus ganancias.
-                        </p>
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
-                                <span class="text-sm text-slate-300">Predicción de Demanda</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
-                                <span class="text-sm text-slate-300">Alertas de Reabastecimiento</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
-                                <span class="text-sm text-slate-300">Análisis de Rotación</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
-                                <span class="text-sm text-slate-300">Optimización de Precios</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
-                                <span class="text-sm text-slate-300">Sugerencias de Productos</span>
-                            </div>
-                        </div>
-                        <div class="mt-6 p-4 bg-emerald-500/10 rounded-lg border border-emerald-500/30">
-                            <p class="text-center text-2xl font-bold text-white mb-1">$39/mes</p>
-                            <p class="text-center text-xs text-slate-400">o $390/año (ahorra 17%)</p>
-                        </div>
-                    </div>
-                `,
-                showCancelButton: true,
-                confirmButtonColor: '#34d399',
-                cancelButtonColor: '#3f3f46',
-                confirmButtonText: 'Contactar Ventas',
-                cancelButtonText: 'Tal Vez Después',
-                background: '#0b0b14',
-                color: '#fff'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = 'mailto:sales@pymax.com?subject=Consulta Upgrade Premium';
-                }
-            });
-        }
+        // AI features included - no upgrade needed
 
         // Close modal on outside click
         document.getElementById('productModal').addEventListener('click', (e) => {
