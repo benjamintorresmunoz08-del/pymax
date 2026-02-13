@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,6 +11,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- PYMAX CORE SYSTEMS -->
+    <script src="/static/js/pymax-performance.js"></script>
+    <script src="/static/js/pymax-i18n.js"></script>
+    <script src="/static/js/pymax-data-manager.js"></script>
     <script src="/static/js/pymax-real-auth.js"></script>
 
     <style>
@@ -214,7 +219,7 @@
                     <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/30 transition">
                         <i class="ph-bold ph-arrow-left"></i>
                     </div>
-                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">Back</span>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest" data-i18n="back">Back</span>
                 </a>
                 <div class="h-6 w-px bg-white/10"></div>
                 <h1 class="text-xl font-bold text-white font-display tracking-tight">
@@ -238,38 +243,38 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 fade-in">
             <div class="glass-card p-6">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Active Goals</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500" data-i18n="active_goals">Active Goals</p>
                     <i class="ph-duotone ph-target text-emerald-400 text-xl"></i>
                 </div>
                 <h3 class="text-3xl font-bold text-white font-display mb-1" id="statActive">3</h3>
-                <p class="text-xs text-slate-400">In progress</p>
+                <p class="text-xs text-slate-400" data-i18n="in_progress">In progress</p>
             </div>
 
             <div class="glass-card p-6">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Avg Progress</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500" data-i18n="avg_progress">Avg Progress</p>
                     <i class="ph-duotone ph-chart-line text-cyan-400 text-xl"></i>
                 </div>
                 <h3 class="text-3xl font-bold text-white font-display mb-1" id="statProgress">67%</h3>
-                <p class="text-xs text-slate-400">Overall completion</p>
+                <p class="text-xs text-slate-400" data-i18n="overall_completion">Overall completion</p>
             </div>
 
             <div class="glass-card p-6">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Completed</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500" data-i18n="completed">Completed</p>
                     <i class="ph-duotone ph-check-circle text-emerald-400 text-xl"></i>
                 </div>
                 <h3 class="text-3xl font-bold text-white font-display mb-1" id="statCompleted">12</h3>
-                <p class="text-xs text-slate-400">All time</p>
+                <p class="text-xs text-slate-400" data-i18n="all_time">All time</p>
             </div>
 
             <div class="glass-card p-6">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Success Rate</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500" data-i18n="success_rate">Success Rate</p>
                     <i class="ph-duotone ph-trophy text-amber-400 text-xl"></i>
                 </div>
                 <h3 class="text-3xl font-bold text-white font-display mb-1" id="statRate">85%</h3>
-                <p class="text-xs text-slate-400">Achievement rate</p>
+                <p class="text-xs text-slate-400" data-i18n="achievement_rate">Achievement rate</p>
             </div>
         </div>
 
@@ -287,23 +292,23 @@
                                     <i class="ph-fill ph-trophy text-white text-2xl"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-xl font-bold text-white font-display">Primary Business Goal</h3>
-                                    <p class="text-xs text-emerald-400 font-semibold uppercase tracking-wide">Strategic Objective</p>
+                                    <h3 class="text-xl font-bold text-white font-display" data-i18n="goal_primary">Primary Business Goal</h3>
+                                    <p class="text-xs text-emerald-400 font-semibold uppercase tracking-wide" data-i18n="goal_type_strategic">Strategic Objective</p>
                                 </div>
                             </div>
                         </div>
-                        <button onclick="editGoal(1)" class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition">
+                        <button onclick="editGoal(1)" class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition" data-i18n-title="edit" title="Edit">
                             <i class="ph-bold ph-pencil"></i>
                         </button>
                     </div>
 
                     <div class="p-4 bg-white/5 rounded-xl mb-4">
-                        <p class="text-sm text-slate-200" id="goalText1">Set your main business objective for this quarter</p>
+                        <p class="text-sm text-slate-200" id="goalText1" data-i18n="goal_placeholder_1">Set your main business objective for this quarter</p>
                     </div>
 
                     <div class="mb-4">
                         <div class="flex justify-between items-center mb-2">
-                            <span class="text-xs font-bold text-slate-400 uppercase">Progress</span>
+                            <span class="text-xs font-bold text-slate-400 uppercase" data-i18n="progress">Progress</span>
                             <span class="text-sm font-bold text-emerald-400" id="goalProgress1">0%</span>
                         </div>
                         <div class="progress-bar-container">
@@ -313,15 +318,15 @@
 
                     <div class="grid grid-cols-3 gap-3 text-center text-xs">
                         <div class="p-3 bg-white/5 rounded-lg">
-                            <p class="text-slate-400 mb-1">Target</p>
+                            <p class="text-slate-400 mb-1" data-i18n="target_amount">Target</p>
                             <p class="font-bold text-white" id="goalTarget1">$50K</p>
                         </div>
                         <div class="p-3 bg-white/5 rounded-lg">
-                            <p class="text-slate-400 mb-1">Current</p>
+                            <p class="text-slate-400 mb-1" data-i18n="current_amount">Current</p>
                             <p class="font-bold text-cyan-400" id="goalCurrent1">$33.5K</p>
                         </div>
                         <div class="p-3 bg-white/5 rounded-lg">
-                            <p class="text-slate-400 mb-1">Days Left</p>
+                            <p class="text-slate-400 mb-1" data-i18n="days_left">Days Left</p>
                             <p class="font-bold text-amber-400" id="goalDays1">18</p>
                         </div>
                     </div>
@@ -336,23 +341,23 @@
                                     <i class="ph-fill ph-rocket text-white text-2xl"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-xl font-bold text-white font-display">Secondary Goal</h3>
-                                    <p class="text-xs text-blue-400 font-semibold uppercase tracking-wide">Growth Initiative</p>
+                                    <h3 class="text-xl font-bold text-white font-display" data-i18n="goal_secondary">Secondary Goal</h3>
+                                    <p class="text-xs text-blue-400 font-semibold uppercase tracking-wide" data-i18n="goal_type_growth">Growth Initiative</p>
                                 </div>
                             </div>
                         </div>
-                        <button onclick="editGoal(2)" class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition">
+                        <button onclick="editGoal(2)" class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition" data-i18n-title="edit" title="Edit">
                             <i class="ph-bold ph-pencil"></i>
                         </button>
                     </div>
 
                     <div class="p-4 bg-white/5 rounded-xl mb-4">
-                        <p class="text-sm text-slate-200" id="goalText2">Define your secondary business objective</p>
+                        <p class="text-sm text-slate-200" id="goalText2" data-i18n="goal_placeholder_2">Define your secondary business objective</p>
                     </div>
 
                     <div class="mb-4">
                         <div class="flex justify-between items-center mb-2">
-                            <span class="text-xs font-bold text-slate-400 uppercase">Progress</span>
+                            <span class="text-xs font-bold text-slate-400 uppercase" data-i18n="progress">Progress</span>
                             <span class="text-sm font-bold text-blue-400" id="goalProgress2">0%</span>
                         </div>
                         <div class="progress-bar-container">
@@ -362,15 +367,15 @@
 
                     <div class="grid grid-cols-3 gap-3 text-center text-xs">
                         <div class="p-3 bg-white/5 rounded-lg">
-                            <p class="text-slate-400 mb-1">Target</p>
+                            <p class="text-slate-400 mb-1" data-i18n="target_amount">Target</p>
                             <p class="font-bold text-white" id="goalTarget2">$30K</p>
                         </div>
                         <div class="p-3 bg-white/5 rounded-lg">
-                            <p class="text-slate-400 mb-1">Current</p>
+                            <p class="text-slate-400 mb-1" data-i18n="current_amount">Current</p>
                             <p class="font-bold text-blue-400" id="goalCurrent2">$22K</p>
                         </div>
                         <div class="p-3 bg-white/5 rounded-lg">
-                            <p class="text-slate-400 mb-1">Days Left</p>
+                            <p class="text-slate-400 mb-1" data-i18n="days_left">Days Left</p>
                             <p class="font-bold text-amber-400" id="goalDays2">32</p>
                         </div>
                     </div>
@@ -385,23 +390,23 @@
                                     <i class="ph-fill ph-lightning text-white text-2xl"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-xl font-bold text-white font-display">Tertiary Goal</h3>
-                                    <p class="text-xs text-violet-400 font-semibold uppercase tracking-wide">Expansion Target</p>
+                                    <h3 class="text-xl font-bold text-white font-display" data-i18n="goal_tertiary">Tertiary Goal</h3>
+                                    <p class="text-xs text-violet-400 font-semibold uppercase tracking-wide" data-i18n="goal_type_expansion">Expansion Target</p>
                                 </div>
                             </div>
                         </div>
-                        <button onclick="editGoal(3)" class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition">
+                        <button onclick="editGoal(3)" class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition" data-i18n-title="edit" title="Edit">
                             <i class="ph-bold ph-pencil"></i>
                         </button>
                     </div>
 
                     <div class="p-4 bg-white/5 rounded-xl mb-4">
-                        <p class="text-sm text-slate-200" id="goalText3">Establish your long-term expansion goal</p>
+                        <p class="text-sm text-slate-200" id="goalText3" data-i18n="goal_placeholder_3">Establish your long-term expansion goal</p>
                     </div>
 
                     <div class="mb-4">
                         <div class="flex justify-between items-center mb-2">
-                            <span class="text-xs font-bold text-slate-400 uppercase">Progress</span>
+                            <span class="text-xs font-bold text-slate-400 uppercase" data-i18n="progress">Progress</span>
                             <span class="text-sm font-bold text-violet-400" id="goalProgress3">0%</span>
                         </div>
                         <div class="progress-bar-container">
@@ -434,28 +439,28 @@
                 <div class="glass-card p-6 fade-in">
                     <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
                         <i class="ph-duotone ph-medal text-amber-400"></i>
-                        Recent Achievements
+                        <span data-i18n="recent_achievements">Recent Achievements</span>
                     </h3>
                     
                     <div class="space-y-3 text-xs">
                         <div class="achievement-badge">
                             <i class="ph-fill ph-star"></i>
-                            <span>75% Goal Reached</span>
+                            <span data-i18n="achievement_75">75% Goal Reached</span>
                         </div>
                         <div class="achievement-badge">
                             <i class="ph-fill ph-fire"></i>
-                            <span>7-Day Streak</span>
+                            <span data-i18n="achievement_streak">7-Day Streak</span>
                         </div>
                         <div class="achievement-badge">
                             <i class="ph-fill ph-crown"></i>
-                            <span>Top Performer</span>
+                            <span data-i18n="achievement_top">Top Performer</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Progress Chart -->
                 <div class="glass-card p-6 fade-in">
-                    <h3 class="text-lg font-bold text-white font-display mb-4">Progress Trend</h3>
+                    <h3 class="text-lg font-bold text-white font-display mb-4" data-i18n="progress_trend">Progress Trend</h3>
                     <div style="height: 200px;">
                         <canvas id="progressChart"></canvas>
                     </div>
@@ -463,44 +468,44 @@
 
                 <!-- Milestones -->
                 <div class="glass-card p-6 fade-in">
-                    <h3 class="text-lg font-bold text-white font-display mb-4">Key Milestones</h3>
+                    <h3 class="text-lg font-bold text-white font-display mb-4" data-i18n="key_milestones">Key Milestones</h3>
                     
                     <div class="space-y-2 custom-scroll" style="max-height: 300px;">
                         <div class="milestone-item completed">
                             <div class="flex items-center gap-2 mb-1">
                                 <i class="ph-fill ph-check-circle text-emerald-400"></i>
-                                <p class="font-semibold text-white text-xs">Q1 Revenue Target</p>
+                                <p class="font-semibold text-white text-xs" data-i18n="milestone_q1">Q1 Revenue Target</p>
                             </div>
-                            <p class="text-[10px] text-slate-400">Completed Jan 28</p>
+                            <p class="text-[10px] text-slate-400" data-i18n="completed_jan">Completed Jan 28</p>
                         </div>
                         <div class="milestone-item">
                             <div class="flex items-center gap-2 mb-1">
                                 <i class="ph-fill ph-circle text-cyan-400 pulse"></i>
-                                <p class="font-semibold text-white text-xs">Launch New Product</p>
+                                <p class="font-semibold text-white text-xs" data-i18n="milestone_product">Launch New Product</p>
                             </div>
-                            <p class="text-[10px] text-slate-400">Due in 12 days</p>
+                            <p class="text-[10px] text-slate-400" data-i18n="due_12_days">Due in 12 days</p>
                         </div>
                         <div class="milestone-item">
                             <div class="flex items-center gap-2 mb-1">
                                 <i class="ph-fill ph-circle text-slate-600"></i>
-                                <p class="font-semibold text-white text-xs">Expand Team</p>
+                                <p class="font-semibold text-white text-xs" data-i18n="milestone_team">Expand Team</p>
                             </div>
-                            <p class="text-[10px] text-slate-400">Due in 45 days</p>
+                            <p class="text-[10px] text-slate-400" data-i18n="due_45_days">Due in 45 days</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Quick Actions -->
                 <div class="glass-card p-6 fade-in">
-                    <h3 class="text-lg font-bold text-white font-display mb-4">Actions</h3>
+                    <h3 class="text-lg font-bold text-white font-display mb-4" data-i18n="actions">Actions</h3>
                     <div class="space-y-3">
                         <button onclick="addMilestone()" class="w-full modern-btn btn-primary text-xs py-3">
                             <i class="ph-bold ph-plus-circle"></i>
-                            Add Milestone
+                            <span data-i18n="add_milestone">Add Milestone</span>
                         </button>
                         <button onclick="viewTemplates()" class="w-full modern-btn text-xs py-3" style="background: rgba(255,255,255,0.05); color: #e2e8f0;">
                             <i class="ph-bold ph-lightbulb"></i>
-                            Goal Templates
+                            <span data-i18n="goal_templates">Goal Templates</span>
                         </button>
                     </div>
                 </div>
@@ -532,12 +537,47 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const user = await checkRealAuth(client);
             if (!user) return;
+            
+            // Inicializar Data Manager
+            const initOk = await pymaxData.init(client);
+            if (!initOk) {
+                loadDemoGoals();
+                initializeChart();
+                return;
+            }
+            
+            pymaxData.on('data_updated', () => loadGoals());
+            
             await loadGoals();
             initializeChart();
+            
+            // Actualizar al cambiar idioma
+            window.addEventListener('languageChanged', () => {
+                updateChartLabels();
+            });
         });
 
         async function loadGoals() {
             try {
+                const cachedGoals = pymaxData.getGoals ? pymaxData.getGoals() : null;
+                
+                if (cachedGoals) {
+                    if (cachedGoals[1]) {
+                        goals[1] = cachedGoals[1];
+                        document.getElementById('goalText1').textContent = cachedGoals[1].goal_text;
+                    }
+                    if (cachedGoals[2]) {
+                        goals[2] = cachedGoals[2];
+                        document.getElementById('goalText2').textContent = cachedGoals[2].goal_text;
+                    }
+                    if (cachedGoals[3]) {
+                        goals[3] = cachedGoals[3];
+                        document.getElementById('goalText3').textContent = cachedGoals[3].goal_text;
+                    }
+                    updateStats();
+                    return;
+                }
+
                 const { data: { user } } = await client.auth.getUser();
                 if (!user) {
                     console.warn('No user found, using demo mode');
@@ -545,12 +585,12 @@
                     return;
                 }
 
-                // Load from Supabase
+                // Load from Supabase (fallback si Data Manager no tiene datos)
                 const { data: mainGoal } = await client
                     .from('user_goals')
                     .select('*')
                     .eq('user_id', user.id)
-                    .single();
+                    .maybeSingle();
 
                 const { data: extraGoals } = await client
                     .from('user_goals_extra')
@@ -669,34 +709,53 @@
             });
         }
 
-        function editGoal(goalNumber) {
+        async function editGoal(goalNumber) {
+            const t = key => window.i18n?.t(key) || key;
             Swal.fire({
-                title: `Edit Goal ${goalNumber}`,
+                title: `${t('edit_goal')} ${goalNumber}`,
                 input: 'textarea',
                 inputValue: document.getElementById(`goalText${goalNumber}`).textContent,
-                inputPlaceholder: 'Enter your goal description...',
+                inputPlaceholder: t('enter_goal_description'),
                 showCancelButton: true,
                 confirmButtonColor: '#34d399',
                 cancelButtonColor: '#3f3f46',
-                confirmButtonText: 'Save Goal',
-                cancelButtonText: 'Cancel',
+                confirmButtonText: t('save_goal'),
+                cancelButtonText: t('cancel'),
                 background: '#0b0b14',
                 color: '#fff'
-            }).then((result) => {
+            }).then(async (result) => {
                 if (result.isConfirmed && result.value) {
                     document.getElementById(`goalText${goalNumber}`).textContent = result.value;
-                    Toast.fire({ icon: 'success', title: 'Goal updated' });
+                    
+                    if (pymaxData && pymaxData.updateGoal) {
+                        const res = await pymaxData.updateGoal(goalNumber, { goal_text: result.value });
+                        if (!res.success) {
+                            Toast.fire({ icon: 'warning', title: t('operation_failed') });
+                        }
+                    }
+                    Toast.fire({ icon: 'success', title: t('goal_updated') });
                 }
             });
         }
 
         function addMilestone() {
-            Toast.fire({ icon: 'info', title: 'Milestone creation coming soon' });
+            const t = key => window.i18n?.t(key) || key;
+            Toast.fire({ icon: 'info', title: t('milestone_coming_soon') });
+        }
+
+        function updateChartLabels() {
+            if (progressChart && window.i18n) {
+                progressChart.data.datasets.forEach((ds, i) => {
+                    ds.label = window.i18n.t('goals') + ' ' + (i + 1);
+                });
+                progressChart.update();
+            }
         }
 
         function viewTemplates() {
+            const t = key => window.i18n?.t(key) || key;
             Swal.fire({
-                title: 'Goal Templates',
+                title: t('goal_templates'),
                 html: `
                     <div class="text-left space-y-3">
                         <div class="p-3 bg-emerald-500/10 rounded-lg border border-emerald-500/30 cursor-pointer hover:bg-emerald-500/20 transition">
@@ -715,7 +774,7 @@
                 `,
                 showCancelButton: false,
                 confirmButtonColor: '#34d399',
-                confirmButtonText: 'Close',
+                confirmButtonText: t('close'),
                 background: '#0b0b14',
                 color: '#fff',
                 width: '500px'

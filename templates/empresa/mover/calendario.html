@@ -10,6 +10,10 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- PYMAX CORE SYSTEMS -->
+    <script src="/static/js/pymax-performance.js"></script>
+    <script src="/static/js/pymax-i18n.js"></script>
+    <script src="/static/js/pymax-data-manager.js"></script>
     <script src="/static/js/pymax-real-auth.js"></script>
 
     <style>
@@ -222,23 +226,29 @@
                     <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/30 transition">
                         <i class="ph-bold ph-arrow-left"></i>
                     </div>
-                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">Back</span>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest" data-i18n="back">Back</span>
                 </a>
                 <div class="h-6 w-px bg-white/10"></div>
                 <h1 class="text-xl font-bold text-white font-display tracking-tight">
-                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-blue-400">CALENDAR</span>
+                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-blue-400" data-i18n="calendar_title">CALENDAR</span>
                 </h1>
             </div>
 
             <div class="flex items-center gap-3">
+                <!-- Language Selector -->
+                <select data-language-selector class="text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-white/20 transition cursor-pointer">
+                    <option value="es">ES</option>
+                    <option value="en">EN</option>
+                    <option value="pt">PT</option>
+                </select>
                 <div class="view-toggle hidden md:flex">
-                    <button onclick="changeView('month')" id="btnMonth" class="active">Month</button>
-                    <button onclick="changeView('week')" id="btnWeek">Week</button>
-                    <button onclick="changeView('day')" id="btnDay">Day</button>
+                    <button onclick="changeView('month')" id="btnMonth" class="active" data-i18n="view_month">Month</button>
+                    <button onclick="changeView('week')" id="btnWeek" data-i18n="view_week">Week</button>
+                    <button onclick="changeView('day')" id="btnDay" data-i18n="view_day">Day</button>
                 </div>
                 <button onclick="addEvent()" class="flex items-center gap-2 px-3 py-2 rounded-full border border-violet-500/30 text-violet-400 bg-violet-500/5 hover:bg-violet-500/10 text-[10px] font-bold uppercase transition">
                     <i class="ph-bold ph-plus"></i>
-                    <span class="hidden md:inline">New Event</span>
+                    <span class="hidden md:inline" data-i18n="new_event">New Event</span>
                 </button>
             </div>
         </div>
@@ -390,11 +400,11 @@
 
                 <!-- Upcoming Events -->
                 <div class="glass-card p-6 fade-in">
-                    <h3 class="text-lg font-bold text-white font-display mb-4">Next 7 Days</h3>
+                    <h3 class="text-lg font-bold text-white font-display mb-4" data-i18n="next_7_days">Next 7 Days</h3>
                     
                     <div class="space-y-3 text-xs" id="upcomingEvents">
                         <div class="text-center py-8">
-                            <p class="text-slate-500">Loading events...</p>
+                            <p class="text-slate-500" data-i18n="loading_events">Loading events...</p>
                         </div>
                     </div>
                 </div>
@@ -427,20 +437,35 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const user = await checkRealAuth(client);
             if (!user) return;
+
+            const initOk = await pymaxData.init(client);
+            if (initOk) {
+                pymaxData.on('data_updated', () => loadEvents());
+            }
+
+            window.addEventListener('languageChanged', () => {
+                renderCalendar();
+                renderTodayTimeline();
+                renderUpcomingEvents();
+            });
+
             await loadEvents();
             renderCalendar();
             renderTodayTimeline();
             renderUpcomingEvents();
         });
 
+        const t = (key) => (window.i18n && window.i18n.t(key)) || key;
+
         function renderCalendar() {
             const year = currentDate.getFullYear();
             const month = currentDate.getMonth();
             
-            // Update month display
-            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                              'July', 'August', 'September', 'October', 'November', 'December'];
-            document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
+            // Update month display (i18n month names)
+            const monthKeys = ['month_jan', 'month_feb', 'month_mar', 'month_apr', 'month_may', 'month_jun',
+                              'month_jul', 'month_aug', 'month_sep', 'month_oct', 'month_nov', 'month_dec'];
+            const monthName = t(monthKeys[month]);
+            document.getElementById('currentMonth').textContent = `${monthName} ${year}`;
 
             // Get first day of month and total days
             const firstDay = new Date(year, month, 1).getDay();
@@ -509,11 +534,13 @@
                 return eventDate.toDateString() === today.toDateString();
             }).sort((a, b) => new Date(a.date) - new Date(b.date));
 
+            const typeLabels = { payment: t('event_payment'), meeting: t('event_meeting'), deadline: t('event_deadline'), reminder: t('event_reminder') };
+
             if (todayEvents.length === 0) {
                 timeline.innerHTML = `
                     <div class="text-center py-12">
                         <i class="ph-duotone ph-calendar-blank text-6xl text-slate-700 mb-4 block"></i>
-                        <p class="text-slate-500 text-sm">No events scheduled for today</p>
+                        <p class="text-slate-500 text-sm">${t('no_events_today')}</p>
                     </div>
                 `;
                 return;
@@ -523,10 +550,10 @@
                 <div class="timeline-event">
                     <div class="flex items-start justify-between mb-2">
                         <p class="font-bold text-white text-sm">${event.title}</p>
-                        <span class="text-xs text-slate-500">${new Date(event.date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+                        <span class="text-xs text-slate-500">${new Date(event.date).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}</span>
                     </div>
-                    <p class="text-xs text-slate-400 mb-2">${event.description || 'No description'}</p>
-                    <span class="event-badge ${event.type}">${event.type}</span>
+                    <p class="text-xs text-slate-400 mb-2">${event.description || t('no_description')}</p>
+                    <span class="event-badge ${event.type}">${typeLabels[event.type] || event.type}</span>
                 </div>
             `).join('');
         }
@@ -682,15 +709,15 @@
         }
 
         function addEvent() {
-            Toast.fire({ icon: 'info', title: 'Event creation coming soon' });
+            Toast.fire({ icon: 'info', title: t('event_creation_coming_soon') });
         }
 
         function syncCalendar() {
-            Toast.fire({ icon: 'success', title: 'Calendar synced' });
+            Toast.fire({ icon: 'success', title: t('calendar_synced') });
         }
 
         function exportCalendar() {
-            Toast.fire({ icon: 'info', title: 'Export feature coming soon' });
+            Toast.fire({ icon: 'info', title: t('export_coming_soon') });
         }
     </script>
 </body>

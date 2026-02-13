@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,6 +11,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/static/js/pymax-performance.js"></script>
+    <script src="/static/js/pymax-i18n.js"></script>
+    <script src="/static/js/pymax-data-manager.js"></script>
     <script src="/static/js/pymax-real-auth.js"></script>
 
     <style>
@@ -184,18 +187,23 @@
                     <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/30 transition">
                         <i class="ph-bold ph-arrow-left"></i>
                     </div>
-                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">Back</span>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest" data-i18n="back">Back</span>
                 </a>
                 <div class="h-6 w-px bg-white/10"></div>
                 <h1 class="text-xl font-bold text-white font-display tracking-tight">
-                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">HEALTH MONITOR</span>
+                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400" data-i18n="semaforo_health_monitor">HEALTH MONITOR</span>
                 </h1>
             </div>
 
             <div class="flex items-center gap-3">
+                <select data-language-selector class="text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-white/20 transition cursor-pointer">
+                    <option value="es">ES</option>
+                    <option value="en">EN</option>
+                    <option value="pt">PT</option>
+                </select>
                 <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
                     <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                    <span class="text-xs font-semibold text-emerald-400">System Active</span>
+                    <span class="text-xs font-semibold text-emerald-400" data-i18n="semaforo_system_active">System Active</span>
                 </div>
             </div>
         </div>
@@ -221,7 +229,7 @@
 
                     <div class="mb-6">
                         <div class="score-display" id="healthScore">85</div>
-                        <p class="text-xs uppercase tracking-wide text-slate-400 font-bold">Health Score</p>
+                        <p class="text-xs uppercase tracking-wide text-slate-400 font-bold" data-i18n="semaforo_health_score">Health Score</p>
                     </div>
 
                     <div class="p-4 bg-emerald-500/10 rounded-xl border border-emerald-500/30">
@@ -255,70 +263,70 @@
                             <div class="flex justify-between items-center mb-2">
                                 <div class="flex items-center gap-2">
                                     <i class="ph-fill ph-arrow-up text-emerald-400 text-lg"></i>
-                                    <p class="font-bold text-white text-sm">Cash Flow</p>
+                                    <p class="font-bold text-white text-sm" data-i18n="semaforo_cash_flow">Cash Flow</p>
                                 </div>
                                 <span class="text-sm font-bold text-emerald-400">+18%</span>
                             </div>
                             <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden">
                                 <div class="h-full bg-gradient-to-r from-emerald-500 to-emerald-400" style="width: 85%"></div>
                             </div>
-                            <p class="text-xs text-slate-400 mt-2">Positive trend. Strong liquidity position.</p>
+                            <p class="text-xs text-slate-400 mt-2" data-i18n="semaforo_cash_flow_desc">Positive trend. Strong liquidity position.</p>
                         </div>
 
                         <div class="factor-card positive">
                             <div class="flex justify-between items-center mb-2">
                                 <div class="flex items-center gap-2">
                                     <i class="ph-fill ph-chart-line text-cyan-400 text-lg"></i>
-                                    <p class="font-bold text-white text-sm">Revenue Growth</p>
+                                    <p class="font-bold text-white text-sm" data-i18n="semaforo_revenue_growth">Revenue Growth</p>
                                 </div>
                                 <span class="text-sm font-bold text-cyan-400">+22%</span>
                             </div>
                             <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden">
                                 <div class="h-full bg-gradient-to-r from-cyan-500 to-blue-400" style="width: 92%"></div>
                             </div>
-                            <p class="text-xs text-slate-400 mt-2">Excellent growth. Exceeding projections.</p>
+                            <p class="text-xs text-slate-400 mt-2" data-i18n="semaforo_revenue_growth_desc">Excellent growth. Exceeding projections.</p>
                         </div>
 
                         <div class="factor-card neutral">
                             <div class="flex justify-between items-center mb-2">
                                 <div class="flex items-center gap-2">
                                     <i class="ph-fill ph-minus text-amber-400 text-lg"></i>
-                                    <p class="font-bold text-white text-sm">Expense Control</p>
+                                    <p class="font-bold text-white text-sm" data-i18n="semaforo_expense_control">Expense Control</p>
                                 </div>
                                 <span class="text-sm font-bold text-amber-400">+5%</span>
                             </div>
                             <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden">
                                 <div class="h-full bg-gradient-to-r from-amber-500 to-orange-400" style="width: 68%"></div>
                             </div>
-                            <p class="text-xs text-slate-400 mt-2">Expenses increased slightly. Monitor closely.</p>
+                            <p class="text-xs text-slate-400 mt-2" data-i18n="semaforo_expense_control_desc">Expenses increased slightly. Monitor closely.</p>
                         </div>
 
                         <div class="factor-card positive">
                             <div class="flex justify-between items-center mb-2">
                                 <div class="flex items-center gap-2">
                                     <i class="ph-fill ph-shield-check text-emerald-400 text-lg"></i>
-                                    <p class="font-bold text-white text-sm">Debt Management</p>
+                                    <p class="font-bold text-white text-sm" data-i18n="semaforo_debt_management">Debt Management</p>
                                 </div>
                                 <span class="text-sm font-bold text-emerald-400">-12%</span>
                             </div>
                             <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden">
                                 <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-400" style="width: 88%"></div>
                             </div>
-                            <p class="text-xs text-slate-400 mt-2">Debt reduction on track. Great progress.</p>
+                            <p class="text-xs text-slate-400 mt-2" data-i18n="semaforo_debt_management_desc">Debt reduction on track. Great progress.</p>
                         </div>
 
                         <div class="factor-card positive">
                             <div class="flex justify-between items-center mb-2">
                                 <div class="flex items-center gap-2">
                                     <i class="ph-fill ph-piggy-bank text-cyan-400 text-lg"></i>
-                                    <p class="font-bold text-white text-sm">Savings Rate</p>
+                                    <p class="font-bold text-white text-sm" data-i18n="semaforo_savings_rate">Savings Rate</p>
                                 </div>
                                 <span class="text-sm font-bold text-cyan-400">27%</span>
                             </div>
                             <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden">
                                 <div class="h-full bg-gradient-to-r from-cyan-500 to-blue-400" style="width: 75%"></div>
                             </div>
-                            <p class="text-xs text-slate-400 mt-2">Above average. Excellent financial discipline.</p>
+                            <p class="text-xs text-slate-400 mt-2" data-i18n="semaforo_savings_rate_desc">Above average. Excellent financial discipline.</p>
                         </div>
                     </div>
                 </div>
@@ -327,7 +335,7 @@
                 <div class="glass-card p-6 fade-in">
                     <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
                         <i class="ph-duotone ph-lightbulb text-amber-400"></i>
-                        AI Recommendations
+                        <span data-i18n="semaforo_ai_recommendations">AI Recommendations</span>
                     </h3>
 
                     <div class="space-y-3 text-sm">
@@ -335,8 +343,8 @@
                             <div class="flex items-start gap-3">
                                 <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
                                 <div>
-                                    <p class="font-bold text-emerald-300 mb-1 text-xs uppercase tracking-wide">Strength</p>
-                                    <p class="text-slate-300 text-xs">Your cash reserves can cover 4.2 months of expenses. This provides excellent security.</p>
+                                    <p class="font-bold text-emerald-300 mb-1 text-xs uppercase tracking-wide" data-i18n="semaforo_recommendation_strength">Strength</p>
+                                    <p class="text-slate-300 text-xs" data-i18n="semaforo_recommendation_strength_desc">Your cash reserves can cover 4.2 months of expenses. This provides excellent security.</p>
                                 </div>
                             </div>
                         </div>
@@ -345,8 +353,8 @@
                             <div class="flex items-start gap-3">
                                 <i class="ph-fill ph-warning text-amber-400 text-xl"></i>
                                 <div>
-                                    <p class="font-bold text-amber-300 mb-1 text-xs uppercase tracking-wide">Watch</p>
-                                    <p class="text-slate-300 text-xs">Marketing expenses increased 8% this month. Review ROI on recent campaigns.</p>
+                                    <p class="font-bold text-amber-300 mb-1 text-xs uppercase tracking-wide" data-i18n="semaforo_recommendation_watch">Watch</p>
+                                    <p class="text-slate-300 text-xs" data-i18n="semaforo_recommendation_watch_desc">Marketing expenses increased 8% this month. Review ROI on recent campaigns.</p>
                                 </div>
                             </div>
                         </div>
@@ -355,8 +363,8 @@
                             <div class="flex items-start gap-3">
                                 <i class="ph-fill ph-lightbulb text-cyan-400 text-xl"></i>
                                 <div>
-                                    <p class="font-bold text-cyan-300 mb-1 text-xs uppercase tracking-wide">Opportunity</p>
-                                    <p class="text-slate-300 text-xs">Consider allocating $1,500/month to investment portfolio based on current surplus.</p>
+                                    <p class="font-bold text-cyan-300 mb-1 text-xs uppercase tracking-wide" data-i18n="semaforo_recommendation_opportunity">Opportunity</p>
+                                    <p class="text-slate-300 text-xs" data-i18n="semaforo_recommendation_opportunity_desc">Consider allocating $1,500/month to investment portfolio based on current surplus.</p>
                                 </div>
                             </div>
                         </div>
@@ -365,7 +373,7 @@
 
                 <!-- Status History -->
                 <div class="glass-card p-6 fade-in">
-                    <h3 class="text-lg font-bold text-white font-display mb-4">Status History</h3>
+                    <h3 class="text-lg font-bold text-white font-display mb-4" data-i18n="semaforo_status_history">Status History</h3>
                     
                     <div class="space-y-3 text-xs">
                         <div class="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
@@ -373,10 +381,10 @@
                                 <i class="ph-fill ph-check text-emerald-400"></i>
                             </div>
                             <div class="flex-1">
-                                <p class="font-semibold text-white">Green Status</p>
+                                <p class="font-semibold text-white" data-i18n="semaforo_status_green">Green Status</p>
                                 <p class="text-slate-400">Since Jan 15, 2026</p>
                             </div>
-                            <span class="text-slate-500">28 days</span>
+                            <span class="text-slate-500">28 <span data-i18n="days">days</span></span>
                         </div>
 
                         <div class="flex items-center gap-3 p-3 bg-white/5 rounded-lg opacity-60">
@@ -384,10 +392,10 @@
                                 <i class="ph-fill ph-warning text-amber-400"></i>
                             </div>
                             <div class="flex-1">
-                                <p class="font-semibold text-white">Yellow Status</p>
+                                <p class="font-semibold text-white" data-i18n="semaforo_status_yellow">Yellow Status</p>
                                 <p class="text-slate-400">Dec 20 - Jan 14, 2026</p>
                             </div>
-                            <span class="text-slate-500">25 days</span>
+                            <span class="text-slate-500">25 <span data-i18n="days">days</span></span>
                         </div>
 
                         <div class="flex items-center gap-3 p-3 bg-white/5 rounded-lg opacity-40">
@@ -395,10 +403,10 @@
                                 <i class="ph-fill ph-check text-emerald-400"></i>
                             </div>
                             <div class="flex-1">
-                                <p class="font-semibold text-white">Green Status</p>
+                                <p class="font-semibold text-white" data-i18n="semaforo_status_green">Green Status</p>
                                 <p class="text-slate-400">Nov 5 - Dec 19, 2025</p>
                             </div>
-                            <span class="text-slate-500">44 days</span>
+                            <span class="text-slate-500">44 <span data-i18n="days">days</span></span>
                         </div>
                     </div>
                 </div>
@@ -429,53 +437,60 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const user = await checkRealAuth(client);
             if (!user) return;
-            await calculateHealth();
+
+            // Inicializar Data Manager
+            const initOk = await pymaxData.init(client);
+            if (!initOk) {
+                setDemoHealth();
+            } else {
+                pymaxData.on('data_updated', () => updateMetrics());
+            }
+
+            await updateMetrics();
             initializeChart();
+
+            // Actualizar textos dinámicos al cambiar idioma
+            window.addEventListener('languageChanged', () => {
+                updateMetrics();
+                if (scoreChart) {
+                    scoreChart.data.datasets[0].label = window.i18n?.t('semaforo_health_score') || 'Health Score';
+                    scoreChart.update();
+                }
+            });
         });
 
-        async function calculateHealth() {
-            try {
-                const { data: { user } } = await client.auth.getUser();
-                if (!user) {
-                    console.warn('No user found, using demo mode');
-                    setDemoHealth();
-                    return;
-                }
+        function updateMetrics() {
+            const operations = pymaxData.getData('operations') || [];
+            const t = key => window.i18n?.t(key) || key;
 
-                // Load operations and calculate real health
-                const { data: operations } = await client
-                    .from('user_operations')
-                    .select('*')
-                    .eq('user_id', user.id);
+            if (operations.length > 0) {
+                const income = operations
+                    .filter(o => o.type === 'ingreso' || o.type === 'income')
+                    .reduce((sum, o) => sum + parseFloat(o.amount || 0), 0);
+                const expense = operations
+                    .filter(o => o.type === 'gasto' || o.type === 'egreso' || o.type === 'expense')
+                    .reduce((sum, o) => sum + parseFloat(o.amount || 0), 0);
+                const balance = income - expense;
 
-                if (operations && operations.length > 0) {
-                    const income = operations.filter(o => o.type === 'ingreso').reduce((sum, o) => sum + parseFloat(o.amount || 0), 0);
-                    const expense = operations.filter(o => o.type === 'gasto').reduce((sum, o) => sum + parseFloat(o.amount || 0), 0);
-                    const balance = income - expense;
-                    
-                    // Calculate score
-                    let score = 50;
-                    if (balance > 0) score += 20;
-                    if (income > expense * 1.5) score += 15;
-                    if (operations.length >= 10) score += 10;
-                    score = Math.min(100, score);
+                let score = 50;
+                if (balance > 0) score += 20;
+                if (income > expense * 1.5) score += 15;
+                if (operations.length >= 10) score += 10;
+                score = Math.min(100, score);
 
-                    updateHealthStatus(score);
-                } else {
-                    setDemoHealth();
-                }
-
-            } catch (error) {
-                console.error('Error:', error);
-                setDemoHealth();
+                updateHealthStatus(score, t);
+            } else {
+                updateHealthStatus(85, t);
             }
         }
 
         function setDemoHealth() {
-            updateHealthStatus(85);
+            const t = key => window.i18n?.t(key) || key;
+            updateHealthStatus(85, t);
         }
 
-        function updateHealthStatus(score) {
+        function updateHealthStatus(score, t) {
+            const tFn = t || (key => window.i18n?.t(key) || key);
             document.getElementById('healthScore').textContent = score;
 
             const light = document.getElementById('trafficLight');
@@ -486,25 +501,25 @@
                 light.className = 'light-circle green pulse';
                 light.style.setProperty('--glow-color', 'rgba(34, 197, 94, 0.6)');
                 light.innerHTML = '<i class="ph-fill ph-check-circle" style="color: #22c55e;"></i>';
-                title.textContent = 'Excellent Health';
+                title.textContent = tFn('semaforo_excellent_health');
                 title.className = 'text-sm font-bold text-emerald-400 mb-1';
-                description.textContent = 'Your financial metrics are strong. Continue monitoring to maintain this status.';
+                description.textContent = tFn('semaforo_excellent_health_desc');
                 description.parentElement.className = 'p-4 bg-emerald-500/10 rounded-xl border border-emerald-500/30';
             } else if (score >= 60) {
                 light.className = 'light-circle yellow pulse';
                 light.style.setProperty('--glow-color', 'rgba(251, 191, 36, 0.6)');
                 light.innerHTML = '<i class="ph-fill ph-warning" style="color: #fbbf24;"></i>';
-                title.textContent = 'Moderate Health';
+                title.textContent = tFn('semaforo_moderate_health');
                 title.className = 'text-sm font-bold text-amber-400 mb-1';
-                description.textContent = 'Some areas need attention. Review expenses and cash flow carefully.';
+                description.textContent = tFn('semaforo_moderate_health_desc');
                 description.parentElement.className = 'p-4 bg-amber-500/10 rounded-xl border border-amber-500/30';
             } else {
                 light.className = 'light-circle red pulse';
                 light.style.setProperty('--glow-color', 'rgba(239, 68, 68, 0.6)');
                 light.innerHTML = '<i class="ph-fill ph-x-circle" style="color: #ef4444;"></i>';
-                title.textContent = 'Attention Required';
+                title.textContent = tFn('semaforo_attention_required');
                 title.className = 'text-sm font-bold text-rose-400 mb-1';
-                description.textContent = 'Critical issues detected. Take immediate action to improve financial position.';
+                description.textContent = tFn('semaforo_attention_required_desc');
                 description.parentElement.className = 'p-4 bg-rose-500/10 rounded-xl border border-rose-500/30';
             }
         }
@@ -517,7 +532,7 @@
                 data: {
                     labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
                     datasets: [{
-                        label: 'Health Score',
+                        label: window.i18n?.t('semaforo_health_score') || 'Health Score',
                         data: [72, 78, 82, 85],
                         borderColor: '#34d399',
                         backgroundColor: 'rgba(52, 211, 153, 0.1)',

@@ -12,6 +12,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- PYMAX CORE SYSTEMS -->
+    <script src="/static/js/pymax-performance.js"></script>
+    <script src="/static/js/pymax-i18n.js"></script>
+    <script src="/static/js/pymax-data-manager.js"></script>
     <script src="/static/js/pymax-real-auth.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
@@ -313,18 +317,26 @@
                     <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/30 transition">
                         <i class="ph-bold ph-arrow-left"></i>
                     </div>
-                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">Back</span>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest" data-i18n="back">Back</span>
                 </a>
                 <div class="h-6 w-px bg-white/10"></div>
                 <h1 class="text-xl font-bold text-white font-display tracking-tight">
-                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">AUDIT LEDGER</span>
+                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400" data-i18n="audit_ledger">AUDIT LEDGER</span>
                 </h1>
             </div>
 
-            <button onclick="exportToExcel()" class="flex items-center gap-2 px-3 py-2 rounded-full border border-emerald-500/30 text-emerald-400 bg-emerald-500/5 hover:bg-emerald-500/10 text-[10px] font-bold uppercase transition">
-                <i class="ph-bold ph-file-xls"></i>
-                <span class="hidden md:inline">Export Excel</span>
-            </button>
+            <div class="flex items-center gap-3">
+                <!-- Language Selector -->
+                <select data-language-selector class="text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-white/20 transition cursor-pointer">
+                    <option value="es">ES</option>
+                    <option value="en">EN</option>
+                    <option value="pt">PT</option>
+                </select>
+                <button onclick="exportToExcel()" class="flex items-center gap-2 px-3 py-2 rounded-full border border-emerald-500/30 text-emerald-400 bg-emerald-500/5 hover:bg-emerald-500/10 text-[10px] font-bold uppercase transition">
+                    <i class="ph-bold ph-file-xls"></i>
+                    <span class="hidden md:inline" data-i18n="export_excel">Export Excel</span>
+                </button>
+            </div>
         </div>
     </nav>
 
@@ -342,21 +354,21 @@
                         <div class="md:col-span-2">
                             <div class="relative">
                                 <i class="ph-bold ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
-                                <input type="text" id="searchInput" placeholder="Search transactions..." class="modern-input pl-11 text-sm" onkeyup="filterTable()">
+                                <input type="text" id="searchInput" data-i18n-placeholder="search_transactions" placeholder="Search transactions..." class="modern-input pl-11 text-sm" onkeyup="filterTable()">
                             </div>
                         </div>
                         
                         <div>
                             <select id="filterType" class="modern-input text-sm" onchange="filterTable()">
-                                <option value="all">All Types</option>
-                                <option value="ingreso">Income</option>
-                                <option value="egreso">Expenses</option>
+                                <option value="all" data-i18n="all_types">All Types</option>
+                                <option value="ingreso" data-i18n="income">Income</option>
+                                <option value="egreso" data-i18n="expense">Expenses</option>
                             </select>
                         </div>
                         
                         <div>
                             <select id="filterCategory" class="modern-input text-sm" onchange="filterTable()">
-                                <option value="all">All Categories</option>
+                                <option value="all" data-i18n="all_categories">All Categories</option>
                             </select>
                         </div>
                     </div>
@@ -367,10 +379,10 @@
                     <div class="p-6 border-b border-white/10 flex justify-between items-center">
                         <h2 class="text-lg font-bold text-white font-display flex items-center gap-2">
                             <i class="ph-duotone ph-list-dashes text-cyan-400"></i>
-                            Transaction History
+                            <span data-i18n="transaction_history">Transaction History</span>
                         </h2>
                         <p class="text-xs text-slate-500">
-                            Total: <span id="totalRecords" class="font-bold text-white">0</span> records
+                            <span data-i18n="total">Total</span>: <span id="totalRecords" class="font-bold text-white">0</span> <span data-i18n="records">records</span>
                         </p>
                     </div>
                     
@@ -379,17 +391,17 @@
                             <thead>
                                 <tr>
                                     <th onclick="sortTable('date')">
-                                        Date <i class="ph-bold ph-caret-up-down text-xs ml-1"></i>
+                                        <span data-i18n="date">Date</span> <i class="ph-bold ph-caret-up-down text-xs ml-1"></i>
                                     </th>
                                     <th onclick="sortTable('concept')">
-                                        Description <i class="ph-bold ph-caret-up-down text-xs ml-1"></i>
+                                        <span data-i18n="description">Description</span> <i class="ph-bold ph-caret-up-down text-xs ml-1"></i>
                                     </th>
                                     <th onclick="sortTable('category')">
-                                        Category <i class="ph-bold ph-caret-up-down text-xs ml-1"></i>
+                                        <span data-i18n="category">Category</span> <i class="ph-bold ph-caret-up-down text-xs ml-1"></i>
                                     </th>
-                                    <th>Type</th>
+                                    <th><span data-i18n="type">Type</span></th>
                                     <th onclick="sortTable('amount')" style="text-align: right;">
-                                        Amount <i class="ph-bold ph-caret-up-down text-xs ml-1"></i>
+                                        <span data-i18n="amount">Amount</span> <i class="ph-bold ph-caret-up-down text-xs ml-1"></i>
                                     </th>
                                 </tr>
                             </thead>
@@ -398,7 +410,7 @@
                                     <td colspan="5" class="text-center py-20">
                                         <div class="flex flex-col items-center">
                                             <div class="loading-spinner mb-4"></div>
-                                            <p class="text-sm text-slate-500">Loading transactions...</p>
+                                            <p class="text-sm text-slate-500" data-i18n="loading_transactions">Loading transactions...</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -408,15 +420,11 @@
 
                     <div class="p-4 border-t border-white/10 bg-[#0f172a]/40 flex justify-between items-center">
                         <p class="text-xs text-slate-500">
-                            Showing <span id="showingCount">0</span> of <span id="totalCount">0</span> transactions
+                            <span data-i18n="showing">Showing</span> <span id="showingCount">0</span> <span data-i18n="of">of</span> <span id="totalCount">0</span> <span data-i18n="transactions">transactions</span>
                         </p>
                         <div class="flex gap-3">
-                            <button onclick="exportToCSV()" class="text-xs font-bold text-cyan-400 hover:text-cyan-300 transition uppercase">
-                                Export CSV
-                            </button>
-                            <button onclick="exportToPDF()" class="text-xs font-bold text-violet-400 hover:text-violet-300 transition uppercase">
-                                Export PDF
-                            </button>
+                            <button onclick="exportToCSV()" class="text-xs font-bold text-cyan-400 hover:text-cyan-300 transition uppercase" data-i18n="export_csv">Export CSV</button>
+                            <button onclick="exportToPDF()" class="text-xs font-bold text-violet-400 hover:text-violet-300 transition uppercase" data-i18n="export_pdf">Export PDF</button>
                         </div>
                     </div>
                 </div>
@@ -435,45 +443,45 @@
                     </div>
                     
                     <div class="text-center mb-6">
-                        <h3 class="text-2xl font-bold text-white font-display mb-2">
+                        <h3 class="text-2xl font-bold text-white font-display mb-2" data-i18n="ai_audit_intelligence">
                             AI Audit Intelligence
                         </h3>
                         <p class="text-sm text-emerald-400 mb-1 flex items-center justify-center gap-2">
                             <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                            Active & Monitoring
+                            <span data-i18n="active_monitoring">Active & Monitoring</span>
                         </p>
-                        <p class="text-xs text-slate-400">Advanced financial analysis included</p>
+                        <p class="text-xs text-slate-400" data-i18n="advanced_financial_analysis">Advanced financial analysis included</p>
                     </div>
 
                     <div class="space-y-3 mb-6">
                         <div class="ai-feature-item">
                             <i class="ph-fill ph-shield-check text-emerald-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Real-time fraud detection active</span>
+                            <span class="text-sm text-slate-300" data-i18n="fraud_detection_active">Real-time fraud detection active</span>
                         </div>
                         <div class="ai-feature-item">
                             <i class="ph-fill ph-detective text-emerald-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Pattern recognition enabled</span>
+                            <span class="text-sm text-slate-300" data-i18n="pattern_recognition_enabled">Pattern recognition enabled</span>
                         </div>
                         <div class="ai-feature-item">
                             <i class="ph-fill ph-warning-circle text-emerald-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Anomaly alerts configured</span>
+                            <span class="text-sm text-slate-300" data-i18n="anomaly_alerts_configured">Anomaly alerts configured</span>
                         </div>
                         <div class="ai-feature-item">
                             <i class="ph-fill ph-calculator text-emerald-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Tax optimization available</span>
+                            <span class="text-sm text-slate-300" data-i18n="tax_optimization_available">Tax optimization available</span>
                         </div>
                         <div class="ai-feature-item">
                             <i class="ph-fill ph-crystal-ball text-emerald-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Forecasting & risk assessment ready</span>
+                            <span class="text-sm text-slate-300" data-i18n="forecasting_risk_ready">Forecasting & risk assessment ready</span>
                         </div>
                     </div>
 
                     <div class="text-center">
                         <a href="{{ url_for('mover_ia') }}" class="ai-upgrade-btn inline-flex items-center gap-2">
                             <i class="ph-bold ph-chats-circle"></i>
-                            Chat with AI Assistant
+                            <span data-i18n="chat_with_ai_assistant">Chat with AI Assistant</span>
                         </a>
-                        <p class="text-xs text-slate-500 mt-3">Included with your PYMAX plan</p>
+                        <p class="text-xs text-slate-500 mt-3" data-i18n="included_with_pymax_plan">Included with your PYMAX plan</p>
                     </div>
                 </div>
 
@@ -481,22 +489,22 @@
                 <div class="glass-card p-6 fade-in">
                     <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
                         <i class="ph-duotone ph-chart-bar text-emerald-400"></i>
-                        Summary
+                        <span data-i18n="summary">Summary</span>
                     </h3>
                     
                     <div class="space-y-4">
                         <div class="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
-                            <p class="text-xs font-bold uppercase tracking-widest text-emerald-400 mb-1">Total Income</p>
+                            <p class="text-xs font-bold uppercase tracking-widest text-emerald-400 mb-1" data-i18n="total_income">Total Income</p>
                             <p class="text-2xl font-bold text-white font-display" id="summaryIncome">$0</p>
                         </div>
                         
                         <div class="p-4 rounded-lg bg-rose-500/10 border border-rose-500/30">
-                            <p class="text-xs font-bold uppercase tracking-widest text-rose-400 mb-1">Total Expenses</p>
+                            <p class="text-xs font-bold uppercase tracking-widest text-rose-400 mb-1" data-i18n="total_expenses">Total Expenses</p>
                             <p class="text-2xl font-bold text-white font-display" id="summaryExpenses">$0</p>
                         </div>
                         
                         <div class="p-4 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
-                            <p class="text-xs font-bold uppercase tracking-widest text-cyan-400 mb-1">Net Balance</p>
+                            <p class="text-xs font-bold uppercase tracking-widest text-cyan-400 mb-1" data-i18n="net_balance">Net Balance</p>
                             <p class="text-2xl font-bold text-white font-display" id="summaryNet">$0</p>
                         </div>
                     </div>
@@ -506,7 +514,7 @@
                 <div class="glass-card p-6 fade-in">
                     <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
                         <i class="ph-duotone ph-chart-donut text-violet-400"></i>
-                        Distribution
+                        <span data-i18n="distribution">Distribution</span>
                     </h3>
                     
                     <div class="chart-container">
@@ -562,27 +570,25 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const user = await checkRealAuth(client);
             if (!user) return;
+
+            const initOk = await pymaxData.init(client);
+            if (!initOk) return;
+
+            pymaxData.on('data_updated', () => loadTransactions());
+
+            window.addEventListener('languageChanged', () => {
+                populateCategories();
+                renderTable();
+            });
+
             await loadTransactions();
         });
 
         // Load Transactions
         async function loadTransactions() {
             try {
-                const { data: { user } } = await client.auth.getUser();
-                if (!user) {
-                    console.warn('No user found, using demo mode');
-                    // Continue with demo data
-                }
-
-                const { data, error } = await client
-                    .from('user_operations')
-                    .select('*')
-                    .eq('user_id', user.id)
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
-
-                allTransactions = data || [];
+                const ops = pymaxData.getData('operations') || [];
+                allTransactions = [...ops];
                 filteredTransactions = allTransactions;
                 
                 populateCategories();
@@ -592,7 +598,7 @@
 
             } catch (error) {
                 console.error('Error loading transactions:', error);
-                Toast.fire({ icon: 'error', title: 'Failed to load transactions' });
+                Toast.fire({ icon: 'error', title: window.i18n?.t('failed_load_transactions') || 'Failed to load transactions' });
             }
         }
 
@@ -600,8 +606,9 @@
         function populateCategories() {
             const categories = [...new Set(allTransactions.map(t => t.category))].filter(c => c).sort();
             const select = document.getElementById('filterCategory');
+            const t = key => window.i18n?.t(key) || key;
             
-            select.innerHTML = '<option value="all">All Categories</option>';
+            select.innerHTML = `<option value="all">${t('all_categories')}</option>`;
             categories.forEach(cat => {
                 const option = document.createElement('option');
                 option.value = cat;
@@ -615,11 +622,12 @@
             const tbody = document.getElementById('tableBody');
             
             if (filteredTransactions.length === 0) {
+                const noTrans = window.i18n?.t('no_transactions') || 'No transactions found';
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="5" class="text-center py-20">
                             <i class="ph-duotone ph-archive text-5xl text-slate-700 mb-4 block"></i>
-                            <p class="text-slate-500">No transactions found</p>
+                            <p class="text-slate-500">${noTrans}</p>
                         </td>
                     </tr>
                 `;
@@ -843,12 +851,12 @@
             XLSX.utils.book_append_sheet(wb, ws, "Audit_Ledger");
             XLSX.writeFile(wb, `Pymax_Audit_${new Date().toISOString().split('T')[0]}.xlsx`);
             
-            Toast.fire({ icon: 'success', title: 'Excel exported' });
+            Toast.fire({ icon: 'success', title: window.i18n?.t('excel_exported') || 'Excel exported' });
         }
 
         // Export to PDF (Placeholder)
         function exportToPDF() {
-            Toast.fire({ icon: 'info', title: 'PDF export coming soon' });
+            Toast.fire({ icon: 'info', title: window.i18n?.t('pdf_export_coming_soon') || 'PDF export coming soon' });
         }
 
         // AI features are included - no upgrade needed

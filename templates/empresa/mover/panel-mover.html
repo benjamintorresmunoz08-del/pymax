@@ -268,13 +268,20 @@
     </div>
     
     <div class="flex items-center gap-3">
+      <!-- Language Selector -->
+      <select data-language-selector class="text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-white/20 transition cursor-pointer">
+        <option value="es">ES</option>
+        <option value="en">EN</option>
+        <option value="pt">PT</option>
+      </select>
+      
       <div class="text-right hidden md:block">
-        <p class="text-xs text-slate-400">Last Update</p>
+        <p class="text-xs text-slate-400" data-i18n="last_update">Last Update</p>
         <p class="text-sm text-white font-semibold" id="lastUpdate">--:--</p>
       </div>
       <a href="{{ url_for('empresa_home') }}" class="group flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition px-4 py-2.5 rounded-xl border border-white/10 hover:border-white/20 hover:bg-white/5">
         <i class="ph-bold ph-arrow-u-up-left text-base"></i>
-        <span>Back</span>
+        <span data-i18n="back">Back</span>
       </a>
     </div>
   </nav>
@@ -299,7 +306,7 @@
     <!-- Stat 1: Balance Actual -->
     <div class="card-stat">
       <div class="flex items-center justify-between">
-        <span class="stat-label">Current Balance</span>
+        <span class="stat-label" data-i18n="current_balance">Current Balance</span>
         <i class="ph-duotone ph-wallet text-2xl text-blue-400"></i>
       </div>
       <div class="stat-value" id="currentBalance">-</div>
@@ -312,7 +319,7 @@
     <!-- Stat 2: Ingresos del Mes -->
     <div class="card-stat">
       <div class="flex items-center justify-between">
-        <span class="stat-label">Income This Month</span>
+        <span class="stat-label" data-i18n="month_income">Income This Month</span>
         <i class="ph-duotone ph-arrow-up-right text-2xl text-emerald-400"></i>
       </div>
       <div class="stat-value" id="monthIncome">-</div>
@@ -325,7 +332,7 @@
     <!-- Stat 3: Gastos del Mes -->
     <div class="card-stat">
       <div class="flex items-center justify-between">
-        <span class="stat-label">Expenses This Month</span>
+        <span class="stat-label" data-i18n="month_expenses">Expenses This Month</span>
         <i class="ph-duotone ph-arrow-down-left text-2xl text-rose-400"></i>
       </div>
       <div class="stat-value" id="monthExpenses">-</div>
@@ -338,7 +345,7 @@
     <!-- Stat 4: Margen Neto -->
     <div class="card-stat">
       <div class="flex items-center justify-between">
-        <span class="stat-label">Net Margin</span>
+        <span class="stat-label" data-i18n="profit_margin">Net Margin</span>
         <i class="ph-duotone ph-chart-line text-2xl text-violet-400"></i>
       </div>
       <div class="stat-value" id="netMargin">-</div>
@@ -354,11 +361,11 @@
   <div class="mb-10 fade-in d-4">
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h2 class="text-xl font-bold text-white font-display">Cash Flow Trend</h2>
-        <p class="text-sm text-slate-400">Last 7 days performance</p>
+        <h2 class="text-xl font-bold text-white font-display" data-i18n="cash_flow_trend">Cash Flow Trend</h2>
+        <p class="text-sm text-slate-400" data-i18n="last_7_days_performance">Last 7 days performance</p>
       </div>
       <a href="{{ url_for('mover_flujo') }}" class="text-sm text-blue-400 hover:text-blue-300 transition font-semibold">
-        View Full Analysis →
+        <span data-i18n="view_full_analysis">View Full Analysis</span> →
       </a>
     </div>
     <div class="chart-container">
@@ -368,7 +375,7 @@
 
   <!-- MÓDULOS PRINCIPALES -->
   <div class="mb-10">
-    <h2 class="text-xl font-bold text-white mb-6 font-display fade-in d-5">Control Modules</h2>
+    <h2 class="text-xl font-bold text-white mb-6 font-display fade-in d-5" data-i18n="control_modules">Control Modules</h2>
     
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 
@@ -581,71 +588,48 @@ function updateLastUpdate() {
   });
 }
 
-// Cargar estadísticas
+// Cargar estadísticas usando Data Manager
 async function loadStats() {
   try {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      console.log('No user logged in');
-      return;
-    }
-
-    // Obtener operaciones del mes actual
-    const now = new Date();
-    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    // Usar Data Manager para obtener datos
+    const stats = pymaxData.getFinancialStats('month');
     
-    const { data: operations, error } = await supabase
-      .from('user_operations')
-      .select('*')
-      .eq('user_id', user.id)
-      .gte('created_at', firstDayOfMonth);
-
-    if (error) throw error;
-
-    if (!operations || operations.length === 0) {
+    if (stats.operations === 0) {
       // Sin datos aún
       document.getElementById('currentBalance').textContent = formatCurrency(0);
       document.getElementById('monthIncome').textContent = formatCurrency(0);
       document.getElementById('monthExpenses').textContent = formatCurrency(0);
       document.getElementById('netMargin').textContent = '0%';
       
-      document.getElementById('balanceChange').innerHTML = '<i class="ph-bold ph-equals text-sm"></i><span>No data yet</span>';
-      document.getElementById('incomeChange').innerHTML = '<i class="ph-bold ph-equals text-sm"></i><span>No data yet</span>';
-      document.getElementById('expensesChange').innerHTML = '<i class="ph-bold ph-equals text-sm"></i><span>No data yet</span>';
-      document.getElementById('marginChange').innerHTML = '<i class="ph-bold ph-equals text-sm"></i><span>No data yet</span>';
+      document.getElementById('balanceChange').innerHTML = '<i class="ph-bold ph-equals text-sm"></i><span>' + (window.i18n?.t('no_data') || 'No data yet') + '</span>';
+      document.getElementById('incomeChange').innerHTML = '<i class="ph-bold ph-equals text-sm"></i><span>' + (window.i18n?.t('no_data') || 'No data yet') + '</span>';
+      document.getElementById('expensesChange').innerHTML = '<i class="ph-bold ph-equals text-sm"></i><span>' + (window.i18n?.t('no_data') || 'No data yet') + '</span>';
+      document.getElementById('marginChange').innerHTML = '<i class="ph-bold ph-equals text-sm"></i><span>' + (window.i18n?.t('no_data') || 'No data yet') + '</span>';
       
       return;
     }
 
-    // Calcular totales
-    const income = operations
-      .filter(op => op.type === 'ingreso')
-      .reduce((sum, op) => sum + parseFloat(op.amount), 0);
-    
-    const expenses = operations
-      .filter(op => op.type === 'egreso')
-      .reduce((sum, op) => sum + parseFloat(op.amount), 0);
-    
-    const balance = income - expenses;
-    const margin = income > 0 ? ((income - expenses) / income * 100).toFixed(1) : 0;
+    // Actualizar UI con stats del Data Manager
+    document.getElementById('currentBalance').textContent = formatCurrency(stats.balance);
+    document.getElementById('monthIncome').textContent = formatCurrency(stats.income);
+    document.getElementById('monthExpenses').textContent = formatCurrency(stats.expenses);
+    document.getElementById('netMargin').textContent = stats.margin + '%';
 
-    // Actualizar UI
-    document.getElementById('currentBalance').textContent = formatCurrency(balance);
-    document.getElementById('monthIncome').textContent = formatCurrency(income);
-    document.getElementById('monthExpenses').textContent = formatCurrency(expenses);
-    document.getElementById('netMargin').textContent = margin + '%';
-
-    // Actualizar cambios (por ahora estáticos, después comparar con mes anterior)
-    document.getElementById('balanceChange').innerHTML = '<i class="ph-bold ph-trend-up text-sm"></i><span>Month to date</span>';
-    document.getElementById('incomeChange').innerHTML = '<i class="ph-bold ph-trend-up text-sm"></i><span>+' + operations.filter(op => op.type === 'ingreso').length + ' transactions</span>';
-    document.getElementById('expensesChange').innerHTML = '<i class="ph-bold ph-trend-down text-sm"></i><span>' + operations.filter(op => op.type === 'egreso').length + ' transactions</span>';
+    // Actualizar cambios con traducciones
+    const monthToDate = window.i18n?.t('this_month') || 'Month to date';
+    const transactionsText = window.i18n?.t('transactions') || 'transactions';
+    
+    document.getElementById('balanceChange').innerHTML = '<i class="ph-bold ph-trend-up text-sm"></i><span>' + monthToDate + '</span>';
+    document.getElementById('incomeChange').innerHTML = '<i class="ph-bold ph-trend-up text-sm"></i><span>+' + stats.incomeCount + ' ' + transactionsText + '</span>';
+    document.getElementById('expensesChange').innerHTML = '<i class="ph-bold ph-trend-down text-sm"></i><span>' + stats.expensesCount + ' ' + transactionsText + '</span>';
     document.getElementById('marginChange').innerHTML = '<i class="ph-bold ph-equals text-sm"></i><span>Current rate</span>';
 
-    // Cargar gráfico
+    // Cargar gráfico con operaciones del cache
+    const operations = pymaxData.getData('operations');
     loadCashFlowChart(operations);
 
     // Verificar alertas
-    checkAlerts(balance, operations);
+    checkAlerts(stats.balance, operations);
 
   } catch (error) {
     console.error('Error loading stats:', error);
@@ -834,14 +818,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Ensure authentication first
   await ensureAuthentication();
   
+  // Inicializar Data Manager (sincroniza TODOS los datos)
+  const initOk = await pymaxData.init(supabase);
+  
+  if (initOk) {
+    console.log('✅ Data Manager inicializado - Dashboard conectado');
+    
+    // Escuchar cambios en CUALQUIER módulo
+    pymaxData.on('data_updated', () => {
+      console.log('🔄 Datos actualizados - Refrescando dashboard');
+      loadStats();
+    });
+    
+    // Escuchar cambios de idioma
+    window.addEventListener('languageChanged', () => {
+      loadStats(); // Re-renderizar con nuevas traducciones
+    });
+  }
+  
   updateLastUpdate();
   loadStats();
   
-  // Actualizar cada 30 segundos
-  setInterval(() => {
-    updateLastUpdate();
-    loadStats();
-  }, 30000);
+  // Ya NO necesitamos setInterval - Data Manager lo maneja automáticamente cada 30s
 });
 </script>
 

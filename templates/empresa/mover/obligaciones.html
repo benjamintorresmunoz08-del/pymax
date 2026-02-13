@@ -12,6 +12,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- PYMAX CORE SYSTEMS -->
+    <script src="/static/js/pymax-performance.js"></script>
+    <script src="/static/js/pymax-i18n.js"></script>
+    <script src="/static/js/pymax-data-manager.js"></script>
     <script src="/static/js/pymax-real-auth.js"></script>
 
     <style>
@@ -296,6 +301,17 @@
             transform: translateY(-2px);
         }
 
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
         /* Action Button */
         .action-btn {
             width: 36px;
@@ -459,18 +475,27 @@
                     <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/30 transition">
                         <i class="ph-bold ph-arrow-left"></i>
                     </div>
-                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">Back</span>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest" data-i18n="back">Back</span>
                 </a>
                 <div class="h-6 w-px bg-white/10"></div>
                 <h1 class="text-xl font-bold text-white font-display tracking-tight">
-                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">DEBTS & OBLIGATIONS</span>
+                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400" data-i18n="debts_obligations">DEBTS & OBLIGATIONS</span>
                 </h1>
             </div>
 
-            <button onclick="addNewObligation()" class="flex items-center gap-2 px-3 py-2 rounded-full border border-cyan-500/30 text-cyan-400 bg-cyan-500/5 hover:bg-cyan-500/10 text-[10px] font-bold uppercase transition">
-                <i class="ph-bold ph-plus"></i>
-                <span class="hidden md:inline">New Debt</span>
-            </button>
+            <div class="flex items-center gap-3">
+                <!-- Language Selector -->
+                <select data-language-selector class="text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-white/20 transition cursor-pointer">
+                    <option value="es">ES</option>
+                    <option value="en">EN</option>
+                    <option value="pt">PT</option>
+                </select>
+                
+                <button onclick="addNewObligation()" class="flex items-center gap-2 px-3 py-2 rounded-full border border-cyan-500/30 text-cyan-400 bg-cyan-500/5 hover:bg-cyan-500/10 text-[10px] font-bold uppercase transition">
+                    <i class="ph-bold ph-plus"></i>
+                    <span class="hidden md:inline" data-i18n="new_debt">New Debt</span>
+                </button>
+            </div>
         </div>
     </nav>
 
@@ -490,7 +515,7 @@
 
             <div class="glass-card p-6">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs font-bold uppercase tracking-widest text-rose-400">Overdue</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-rose-400" data-i18n="overdue">Overdue</p>
                     <i class="ph-duotone ph-warning text-rose-400 text-xl"></i>
                 </div>
                 <h3 class="text-3xl font-bold text-white font-display mb-1" id="statOverdue">0</h3>
@@ -499,7 +524,7 @@
 
             <div class="glass-card p-6">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs font-bold uppercase tracking-widest text-amber-400">Due Soon</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-amber-400" data-i18n="due_soon">Due Soon</p>
                     <i class="ph-duotone ph-clock text-amber-400 text-xl"></i>
                 </div>
                 <h3 class="text-3xl font-bold text-white font-display mb-1" id="statDueSoon">0</h3>
@@ -526,18 +551,18 @@
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-xl font-bold text-white font-display flex items-center gap-2">
                             <i class="ph-duotone ph-list-checks text-cyan-400"></i>
-                            Active Obligations
+                            <span data-i18n="active_obligations">Active Obligations</span>
                         </h2>
                         <div class="flex gap-2">
                             <select id="filterStatus" class="text-xs bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-slate-400" onchange="loadObligations()">
-                                <option value="all">All Status</option>
-                                <option value="pending">Pending</option>
-                                <option value="paid">Paid</option>
+                                <option value="all" data-i18n="all_status">All Status</option>
+                                <option value="pending" data-i18n="pending">Pending</option>
+                                <option value="paid" data-i18n="paid">Paid</option>
                             </select>
                             <select id="sortBy" class="text-xs bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-slate-400" onchange="loadObligations()">
-                                <option value="date">By Date</option>
-                                <option value="amount">By Amount</option>
-                                <option value="priority">By Priority</option>
+                                <option value="date" data-i18n="by_date">By Date</option>
+                                <option value="amount" data-i18n="by_amount">By Amount</option>
+                                <option value="priority" data-i18n="by_priority">By Priority</option>
                             </select>
                         </div>
                     </div>
@@ -553,12 +578,12 @@
                 <div class="glass-card p-6 fade-in">
                     <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
                         <i class="ph-duotone ph-calendar text-violet-400"></i>
-                        Payment Timeline
+                        <span data-i18n="payment_timeline">Payment Timeline</span>
                     </h3>
                     
                     <div id="timelineContainer" class="custom-scroll" style="max-height: 400px;">
                         <div class="flex items-center justify-center py-12">
-                            <p class="text-sm text-slate-500">No upcoming payments</p>
+                            <p class="text-sm text-slate-500" data-i18n="no_upcoming_payments">No upcoming payments</p>
                         </div>
                     </div>
                 </div>
@@ -613,9 +638,9 @@
                     <div class="text-center">
                         <a href="{{ url_for('mover_ia') }}" class="ai-upgrade-btn inline-flex items-center gap-2">
                             <i class="ph-bold ph-chats-circle"></i>
-                            Consult AI Advisor
+                            <span data-i18n="consult_ai_advisor">Consult AI Advisor</span>
                         </a>
-                        <p class="text-xs text-slate-500 mt-3">Included with your plan</p>
+                        <p class="text-xs text-slate-500 mt-3" data-i18n="included_with_plan">Included with your plan</p>
                     </div>
                 </div>
 
@@ -623,7 +648,7 @@
                 <div class="glass-card p-6 fade-in">
                     <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
                         <i class="ph-duotone ph-chart-pie text-emerald-400"></i>
-                        Debts by Category
+                        <span data-i18n="debts_by_category">Debts by Category</span>
                     </h3>
                     
                     <div class="chart-container">
@@ -635,24 +660,24 @@
                 <div class="glass-card p-6 fade-in">
                     <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
                         <i class="ph-duotone ph-info text-cyan-400"></i>
-                        Quick Stats
+                        <span data-i18n="quick_stats">Quick Stats</span>
                     </h3>
                     
                     <div class="space-y-3">
                         <div class="flex justify-between items-center">
-                            <span class="text-xs text-slate-400">Average Debt</span>
+                            <span class="text-xs text-slate-400" data-i18n="average_debt">Average Debt</span>
                             <span class="text-sm font-bold text-white" id="avgDebt">$0</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-xs text-slate-400">Largest Debt</span>
+                            <span class="text-xs text-slate-400" data-i18n="largest_debt">Largest Debt</span>
                             <span class="text-sm font-bold text-rose-400" id="largestDebt">$0</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-xs text-slate-400">This Month</span>
+                            <span class="text-xs text-slate-400" data-i18n="this_month">This Month</span>
                             <span class="text-sm font-bold text-amber-400" id="thisMonthDebt">$0</span>
                         </div>
                         <div class="flex justify-between items-center pt-3 border-t border-white/10">
-                            <span class="text-xs text-slate-400">Payment Rate</span>
+                            <span class="text-xs text-slate-400" data-i18n="payment_rate">Payment Rate</span>
                             <span class="text-sm font-bold text-emerald-400" id="paymentRate">0%</span>
                         </div>
                     </div>
@@ -670,9 +695,9 @@
             <div class="p-6 border-b border-white/10 flex justify-between items-center">
                 <h2 class="text-lg font-bold text-white font-display flex items-center gap-2">
                     <i class="ph-fill ph-plus-circle text-cyan-400"></i>
-                    <span id="modalTitle">Add New Obligation</span>
+                    <span id="modalTitle" data-i18n="add_new_obligation">Add New Obligation</span>
                 </h2>
-                <button onclick="closeObligationModal()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition">
+                <button onclick="closeObligationModal()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition" data-i18n-title="close">
                     <i class="ph-bold ph-x"></i>
                 </button>
             </div>
@@ -682,63 +707,63 @@
                     <input type="hidden" id="editingId" value="">
                     
                     <div>
-                        <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Type / Description</label>
-                        <input type="text" id="obligationType" placeholder="e.g. Rent, Taxes, Supplier Payment" class="modern-input" required>
+                        <label class="text-xs font-bold text-slate-400 uppercase mb-2 block" data-i18n="type_description">Type / Description</label>
+                        <input type="text" id="obligationType" data-i18n-placeholder="placeholder_obligation_type" placeholder="e.g. Rent, Taxes, Supplier Payment" class="modern-input" required>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Amount</label>
-                            <input type="number" id="obligationAmount" placeholder="0.00" class="modern-input" step="0.01" required>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block" data-i18n="amount">Amount</label>
+                            <input type="number" id="obligationAmount" data-i18n-placeholder="placeholder_amount" placeholder="0.00" class="modern-input" step="0.01" required>
                         </div>
                         <div>
-                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Due Date</label>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block" data-i18n="due_date">Due Date</label>
                             <input type="date" id="obligationDate" class="modern-input" required>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Category</label>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block" data-i18n="category">Category</label>
                             <select id="obligationCategory" class="modern-input" required>
-                                <option value="">Select category...</option>
-                                <option value="Taxes">Taxes</option>
-                                <option value="Rent">Rent</option>
-                                <option value="Utilities">Utilities</option>
-                                <option value="Suppliers">Suppliers</option>
-                                <option value="Salaries">Salaries</option>
-                                <option value="Loans">Loans</option>
-                                <option value="Insurance">Insurance</option>
-                                <option value="Other">Other</option>
+                                <option value="" data-i18n="select_category">Select category...</option>
+                                <option value="Taxes" data-i18n="taxes">Taxes</option>
+                                <option value="Rent" data-i18n="rent">Rent</option>
+                                <option value="Utilities" data-i18n="utilities">Utilities</option>
+                                <option value="Suppliers" data-i18n="suppliers">Suppliers</option>
+                                <option value="Salaries" data-i18n="salaries">Salaries</option>
+                                <option value="Loans" data-i18n="loans">Loans</option>
+                                <option value="Insurance" data-i18n="insurance">Insurance</option>
+                                <option value="Other" data-i18n="other">Other</option>
                             </select>
                         </div>
                         <div>
-                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Status</label>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block" data-i18n="status">Status</label>
                             <select id="obligationStatus" class="modern-input">
-                                <option value="pending">Pending</option>
-                                <option value="paid">Paid</option>
+                                <option value="pending" data-i18n="pending">Pending</option>
+                                <option value="paid" data-i18n="paid">Paid</option>
                             </select>
                         </div>
                     </div>
 
                     <div>
-                        <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Creditor / Payee</label>
-                        <input type="text" id="obligationCreditor" placeholder="Company or person name" class="modern-input">
+                        <label class="text-xs font-bold text-slate-400 uppercase mb-2 block" data-i18n="creditor_payee">Creditor / Payee</label>
+                        <input type="text" id="obligationCreditor" data-i18n-placeholder="placeholder_creditor" placeholder="Company or person name" class="modern-input">
                     </div>
 
                     <div>
-                        <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Notes (Optional)</label>
-                        <textarea id="obligationNotes" placeholder="Additional information..." class="modern-input" rows="3"></textarea>
+                        <label class="text-xs font-bold text-slate-400 uppercase mb-2 block" data-i18n="notes_optional">Notes (Optional)</label>
+                        <textarea id="obligationNotes" data-i18n-placeholder="placeholder_notes" placeholder="Additional information..." class="modern-input" rows="3"></textarea>
                     </div>
 
                     <div class="flex gap-3 pt-4">
                         <button type="submit" class="modern-btn btn-primary flex-1">
                             <i class="ph-bold ph-floppy-disk"></i>
-                            <span id="btnSubmitText">Save Obligation</span>
+                            <span id="btnSubmitText" data-i18n="save_obligation">Save Obligation</span>
                         </button>
                         <button type="button" onclick="closeObligationModal()" class="modern-btn btn-secondary px-6">
                             <i class="ph-bold ph-x"></i>
-                            Cancel
+                            <span data-i18n="cancel">Cancel</span>
                         </button>
                     </div>
                 </form>
@@ -770,33 +795,46 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const user = await checkRealAuth(client);
             if (!user) return; // checkRealAuth ya redirige si no hay usuario
+
+            // Inicializar Data Manager
+            const initOk = await pymaxData.init(client);
+            if (!initOk) return;
+
+            // Escuchar cambios de datos para actualizar obligaciones
+            pymaxData.on('data_updated', () => loadObligations());
+
             await loadObligations();
+
+            // Actualizar contenido dinámico al cambiar idioma
+            window.addEventListener('languageChanged', () => {
+                const editingId = document.getElementById('editingId').value;
+                document.getElementById('modalTitle').textContent = editingId
+                    ? (window.i18n?.t('edit_obligation') || 'Edit Obligation')
+                    : (window.i18n?.t('add_new_obligation') || 'Add New Obligation');
+                document.getElementById('btnSubmitText').textContent = editingId
+                    ? (window.i18n?.t('update_obligation') || 'Update Obligation')
+                    : (window.i18n?.t('save_obligation') || 'Save Obligation');
+                updateStatistics();
+                updateTimeline();
+                updateQuickStats();
+                renderObligations();
+            });
         });
 
-        // Load Obligations
+        // Load Obligations (usa pymaxData cache para sincronizar con todos los módulos)
         async function loadObligations() {
             try {
-                const { data: { user } } = await client.auth.getUser();
-                if (!user) {
-                    console.warn('No user found, using demo mode');
-                    return;
-                }
+                const t = key => window.i18n?.t(key) || key;
 
-                const filterStatus = document.getElementById('filterStatus').value;
-                const sortBy = document.getElementById('sortBy').value;
+                // Obtener datos del Data Manager
+                let data = pymaxData.getData('obligations') || [];
 
-                let query = client
-                    .from('obligaciones')
-                    .select('*')
-                    .eq('user_id', user.id);
+                const filterStatus = document.getElementById('filterStatus')?.value || 'all';
+                const sortBy = document.getElementById('sortBy')?.value || 'date';
 
                 if (filterStatus !== 'all') {
-                    query = query.eq('estado', filterStatus === 'pending' ? 'pendiente' : 'pagada');
+                    data = data.filter(o => o.estado === (filterStatus === 'pending' ? 'pendiente' : 'pagada'));
                 }
-
-                const { data, error } = await query;
-
-                if (error) throw error;
 
                 allObligations = data || [];
 
@@ -817,7 +855,7 @@
 
             } catch (error) {
                 console.error('Error loading obligations:', error);
-                Toast.fire({ icon: 'error', title: 'Failed to load obligations' });
+                Toast.fire({ icon: 'error', title: window.i18n?.t('load_obligations_failed') || 'Failed to load obligations' });
             }
         }
 
@@ -838,13 +876,14 @@
         // Render Obligations
         function renderObligations() {
             const container = document.getElementById('obligationsList');
+            const t = key => window.i18n?.t(key) || key;
             
             if (allObligations.length === 0) {
                 container.innerHTML = `
                     <div class="flex flex-col items-center justify-center py-20 text-center">
                         <i class="ph-duotone ph-archive text-6xl text-slate-700 mb-4"></i>
-                        <p class="text-slate-500 font-medium">No obligations found</p>
-                        <p class="text-xs text-slate-600 mt-2">Add your first obligation to start tracking</p>
+                        <p class="text-slate-500 font-medium">${t('no_obligations_found')}</p>
+                        <p class="text-xs text-slate-600 mt-2">${t('add_first_obligation')}</p>
                     </div>
                 `;
                 return;
@@ -857,20 +896,18 @@
                 
                 let statusClass = 'pending';
                 let priorityBadge = '';
-                let statusText = 'Pending';
 
                 if (obl.estado === 'pagada') {
                     statusClass = 'paid';
-                    statusText = 'Paid';
-                    priorityBadge = '<span class="priority-badge low">COMPLETED</span>';
+                    priorityBadge = `<span class="priority-badge low">${t('completed').toUpperCase()}</span>`;
                 } else if (diffDays < 0) {
                     statusClass = 'overdue';
-                    priorityBadge = '<span class="priority-badge critical">OVERDUE</span>';
+                    priorityBadge = `<span class="priority-badge critical">${t('overdue').toUpperCase()}</span>`;
                 } else if (diffDays <= 7) {
                     statusClass = 'due-soon';
-                    priorityBadge = '<span class="priority-badge high">DUE SOON</span>';
+                    priorityBadge = `<span class="priority-badge high">${t('due_soon').toUpperCase()}</span>`;
                 } else {
-                    priorityBadge = '<span class="priority-badge normal">ACTIVE</span>';
+                    priorityBadge = `<span class="priority-badge normal">${t('active').toUpperCase()}</span>`;
                 }
 
                 return `
@@ -882,7 +919,7 @@
                                     ${priorityBadge}
                                 </div>
                                 <p class="text-xs text-slate-400">
-                                    ${obl.creditor || 'No creditor specified'} 
+                                    ${obl.creditor || t('no_creditor_specified')} 
                                     ${obl.category ? `• ${obl.category}` : ''}
                                 </p>
                             </div>
@@ -895,26 +932,26 @@
                             <div class="flex items-center gap-4">
                                 <div class="flex items-center gap-2">
                                     <i class="ph-bold ph-calendar text-slate-500 text-sm"></i>
-                                    <span class="text-xs text-slate-400">Due: ${new Date(obl.fecha_pago).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                                    <span class="text-xs text-slate-400">${t('due')}: ${new Date(obl.fecha_pago).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                                 </div>
                                 ${diffDays >= 0 && obl.estado !== 'pagada' ? `
                                     <div class="flex items-center gap-2">
                                         <i class="ph-bold ph-clock text-slate-500 text-sm"></i>
-                                        <span class="text-xs text-slate-400">${diffDays} days left</span>
+                                        <span class="text-xs text-slate-400">${diffDays} ${t('days_left')}</span>
                                     </div>
                                 ` : ''}
                             </div>
                             
                             <div class="flex gap-2">
                                 ${obl.estado === 'pendiente' ? `
-                                    <div class="action-btn success" onclick="markAsPaid('${obl.id}')" title="Mark as paid">
+                                    <div class="action-btn success" onclick="markAsPaid('${obl.id}')" title="${t('mark_as_paid')}">
                                         <i class="ph-bold ph-check"></i>
                                     </div>
                                 ` : ''}
-                                <div class="action-btn" onclick="editObligation('${obl.id}')" title="Edit">
+                                <div class="action-btn" onclick="editObligation('${obl.id}')" title="${t('edit')}">
                                     <i class="ph-bold ph-pencil"></i>
                                 </div>
-                                <div class="action-btn danger" onclick="deleteObligation('${obl.id}')" title="Delete">
+                                <div class="action-btn danger" onclick="deleteObligation('${obl.id}')" title="${t('delete')}">
                                     <i class="ph-bold ph-trash"></i>
                                 </div>
                             </div>
@@ -943,8 +980,9 @@
                 return dueDate >= today && dueDate <= in7Days;
             });
 
+            const t = key => window.i18n?.t(key) || key;
             document.getElementById('statTotal').textContent = `$${totalPending.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-            document.getElementById('statTotalCount').textContent = `${pending.length} obligation${pending.length !== 1 ? 's' : ''}`;
+            document.getElementById('statTotalCount').textContent = `${pending.length} ${pending.length === 1 ? t('obligation') : t('obligations')}`;
             
             document.getElementById('statOverdue').textContent = overdue.length;
             document.getElementById('statOverdueAmount').textContent = `$${overdueAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
@@ -965,10 +1003,11 @@
                 .sort((a, b) => new Date(a.fecha_pago) - new Date(b.fecha_pago))
                 .slice(0, 10);
 
+            const t = key => window.i18n?.t(key) || key;
             if (upcoming.length === 0) {
                 container.innerHTML = `
                     <div class="flex items-center justify-center py-12">
-                        <p class="text-sm text-slate-500">No upcoming payments</p>
+                        <p class="text-sm text-slate-500">${t('no_upcoming_payments')}</p>
                     </div>
                 `;
                 return;
@@ -981,13 +1020,14 @@
                 let dotClass = 'future';
                 if (diffDays <= 7) dotClass = 'soon';
 
+                const t = key => window.i18n?.t(key) || key;
                 return `
                     <div class="timeline-item">
                         <div class="timeline-dot ${dotClass}"></div>
                         <div class="bg-white/5 rounded-lg p-4 hover:bg-white/10 transition">
                             <div class="flex justify-between items-start mb-2">
                                 <span class="text-sm font-bold text-white">${obl.tipo}</span>
-                                <span class="text-xs text-slate-500">${diffDays} days</span>
+                                <span class="text-xs text-slate-500">${diffDays} ${t('days')}</span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-xs text-slate-400">${dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
@@ -1037,12 +1077,21 @@
             const pending = allObligations.filter(o => o.estado === 'pendiente');
             
             if (pending.length === 0) {
-                document.querySelector('.chart-container').innerHTML = `
-                    <div class="flex items-center justify-center h-full">
-                        <p class="text-sm text-slate-500">No data available</p>
-                    </div>
-                `;
+                const chartContainer = document.querySelector('.chart-container');
+                if (chartContainer) {
+                    chartContainer.innerHTML = `
+                        <div class="flex items-center justify-center h-full">
+                            <p class="text-sm text-slate-500">${window.i18n?.t('no_data') || 'No data available'}</p>
+                        </div>
+                    `;
+                }
+                if (categoryChart) { categoryChart.destroy(); categoryChart = null; }
                 return;
+            }
+
+            const chartContainer = document.querySelector('.chart-container');
+            if (chartContainer && !document.getElementById('categoryChart')) {
+                chartContainer.innerHTML = '<canvas id="categoryChart"></canvas>';
             }
 
             const categoryData = {};
@@ -1110,11 +1159,11 @@
 
         // Add New Obligation
         function addNewObligation() {
-            document.getElementById('modalTitle').textContent = 'Add New Obligation';
+            document.getElementById('modalTitle').textContent = window.i18n?.t('add_new_obligation') || 'Add New Obligation';
             document.getElementById('editingId').value = '';
             document.getElementById('obligationForm').reset();
             document.getElementById('obligationDate').valueAsDate = new Date();
-            document.getElementById('btnSubmitText').textContent = 'Save Obligation';
+            document.getElementById('btnSubmitText').textContent = window.i18n?.t('save_obligation') || 'Save Obligation';
             document.getElementById('obligationModal').classList.add('active');
         }
 
@@ -1123,7 +1172,7 @@
             const obligation = allObligations.find(o => o.id === parseInt(id));
             if (!obligation) return;
 
-            document.getElementById('modalTitle').textContent = 'Edit Obligation';
+            document.getElementById('modalTitle').textContent = window.i18n?.t('edit_obligation') || 'Edit Obligation';
             document.getElementById('editingId').value = id;
             document.getElementById('obligationType').value = obligation.tipo;
             document.getElementById('obligationAmount').value = obligation.monto;
@@ -1132,7 +1181,7 @@
             document.getElementById('obligationStatus').value = obligation.estado === 'pendiente' ? 'pending' : 'paid';
             document.getElementById('obligationCreditor').value = obligation.creditor || '';
             document.getElementById('obligationNotes').value = obligation.notes || '';
-            document.getElementById('btnSubmitText').textContent = 'Update Obligation';
+            document.getElementById('btnSubmitText').textContent = window.i18n?.t('update_obligation') || 'Update Obligation';
             document.getElementById('obligationModal').classList.add('active');
         }
 
@@ -1176,17 +1225,17 @@
                 if (result.error) throw result.error;
 
                 closeObligationModal();
-                await loadObligations();
+                await pymaxData.refresh();
                 
                 Toast.fire({
                     icon: 'success',
-                    title: editingId ? 'Obligation updated' : 'Obligation added'
+                    title: editingId ? (window.i18n?.t('obligation_updated') || 'Obligation updated') : (window.i18n?.t('obligation_added') || 'Obligation added')
                 });
 
             } catch (error) {
                 console.error('Error saving obligation:', error);
                 Swal.fire({
-                    title: 'Error',
+                    title: window.i18n?.t('error') || 'Error',
                     text: error.message,
                     icon: 'error',
                     background: '#0b0b14',
@@ -1199,13 +1248,13 @@
         // Mark as Paid
         async function markAsPaid(id) {
             const result = await Swal.fire({
-                title: 'Mark as Paid?',
-                text: 'This will mark the obligation as completed',
+                title: window.i18n?.t('mark_as_paid_confirm') || 'Mark as Paid?',
+                text: window.i18n?.t('mark_as_paid_text') || 'This will mark the obligation as completed',
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#34d399',
                 cancelButtonColor: '#3f3f46',
-                confirmButtonText: 'Yes, mark as paid',
+                confirmButtonText: window.i18n?.t('yes_mark_paid') || 'Yes, mark as paid',
                 background: '#0b0b14',
                 color: '#fff'
             });
@@ -1220,25 +1269,25 @@
 
                 if (error) throw error;
 
-                await loadObligations();
-                Toast.fire({ icon: 'success', title: 'Marked as paid' });
+                await pymaxData.refresh();
+                Toast.fire({ icon: 'success', title: window.i18n?.t('marked_as_paid') || 'Marked as paid' });
 
             } catch (error) {
                 console.error('Error marking as paid:', error);
-                Toast.fire({ icon: 'error', title: 'Failed to update' });
+                Toast.fire({ icon: 'error', title: window.i18n?.t('operation_failed') || 'Failed to update' });
             }
         }
 
         // Delete Obligation
         async function deleteObligation(id) {
             const result = await Swal.fire({
-                title: 'Delete Obligation?',
-                text: 'This action cannot be undone',
+                title: window.i18n?.t('delete_obligation_confirm') || 'Delete Obligation?',
+                text: window.i18n?.t('delete_confirm_text') || 'This action cannot be undone',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#fb7185',
                 cancelButtonColor: '#3f3f46',
-                confirmButtonText: 'Yes, delete it',
+                confirmButtonText: window.i18n?.t('yes_delete') || 'Yes, delete it',
                 background: '#0b0b14',
                 color: '#fff'
             });
@@ -1253,12 +1302,12 @@
 
                 if (error) throw error;
 
-                await loadObligations();
-                Toast.fire({ icon: 'success', title: 'Obligation deleted' });
+                await pymaxData.refresh();
+                Toast.fire({ icon: 'success', title: window.i18n?.t('obligation_deleted') || 'Obligation deleted' });
 
             } catch (error) {
                 console.error('Error deleting obligation:', error);
-                Toast.fire({ icon: 'error', title: 'Failed to delete' });
+                Toast.fire({ icon: 'error', title: window.i18n?.t('operation_failed') || 'Failed to delete' });
             }
         }
 

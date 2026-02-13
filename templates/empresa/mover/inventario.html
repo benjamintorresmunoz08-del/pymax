@@ -12,6 +12,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/static/js/pymax-performance.js"></script>
+    <script src="/static/js/pymax-i18n.js"></script>
+    <script src="/static/js/pymax-data-manager.js"></script>
     <script src="/static/js/pymax-real-auth.js"></script>
 
     <style>
@@ -279,18 +282,25 @@
                     <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/30 transition">
                         <i class="ph-bold ph-arrow-left"></i>
                     </div>
-                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">Volver</span>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest" data-i18n="back">Volver</span>
                 </a>
                 <div class="h-6 w-px bg-white/10"></div>
                 <h1 class="text-xl font-bold text-white font-display tracking-tight">
-                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">INVENTARIO</span>
+                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400" data-i18n="inventory">INVENTARIO</span>
                 </h1>
             </div>
 
-            <button onclick="addProduct()" class="flex items-center gap-2 px-3 py-2 rounded-full border border-emerald-500/30 text-emerald-400 bg-emerald-500/5 hover:bg-emerald-500/10 text-[10px] font-bold uppercase transition">
-                <i class="ph-bold ph-plus"></i>
-                <span class="hidden md:inline">Nuevo Producto</span>
-            </button>
+            <div class="flex items-center gap-3">
+                <select data-language-selector class="text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-white/20 transition cursor-pointer">
+                    <option value="es">ES</option>
+                    <option value="en">EN</option>
+                    <option value="pt">PT</option>
+                </select>
+                <button onclick="addProduct()" class="flex items-center gap-2 px-3 py-2 rounded-full border border-emerald-500/30 text-emerald-400 bg-emerald-500/5 hover:bg-emerald-500/10 text-[10px] font-bold uppercase transition">
+                    <i class="ph-bold ph-plus"></i>
+                    <span class="hidden md:inline" data-i18n="new_product">Nuevo Producto</span>
+                </button>
+            </div>
         </div>
     </nav>
 
@@ -301,38 +311,38 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 fade-in">
             <div class="glass-card p-6">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Total Productos</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500" data-i18n="total_products">Total Productos</p>
                     <i class="ph-duotone ph-package text-emerald-400 text-xl"></i>
                 </div>
                 <h3 class="text-3xl font-bold text-white font-display mb-1" id="statTotal">0</h3>
-                <p class="text-xs text-slate-400">En catálogo</p>
+                <p class="text-xs text-slate-400" data-i18n="in_catalog">En catálogo</p>
             </div>
 
             <div class="glass-card p-6">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Valor Stock</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500" data-i18n="stock_value">Valor Stock</p>
                     <i class="ph-duotone ph-coins text-amber-400 text-xl"></i>
                 </div>
                 <h3 class="text-3xl font-bold text-white font-display mb-1" id="statValue">$0</h3>
-                <p class="text-xs text-slate-400">Valor total</p>
+                <p class="text-xs text-slate-400" data-i18n="total_value">Valor total</p>
             </div>
 
             <div class="glass-card p-6">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Stock Bajo</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500" data-i18n="low_stock">Stock Bajo</p>
                     <i class="ph-duotone ph-warning text-rose-400 text-xl"></i>
                 </div>
                 <h3 class="text-3xl font-bold text-white font-display mb-1" id="statLowStock">0</h3>
-                <p class="text-xs text-slate-400">Productos críticos</p>
+                <p class="text-xs text-slate-400" data-i18n="critical_products">Productos críticos</p>
             </div>
 
             <div class="glass-card p-6">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Sin Stock</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500" data-i18n="out_of_stock">Sin Stock</p>
                     <i class="ph-duotone ph-x-circle text-rose-400 text-xl"></i>
                 </div>
                 <h3 class="text-3xl font-bold text-white font-display mb-1" id="statOutStock">0</h3>
-                <p class="text-xs text-slate-400">Agotados</p>
+                <p class="text-xs text-slate-400" data-i18n="exhausted">Agotados</p>
             </div>
         </div>
 
@@ -386,64 +396,64 @@
                     </div>
                     
                     <div class="text-center mb-6">
-                        <h3 class="text-2xl font-bold text-white font-display mb-2">
+                        <h3 class="text-2xl font-bold text-white font-display mb-2" data-i18n="ai_stock_management">
                             IA Gestión de Stock
                         </h3>
                         <p class="text-sm text-emerald-400 mb-1 flex items-center justify-center gap-2">
                             <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                            Activa & Optimizando
+                            <span data-i18n="ai_active_optimizing">Activa & Optimizando</span>
                         </p>
-                        <p class="text-xs text-slate-400">Incluido en tu plan PYMAX</p>
+                        <p class="text-xs text-slate-400" data-i18n="included_in_plan">Incluido en tu plan PYMAX</p>
                     </div>
 
                     <div class="space-y-3 mb-6">
                         <div class="ai-feature-item">
                             <i class="ph-fill ph-chart-line text-emerald-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Predicción de demanda activa</span>
+                            <span class="text-sm text-slate-300" data-i18n="demand_prediction">Predicción de demanda activa</span>
                         </div>
                         <div class="ai-feature-item">
                             <i class="ph-fill ph-bell-ringing text-emerald-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Alertas automáticas configuradas</span>
+                            <span class="text-sm text-slate-300" data-i18n="automatic_alerts">Alertas automáticas configuradas</span>
                         </div>
                         <div class="ai-feature-item">
                             <i class="ph-fill ph-trend-up text-emerald-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Análisis de rotación habilitado</span>
+                            <span class="text-sm text-slate-300" data-i18n="rotation_analysis">Análisis de rotación habilitado</span>
                         </div>
                         <div class="ai-feature-item">
                             <i class="ph-fill ph-money text-emerald-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Optimización de precios disponible</span>
+                            <span class="text-sm text-slate-300" data-i18n="price_optimization">Optimización de precios disponible</span>
                         </div>
                         <div class="ai-feature-item">
                             <i class="ph-fill ph-package text-emerald-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Sugerencias de productos listas</span>
+                            <span class="text-sm text-slate-300" data-i18n="product_suggestions">Sugerencias de productos listas</span>
                         </div>
                     </div>
 
                     <div class="text-center">
                         <a href="{{ url_for('mover_ia') }}" class="ai-upgrade-btn inline-flex items-center gap-2">
                             <i class="ph-bold ph-chats-circle"></i>
-                            Consultar con IA
+                            <span data-i18n="consult_ai">Consultar con IA</span>
                         </a>
-                        <p class="text-xs text-slate-500 mt-3">Incluido con tu plan</p>
+                        <p class="text-xs text-slate-500 mt-3" data-i18n="included_with_plan">Incluido con tu plan</p>
                     </div>
                 </div>
 
                 <!-- Quick Actions -->
                 <div class="glass-card p-6 fade-in">
-                    <h3 class="text-lg font-bold text-white font-display mb-4">Acciones Rápidas</h3>
+                    <h3 class="text-lg font-bold text-white font-display mb-4" data-i18n="quick_actions">Acciones Rápidas</h3>
                     
                     <div class="space-y-3">
                         <button class="w-full modern-btn btn-primary text-xs py-3" onclick="addProduct()">
                             <i class="ph-bold ph-plus"></i>
-                            Agregar Producto
+                            <span data-i18n="add_product">Agregar Producto</span>
                         </button>
                         <button class="w-full modern-btn text-xs py-3" style="background: rgba(255,255,255,0.05); color: #e2e8f0;" onclick="exportInventory()">
                             <i class="ph-bold ph-export"></i>
-                            Exportar Inventario
+                            <span data-i18n="export_inventory">Exportar Inventario</span>
                         </button>
                         <button class="w-full modern-btn text-xs py-3" style="background: rgba(255,255,255,0.05); color: #e2e8f0;" onclick="printLabels()">
                             <i class="ph-bold ph-printer"></i>
-                            Imprimir Etiquetas
+                            <span data-i18n="print_labels">Imprimir Etiquetas</span>
                         </button>
                     </div>
                 </div>
@@ -459,7 +469,7 @@
         <div class="modal-content">
             <div class="p-6 border-b border-white/10 flex justify-between items-center">
                 <h2 class="text-lg font-bold text-white font-display">
-                    <span id="modalTitle">Agregar Producto</span>
+                    <span id="modalTitle" data-i18n="add_product">Agregar Producto</span>
                 </h2>
                 <button onclick="closeProductModal()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition">
                     <i class="ph-bold ph-x"></i>
@@ -471,45 +481,43 @@
                     <input type="hidden" id="editingId" value="">
                     
                     <div>
-                        <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Nombre del Producto</label>
-                        <input type="text" id="productName" placeholder="Ej: iPhone 15 Pro Max" class="modern-input" required>
+                        <label class="text-xs font-bold text-slate-400 uppercase mb-2 block" data-i18n="product_name">Nombre del Producto</label>
+                        <input type="text" id="productName" data-i18n-placeholder="product_name_placeholder" placeholder="Ej: iPhone 15 Pro Max" class="modern-input" required>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Cantidad en Stock</label>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block" data-i18n="quantity">Cantidad en Stock</label>
                             <input type="number" id="productStock" placeholder="0" class="modern-input" min="0" required>
                         </div>
                         <div>
-                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Stock Mínimo</label>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block" data-i18n="min_stock">Stock Mínimo</label>
                             <input type="number" id="productMinStock" placeholder="5" class="modern-input" min="0">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Precio Compra</label>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block" data-i18n="cost_price">Precio Compra</label>
                             <input type="number" id="productCost" placeholder="0.00" class="modern-input" step="0.01" required>
                         </div>
                         <div>
-                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Precio Venta</label>
+                            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block" data-i18n="sale_price">Precio Venta</label>
                             <input type="number" id="productPrice" placeholder="0.00" class="modern-input" step="0.01" required>
                         </div>
                     </div>
 
                     <div>
-                        <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Proveedor (Opcional)</label>
-                        <input type="text" id="productSupplier" placeholder="Nombre del proveedor" class="modern-input">
+                        <label class="text-xs font-bold text-slate-400 uppercase mb-2 block" data-i18n="supplier_optional">Proveedor (Opcional)</label>
+                        <input type="text" id="productSupplier" data-i18n-placeholder="supplier_placeholder" placeholder="Nombre del proveedor" class="modern-input">
                     </div>
 
                     <div class="flex gap-3 pt-4">
                         <button type="submit" class="modern-btn btn-primary flex-1">
                             <i class="ph-bold ph-floppy-disk"></i>
-                            <span id="btnSubmit">Guardar Producto</span>
+                            <span id="btnSubmit" data-i18n="save_product">Guardar Producto</span>
                         </button>
-                        <button type="button" onclick="closeProductModal()" class="modern-btn px-6" style="background: rgba(255,255,255,0.05); color: #e2e8f0;">
-                            Cancelar
-                        </button>
+                        <button type="button" onclick="closeProductModal()" class="modern-btn px-6" style="background: rgba(255,255,255,0.05); color: #e2e8f0;" data-i18n="cancel">Cancelar</button>
                     </div>
                 </form>
             </div>
@@ -539,34 +547,44 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const user = await checkRealAuth(client);
             if (!user) return;
+
+            // Inicializar Data Manager
+            const initOk = await pymaxData.init(client);
+            if (!initOk) return;
+
+            // Escuchar cambios de datos para actualizar inventario
+            pymaxData.on('data_updated', () => loadProducts());
+
             await loadProducts();
+
+            // Actualizar contenido dinámico al cambiar idioma
+            window.addEventListener('languageChanged', () => {
+                renderProducts();
+                const editingId = document.getElementById('editingId').value;
+                document.getElementById('modalTitle').textContent = editingId 
+                    ? (window.i18n?.t('edit_product') || 'Editar Producto') 
+                    : (window.i18n?.t('add_product') || 'Agregar Producto');
+                document.getElementById('btnSubmit').textContent = editingId 
+                    ? (window.i18n?.t('update_product') || 'Actualizar Producto') 
+                    : (window.i18n?.t('save_product') || 'Guardar Producto');
+                document.querySelectorAll('#filterStock option').forEach((opt, i) => {
+                    const keys = ['all', 'in_stock', 'low_stock', 'out_of_stock'];
+                    if (keys[i]) opt.textContent = window.i18n?.t(keys[i]) || opt.textContent;
+                });
+            });
         });
 
-        // Load Products
+        // Load Products (usa pymaxData para sincronizar con todos los módulos)
         async function loadProducts() {
             try {
-                const { data: { user } } = await client.auth.getUser();
-                if (!user) {
-                    console.warn('No user found, using demo mode');
-                    // Continue with demo data
-                }
-
-                const { data, error } = await client
-                    .from('user_inventory')
-                    .select('*')
-                    .eq('user_id', user.id)
-                    .order('product_name', { ascending: true });
-
-                if (error) throw error;
-
-                allProducts = data || [];
+                const inv = pymaxData.getData('inventory') || [];
+                allProducts = [...inv].sort((a, b) => (a.product_name || '').localeCompare(b.product_name || ''));
                 
                 renderProducts();
                 updateStatistics();
 
             } catch (error) {
                 console.error('Error loading products:', error);
-                // Show placeholder if error
                 renderProducts();
             }
         }
@@ -574,16 +592,17 @@
         // Render Products
         function renderProducts() {
             const container = document.getElementById('productsList');
+            const t = key => window.i18n?.t(key) || key;
             
             if (allProducts.length === 0) {
                 container.innerHTML = `
                     <div class="col-span-2 flex items-center justify-center py-20">
                         <div class="text-center">
                             <i class="ph-duotone ph-package text-6xl text-slate-700 mb-4 block"></i>
-                            <p class="text-slate-500 font-medium">No hay productos en inventario</p>
+                            <p class="text-slate-500 font-medium">${t('no_products_inventory')}</p>
                             <button onclick="addProduct()" class="modern-btn btn-primary mt-4 text-xs">
                                 <i class="ph-bold ph-plus"></i>
-                                Agregar Primer Producto
+                                ${t('add_first_product')}
                             </button>
                         </div>
                     </div>
@@ -600,14 +619,14 @@
                 const profitPercent = cost > 0 ? ((profit / cost) * 100).toFixed(1) : 0;
                 
                 let stockStatus = 'in-stock';
-                let stockBadge = 'En Stock';
+                let stockBadge = t('in_stock');
                 
                 if (stock === 0) {
                     stockStatus = 'out-of-stock';
-                    stockBadge = 'Sin Stock';
+                    stockBadge = t('out_of_stock');
                 } else if (stock <= minStock) {
                     stockStatus = 'low-stock';
-                    stockBadge = 'Stock Bajo';
+                    stockBadge = t('low_stock');
                 }
 
                 return `
@@ -615,25 +634,25 @@
                         <div class="flex justify-between items-start mb-3">
                             <div class="flex-1">
                                 <h4 class="font-bold text-white text-base mb-1">${p.product_name}</h4>
-                                <p class="text-xs text-slate-400">${p.supplier || 'Sin proveedor'}</p>
+                                <p class="text-xs text-slate-400">${p.supplier || t('no_supplier')}</p>
                             </div>
                             <span class="stock-badge ${stockStatus}">${stockBadge}</span>
                         </div>
 
                         <div class="grid grid-cols-2 gap-3 mb-3 pt-3 border-t border-white/10">
                             <div>
-                                <p class="text-xs text-slate-500 mb-1">Cantidad</p>
-                                <p class="text-lg font-bold text-white">${stock} unid.</p>
+                                <p class="text-xs text-slate-500 mb-1">${t('quantity')}</p>
+                                <p class="text-lg font-bold text-white">${stock} ${t('units')}</p>
                             </div>
                             <div>
-                                <p class="text-xs text-slate-500 mb-1">Precio Venta</p>
+                                <p class="text-xs text-slate-500 mb-1">${t('sale_price')}</p>
                                 <p class="text-lg font-bold text-emerald-400">$${price.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
                             </div>
                         </div>
 
                         <div class="flex items-center justify-between pt-3 border-t border-white/10">
                             <div>
-                                <p class="text-xs text-slate-500">Margen</p>
+                                <p class="text-xs text-slate-500">${t('margin')}</p>
                                 <p class="text-sm font-bold text-cyan-400">+${profitPercent}%</p>
                             </div>
                             <div class="flex gap-2">
@@ -677,10 +696,11 @@
 
         // Add Product
         function addProduct() {
-            document.getElementById('modalTitle').textContent = 'Agregar Producto';
+            const t = key => window.i18n?.t(key) || key;
+            document.getElementById('modalTitle').textContent = t('add_product');
             document.getElementById('editingId').value = '';
             document.getElementById('productForm').reset();
-            document.getElementById('btnSubmit').textContent = 'Guardar Producto';
+            document.getElementById('btnSubmit').textContent = t('save_product');
             document.getElementById('productModal').classList.add('active');
         }
 
@@ -689,7 +709,8 @@
             const product = allProducts.find(p => p.id == id);
             if (!product) return;
 
-            document.getElementById('modalTitle').textContent = 'Editar Producto';
+            const t = key => window.i18n?.t(key) || key;
+            document.getElementById('modalTitle').textContent = t('edit_product');
             document.getElementById('editingId').value = id;
             document.getElementById('productName').value = product.product_name;
             document.getElementById('productStock').value = product.current_stock;
@@ -697,7 +718,7 @@
             document.getElementById('productCost').value = product.cost_price;
             document.getElementById('productPrice').value = product.sale_price;
             document.getElementById('productSupplier').value = product.supplier || '';
-            document.getElementById('btnSubmit').textContent = 'Actualizar Producto';
+            document.getElementById('btnSubmit').textContent = t('update_product');
             document.getElementById('productModal').classList.add('active');
         }
 
@@ -706,17 +727,14 @@
             document.getElementById('productModal').classList.remove('active');
         }
 
-        // Form Submit
+        // Form Submit (usa pymaxData para operaciones de inventario)
         document.getElementById('productForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
             try {
-                const { data: { user } } = await client.auth.getUser();
-                if (!user) throw new Error('Usuario no autenticado');
-
+                const t = key => window.i18n?.t(key) || key;
                 const editingId = document.getElementById('editingId').value;
                 const productData = {
-                    user_id: user.id,
                     product_name: document.getElementById('productName').value,
                     current_stock: parseInt(document.getElementById('productStock').value),
                     min_stock: parseInt(document.getElementById('productMinStock').value) || 5,
@@ -727,30 +745,25 @@
 
                 let result;
                 if (editingId) {
-                    result = await client
-                        .from('user_inventory')
-                        .update(productData)
-                        .eq('id', editingId);
+                    result = await pymaxData.updateInventoryItem(editingId, productData);
                 } else {
-                    result = await client
-                        .from('user_inventory')
-                        .insert(productData);
+                    result = await pymaxData.addInventoryItem(productData);
                 }
 
-                if (result.error) throw result.error;
+                if (!result.success) throw result.error;
 
                 closeProductModal();
                 await loadProducts();
                 
                 Toast.fire({
                     icon: 'success',
-                    title: editingId ? 'Producto actualizado' : 'Producto agregado'
+                    title: editingId ? t('product_updated') : t('product_added')
                 });
 
             } catch (error) {
                 console.error('Error:', error);
                 Swal.fire({
-                    title: 'Error',
+                    title: window.i18n?.t('error') || 'Error',
                     text: error.message,
                     icon: 'error',
                     background: '#0b0b14',
@@ -760,17 +773,18 @@
             }
         });
 
-        // Delete Product
+        // Delete Product (usa pymaxData)
         async function deleteProduct(id) {
+            const t = key => window.i18n?.t(key) || key;
             const result = await Swal.fire({
-                title: '¿Eliminar producto?',
-                text: 'Esta acción no se puede deshacer',
+                title: t('delete_product_confirm'),
+                text: t('delete_product_text'),
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#fb7185',
                 cancelButtonColor: '#3f3f46',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar',
+                confirmButtonText: t('yes_delete_product'),
+                cancelButtonText: t('cancel'),
                 background: '#0b0b14',
                 color: '#fff'
             });
@@ -778,36 +792,31 @@
             if (!result.isConfirmed) return;
 
             try {
-                const { error } = await client
-                    .from('user_inventory')
-                    .delete()
-                    .eq('id', id);
-
-                if (error) throw error;
+                const res = await pymaxData.deleteInventoryItem(id);
+                if (!res.success) throw res.error;
 
                 await loadProducts();
-                Toast.fire({ icon: 'success', title: 'Producto eliminado' });
+                Toast.fire({ icon: 'success', title: t('product_deleted') });
 
             } catch (error) {
                 console.error('Error:', error);
-                Toast.fire({ icon: 'error', title: 'Error al eliminar' });
+                Toast.fire({ icon: 'error', title: t('delete_error') });
             }
         }
 
         // Filter Products
         function filterProducts() {
-            // TODO: Implement filtering
-            Toast.fire({ icon: 'info', title: 'Filtro próximamente' });
+            Toast.fire({ icon: 'info', title: window.i18n?.t('filter_coming_soon') || 'Filtro próximamente' });
         }
 
         // Export Inventory
         function exportInventory() {
-            Toast.fire({ icon: 'info', title: 'Exportar próximamente' });
+            Toast.fire({ icon: 'info', title: window.i18n?.t('export_coming_soon') || 'Exportar próximamente' });
         }
 
         // Print Labels
         function printLabels() {
-            Toast.fire({ icon: 'info', title: 'Etiquetas próximamente' });
+            Toast.fire({ icon: 'info', title: window.i18n?.t('labels_coming_soon') || 'Etiquetas próximamente' });
         }
 
         // AI features included - no upgrade needed
