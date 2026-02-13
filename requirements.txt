@@ -1,29 +1,8 @@
-Flask
-Flask-Cors
-gunicorn
-supabase
-openpyxl
-python-dotenv
-itsdangerous
-Werkzeug
-Jinja2
-click
-xlsxwriter
-psycopg2-binary
-flask-sqlalchemy
-
-# Integración IA
-openai
-anthropic
-
-# Tareas programadas (SII sync cada 6 horas)
-APScheduler
-
-# Seguridad y encriptación (credenciales SII)
-cryptography
-
-# HTTP requests (WhatsApp y SII)
-requests
-
-# Procesamiento XML (facturas electrónicas SII)
-lxml
+Flask==3.0.0
+Flask-Cors==4.0.0
+gunicorn==21.2.0
+python-dotenv==1.0.0
+itsdangerous==2.1.2
+Werkzeug==3.0.1
+Jinja2==3.1.2
+click==8.1.7
