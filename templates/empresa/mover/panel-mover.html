@@ -277,7 +277,10 @@
           <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" class="hidden" />
           <div class="text-center">
             <i class="ph ph-upload-simple text-4xl text-cyan-400 group-hover:text-cyan-300 transition mb-2 block"></i>
-            <p class="text-sm font-bold text-white group-hover:text-cyan-300 transition">📊 Importar Datos</p>
+            <p class="text-sm font-bold text-white group-hover:text-cyan-300 transition flex items-center justify-center gap-2">
+              <i class="ph ph-database text-lg"></i>
+              Importar Datos
+            </p>
             <p class="text-xs text-slate-400 mt-1">Excel o CSV</p>
             <p class="text-[10px] text-slate-500 mt-1">Arrastra aquí o haz clic</p>
           </div>
@@ -565,7 +568,7 @@ function formatCurrency(amount) {
 function generateAIInsights(stats, operations) {
   const insights = [];
   
-  // Insight 1: Salud financiera
+  // Insight 1: Salud financiera (solo si hay problema significativo)
   if (stats.margin > 30) {
     insights.push({
       type: 'success',
@@ -579,47 +582,47 @@ function generateAIInsights(stats, operations) {
       type: 'info',
       icon: 'ph-info',
       title: 'Salud Financiera Buena',
-      description: `Margen de ${stats.margin.toFixed(1)}% es saludable. Puedes optimizar para llegar al 30%.`,
+      description: `Margen de ${stats.margin.toFixed(1)}% es saludable. Continúa optimizando para crecer.`,
       actions: ['Ver análisis', 'Plan de optimización']
     });
-  } else if (stats.margin > 0) {
+  } else if (stats.margin > 5) {
     insights.push({
-      type: 'warning',
-      icon: 'ph-warning',
-      title: 'Margen Ajustado',
-      description: `Con ${stats.margin.toFixed(1)}% de margen, debes reducir costos o aumentar ingresos.`,
-      actions: ['Reducir gastos', 'Estrategia precios']
+      type: 'info',
+      icon: 'ph-chart-line',
+      title: 'Oportunidad de Mejora',
+      description: `Margen de ${stats.margin.toFixed(1)}%. Identifica gastos optimizables para aumentar rentabilidad.`,
+      actions: ['Analizar gastos', 'Estrategia precios']
     });
-  } else {
+  } else if (stats.margin < -10) {
+    // Solo alerta si la pérdida es significativa (más de 10%)
     insights.push({
       type: 'warning',
       icon: 'ph-warning-circle',
-      title: 'Alerta: Operación en Pérdida',
-      description: `Estás gastando más de lo que ingresas. Acción inmediata requerida.`,
-      actions: ['Plan de emergencia', 'Contactar asesor']
+      title: 'Atención: Revisar Gastos',
+      description: `Tus gastos superan los ingresos. Revisa oportunidades de optimización o estrategias de ventas.`,
+      actions: ['Reducir gastos', 'Aumentar ventas']
     });
   }
   
-  // Insight 2: Flujo de operaciones
-  if (stats.operations > 0) {
-    const avgTransaction = (stats.income + stats.expenses) / stats.operations;
+  // Insight 2: Actividad (solo si es relevante)
+  if (stats.operations > 10) {
     insights.push({
       type: 'info',
       icon: 'ph-trend-up',
       title: 'Actividad del Mes',
-      description: `Has registrado ${stats.operations} transacciones. Promedio de ${formatCurrency(avgTransaction)} por operación.`,
-      actions: ['Ver detalle', 'Exportar reporte']
+      description: `Has registrado ${stats.operations} transacciones este mes. Mantén el ritmo de registro para análisis precisos.`,
+      actions: []
     });
   }
   
-  // Insight 3: Balance
-  if (stats.balance > stats.income * 3) {
+  // Insight 3: Balance (solo si es significativo)
+  if (stats.balance > stats.expenses * 2) {
     insights.push({
       type: 'success',
-      icon: 'ph-piggy-bank',
+      icon: 'ph-shield-check',
       title: 'Reserva Sólida',
-      description: `Tu balance de ${formatCurrency(stats.balance)} cubre ${Math.floor(stats.balance / (stats.expenses || 1))} meses de gastos.`,
-      actions: ['Ver inversiones', 'Plan de expansión']
+      description: `Tu balance de ${formatCurrency(stats.balance)} cubre ${Math.floor(stats.balance / (stats.expenses || 1))} meses de operación.`,
+      actions: []
     });
   }
   
@@ -635,7 +638,7 @@ function generateAutomations(stats, operations) {
     time: '08:00',
     action: 'Reporte diario enviado',
     description: 'Resumen financiero enviado por email',
-    icon: 'ph-envelope',
+    icon: 'ph-envelope-simple',
     status: 'completed'
   });
   
@@ -653,11 +656,11 @@ function generateAutomations(stats, operations) {
     time: '10:30',
     action: 'Análisis de gastos',
     description: 'Detectadas oportunidades de optimización',
-    icon: 'ph-chart-line',
+    icon: 'ph-chart-line-up',
     status: 'completed'
   });
   
-  if (stats.balance < stats.expenses) {
+  if (stats.balance < stats.expenses && stats.expenses > 0) {
     autos.push({
       time: '11:00',
       action: 'Alerta: Liquidez baja',
@@ -671,7 +674,7 @@ function generateAutomations(stats, operations) {
     time: '16:00',
     action: 'Predicción actualizada',
     description: 'Proyección próximos 7 días generada',
-    icon: 'ph-crystal-ball',
+    icon: 'ph-brain',
     status: 'completed'
   });
   
@@ -679,7 +682,7 @@ function generateAutomations(stats, operations) {
     time: '18:00',
     action: 'Próximo: Backup de datos',
     description: 'Se ejecutará automáticamente',
-    icon: 'ph-clock',
+    icon: 'ph-clock-countdown',
     status: 'scheduled'
   });
   
@@ -797,9 +800,9 @@ async function loadStats() {
               <i class="ph ph-rocket-launch text-3xl text-blue-400"></i>
             </div>
             <div class="flex-1">
-              <h3 class="font-bold text-white text-lg mb-2">¡Bienvenido a Pymax!</h3>
+              <h3 class="font-bold text-white text-lg mb-2">Bienvenido a Pymax</h3>
               <p class="text-slate-300 text-sm mb-3">
-                Comienza registrando tus primeras transacciones. La IA comenzará a analizar tu negocio automáticamente.
+                Comienza registrando tus primeras transacciones. El sistema comenzará a analizar tu negocio automáticamente.
               </p>
               <a href="/empresa/mover/ventas-gastos" class="inline-block text-xs px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white transition-all">
                 Registrar Primera Transacción
@@ -1109,8 +1112,8 @@ async function handleFiles(files) {
     document.getElementById('progressBar').style.width = '100%';
     
     // Éxito
-    console.log(`✅ ${transactions.length} transacciones importadas`);
-    document.getElementById('uploadStatus').textContent = `✅ ${transactions.length} transacciones importadas`;
+    console.log(`Importadas ${transactions.length} transacciones`);
+    document.getElementById('uploadStatus').textContent = `${transactions.length} transacciones importadas correctamente`;
     
     // Recargar datos
     setTimeout(async () => {
@@ -1122,7 +1125,7 @@ async function handleFiles(files) {
       renderRecentTransactions(ops);
       document.getElementById('uploadProgress').classList.add('hidden');
       fileInput.value = ''; // Reset input
-      alert(`✅ ${transactions.length} transacciones importadas correctamente`);
+      alert(`${transactions.length} transacciones importadas correctamente`);
     }, 1500);
     
   } catch (error) {
