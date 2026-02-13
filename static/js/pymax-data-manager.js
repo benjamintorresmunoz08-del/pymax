@@ -14,6 +14,8 @@ class PymaxDataManager {
             inventory: [],
             obligations: [],
             goals: [],
+            leads: [],
+            tasks: [],
             lastUpdate: null
         };
         this.updateInterval = null;
@@ -95,6 +97,24 @@ class PymaxDataManager {
                 extraGoals.forEach(g => { this.cache.goals[g.slot_number] = g; });
             }
             
+            // Cargar leads (CRM - Tiburón)
+            const { data: leads, error: leadsError } = await this.supabase
+                .from('user_leads')
+                .select('*')
+                .eq('user_id', userId)
+                .order('created_at', { ascending: false });
+            
+            if (!leadsError) this.cache.leads = leads || [];
+            
+            // Cargar tareas (Operations - Hambre)
+            const { data: tasks, error: tasksError } = await this.supabase
+                .from('user_tasks')
+                .select('*')
+                .eq('user_id', userId)
+                .order('created_at', { ascending: false });
+            
+            if (!tasksError) this.cache.tasks = tasks || [];
+            
             this.cache.lastUpdate = new Date();
             
             // Notificar a todos los listeners
@@ -105,7 +125,9 @@ class PymaxDataManager {
                 operations: this.cache.operations.length,
                 inventory: this.cache.inventory.length,
                 obligations: this.cache.obligations.length,
-                goals: goalsCount
+                goals: goalsCount,
+                leads: this.cache.leads.length,
+                tasks: this.cache.tasks.length
             });
             
             return this.cache;
@@ -402,6 +424,33 @@ class PymaxDataManager {
             return { success: true };
         } catch (error) {
             console.error('❌ Error deleting inventory item:', error);
+            return { success: false, error };
+        }
+    }
+
+    /**
+     * Agregar lead (CRM)
+     */
+    async addLead(leadData) {
+        try {
+            const { data, error } = await this.supabase
+                .from('user_leads')
+                .insert({
+                    ...leadData,
+                    user_id: this.user.id
+                })
+                .select()
+                .single();
+            
+            if (error) throw error;
+            
+            this.cache.leads.unshift(data);
+            this.notifyListeners('data_updated', this.cache);
+            await this.loadAllData();
+            
+            return { success: true, data };
+        } catch (error) {
+            console.error('❌ Error adding lead:', error);
             return { success: false, error };
         }
     }

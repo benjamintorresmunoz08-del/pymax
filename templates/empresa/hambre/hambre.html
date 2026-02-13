@@ -13,6 +13,12 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- PYMAX CORE SYSTEMS -->
+    <script src="/static/js/pymax-performance.js"></script>
+    <script src="/static/js/pymax-i18n.js"></script>
+    <script src="/static/js/pymax-data-manager.js"></script>
+    <script src="/static/js/pymax-real-auth.js"></script>
+
     <style>
         :root {
             --bg-void: #020617;
@@ -260,18 +266,26 @@
                     <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/30 transition">
                         <i class="ph-bold ph-arrow-left"></i>
                     </div>
-                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">Back</span>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest" data-i18n="back">Back</span>
                 </a>
                 <div class="h-6 w-px bg-white/10"></div>
                 <h1 class="text-xl font-bold text-white font-display tracking-tight">
-                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-400">HAMBRE OPS</span>
+                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-400" data-i18n="operations">HAMBRE OPS</span>
                 </h1>
             </div>
 
-            <button onclick="addTask()" class="flex items-center gap-2 px-3 py-2 rounded-full border border-orange-500/30 text-orange-400 bg-orange-500/5 hover:bg-orange-500/10 text-[10px] font-bold uppercase transition">
-                <i class="ph-bold ph-plus"></i>
-                <span class="hidden md:inline">New Task</span>
-            </button>
+            <div class="flex items-center gap-3">
+                <!-- Language Selector -->
+                <select data-language-selector class="text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-white/20 transition cursor-pointer">
+                    <option value="es">ES</option>
+                    <option value="en">EN</option>
+                    <option value="pt">PT</option>
+                </select>
+                <button onclick="addTask()" class="flex items-center gap-2 px-3 py-2 rounded-full border border-orange-500/30 text-orange-400 bg-orange-500/5 hover:bg-orange-500/10 text-[10px] font-bold uppercase transition">
+                    <i class="ph-bold ph-plus"></i>
+                    <span class="hidden md:inline" data-i18n="new_task">New Task</span>
+                </button>
+            </div>
         </div>
     </nav>
 
@@ -282,47 +296,47 @@
         <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8 fade-in">
             <div class="glass-card p-6">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Active Tasks</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500" data-i18n="active_tasks">Active Tasks</p>
                     <i class="ph-duotone ph-list-checks text-orange-400 text-xl"></i>
                 </div>
-                <h3 class="text-3xl font-bold text-white font-display mb-1">34</h3>
-                <p class="text-xs text-slate-400">In progress</p>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statActive">0</h3>
+                <p class="text-xs text-slate-400" data-i18n="in_progress">In progress</p>
             </div>
 
             <div class="glass-card p-6">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Completed</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500" data-i18n="completed">Completed</p>
                     <i class="ph-duotone ph-check-circle text-emerald-400 text-xl"></i>
                 </div>
-                <h3 class="text-3xl font-bold text-white font-display mb-1">156</h3>
-                <p class="text-xs text-slate-400">This month</p>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statCompleted">0</h3>
+                <p class="text-xs text-slate-400" data-i18n="this_month">This month</p>
             </div>
 
             <div class="glass-card p-6">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Efficiency</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500" data-i18n="efficiency">Efficiency</p>
                     <i class="ph-duotone ph-trend-up text-cyan-400 text-xl"></i>
                 </div>
-                <h3 class="text-3xl font-bold text-white font-display mb-1">87%</h3>
-                <p class="text-xs text-slate-400">Team average</p>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statEfficiency">0%</h3>
+                <p class="text-xs text-slate-400" data-i18n="team_average">Team average</p>
             </div>
 
             <div class="glass-card p-6">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Overdue</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500" data-i18n="overdue">Overdue</p>
                     <i class="ph-duotone ph-warning text-rose-400 text-xl"></i>
                 </div>
-                <h3 class="text-3xl font-bold text-white font-display mb-1">3</h3>
-                <p class="text-xs text-slate-400">Need attention</p>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statOverdue">0</h3>
+                <p class="text-xs text-slate-400" data-i18n="need_attention">Need attention</p>
             </div>
 
             <div class="glass-card p-6">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Avg. Completion</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500" data-i18n="avg_completion">Avg. Completion</p>
                     <i class="ph-duotone ph-clock text-violet-400 text-xl"></i>
                 </div>
-                <h3 class="text-3xl font-bold text-white font-display mb-1">2.3d</h3>
-                <p class="text-xs text-slate-400">Days per task</p>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statAvgDays">-</h3>
+                <p class="text-xs text-slate-400" data-i18n="days_per_task">Days per task</p>
             </div>
         </div>
 
@@ -336,109 +350,19 @@
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-bold text-white font-display flex items-center gap-2">
                             <i class="ph-duotone ph-kanban text-orange-400"></i>
-                            Task Board
+                            <span data-i18n="task_board">Task Board</span>
                         </h3>
                         <div class="flex gap-2">
-                            <select class="text-xs bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-slate-400">
-                                <option value="all">All Tasks</option>
-                                <option value="urgent">Urgent</option>
-                                <option value="high">High Priority</option>
+                            <select id="taskFilter" class="text-xs bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-slate-400" onchange="loadTasks()">
+                                <option value="all" data-i18n="all_tasks">All Tasks</option>
+                                <option value="urgent" data-i18n="urgent">Urgent</option>
+                                <option value="high" data-i18n="high_priority">High Priority</option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="space-y-3 custom-scroll" style="max-height: 600px;">
-                        <!-- Task 1 -->
-                        <div class="task-card">
-                            <div class="flex justify-between items-start mb-3">
-                                <div class="flex items-start gap-3">
-                                    <input type="checkbox" class="mt-1" />
-                                    <div>
-                                        <p class="font-bold text-white text-sm mb-1">Launch marketing campaign</p>
-                                        <p class="text-xs text-slate-400">Create social media content and schedule posts</p>
-                                    </div>
-                                </div>
-                                <span class="priority-badge urgent">Urgent</span>
-                            </div>
-                            <div class="flex items-center gap-4 text-xs text-slate-500">
-                                <div class="flex items-center gap-1">
-                                    <i class="ph-bold ph-calendar"></i>
-                                    <span>Feb 15, 2024</span>
-                                </div>
-                                <div class="flex items-center gap-1">
-                                    <i class="ph-bold ph-user"></i>
-                                    <span>Marketing Team</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Task 2 -->
-                        <div class="task-card">
-                            <div class="flex justify-between items-start mb-3">
-                                <div class="flex items-start gap-3">
-                                    <input type="checkbox" class="mt-1" />
-                                    <div>
-                                        <p class="font-bold text-white text-sm mb-1">Update product inventory</p>
-                                        <p class="text-xs text-slate-400">Sync inventory with warehouse system</p>
-                                    </div>
-                                </div>
-                                <span class="priority-badge high">High</span>
-                            </div>
-                            <div class="flex items-center gap-4 text-xs text-slate-500">
-                                <div class="flex items-center gap-1">
-                                    <i class="ph-bold ph-calendar"></i>
-                                    <span>Feb 16, 2024</span>
-                                </div>
-                                <div class="flex items-center gap-1">
-                                    <i class="ph-bold ph-user"></i>
-                                    <span>Operations</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Task 3 -->
-                        <div class="task-card">
-                            <div class="flex justify-between items-start mb-3">
-                                <div class="flex items-start gap-3">
-                                    <input type="checkbox" class="mt-1" />
-                                    <div>
-                                        <p class="font-bold text-white text-sm mb-1">Review customer feedback</p>
-                                        <p class="text-xs text-slate-400">Analyze support tickets from last week</p>
-                                    </div>
-                                </div>
-                                <span class="priority-badge normal">Normal</span>
-                            </div>
-                            <div class="flex items-center gap-4 text-xs text-slate-500">
-                                <div class="flex items-center gap-1">
-                                    <i class="ph-bold ph-calendar"></i>
-                                    <span>Feb 17, 2024</span>
-                                </div>
-                                <div class="flex items-center gap-1">
-                                    <i class="ph-bold ph-user"></i>
-                                    <span>Support Team</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Task 4 (Completed) -->
-                        <div class="task-card completed">
-                            <div class="flex justify-between items-start mb-3">
-                                <div class="flex items-start gap-3">
-                                    <input type="checkbox" class="mt-1" checked />
-                                    <div>
-                                        <p class="font-bold text-white text-sm mb-1 line-through">Prepare monthly report</p>
-                                        <p class="text-xs text-slate-400">Financial summary for stakeholders</p>
-                                    </div>
-                                </div>
-                                <span class="priority-badge low">Low</span>
-                            </div>
-                            <div class="flex items-center gap-4 text-xs text-slate-500">
-                                <div class="flex items-center gap-1">
-                                    <i class="ph-bold ph-check-circle text-emerald-400"></i>
-                                    <span>Completed</span>
-                                </div>
-                            </div>
-                        </div>
+                    <div id="tasksContainer" class="space-y-3 custom-scroll" style="max-height: 600px;">
+                        <!-- Tasks loaded dynamically -->
                     </div>
                 </div>
 
@@ -446,57 +370,11 @@
                 <div class="glass-card p-6 fade-in">
                     <h3 class="text-lg font-bold text-white font-display mb-6 flex items-center gap-2">
                         <i class="ph-duotone ph-users-three text-emerald-400"></i>
-                        Team Performance
+                        <span data-i18n="team_performance">Team Performance</span>
                     </h3>
 
-                    <div class="grid md:grid-cols-3 gap-4">
-                        <div class="p-4 rounded-lg bg-white/5 border border-white/5">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold">
-                                    JD
-                                </div>
-                                <div>
-                                    <p class="font-bold text-white text-sm">John Doe</p>
-                                    <p class="text-xs text-slate-400">Developer</p>
-                                </div>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-500">Efficiency</span>
-                                <span class="text-emerald-400 font-bold">92%</span>
-                            </div>
-                        </div>
-
-                        <div class="p-4 rounded-lg bg-white/5 border border-white/5">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center text-violet-400 font-bold">
-                                    SM
-                                </div>
-                                <div>
-                                    <p class="font-bold text-white text-sm">Sarah Miller</p>
-                                    <p class="text-xs text-slate-400">Designer</p>
-                                </div>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-500">Efficiency</span>
-                                <span class="text-emerald-400 font-bold">88%</span>
-                            </div>
-                        </div>
-
-                        <div class="p-4 rounded-lg bg-white/5 border border-white/5">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 font-bold">
-                                    MJ
-                                </div>
-                                <div>
-                                    <p class="font-bold text-white text-sm">Mike Johnson</p>
-                                    <p class="text-xs text-slate-400">Marketing</p>
-                                </div>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-500">Efficiency</span>
-                                <span class="text-emerald-400 font-bold">85%</span>
-                            </div>
-                        </div>
+                    <div id="teamPerformanceContainer" class="grid md:grid-cols-3 gap-4">
+                        <!-- Team performance from assigned_to - loaded dynamically -->
                     </div>
                 </div>
 
@@ -505,84 +383,80 @@
             <!-- Right Column: AI Panel & Analytics -->
             <div class="lg:col-span-4 space-y-6">
 
-                <!-- AI PREMIUM PANEL - LOCKED -->
+                <!-- AI OPERATIONS INTELLIGENCE - ACTIVE -->
                 <div class="ai-premium-panel fade-in">
-                    <div class="ai-lock-icon">
-                        <i class="ph-fill ph-lock-key text-3xl text-white"></i>
-                    </div>
-                    
-                    <div class="text-center mb-6">
-                        <h3 class="text-2xl font-bold text-white font-display mb-2">
-                            AI Operations Manager
-                        </h3>
-                        <p class="text-sm text-orange-300 mb-1">Premium Feature</p>
-                        <p class="text-xs text-slate-400">Intelligent task automation and optimization</p>
-                    </div>
-
-                    <div class="space-y-3 mb-6">
-                        <div class="ai-feature-item">
-                            <i class="ph-fill ph-robot text-orange-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Automatic task prioritization based on urgency & impact</span>
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center border border-orange-500/30">
+                            <i class="ph-duotone ph-robot text-2xl text-orange-400"></i>
                         </div>
-                        <div class="ai-feature-item">
-                            <i class="ph-fill ph-users text-orange-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Smart team workload balancing</span>
-                        </div>
-                        <div class="ai-feature-item">
-                            <i class="ph-fill ph-chart-line text-orange-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Productivity analytics with actionable insights</span>
-                        </div>
-                        <div class="ai-feature-item">
-                            <i class="ph-fill ph-warning-diamond text-orange-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Bottleneck detection and resolution suggestions</span>
-                        </div>
-                        <div class="ai-feature-item">
-                            <i class="ph-fill ph-bell-ringing text-orange-400 text-xl"></i>
-                            <span class="text-sm text-slate-300">Deadline risk alerts with 24h advance warning</span>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-white font-display" data-i18n="ai_operations_intelligence">AI Operations Intelligence</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+                                <span class="text-xs text-emerald-400 font-bold" data-i18n="active_optimizing">Active & Optimizing</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="text-center">
-                        <button class="ai-upgrade-btn" onclick="showUpgradeModal()">
-                            <i class="ph-bold ph-rocket-launch"></i>
-                            Upgrade to Premium
-                        </button>
-                        <p class="text-xs text-slate-500 mt-3">Starting at $59/month</p>
+                    <p class="text-sm text-slate-300 mb-6" data-i18n="included_with_hambre">Included with your Hambre plan</p>
+
+                    <div class="grid grid-cols-1 gap-3 mb-6">
+                        <div class="flex items-start gap-3">
+                            <i class="ph-bold ph-check-circle text-emerald-400 text-lg mt-0.5"></i>
+                            <span class="text-sm text-slate-300" data-i18n="task_prioritization_active">Smart task prioritization active</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="ph-bold ph-check-circle text-emerald-400 text-lg mt-0.5"></i>
+                            <span class="text-sm text-slate-300" data-i18n="workload_balancing_ready">Workload balancing & distribution ready</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="ph-bold ph-check-circle text-emerald-400 text-lg mt-0.5"></i>
+                            <span class="text-sm text-slate-300" data-i18n="deadline_predictions_configured">Deadline predictions configured</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="ph-bold ph-check-circle text-emerald-400 text-lg mt-0.5"></i>
+                            <span class="text-sm text-slate-300" data-i18n="efficiency_recommendations_enabled">Efficiency recommendations enabled</span>
+                        </div>
                     </div>
+
+                    <button class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-orange-500/20 to-red-500/20 border border-orange-500/30 text-orange-400 font-bold text-sm hover:from-orange-500/30 hover:to-red-500/30 transition flex items-center justify-center gap-2">
+                        <i class="ph-bold ph-chats-circle"></i>
+                        <span data-i18n="chat_with_ai_assistant">Chat with AI Assistant</span>
+                    </button>
                 </div>
 
                 <!-- Task Completion Progress -->
                 <div class="glass-card p-6 fade-in">
                     <h3 class="text-lg font-bold text-white font-display mb-6 flex items-center gap-2">
                         <i class="ph-duotone ph-chart-pie text-violet-400"></i>
-                        This Week
+                        <span data-i18n="this_week">This Week</span>
                     </h3>
                     
                     <div class="flex justify-center mb-6">
                         <div class="relative">
                             <svg class="progress-ring" width="120" height="120">
                                 <circle class="progress-ring__circle" stroke="rgba(255,255,255,0.1)" stroke-width="8" r="52" cx="60" cy="60" />
-                                <circle class="progress-ring__circle" stroke="#fb923c" stroke-width="8" r="52" cx="60" cy="60" style="stroke-dasharray: 326.73; stroke-dashoffset: 81.68;" />
+                                <circle id="progressRingCircle" class="progress-ring__circle" stroke="#fb923c" stroke-width="8" r="52" cx="60" cy="60" style="stroke-dasharray: 326.73; stroke-dashoffset: 326.73;" />
                             </svg>
                             <div class="absolute inset-0 flex items-center justify-center flex-col">
-                                <span class="text-3xl font-bold text-white">75%</span>
-                                <span class="text-xs text-slate-400">Complete</span>
+                                <span class="text-3xl font-bold text-white" id="progressRingPercent">0%</span>
+                                <span class="text-xs text-slate-400" data-i18n="complete">Complete</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="space-y-3">
                         <div class="flex justify-between items-center">
-                            <span class="text-xs text-slate-400">Completed</span>
-                            <span class="text-sm font-bold text-emerald-400">24 tasks</span>
+                            <span class="text-xs text-slate-400" data-i18n="completed">Completed</span>
+                            <span class="text-sm font-bold text-emerald-400" id="weekCompleted">0 tasks</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-xs text-slate-400">In Progress</span>
-                            <span class="text-sm font-bold text-orange-400">8 tasks</span>
+                            <span class="text-xs text-slate-400" data-i18n="in_progress">In Progress</span>
+                            <span class="text-sm font-bold text-orange-400" id="weekInProgress">0 tasks</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-xs text-slate-400">Remaining</span>
-                            <span class="text-sm font-bold text-slate-400">0 tasks</span>
+                            <span class="text-xs text-slate-400" data-i18n="remaining">Remaining</span>
+                            <span class="text-sm font-bold text-slate-400" id="weekRemaining">0 tasks</span>
                         </div>
                     </div>
                 </div>
@@ -591,7 +465,7 @@
                 <div class="glass-card p-6 fade-in">
                     <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
                         <i class="ph-duotone ph-chart-bar text-cyan-400"></i>
-                        Task Distribution
+                        <span data-i18n="task_distribution">Task Distribution</span>
                     </h3>
                     
                     <div class="chart-container">
@@ -610,7 +484,7 @@
         // Supabase Configuration
         const SU_URL = 'https://haqjuyagyvxynmulanhe.supabase.co';
         const SU_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
-        const client = supabase.createClient(SU_URL, SU_KEY);
+        const supabase = supabase.createClient(SU_URL, SU_KEY);
 
         let taskChart = null;
 
@@ -626,40 +500,284 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', async () => {
-            await checkAuth();
-            renderTaskChart();
+            const user = await checkRealAuth(supabase);
+            if (!user) return;
+            await pymaxData.init(supabase);
+            pymaxData.on('data_updated', () => loadTasks());
+            window.addEventListener('languageChanged', () => updateUI());
+            i18n.init();
+            loadTasks();
         });
 
-        // Check Auth
-        async function checkAuth() {
+        function updateUI() {
+            if (typeof i18n !== 'undefined') i18n.updateDOM();
+        }
+
+        // Load Tasks from Supabase
+        async function loadTasks() {
             try {
-                const { data: { user } } = await client.auth.getUser();
-                if (!user) {
-                    window.location.href = '/';
-                    return;
-                }
-            } catch (error) {
-                console.error('Auth error:', error);
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) return;
+                const { data: tasks, error } = await supabase
+                    .from('user_tasks')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .order('created_at', { ascending: false });
+                if (error) throw error;
+                const taskList = tasks || [];
+                renderTasks(taskList);
+                updateStats(taskList);
+                renderTaskChart(taskList);
+                renderTeamPerformance(taskList);
+            } catch (err) {
+                console.error('Error loading tasks:', err);
+                renderTasks([]);
+                updateStats([]);
+                renderTaskChart([]);
+                renderTeamPerformance([]);
             }
         }
 
-        // Render Task Chart
-        function renderTaskChart() {
+        function renderTasks(tasks) {
+            const container = document.getElementById('tasksContainer');
+            const filter = document.getElementById('taskFilter')?.value || 'all';
+            let filtered = tasks;
+            if (filter === 'urgent') filtered = tasks.filter(t => t.priority === 'urgent');
+            else if (filter === 'high') filtered = tasks.filter(t => t.priority === 'high' || t.priority === 'urgent');
+            if (!filtered.length) {
+                container.innerHTML = '<div class="text-center py-12 text-slate-500"><i class="ph-duotone ph-clipboard-text text-4xl mb-3 opacity-50"></i><p class="text-sm" data-i18n="no_tasks_yet">No tasks yet. Add your first task!</p></div>';
+                i18n?.updateDOM();
+                return;
+            }
+            container.innerHTML = filtered.map(t => {
+                const isCompleted = t.status === 'completed';
+                const priorityClass = t.priority === 'urgent' ? 'urgent' : t.priority === 'high' ? 'high' : t.priority === 'medium' ? 'normal' : 'low';
+                const dueStr = t.due_date ? (window.i18n ? i18n.formatDate(t.due_date) : new Date(t.due_date).toLocaleDateString()) : '-';
+                return `<div class="task-card ${isCompleted ? 'completed' : ''}" data-id="${t.id}">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" class="mt-1" ${isCompleted ? 'checked' : ''} onchange="toggleTaskStatus('${t.id}', this.checked)" />
+                            <div>
+                                <p class="font-bold text-white text-sm mb-1 ${isCompleted ? 'line-through' : ''}">${escapeHtml(t.title)}</p>
+                                <p class="text-xs text-slate-400">${escapeHtml(t.description || '')}</p>
+                            </div>
+                        </div>
+                        <span class="priority-badge ${priorityClass}" data-i18n="${t.priority}">${t.priority}</span>
+                    </div>
+                    <div class="flex items-center gap-4 text-xs text-slate-500">
+                        <div class="flex items-center gap-1"><i class="ph-bold ph-calendar"></i><span>${dueStr}</span></div>
+                        ${t.assigned_to ? `<div class="flex items-center gap-1"><i class="ph-bold ph-user"></i><span>${escapeHtml(t.assigned_to)}</span></div>` : ''}
+                        ${isCompleted ? '<div class="flex items-center gap-1"><i class="ph-bold ph-check-circle text-emerald-400"></i><span data-i18n="completed">Completed</span></div>' : ''}
+                    </div>
+                </div>`;
+            }).join('');
+            i18n?.updateDOM();
+        }
+
+        function escapeHtml(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+        async function toggleTaskStatus(id, completed) {
+            try {
+                const { error } = await supabase.from('user_tasks').update({
+                    status: completed ? 'completed' : 'in_progress',
+                    completed_at: completed ? new Date().toISOString() : null
+                }).eq('id', id);
+                if (error) throw error;
+                await pymaxData.refresh();
+            } catch (err) {
+                Toast.fire({ icon: 'error', title: err.message || 'Error' });
+            }
+        }
+
+        function renderTeamPerformance(tasks) {
+            const container = document.getElementById('teamPerformanceContainer');
+            if (!container) return;
+            const byAssignee = {};
+            tasks.forEach(t => {
+                const name = t.assigned_to || (window.i18n?.t('unassigned') || 'Unassigned');
+                if (!byAssignee[name]) byAssignee[name] = { total: 0, completed: 0 };
+                byAssignee[name].total++;
+                if (t.status === 'completed') byAssignee[name].completed++;
+            });
+            const entries = Object.entries(byAssignee).slice(0, 6);
+            const colorClasses = ['bg-cyan-500/20 text-cyan-400', 'bg-violet-500/20 text-violet-400', 'bg-amber-500/20 text-amber-400', 'bg-emerald-500/20 text-emerald-400', 'bg-rose-500/20 text-rose-400', 'bg-orange-500/20 text-orange-400'];
+            if (entries.length === 0) {
+                container.innerHTML = '<div class="col-span-full text-center py-8 text-slate-500 text-sm" data-i18n="no_team_data">No team data yet. Assign tasks to see performance.</div>';
+            } else {
+                container.innerHTML = entries.map(([name, stats], i) => {
+                    const eff = stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0;
+                    const initials = name.split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0, 2) || '?';
+                    const cc = colorClasses[i % colorClasses.length];
+                    return `<div class="p-4 rounded-lg bg-white/5 border border-white/5">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full ${cc} flex items-center justify-center font-bold">${escapeHtml(initials)}</div>
+                            <div><p class="font-bold text-white text-sm">${escapeHtml(name)}</p><p class="text-xs text-slate-400">${stats.total} ${window.i18n?.t('tasks') || 'tasks'}</p></div>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-500">${window.i18n?.t('efficiency') || 'Efficiency'}</span>
+                            <span class="text-emerald-400 font-bold">${eff}%</span>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+            i18n?.updateDOM();
+        }
+
+        function updateStats(tasks) {
+            const now = new Date();
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+            const weekStart = new Date(now);
+            weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+            const active = tasks.filter(t => t.status !== 'completed' && t.status !== 'cancelled').length;
+            const completed = tasks.filter(t => t.status === 'completed').length;
+            const completedThisMonth = tasks.filter(t => t.status === 'completed' && t.completed_at && new Date(t.completed_at) >= monthStart).length;
+            const overdue = tasks.filter(t => t.status !== 'completed' && t.due_date && new Date(t.due_date) < now).length;
+            const weekCompleted = tasks.filter(t => t.status === 'completed' && t.completed_at && new Date(t.completed_at) >= weekStart).length;
+            const weekInProgress = tasks.filter(t => t.status === 'in_progress').length;
+            const weekPending = tasks.filter(t => t.status === 'pending').length;
+            const eff = tasks.length > 0 ? Math.round((completed / tasks.length) * 100) : 0;
+            document.getElementById('statActive').textContent = active;
+            document.getElementById('statCompleted').textContent = completedThisMonth;
+            document.getElementById('statEfficiency').textContent = eff + '%';
+            document.getElementById('statOverdue').textContent = overdue;
+            const el = document.getElementById('statAvgDays');
+            if (el) el.textContent = completed > 0 ? '-' : '-';
+            const ring = document.getElementById('progressRingCircle');
+            const pctEl = document.getElementById('progressRingPercent');
+            if (ring && pctEl) {
+                const circumference = 326.73;
+                ring.style.strokeDashoffset = circumference - (eff / 100) * circumference;
+                pctEl.textContent = eff + '%';
+            }
+            const wc = document.getElementById('weekCompleted');
+            const wp = document.getElementById('weekInProgress');
+            const wr = document.getElementById('weekRemaining');
+            if (wc) wc.textContent = weekCompleted + ' ' + (window.i18n?.t('tasks') || 'tasks');
+            if (wp) wp.textContent = weekInProgress + ' ' + (window.i18n?.t('tasks') || 'tasks');
+            if (wr) wr.textContent = weekPending + ' ' + (window.i18n?.t('tasks') || 'tasks');
+        }
+
+        // Add Task - SweetAlert2 Modal
+        async function addTask() {
+            const t = (k) => (window.i18n ? i18n.t(k) : k);
+            const { value: formValues } = await Swal.fire({
+                title: t('new_task'),
+                html: `
+                    <div class="text-left space-y-4 swal-form">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-1">${t('title')}</label>
+                            <input id="swal-title" class="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm" placeholder="${t('task_title_placeholder')}" required />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-1">${t('description')}</label>
+                            <textarea id="swal-description" class="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm" rows="2" placeholder="${t('task_description_placeholder')}"></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 mb-1">${t('status')}</label>
+                                <select id="swal-status" class="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-sm">
+                                    <option value="pending">${t('pending')}</option>
+                                    <option value="in_progress">${t('in_progress')}</option>
+                                    <option value="completed">${t('completed')}</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 mb-1">${t('priority')}</label>
+                                <select id="swal-priority" class="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-sm">
+                                    <option value="low">${t('low')}</option>
+                                    <option value="medium" selected>${t('medium')}</option>
+                                    <option value="high">${t('high')}</option>
+                                    <option value="urgent">${t('urgent')}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-1">${t('assigned_to')}</label>
+                            <input id="swal-assigned" class="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm" placeholder="${t('assigned_to_placeholder')}" />
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 mb-1">${t('due_date')}</label>
+                                <input id="swal-due" type="date" class="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-sm" />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 mb-1">${t('estimated_hours')}</label>
+                                <input id="swal-hours" type="number" step="0.5" min="0" class="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm" placeholder="0" />
+                            </div>
+                        </div>
+                    </div>
+                `,
+                background: '#0b0b14',
+                color: '#fff',
+                showCancelButton: true,
+                confirmButtonColor: '#fb923c',
+                cancelButtonColor: '#3f3f46',
+                confirmButtonText: t('save'),
+                cancelButtonText: t('cancel'),
+                preConfirm: () => {
+                    const title = document.getElementById('swal-title').value?.trim();
+                    if (!title) {
+                        Swal.showValidationMessage(window.i18n?.t('required_field') || 'Title is required');
+                        return false;
+                    }
+                    return {
+                        title,
+                        description: document.getElementById('swal-description').value?.trim() || null,
+                        status: document.getElementById('swal-status').value || 'pending',
+                        priority: document.getElementById('swal-priority').value || 'medium',
+                        assigned_to: document.getElementById('swal-assigned').value?.trim() || null,
+                        due_date: document.getElementById('swal-due').value || null,
+                        estimated_hours: parseFloat(document.getElementById('swal-hours').value) || null
+                    };
+                }
+            });
+            if (!formValues) return;
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) { Toast.fire({ icon: 'error', title: 'Session required' }); return; }
+                const { data, error } = await supabase.from('user_tasks').insert({
+                    user_id: user.id,
+                    title: formValues.title,
+                    description: formValues.description,
+                    status: formValues.status,
+                    priority: formValues.priority,
+                    assigned_to: formValues.assigned_to,
+                    due_date: formValues.due_date || null,
+                    estimated_hours: formValues.estimated_hours
+                }).select().single();
+                if (error) throw error;
+                Toast.fire({ icon: 'success', title: window.i18n?.t('task_added') || 'Task added' });
+                await pymaxData.refresh();
+            } catch (err) {
+                Toast.fire({ icon: 'error', title: err.message || 'Error saving task' });
+            }
+        }
+
+        // Render Task Chart (dynamic from task data)
+        function renderTaskChart(tasks = []) {
             const ctx = document.getElementById('taskChart');
-            
+            if (!ctx) return;
+            const categoryCounts = {};
+            (tasks || []).forEach(t => {
+                const cat = t.category || (window.i18n?.t('other') || 'Other');
+                categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+            });
+            const labels = Object.keys(categoryCounts);
+            const data = Object.values(categoryCounts);
+            if (labels.length === 0) {
+                labels.push(window.i18n?.t('no_data') || 'No data');
+                data.push(1);
+            }
+            const colors = ['#60a5fa', '#fb923c', '#34d399', '#a78bfa', '#fbbf24', '#f472b6', '#22d3ee'];
+            const bgColors = labels.map((_, i) => colors[i % colors.length]);
+            if (taskChart) taskChart.destroy();
             taskChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Development', 'Marketing', 'Support', 'Operations', 'Design'],
+                    labels,
                     datasets: [{
-                        data: [32, 24, 18, 15, 11],
-                        backgroundColor: [
-                            '#60a5fa',
-                            '#fb923c',
-                            '#34d399',
-                            '#a78bfa',
-                            '#fbbf24'
-                        ],
+                        data,
+                        backgroundColor: bgColors,
                         borderColor: '#020617',
                         borderWidth: 2
                     }]
@@ -696,61 +814,6 @@
             });
         }
 
-        // Add Task
-        function addTask() {
-            Toast.fire({ icon: 'info', title: 'Task creation feature coming soon' });
-        }
-
-        // Show Upgrade Modal
-        function showUpgradeModal() {
-            Swal.fire({
-                title: 'Upgrade to Premium',
-                html: `
-                    <div class="text-left space-y-4 p-4">
-                        <p class="text-sm text-slate-400 mb-4">
-                            Unlock AI-powered operations management and maximize team efficiency.
-                        </p>
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
-                                <span class="text-sm text-slate-300">Automatic Task Prioritization</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
-                                <span class="text-sm text-slate-300">Smart Team Workload Balancing</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
-                                <span class="text-sm text-slate-300">Productivity Analytics</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
-                                <span class="text-sm text-slate-300">Bottleneck Detection</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-check-circle text-emerald-400 text-xl"></i>
-                                <span class="text-sm text-slate-300">Deadline Risk Alerts</span>
-                            </div>
-                        </div>
-                        <div class="mt-6 p-4 bg-orange-500/10 rounded-lg border border-orange-500/30">
-                            <p class="text-center text-2xl font-bold text-white mb-1">$59/month</p>
-                            <p class="text-center text-xs text-slate-400">or $590/year (save 17%)</p>
-                        </div>
-                    </div>
-                `,
-                showCancelButton: true,
-                confirmButtonColor: '#fb923c',
-                cancelButtonColor: '#3f3f46',
-                confirmButtonText: 'Contact Sales',
-                cancelButtonText: 'Maybe Later',
-                background: '#0b0b14',
-                color: '#fff'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = 'mailto:sales@pymax.com?subject=Premium Upgrade Inquiry';
-                }
-            });
-        }
     </script>
 </body>
 </html>
