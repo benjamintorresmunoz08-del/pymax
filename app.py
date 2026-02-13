@@ -16,8 +16,16 @@ app.secret_key = secret
 app.permanent_session_lifetime = timedelta(days=365)
 
 # CONFIGURACIÓN SUPABASE (para pasar a templates)
-SUPABASE_URL = os.getenv('SUPABASE_URL', '')
-SUPABASE_KEY = os.getenv('SUPABASE_KEY', '')
+# Si no están en Render Environment, usa fallback para que la app funcione
+_SUPABASE_DEFAULT_URL = 'https://haqjuyagyvxynmulanhe.supabase.co'
+_SUPABASE_DEFAULT_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g'
+
+# Acepta múltiples nombres de variables (Render, Supabase, etc.)
+SUPABASE_URL = (os.getenv('SUPABASE_URL') or '').strip() or _SUPABASE_DEFAULT_URL
+SUPABASE_KEY = (
+    (os.getenv('SUPABASE_KEY') or os.getenv('ANON_KEY') or 
+     os.getenv('SUPABASE_ANON_KEY') or '').strip() or _SUPABASE_DEFAULT_KEY
+)
 
 # Context processor para hacer las variables disponibles en todos los templates
 @app.context_processor

@@ -495,7 +495,7 @@
           <h3 class="text-lg font-bold text-white mb-1 font-display">Export Data</h3>
           <p class="text-slate-400 text-sm">Download your reports</p>
         </div>
-        <a href="{{ url_for('mover_exportar') }}" class="btn-link">
+        <a href="{{ url_for('mover_export_excel') }}" class="btn-link">
           <span>Download</span>
           <i class="ph-bold ph-download-simple"></i>
         </a>
@@ -523,8 +523,8 @@
 <script>
 // Configuración Supabase
 // Credenciales desde variables de entorno (configuradas en Render)
-const SU_URL = '{{ SUPABASE_URL }}';
-const SU_KEY = '{{ SUPABASE_KEY }}';
+const SU_URL = '{{ SUPABASE_URL or "https://haqjuyagyvxynmulanhe.supabase.co" }}';
+const SU_KEY = '{{ SUPABASE_KEY or "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g" }}';
 const supabase = window.supabase.createClient(SU_URL, SU_KEY);
 
 // SIMULATED USER FOR DEMO
