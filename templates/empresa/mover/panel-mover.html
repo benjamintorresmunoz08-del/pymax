@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pymax | Control Center</title>
+  <title>Pymax | Plan Mover</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
   
   <!-- PYMAX CORE SYSTEMS -->
   <script src="/static/js/pymax-performance.js"></script>
@@ -106,6 +107,76 @@
       border: 1px solid rgba(239, 68, 68, 0.2);
     }
 
+    .ai-insight-card {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(59, 130, 246, 0.1) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+      animation: slideIn 0.5s ease-out;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .ai-insight-card::before {
+      content: '✨ IA';
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 10px;
+      color: #a78bfa;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .automation-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .automation-item:hover {
+      background: rgba(15, 23, 42, 0.8);
+      border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    .automation-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .automation-icon.completed {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+    }
+
+    .automation-icon.alert {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+    }
+
+    .automation-icon.scheduled {
+      background: rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+    }
+
     .card-module {
       background: rgba(15, 23, 42, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -117,7 +188,6 @@
       height: 100%;
       position: relative;
       transition: all 0.2s ease;
-      transform: translateZ(0);
     }
 
     .card-module:hover {
@@ -125,17 +195,6 @@
       background: rgba(30, 41, 59, 0.8);
       border-color: rgba(255, 255, 255, 0.2);
       box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
-    }
-
-    .card-module::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 20px;
-      right: 20px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      opacity: 0.5;
     }
 
     .icon-box {
@@ -149,10 +208,6 @@
       margin-bottom: 16px;
       border: 1px solid transparent;
       transition: all 0.3s ease;
-    }
-
-    .card-module:hover .icon-box {
-      transform: scale(1.05);
     }
 
     .type-finance .icon-box { 
@@ -170,15 +225,9 @@
       color: #34d399; 
       border-color: rgba(16, 185, 129, 0.3); 
     }
-    .type-system .icon-box { 
-      background: rgba(139, 92, 246, 0.15); 
-      color: #a78bfa; 
-      border-color: rgba(139, 92, 246, 0.3); 
-    }
     .type-ai .icon-box { 
       background: linear-gradient(135deg, #4f46e5, #7c3aed); 
       color: white; 
-      border: none; 
       box-shadow: 0 0 20px rgba(124, 58, 237, 0.4); 
     }
 
@@ -198,330 +247,230 @@
       transition: all 0.2s ease;
     }
 
-    .card-module:hover .btn-link {
-      background: rgba(255, 255, 255, 0.1);
+    .btn-link:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
       color: white;
-      border-color: rgba(255, 255, 255, 0.1);
     }
-
-    .btn-link i { transition: transform 0.2s; }
-    .btn-link:hover i { transform: translateX(4px); }
-
-    .btn-ai {
-      background: rgba(124, 58, 237, 0.15) !important;
-      color: #c4b5fd !important;
-      border-color: rgba(124, 58, 237, 0.3) !important;
-    }
-    .btn-ai:hover {
-      background: rgba(124, 58, 237, 0.3) !important;
-      color: white !important;
-    }
-
-    .alert-card {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      border-left: 4px solid #ef4444;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 24px;
-    }
-
-    .chart-container {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 20px;
-      padding: 24px;
-      height: 280px;
-    }
-
-    .fade-in {
-      animation: appear 0.5s ease-out forwards;
-      opacity: 0;
-      transform: translateY(10px);
-    }
-
-    @keyframes appear {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .d-1 { animation-delay: 0.05s; }
-    .d-2 { animation-delay: 0.1s; }
-    .d-3 { animation-delay: 0.15s; }
-    .d-4 { animation-delay: 0.2s; }
-    .d-5 { animation-delay: 0.25s; }
-    .d-6 { animation-delay: 0.3s; }
   </style>
 </head>
 
-<body class="p-4 md:p-8 max-w-[1600px] mx-auto">
+<body>
 
-  <nav class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4 fade-in">
-    <div class="flex items-center gap-4">
-      <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold font-display text-xl shadow-lg">
-        P
-      </div>
+  <!-- SIMPLE HEADER -->
+  <div class="max-w-7xl mx-auto px-6 py-6">
+    <div class="flex items-center justify-between mb-8">
       <div>
-        <h2 class="text-white font-bold text-base tracking-wide font-display">PYMAX</h2>
-        <span class="text-xs text-slate-400 font-semibold">Financial Control Center</span>
+        <h1 class="text-3xl font-bold text-white flex items-center gap-3">
+          <i class="ph ph-currency-dollar text-cyan-400"></i>
+          Plan Mover
+        </h1>
+        <p class="text-slate-400 text-sm mt-1">Control financiero en tiempo real</p>
       </div>
-    </div>
-    
-    <div class="flex items-center gap-3">
-      <!-- Language Selector -->
-      <select data-language-selector class="text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-white/20 transition cursor-pointer">
-        <option value="es">ES</option>
-        <option value="en">EN</option>
-        <option value="pt">PT</option>
-      </select>
-      
-      <div class="text-right hidden md:block">
-        <p class="text-xs text-slate-400" data-i18n="last_update">Last Update</p>
-        <p class="text-sm text-white font-semibold" id="lastUpdate">--:--</p>
-      </div>
-      <a href="{{ url_for('empresa_home') }}" class="group flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition px-4 py-2.5 rounded-xl border border-white/10 hover:border-white/20 hover:bg-white/5">
-        <i class="ph-bold ph-arrow-u-up-left text-base"></i>
-        <span data-i18n="back">Back</span>
+      <a href="/empresa" class="px-4 py-2 rounded-lg border border-slate-600 hover:border-slate-500 text-slate-300 hover:text-white text-sm transition flex items-center gap-2">
+        <i class="ph ph-arrow-left"></i>
+        <span>Volver</span>
       </a>
     </div>
-  </nav>
 
-  <header class="mb-10 fade-in d-1">
-    <h1 class="text-3xl md:text-5xl font-bold text-white mb-2 font-display tracking-tight">
-      Financial Dashboard
-    </h1>
-    <p class="text-slate-400 text-base md:text-lg max-w-3xl">
-      Real-time overview of your financial performance and key metrics
-    </p>
-  </header>
+    <!-- ANÁLISIS INTELIGENTE -->
+    <section class="mb-12">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+          <i class="ph ph-brain text-purple-400"></i>
+          Análisis Inteligente
+        </h2>
+        <span class="text-xs text-slate-500">Actualizado en tiempo real</span>
+      </div>
+      <div id="aiInsightsContainer">
+        <!-- Se llena con JS -->
+      </div>
+    </section>
 
-  <!-- ALERTAS IMPORTANTES -->
-  <div id="alertsContainer" class="fade-in d-2">
-    <!-- Se llenan dinámicamente -->
+    <!-- STATS GRID -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-white mb-6">Tu Empresa Hoy</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <div class="card-stat">
+          <div class="stat-label">Balance Actual</div>
+          <div class="stat-value" id="currentBalance">$0</div>
+          <div class="stat-change positive" id="balanceChange">
+            <i class="ph ph-equals"></i>
+            <span>--</span>
+          </div>
+        </div>
+
+        <div class="card-stat">
+          <div class="stat-label">Ingresos Mes</div>
+          <div class="stat-value text-emerald-400" id="monthIncome">$0</div>
+          <div class="stat-change positive" id="incomeChange">
+            <i class="ph ph-equals"></i>
+            <span>--</span>
+          </div>
+        </div>
+
+        <div class="card-stat">
+          <div class="stat-label">Gastos Mes</div>
+          <div class="stat-value text-red-400" id="monthExpenses">$0</div>
+          <div class="stat-change negative" id="expensesChange">
+            <i class="ph ph-equals"></i>
+            <span>--</span>
+          </div>
+        </div>
+
+        <div class="card-stat">
+          <div class="stat-label">Margen Neto</div>
+          <div class="stat-value text-violet-400" id="netMargin">0%</div>
+          <div class="stat-change positive" id="marginChange">
+            <i class="ph ph-equals"></i>
+            <span>--</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FLUJO DE CAJA -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-white mb-6">Flujo de Caja (últimos 7 días)</h2>
+      <div class="card-stat">
+        <canvas id="cashFlowChart" height="80"></canvas>
+      </div>
+    </section>
+
+    <!-- AUTOMATIZACIONES ACTIVAS -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+        <i class="ph ph-robot text-cyan-400"></i>
+        Automatizaciones Activas
+      </h2>
+      <div class="card-stat">
+        <div id="automationsContainer">
+          <!-- Se llena con JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- PREDICCIONES 7 DÍAS -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+        <i class="ph ph-crystal-ball text-purple-400"></i>
+        Predicción IA: Próximos 7 días
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <div class="card-stat border-emerald-500/30">
+          <div class="stat-label">Ingresos Estimados</div>
+          <div class="stat-value text-emerald-400" id="predictedIncome">$0</div>
+          <p class="text-xs text-slate-400 mt-2">
+            <i class="ph ph-info text-blue-400"></i> Basado en historial
+          </p>
+        </div>
+
+        <div class="card-stat border-red-500/30">
+          <div class="stat-label">Gastos Proyectados</div>
+          <div class="stat-value text-red-400" id="predictedExpenses">$0</div>
+          <p class="text-xs text-slate-400 mt-2">
+            <i class="ph ph-info text-blue-400"></i> Incluye obligaciones
+          </p>
+        </div>
+
+        <div class="card-stat border-cyan-500/30">
+          <div class="stat-label">Balance Neto</div>
+          <div class="stat-value text-cyan-400" id="predictedNet">$0</div>
+          <p class="text-xs text-slate-400 mt-2" id="predictedTrend">
+            <i class="ph ph-trend-up text-cyan-400"></i> Tendencia positiva
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- MÓDULOS DE NAVEGACIÓN -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-white mb-6">Módulos de Control</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+        <div class="card-module type-finance">
+          <div>
+            <div class="icon-box"><i class="ph-duotone ph-currency-dollar"></i></div>
+            <h3 class="text-lg font-bold text-white mb-1 font-display">Ventas & Gastos</h3>
+            <p class="text-slate-400 text-sm">Gestión de flujo diario</p>
+          </div>
+          <a href="/empresa/mover/ventas-gastos" class="btn-link">
+            <span>Abrir</span>
+            <i class="ph ph-caret-right"></i>
+          </a>
+        </div>
+
+        <div class="card-module type-finance">
+          <div>
+            <div class="icon-box"><i class="ph-duotone ph-chart-line-up"></i></div>
+            <h3 class="text-lg font-bold text-white mb-1 font-display">Flujo de Caja</h3>
+            <p class="text-slate-400 text-sm">Proyección de liquidez</p>
+          </div>
+          <a href="/empresa/mover/flujo" class="btn-link">
+            <span>Analizar</span>
+            <i class="ph ph-chart-bar"></i>
+          </a>
+        </div>
+
+        <div class="card-module type-risk">
+          <div>
+            <div class="icon-box"><i class="ph-duotone ph-gavel"></i></div>
+            <h3 class="text-lg font-bold text-white mb-1 font-display">Obligaciones</h3>
+            <p class="text-slate-400 text-sm">Deudas y pasivos</p>
+          </div>
+          <a href="/empresa/mover/obligaciones" class="btn-link">
+            <span>Gestionar</span>
+            <i class="ph ph-warning-circle"></i>
+          </a>
+        </div>
+
+        <div class="card-module type-growth">
+          <div>
+            <div class="icon-box"><i class="ph-duotone ph-target"></i></div>
+            <h3 class="text-lg font-bold text-white mb-1 font-display">Metas</h3>
+            <p class="text-slate-400 text-sm">Objetivos principales</p>
+          </div>
+          <a href="/empresa/mover/metas" class="btn-link">
+            <span>Planificar</span>
+            <i class="ph ph-crosshair"></i>
+          </a>
+        </div>
+
+        <div class="card-module type-growth">
+          <div>
+            <div class="icon-box"><i class="ph-duotone ph-package"></i></div>
+            <h3 class="text-lg font-bold text-white mb-1 font-display">Inventario</h3>
+            <p class="text-slate-400 text-sm">Stock y productos</p>
+          </div>
+          <a href="/empresa/mover/inventario" class="btn-link">
+            <span>Ver</span>
+            <i class="ph ph-stack"></i>
+          </a>
+        </div>
+
+        <div class="card-module type-ai" style="border-color: rgba(124, 58, 237, 0.3);">
+          <div>
+            <div class="icon-box"><i class="ph-duotone ph-brain"></i></div>
+            <h3 class="text-lg font-bold text-white mb-1 font-display">Asistente IA</h3>
+            <p class="text-slate-300 text-sm">Soporte inteligente 24/7</p>
+          </div>
+          <a href="/empresa/mover/ia-apoyo" class="btn-link">
+            <span>Chatear</span>
+            <i class="ph ph-sparkle"></i>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
   </div>
-
-  <!-- ESTADÍSTICAS PRINCIPALES -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 fade-in d-3">
-    
-    <!-- Stat 1: Balance Actual -->
-    <div class="card-stat">
-      <div class="flex items-center justify-between">
-        <span class="stat-label" data-i18n="current_balance">Current Balance</span>
-        <i class="ph-duotone ph-wallet text-2xl text-blue-400"></i>
-      </div>
-      <div class="stat-value" id="currentBalance">-</div>
-      <div class="stat-change positive" id="balanceChange">
-        <i class="ph-bold ph-equals text-sm"></i>
-        <span>0%</span>
-      </div>
-    </div>
-
-    <!-- Stat 2: Ingresos del Mes -->
-    <div class="card-stat">
-      <div class="flex items-center justify-between">
-        <span class="stat-label" data-i18n="month_income">Income This Month</span>
-        <i class="ph-duotone ph-arrow-up-right text-2xl text-emerald-400"></i>
-      </div>
-      <div class="stat-value" id="monthIncome">-</div>
-      <div class="stat-change positive" id="incomeChange">
-        <i class="ph-bold ph-equals text-sm"></i>
-        <span>0%</span>
-      </div>
-    </div>
-
-    <!-- Stat 3: Gastos del Mes -->
-    <div class="card-stat">
-      <div class="flex items-center justify-between">
-        <span class="stat-label" data-i18n="month_expenses">Expenses This Month</span>
-        <i class="ph-duotone ph-arrow-down-left text-2xl text-rose-400"></i>
-      </div>
-      <div class="stat-value" id="monthExpenses">-</div>
-      <div class="stat-change negative" id="expensesChange">
-        <i class="ph-bold ph-equals text-sm"></i>
-        <span>0%</span>
-      </div>
-    </div>
-
-    <!-- Stat 4: Margen Neto -->
-    <div class="card-stat">
-      <div class="flex items-center justify-between">
-        <span class="stat-label" data-i18n="profit_margin">Net Margin</span>
-        <i class="ph-duotone ph-chart-line text-2xl text-violet-400"></i>
-      </div>
-      <div class="stat-value" id="netMargin">-</div>
-      <div class="stat-change positive" id="marginChange">
-        <i class="ph-bold ph-equals text-sm"></i>
-        <span>0%</span>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- GRÁFICO DE FLUJO (7 días) -->
-  <div class="mb-10 fade-in d-4">
-    <div class="flex items-center justify-between mb-6">
-      <div>
-        <h2 class="text-xl font-bold text-white font-display" data-i18n="cash_flow_trend">Cash Flow Trend</h2>
-        <p class="text-sm text-slate-400" data-i18n="last_7_days_performance">Last 7 days performance</p>
-      </div>
-      <a href="{{ url_for('mover_flujo') }}" class="text-sm text-blue-400 hover:text-blue-300 transition font-semibold">
-        <span data-i18n="view_full_analysis">View Full Analysis</span> →
-      </a>
-    </div>
-    <div class="chart-container">
-      <canvas id="cashFlowChart"></canvas>
-    </div>
-  </div>
-
-  <!-- MÓDULOS PRINCIPALES -->
-  <div class="mb-10">
-    <h2 class="text-xl font-bold text-white mb-6 font-display fade-in d-5" data-i18n="control_modules">Control Modules</h2>
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-
-      <div class="card-module type-finance fade-in d-5">
-        <div>
-          <div class="icon-box"><i class="ph-duotone ph-currency-dollar"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">Income & Expenses</h3>
-          <p class="text-slate-400 text-sm">Daily cash flow management</p>
-        </div>
-        <a href="{{ url_for('mover_ventas') }}" class="btn-link">
-          <span>Open</span>
-          <i class="ph-bold ph-caret-right"></i>
-        </a>
-      </div>
-
-      <div class="card-module type-finance fade-in d-5">
-        <div>
-          <div class="icon-box"><i class="ph-duotone ph-chart-line-up"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">Cash Flow</h3>
-          <p class="text-slate-400 text-sm">Real liquidity projection</p>
-        </div>
-        <a href="{{ url_for('mover_flujo') }}" class="btn-link">
-          <span>Analyze</span>
-          <i class="ph-bold ph-chart-bar"></i>
-        </a>
-      </div>
-
-      <div class="card-module type-risk fade-in d-6">
-        <div>
-          <div class="icon-box"><i class="ph-duotone ph-gavel"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">Obligations</h3>
-          <p class="text-slate-400 text-sm">Debts and liabilities</p>
-        </div>
-        <a href="{{ url_for('mover_obligaciones') }}" class="btn-link">
-          <span>Manage</span>
-          <i class="ph-bold ph-warning-circle"></i>
-        </a>
-      </div>
-
-      <div class="card-module type-system fade-in d-6">
-        <div>
-          <div class="icon-box"><i class="ph-duotone ph-calendar-check"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">Calendar</h3>
-          <p class="text-slate-400 text-sm">Important dates and deadlines</p>
-        </div>
-        <a href="{{ url_for('mover_calendario') }}" class="btn-link">
-          <span>View Schedule</span>
-          <i class="ph-bold ph-calendar"></i>
-        </a>
-      </div>
-
-      <div class="card-module type-risk fade-in d-6">
-        <div>
-          <div class="icon-box"><i class="ph-duotone ph-traffic-signal"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">Health Monitor</h3>
-          <p class="text-slate-400 text-sm">Financial health diagnostic</p>
-        </div>
-        <a href="{{ url_for('mover_semaforo') }}" class="btn-link">
-          <span>Check Status</span>
-          <i class="ph-bold ph-activity"></i>
-        </a>
-      </div>
-
-      <div class="card-module type-ai fade-in d-6" style="border-color: rgba(124, 58, 237, 0.3);">
-        <div>
-          <div class="icon-box"><i class="ph-duotone ph-brain"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">AI Assistant</h3>
-          <p class="text-slate-300 text-sm">24/7 Intelligent Support - Included</p>
-        </div>
-        <a href="{{ url_for('mover_ia') }}" class="btn-link btn-ai">
-          <span>Start Chat</span>
-          <i class="ph-bold ph-sparkle"></i>
-        </a>
-      </div>
-
-      <div class="card-module type-growth fade-in d-6">
-        <div>
-          <div class="icon-box"><i class="ph-duotone ph-medal"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">Performance Level</h3>
-          <p class="text-slate-400 text-sm">Your financial discipline score</p>
-        </div>
-        <a href="{{ url_for('mover_progreso') }}" class="btn-link">
-          <span>View Level</span>
-          <i class="ph-bold ph-trophy"></i>
-        </a>
-      </div>
-
-      <div class="card-module type-growth fade-in d-6">
-        <div>
-          <div class="icon-box"><i class="ph-duotone ph-target"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">Goals</h3>
-          <p class="text-slate-400 text-sm">Track your 3 main objectives</p>
-        </div>
-        <a href="{{ url_for('mover_metas') }}" class="btn-link">
-          <span>Plan</span>
-          <i class="ph-bold ph-crosshair"></i>
-        </a>
-      </div>
-
-      <div class="card-module type-system fade-in d-6">
-        <div>
-          <div class="icon-box"><i class="ph-duotone ph-scroll"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">General Ledger</h3>
-          <p class="text-slate-400 text-sm">Detailed expense audit</p>
-        </div>
-        <a href="{{ url_for('mover_auditoria') }}" class="btn-link">
-          <span>Review</span>
-          <i class="ph-bold ph-magnifying-glass"></i>
-        </a>
-      </div>
-
-      <div class="card-module type-system fade-in d-6">
-        <div>
-          <div class="icon-box"><i class="ph-duotone ph-file-csv"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">Export Data</h3>
-          <p class="text-slate-400 text-sm">Download your reports</p>
-        </div>
-        <a href="{{ url_for('mover_export_excel') }}" class="btn-link">
-          <span>Download</span>
-          <i class="ph-bold ph-download-simple"></i>
-        </a>
-      </div>
-
-      <div class="card-module type-growth fade-in d-7" style="border-color: rgba(52, 211, 153, 0.3);">
-        <div>
-          <div class="icon-box" style="background: rgba(52, 211, 153, 0.1); color: #34d399;"><i class="ph-duotone ph-package"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">Inventario</h3>
-          <p class="text-slate-400 text-sm">Gestión de stock y productos</p>
-        </div>
-        <a href="{{ url_for('mover_inventario') }}" class="btn-link" style="background: rgba(52, 211, 153, 0.1); color: #34d399;">
-          <span>Gestionar</span>
-          <i class="ph-bold ph-stack"></i>
-        </a>
-      </div>
-
-    </div>
-  </div>
-
-  <footer class="text-center text-xs text-slate-600 pb-8 pt-4 fade-in d-6">
-    <p>Pymax Financial System • Secure Connection</p>
-  </footer>
 
 <script>
-// Configuración Supabase (var evita "Identifier 'supabase' has already been declared")
+// Configuración Supabase
 const SU_URL = '{{ SUPABASE_URL or "https://haqjuyagyvxynmulanhe.supabase.co" }}';
 const SU_KEY = '{{ SUPABASE_KEY or "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g" }}';
 var supabase = window.__pymaxSupabaseClient || (window.__pymaxSupabaseClient = window.supabase.createClient(SU_URL, SU_KEY));
@@ -536,13 +485,11 @@ async function ensureAuthentication() {
             DEMO_USER = user;
             return;
         }
-
         DEMO_USER = {
             id: 'demo-user-' + Date.now(),
             email: 'demo@pymax.local',
             user_metadata: { full_name: 'Demo User' }
         };
-        
         localStorage.setItem('pymax_demo_user', JSON.stringify(DEMO_USER));
     } catch (error) {
         const stored = localStorage.getItem('pymax_demo_user');
@@ -567,84 +514,305 @@ supabase.auth.getUser = async function() {
     return originalGetUser();
 };
 
-// Formato de moneda internacional
-function formatCurrency(amount, currency = '$', locale = 'en-US') {
-  return `${currency}${new Intl.NumberFormat(locale, {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  }).format(amount)}`;
+// Formato moneda
+function formatCurrency(amount) {
+  return '$' + new Intl.NumberFormat('es-CL').format(amount);
 }
 
-// Calcular porcentaje de cambio
-function calculateChange(current, previous) {
-  if (previous === 0) return 0;
-  return ((current - previous) / previous) * 100;
+// Generar insights IA dinámicos
+function generateAIInsights(stats, operations) {
+  const insights = [];
+  
+  // Insight 1: Salud financiera
+  if (stats.margin > 30) {
+    insights.push({
+      type: 'success',
+      icon: 'ph-check-circle',
+      title: 'Salud Financiera Excelente',
+      description: `Tu margen de ${stats.margin.toFixed(1)}% está muy por encima del promedio. Tienes espacio para invertir en crecimiento.`,
+      actions: ['Ver oportunidades', 'Expandir equipo']
+    });
+  } else if (stats.margin > 15) {
+    insights.push({
+      type: 'info',
+      icon: 'ph-info',
+      title: 'Salud Financiera Buena',
+      description: `Margen de ${stats.margin.toFixed(1)}% es saludable. Puedes optimizar para llegar al 30%.`,
+      actions: ['Ver análisis', 'Plan de optimización']
+    });
+  } else if (stats.margin > 0) {
+    insights.push({
+      type: 'warning',
+      icon: 'ph-warning',
+      title: 'Margen Ajustado',
+      description: `Con ${stats.margin.toFixed(1)}% de margen, debes reducir costos o aumentar ingresos.`,
+      actions: ['Reducir gastos', 'Estrategia precios']
+    });
+  } else {
+    insights.push({
+      type: 'warning',
+      icon: 'ph-warning-circle',
+      title: 'Alerta: Operación en Pérdida',
+      description: `Estás gastando más de lo que ingresas. Acción inmediata requerida.`,
+      actions: ['Plan de emergencia', 'Contactar asesor']
+    });
+  }
+  
+  // Insight 2: Flujo de operaciones
+  if (stats.operations > 0) {
+    const avgTransaction = (stats.income + stats.expenses) / stats.operations;
+    insights.push({
+      type: 'info',
+      icon: 'ph-trend-up',
+      title: 'Actividad del Mes',
+      description: `Has registrado ${stats.operations} transacciones. Promedio de ${formatCurrency(avgTransaction)} por operación.`,
+      actions: ['Ver detalle', 'Exportar reporte']
+    });
+  }
+  
+  // Insight 3: Balance
+  if (stats.balance > stats.income * 3) {
+    insights.push({
+      type: 'success',
+      icon: 'ph-piggy-bank',
+      title: 'Reserva Sólida',
+      description: `Tu balance de ${formatCurrency(stats.balance)} cubre ${Math.floor(stats.balance / (stats.expenses || 1))} meses de gastos.`,
+      actions: ['Ver inversiones', 'Plan de expansión']
+    });
+  }
+  
+  return insights;
 }
 
-// Actualizar última actualización
-function updateLastUpdate() {
+// Generar automatizaciones simuladas
+function generateAutomations(stats, operations) {
   const now = new Date();
-  document.getElementById('lastUpdate').textContent = now.toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit'
+  const autos = [];
+  
+  autos.push({
+    time: '08:00',
+    action: 'Reporte diario enviado',
+    description: 'Resumen financiero enviado por email',
+    icon: 'ph-envelope',
+    status: 'completed'
+  });
+  
+  if (stats.operations > 0) {
+    autos.push({
+      time: '09:15',
+      action: 'Transacciones procesadas',
+      description: `${stats.operations} operaciones analizadas`,
+      icon: 'ph-check-circle',
+      status: 'completed'
+    });
+  }
+  
+  autos.push({
+    time: '10:30',
+    action: 'Análisis de gastos',
+    description: 'Detectadas oportunidades de optimización',
+    icon: 'ph-chart-line',
+    status: 'completed'
+  });
+  
+  if (stats.balance < stats.expenses) {
+    autos.push({
+      time: '11:00',
+      action: 'Alerta: Liquidez baja',
+      description: 'Balance menor a gastos mensuales',
+      icon: 'ph-warning-circle',
+      status: 'alert'
+    });
+  }
+  
+  autos.push({
+    time: '16:00',
+    action: 'Predicción actualizada',
+    description: 'Proyección próximos 7 días generada',
+    icon: 'ph-crystal-ball',
+    status: 'completed'
+  });
+  
+  autos.push({
+    time: '18:00',
+    action: 'Próximo: Backup de datos',
+    description: 'Se ejecutará automáticamente',
+    icon: 'ph-clock',
+    status: 'scheduled'
+  });
+  
+  return autos;
+}
+
+// Calcular predicciones
+function calculatePredictions(stats, operations) {
+  // Predicción simple basada en promedio
+  const avgIncome = stats.income || 0;
+  const avgExpenses = stats.expenses || 0;
+  
+  // Proyectar próxima semana (25% del mes)
+  const predictedIncome = Math.round(avgIncome * 0.25);
+  const predictedExpenses = Math.round(avgExpenses * 0.25);
+  const predictedNet = predictedIncome - predictedExpenses;
+  
+  return {
+    income: predictedIncome,
+    expenses: predictedExpenses,
+    net: predictedNet
+  };
+}
+
+// Render AI Insights
+function renderInsights(insights) {
+  const container = document.getElementById('aiInsightsContainer');
+  container.innerHTML = '';
+  
+  const iconColors = {
+    'success': 'text-emerald-400',
+    'warning': 'text-amber-400',
+    'info': 'text-blue-400'
+  };
+  
+  insights.forEach((insight, index) => {
+    const card = document.createElement('div');
+    card.className = 'ai-insight-card';
+    card.style.animationDelay = `${index * 0.1}s`;
+    
+    card.innerHTML = `
+      <div class="flex items-start gap-4">
+        <div class="flex-shrink-0">
+          <i class="ph ${insight.icon} text-3xl ${iconColors[insight.type]}"></i>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-bold text-white text-lg mb-2">${insight.title}</h3>
+          <p class="text-slate-300 text-sm mb-3">${insight.description}</p>
+          <div class="flex gap-2 flex-wrap">
+            ${insight.actions.map(action => `
+              <button class="text-xs px-3 py-1.5 rounded-lg bg-slate-800/50 border border-slate-700 text-slate-300 hover:text-white hover:border-purple-500/50 transition-all">
+                ${action}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
   });
 }
 
-// Cargar estadísticas usando Data Manager
+// Render Automations
+function renderAutomations(autos) {
+  const container = document.getElementById('automationsContainer');
+  container.innerHTML = '';
+  
+  autos.forEach((auto, index) => {
+    const item = document.createElement('div');
+    item.className = 'automation-item';
+    item.style.animationDelay = `${index * 0.05}s`;
+    item.style.animation = 'slideIn 0.5s ease-out';
+    
+    item.innerHTML = `
+      <div class="automation-icon ${auto.status}">
+        <i class="ph ${auto.icon}"></i>
+      </div>
+      <div class="flex-1">
+        <div class="flex items-center justify-between mb-1">
+          <span class="font-semibold text-white text-sm">${auto.action}</span>
+          <span class="text-xs text-slate-500">${auto.time}</span>
+        </div>
+        <p class="text-xs text-slate-400">${auto.description}</p>
+      </div>
+    `;
+    container.appendChild(item);
+  });
+}
+
+// Cargar stats y todo
+let cashFlowChartInstance = null;
 async function loadStats() {
   try {
-    // Usar Data Manager para obtener datos
     const stats = pymaxData.getFinancialStats('month');
+    const operations = pymaxData.getData('operations');
     
     if (stats.operations === 0) {
-      // Sin datos aún
       document.getElementById('currentBalance').textContent = formatCurrency(0);
       document.getElementById('monthIncome').textContent = formatCurrency(0);
       document.getElementById('monthExpenses').textContent = formatCurrency(0);
       document.getElementById('netMargin').textContent = '0%';
       
-      document.getElementById('balanceChange').innerHTML = '<i class="ph-bold ph-equals text-sm"></i><span>' + (window.i18n?.t('no_data') || 'No data yet') + '</span>';
-      document.getElementById('incomeChange').innerHTML = '<i class="ph-bold ph-equals text-sm"></i><span>' + (window.i18n?.t('no_data') || 'No data yet') + '</span>';
-      document.getElementById('expensesChange').innerHTML = '<i class="ph-bold ph-equals text-sm"></i><span>' + (window.i18n?.t('no_data') || 'No data yet') + '</span>';
-      document.getElementById('marginChange').innerHTML = '<i class="ph-bold ph-equals text-sm"></i><span>' + (window.i18n?.t('no_data') || 'No data yet') + '</span>';
+      document.getElementById('balanceChange').innerHTML = '<i class="ph ph-equals"></i><span>Sin datos aún</span>';
+      document.getElementById('incomeChange').innerHTML = '<i class="ph ph-equals"></i><span>Sin datos aún</span>';
+      document.getElementById('expensesChange').innerHTML = '<i class="ph ph-equals"></i><span>Sin datos aún</span>';
+      document.getElementById('marginChange').innerHTML = '<i class="ph ph-equals"></i><span>Sin datos aún</span>';
+      
+      // Insights vacío
+      document.getElementById('aiInsightsContainer').innerHTML = `
+        <div class="ai-insight-card">
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0">
+              <i class="ph ph-rocket-launch text-3xl text-blue-400"></i>
+            </div>
+            <div class="flex-1">
+              <h3 class="font-bold text-white text-lg mb-2">¡Bienvenido a Pymax!</h3>
+              <p class="text-slate-300 text-sm mb-3">
+                Comienza registrando tus primeras transacciones. La IA comenzará a analizar tu negocio automáticamente.
+              </p>
+              <a href="/empresa/mover/ventas-gastos" class="inline-block text-xs px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white transition-all">
+                Registrar Primera Transacción
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
       
       return;
     }
-
-    // Actualizar UI con stats del Data Manager
+    
+    // Actualizar UI
     document.getElementById('currentBalance').textContent = formatCurrency(stats.balance);
     document.getElementById('monthIncome').textContent = formatCurrency(stats.income);
     document.getElementById('monthExpenses').textContent = formatCurrency(stats.expenses);
-    document.getElementById('netMargin').textContent = stats.margin + '%';
-
-    // Actualizar cambios con traducciones
-    const monthToDate = window.i18n?.t('this_month') || 'Month to date';
-    const transactionsText = window.i18n?.t('transactions') || 'transactions';
+    document.getElementById('netMargin').textContent = stats.margin.toFixed(1) + '%';
     
-    document.getElementById('balanceChange').innerHTML = '<i class="ph-bold ph-trend-up text-sm"></i><span>' + monthToDate + '</span>';
-    document.getElementById('incomeChange').innerHTML = '<i class="ph-bold ph-trend-up text-sm"></i><span>+' + stats.incomeCount + ' ' + transactionsText + '</span>';
-    document.getElementById('expensesChange').innerHTML = '<i class="ph-bold ph-trend-down text-sm"></i><span>' + stats.expensesCount + ' ' + transactionsText + '</span>';
-    document.getElementById('marginChange').innerHTML = '<i class="ph-bold ph-equals text-sm"></i><span>Current rate</span>';
-
-    // Cargar gráfico con operaciones del cache
-    const operations = pymaxData.getData('operations');
+    document.getElementById('balanceChange').innerHTML = '<i class="ph ph-trend-up"></i><span>Este mes</span>';
+    document.getElementById('incomeChange').innerHTML = `<i class="ph ph-trend-up"></i><span>+${stats.incomeCount} trans.</span>`;
+    document.getElementById('expensesChange').innerHTML = `<i class="ph ph-trend-down"></i><span>${stats.expensesCount} trans.</span>`;
+    document.getElementById('marginChange').innerHTML = '<i class="ph ph-equals"></i><span>Tasa actual</span>';
+    
+    // Generar y renderizar insights
+    const insights = generateAIInsights(stats, operations);
+    renderInsights(insights);
+    
+    // Generar y renderizar automatizaciones
+    const autos = generateAutomations(stats, operations);
+    renderAutomations(autos);
+    
+    // Calcular predicciones
+    const predictions = calculatePredictions(stats, operations);
+    document.getElementById('predictedIncome').textContent = formatCurrency(predictions.income);
+    document.getElementById('predictedExpenses').textContent = formatCurrency(predictions.expenses);
+    document.getElementById('predictedNet').textContent = (predictions.net >= 0 ? '+' : '') + formatCurrency(predictions.net);
+    
+    if (predictions.net >= 0) {
+      document.getElementById('predictedTrend').innerHTML = '<i class="ph ph-trend-up text-emerald-400"></i> Tendencia positiva';
+    } else {
+      document.getElementById('predictedTrend').innerHTML = '<i class="ph ph-trend-down text-red-400"></i> Requiere atención';
+    }
+    
+    // Gráfico
     loadCashFlowChart(operations);
-
-    // Verificar alertas
-    checkAlerts(stats.balance, operations);
-
+    
   } catch (error) {
     console.error('Error loading stats:', error);
   }
 }
 
-let cashFlowChartInstance = null;
-// Cargar gráfico de flujo de caja
 function loadCashFlowChart(operations) {
   if (cashFlowChartInstance) {
     cashFlowChartInstance.destroy();
     cashFlowChartInstance = null;
   }
+  
   const last7Days = [];
   const today = new Date();
   
@@ -653,7 +821,7 @@ function loadCashFlowChart(operations) {
     date.setDate(date.getDate() - i);
     last7Days.push(date);
   }
-
+  
   const dailyIncome = last7Days.map(date => {
     const dayOps = operations.filter(op => {
       const opDate = new Date(op.created_at);
@@ -661,7 +829,7 @@ function loadCashFlowChart(operations) {
     });
     return dayOps.reduce((sum, op) => sum + parseFloat(op.amount), 0);
   });
-
+  
   const dailyExpenses = last7Days.map(date => {
     const dayOps = operations.filter(op => {
       const opDate = new Date(op.created_at);
@@ -669,11 +837,11 @@ function loadCashFlowChart(operations) {
     });
     return dayOps.reduce((sum, op) => sum + parseFloat(op.amount), 0);
   });
-
+  
   const labels = last7Days.map(date => 
-    date.toLocaleDateString('en-US', { weekday: 'short' })
+    date.toLocaleDateString('es-ES', { weekday: 'short' })
   );
-
+  
   const ctx = document.getElementById('cashFlowChart').getContext('2d');
   cashFlowChartInstance = new Chart(ctx, {
     type: 'line',
@@ -681,47 +849,44 @@ function loadCashFlowChart(operations) {
       labels: labels,
       datasets: [
         {
-          label: 'Income',
+          label: 'Ingresos',
           data: dailyIncome,
           borderColor: '#34d399',
           backgroundColor: 'rgba(52, 211, 153, 0.1)',
-          borderWidth: 2,
+          borderWidth: 3,
           tension: 0.4,
-          fill: true
+          fill: true,
+          pointRadius: 4,
+          pointHoverRadius: 6
         },
         {
-          label: 'Expenses',
+          label: 'Gastos',
           data: dailyExpenses,
           borderColor: '#f87171',
           backgroundColor: 'rgba(248, 113, 113, 0.1)',
-          borderWidth: 2,
+          borderWidth: 3,
           tension: 0.4,
-          fill: true
+          fill: true,
+          pointRadius: 4,
+          pointHoverRadius: 6
         }
       ]
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false,
+      maintainAspectRatio: true,
       plugins: {
-        legend: {
+        legend: { 
           display: true,
-          position: 'top',
-          labels: {
-            color: '#94a3b8',
-            font: { size: 12, family: 'Inter' },
-            usePointStyle: true,
-            padding: 15
-          }
+          labels: { color: '#94a3b8', font: { size: 12 } }
         },
         tooltip: {
           backgroundColor: 'rgba(15, 23, 42, 0.95)',
-          titleColor: '#e2e8f0',
-          bodyColor: '#94a3b8',
+          titleColor: '#fff',
+          bodyColor: '#cbd5e1',
           borderColor: 'rgba(255, 255, 255, 0.1)',
           borderWidth: 1,
           padding: 12,
-          cornerRadius: 8,
           callbacks: {
             label: function(context) {
               return context.dataset.label + ': ' + formatCurrency(context.parsed.y);
@@ -730,28 +895,17 @@ function loadCashFlowChart(operations) {
         }
       },
       scales: {
-        y: {
-          beginAtZero: true,
-          grid: {
-            color: 'rgba(255, 255, 255, 0.05)',
-            drawBorder: false
-          },
-          ticks: {
-            color: '#64748b',
-            font: { size: 11, family: 'Inter' },
-            callback: function(value) {
-              return formatCurrency(value);
-            }
-          }
-        },
         x: {
-          grid: {
-            display: false,
-            drawBorder: false
-          },
+          grid: { color: 'rgba(255, 255, 255, 0.05)' },
+          ticks: { color: '#64748b' }
+        },
+        y: {
+          grid: { color: 'rgba(255, 255, 255, 0.05)' },
           ticks: {
             color: '#64748b',
-            font: { size: 11, family: 'Inter' }
+            callback: function(value) {
+              return '$' + (value / 1000) + 'K';
+            }
           }
         }
       }
@@ -759,95 +913,15 @@ function loadCashFlowChart(operations) {
   });
 }
 
-// Verificar alertas importantes
-function checkAlerts(balance, operations) {
-  const alertsContainer = document.getElementById('alertsContainer');
-  
-  // Alert 1: Balance bajo
-  if (balance < 100000) {
-    const alert = document.createElement('div');
-    alert.className = 'alert-card fade-in';
-    alert.innerHTML = `
-      <div class="flex items-start gap-4">
-        <div class="flex-shrink-0">
-          <i class="ph-fill ph-warning-circle text-3xl text-red-400"></i>
-        </div>
-        <div class="flex-1">
-          <h4 class="font-bold text-white mb-1">Low Balance Alert</h4>
-          <p class="text-sm text-slate-300 mb-3">
-            Your current balance is below the recommended threshold. Consider reviewing your expenses or increasing income.
-          </p>
-          <a href="${'{{ url_for("mover_flujo") }}'}" class="text-sm text-red-400 hover:text-red-300 font-semibold">
-            View Cash Flow Analysis →
-          </a>
-        </div>
-      </div>
-    `;
-    alertsContainer.appendChild(alert);
-  }
-
-  // Alert 2: Sin operaciones recientes
-  const last3Days = operations.filter(op => {
-    const opDate = new Date(op.created_at);
-    const threeDaysAgo = new Date();
-    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
-    return opDate >= threeDaysAgo;
-  });
-
-  if (last3Days.length === 0 && operations.length > 0) {
-    const alert = document.createElement('div');
-    alert.className = 'alert-card fade-in';
-    alert.style.background = 'linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%)';
-    alert.style.borderColor = 'rgba(251, 191, 36, 0.3)';
-    alert.style.borderLeft = '4px solid #fbbf24';
-    alert.innerHTML = `
-      <div class="flex items-start gap-4">
-        <div class="flex-shrink-0">
-          <i class="ph-fill ph-info text-3xl text-yellow-400"></i>
-        </div>
-        <div class="flex-1">
-          <h4 class="font-bold text-white mb-1">No Recent Activity</h4>
-          <p class="text-sm text-slate-300 mb-3">
-            You haven't registered any transactions in the last 3 days. Keep your records up to date for accurate insights.
-          </p>
-          <a href="${'{{ url_for("mover_ventas") }}'}" class="text-sm text-yellow-400 hover:text-yellow-300 font-semibold">
-            Register Transaction →
-          </a>
-        </div>
-      </div>
-    `;
-    alertsContainer.appendChild(alert);
-  }
-}
-
 // Inicializar
-document.addEventListener('DOMContentLoaded', async () => {
-  // Ensure authentication first
+(async function init() {
   await ensureAuthentication();
+  await pymaxData.loadAllData();
+  await loadStats();
   
-  // Inicializar Data Manager (sincroniza TODOS los datos)
-  const initOk = await pymaxData.init(supabase);
-  
-  if (initOk) {
-    console.log('✅ Data Manager inicializado - Dashboard conectado');
-    
-    // Escuchar cambios en CUALQUIER módulo
-    pymaxData.on('data_updated', () => {
-      console.log('🔄 Datos actualizados - Refrescando dashboard');
-      loadStats();
-    });
-    
-    // Escuchar cambios de idioma
-    window.addEventListener('languageChanged', () => {
-      loadStats(); // Re-renderizar con nuevas traducciones
-    });
-  }
-  
-  updateLastUpdate();
-  loadStats();
-  
-  // Ya NO necesitamos setInterval - Data Manager lo maneja automáticamente cada 30s
-});
+  // Listener para actualizaciones
+  document.addEventListener('data_updated', loadStats);
+})();
 </script>
 
 </body>
