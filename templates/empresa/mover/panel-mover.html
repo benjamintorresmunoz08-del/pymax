@@ -638,8 +638,13 @@ async function loadStats() {
   }
 }
 
+let cashFlowChartInstance = null;
 // Cargar gráfico de flujo de caja
 function loadCashFlowChart(operations) {
+  if (cashFlowChartInstance) {
+    cashFlowChartInstance.destroy();
+    cashFlowChartInstance = null;
+  }
   const last7Days = [];
   const today = new Date();
   
@@ -670,7 +675,7 @@ function loadCashFlowChart(operations) {
   );
 
   const ctx = document.getElementById('cashFlowChart').getContext('2d');
-  new Chart(ctx, {
+  cashFlowChartInstance = new Chart(ctx, {
     type: 'line',
     data: {
       labels: labels,
