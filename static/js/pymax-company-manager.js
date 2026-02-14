@@ -33,8 +33,21 @@ class PymaxCompanyManager {
             const { data: membership, error: memberError } = await this.supabase
                 .from('company_members')
                 .select(`
-                    *,
-                    company:companies(*)
+                    id,
+                    company_id,
+                    user_id,
+                    role,
+                    joined_at,
+                    company:companies(
+                        id,
+                        name,
+                        rut,
+                        industry,
+                        employees,
+                        plan,
+                        max_users,
+                        created_at
+                    )
                 `)
                 .eq('user_id', user.id)
                 .maybeSingle();
@@ -126,7 +139,11 @@ class PymaxCompanyManager {
             const { data, error } = await this.supabase
                 .from('company_members')
                 .select(`
-                    *,
+                    id,
+                    company_id,
+                    user_id,
+                    role,
+                    joined_at,
                     user:auth.users(email)
                 `)
                 .eq('company_id', this.currentCompany.id)
