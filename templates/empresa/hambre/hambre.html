@@ -16,6 +16,7 @@
     <!-- PYMAX CORE SYSTEMS -->
     <script src="/static/js/pymax-performance.js"></script>
     <script src="/static/js/pymax-i18n.js"></script>
+    <script src="/static/js/pymax-company-manager.js"></script>
     <script src="/static/js/pymax-data-manager.js"></script>
     <script src="/static/js/pymax-real-auth.js"></script>
 
@@ -814,6 +815,48 @@
                 }
             });
         }
+
+        // Validar acceso al servicio
+        (async function validateAccess() {
+            try {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) {
+                    alert('Debes iniciar sesión');
+                    window.location.href = '/';
+                    return;
+                }
+
+                // Verificar empresa y plan
+                const { data: membership, error } = await client
+                    .from('company_members')
+                    .select(`
+                        *,
+                        company:companies(*)
+                    `)
+                    .eq('user_id', user.id)
+                    .single();
+
+                if (error || !membership) {
+                    alert('No tienes una empresa asignada');
+                    window.location.href = '/onboarding';
+                    return;
+                }
+
+                const company = membership.company;
+                
+                // Validar que tenga plan Hambre (el más completo)
+                if (company.plan !== 'hambre') {
+                    alert('Tu empresa no tiene acceso a Hambre de Poder.\n\nActualiza al plan completo para acceder.');
+                    window.location.href = '/empresa';
+                    return;
+                }
+
+                console.log('✅ Acceso autorizado a Hambre de Poder');
+            } catch (error) {
+                console.error('Error validando acceso:', error);
+                window.location.href = '/empresa';
+            }
+        })();
 
     </script>
 </body>

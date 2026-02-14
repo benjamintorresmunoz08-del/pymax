@@ -1294,6 +1294,15 @@ async function uploadToSupabase(transactions) {
     
     console.log('✅ Empresa:', companyResult.company.name);
     
+    // Verificar que el plan incluye Mover
+    const company = companyResult.company;
+    if (!company.plan || company.plan !== 'mover') {
+      console.warn('⚠️ Empresa no tiene Plan Mover activado');
+      alert('Tu empresa no tiene el Plan Mover activado. Contacta al administrador.');
+      window.location.href = '/empresa';
+      return;
+    }
+    
     // PASO 3: Inicializar Data Manager con supabase
     console.log('🔄 Inicializando Data Manager...');
     const initSuccess = await pymaxData.init(supabase);

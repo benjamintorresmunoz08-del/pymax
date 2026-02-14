@@ -381,9 +381,9 @@
 
                 console.log('✅ Empresa creada exitosamente');
 
-                // Redirigir al dashboard
+                // Redirigir al centro de comando
                 setTimeout(() => {
-                    window.location.href = '/empresa/mover';
+                    window.location.href = '/empresa';
                 }, 1000);
 
             } catch (error) {
@@ -398,7 +398,7 @@
             const result = await pymaxCompany.getCurrentCompany();
             if (result && result.company) {
                 console.log('✅ Usuario ya tiene empresa, redirigiendo...');
-                window.location.href = '/empresa/mover';
+                window.location.href = '/empresa';
             }
         })();
     </script>

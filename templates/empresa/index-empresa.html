@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   
   <style>
@@ -152,10 +153,10 @@
                       <p class="text-slate-400 text-sm mb-6">Control de flujo de caja, deudas y obligaciones.</p>
                       
                       <div class="flex flex-col gap-2">
-                          <a href="/empresa/mover" class="w-full px-4 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-bold transition flex items-center justify-center gap-2">
+                          <button onclick="accessService('mover')" class="w-full px-4 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-bold transition flex items-center justify-center gap-2">
                               <i class="ph ph-arrow-right"></i>
                               <span>Acceder</span>
-                          </a>
+                          </button>
                           <a href="/empresa/mover/demo" class="w-full px-4 py-2.5 rounded-lg border border-cyan-500/30 hover:border-cyan-500 hover:bg-cyan-500/10 text-cyan-400 text-sm font-medium transition flex items-center justify-center gap-2">
                               <i class="ph ph-sparkle"></i>
                               <span>Ver tu futuro con Pymax</span>
@@ -177,10 +178,10 @@
                       <p class="text-slate-400 text-sm mb-6">CRM de ventas, negociación y estrategia comercial.</p>
                       
                       <div class="flex flex-col gap-2">
-                          <a href="/empresa/tiburon" class="w-full px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition flex items-center justify-center gap-2">
+                          <button onclick="accessService('tiburon')" class="w-full px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition flex items-center justify-center gap-2">
                               <i class="ph ph-arrow-right"></i>
                               <span>Entrar</span>
-                          </a>
+                          </button>
                           <a href="/empresa/tiburon/demo" class="w-full px-4 py-2.5 rounded-lg border border-blue-500/30 hover:border-blue-500 hover:bg-blue-500/10 text-blue-400 text-sm font-medium transition flex items-center justify-center gap-2">
                               <i class="ph ph-sparkle"></i>
                               <span>Ver tu futuro con Pymax</span>
@@ -202,10 +203,10 @@
                       <p class="text-slate-400 text-sm mb-6">Operaciones críticas, logística y tareas diarias.</p>
                       
                       <div class="flex flex-col gap-2">
-                          <a href="/empresa/hambre" class="w-full px-4 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-bold transition flex items-center justify-center gap-2">
+                          <button onclick="accessService('hambre')" class="w-full px-4 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-bold transition flex items-center justify-center gap-2">
                               <i class="ph ph-arrow-right"></i>
                               <span>Operar</span>
-                          </a>
+                          </button>
                           <a href="/empresa/hambre/demo" class="w-full px-4 py-2.5 rounded-lg border border-red-500/30 hover:border-red-500 hover:bg-red-500/10 text-red-400 text-sm font-medium transition flex items-center justify-center gap-2">
                               <i class="ph ph-sparkle"></i>
                               <span>Ver tu futuro con Pymax</span>
@@ -449,6 +450,94 @@
             });
         }
     });
+
+    // ============================================================================
+    // VALIDACIÓN DE ACCESO A SERVICIOS
+    // ============================================================================
+
+    // Importar company manager y supabase
+    const SU_URL = '{{ SUPABASE_URL or "https://haqjuyagyvxynmulanhe.supabase.co" }}';
+    const SU_KEY = '{{ SUPABASE_KEY or "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g" }}';
+    const supabase = window.supabase.createClient(SU_URL, SU_KEY);
+
+    let currentCompany = null;
+
+    // Cargar empresa al inicio
+    (async function loadCompany() {
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                console.warn('No hay usuario autenticado');
+                window.location.href = '/';
+                return;
+            }
+
+            // Obtener empresa
+            const { data: membership, error } = await supabase
+                .from('company_members')
+                .select(`
+                    *,
+                    company:companies(*)
+                `)
+                .eq('user_id', user.id)
+                .single();
+
+            if (error || !membership) {
+                console.warn('Usuario sin empresa, redirigiendo a onboarding...');
+                window.location.href = '/onboarding';
+                return;
+            }
+
+            currentCompany = membership.company;
+            console.log('✅ Empresa cargada:', currentCompany.name);
+            console.log('📊 Plan actual:', currentCompany.plan);
+        } catch (error) {
+            console.error('Error cargando empresa:', error);
+        }
+    })();
+
+    // Función para acceder a servicios
+    window.accessService = function(service) {
+        if (!currentCompany) {
+            alert('Error: No se pudo cargar la información de tu empresa');
+            return;
+        }
+
+        const servicePlan = {
+            'mover': 'mover',
+            'tiburon': 'tiburon',
+            'hambre': 'hambre'
+        };
+
+        const serviceNames = {
+            'mover': 'Plan Mover',
+            'tiburon': 'Tiburón',
+            'hambre': 'Hambre de Poder'
+        };
+
+        // VALIDAR: ¿La empresa tiene este servicio?
+        // Por ahora todos empiezan con Mover
+        // Más adelante: validar que company.plan incluya el servicio solicitado
+        
+        if (service === 'mover') {
+            // Mover siempre disponible (es el plan base)
+            window.location.href = '/empresa/mover';
+        } else if (service === 'tiburon') {
+            // Validar que tenga plan tiburon
+            if (currentCompany.plan === 'tiburon' || currentCompany.plan === 'hambre') {
+                window.location.href = '/empresa/tiburon';
+            } else {
+                alert(`El servicio ${serviceNames[service]} no está incluido en tu plan actual.\n\nPara acceder, actualiza a un plan superior.`);
+            }
+        } else if (service === 'hambre') {
+            // Validar que tenga plan hambre (el más completo)
+            if (currentCompany.plan === 'hambre') {
+                window.location.href = '/empresa/hambre';
+            } else {
+                alert(`El servicio ${serviceNames[service]} no está incluido en tu plan actual.\n\nPara acceder, actualiza al Plan Hambre de Poder (plan completo).`);
+            }
+        }
+    };
 </script>
 <style>
 @keyframes slideIn {
