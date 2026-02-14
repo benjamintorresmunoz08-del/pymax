@@ -157,7 +157,10 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label>RUT de la Empresa</label>
-                                <input type="text" id="companyRut" placeholder="76.123.456-7">
+                                <input type="text" id="companyRut" placeholder="76.123.456-7" maxlength="12">
+                                <p class="text-xs text-slate-500 mt-1">
+                                    <i class="ph ph-info"></i> Opcional. Se valida el dígito verificador.
+                                </p>
                             </div>
                             <div>
                                 <label>N° de Empleados</label>
@@ -326,19 +329,67 @@
         // Configuración Supabase
         const SU_URL = '{{ SUPABASE_URL or "https://haqjuyagyvxynmulanhe.supabase.co" }}';
         const SU_KEY = '{{ SUPABASE_KEY or "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g" }}';
-        const supabase = window.supabase.createClient(SU_URL, SU_KEY);
+        const supabaseClient = window.supabase.createClient(SU_URL, SU_KEY);
 
         // Inicializar company manager
-        pymaxCompany.init(supabase);
+        pymaxCompany.init(supabaseClient);
 
         let currentStep = 1;
 
-        function nextStep(step) {
+        // ============================================================================
+        // FUNCIONES GLOBALES (para onclick)
+        // ============================================================================
+
+        // Función para validar RUT chileno
+        window.validateRUT = function(rut) {
+            if (!rut || rut.trim() === '') return true; // RUT opcional
+            
+            // Limpiar el RUT (quitar puntos y guión)
+            const cleanRut = rut.replace(/\./g, '').replace(/-/g, '').toUpperCase();
+            
+            // Validar formato básico
+            if (cleanRut.length < 2) return false;
+            
+            // Separar número y dígito verificador
+            const rutNumber = cleanRut.slice(0, -1);
+            const dv = cleanRut.slice(-1);
+            
+            // Validar que el número sea numérico
+            if (isNaN(rutNumber)) return false;
+            
+            // Calcular dígito verificador esperado
+            let sum = 0;
+            let multiplier = 2;
+            
+            for (let i = rutNumber.length - 1; i >= 0; i--) {
+                sum += parseInt(rutNumber[i]) * multiplier;
+                multiplier = multiplier === 7 ? 2 : multiplier + 1;
+            }
+            
+            const expectedDV = 11 - (sum % 11);
+            let calculatedDV;
+            
+            if (expectedDV === 11) calculatedDV = '0';
+            else if (expectedDV === 10) calculatedDV = 'K';
+            else calculatedDV = expectedDV.toString();
+            
+            return dv === calculatedDV;
+        };
+
+        window.nextStep = function(step) {
             // Validar paso actual
             if (step === 2) {
                 const name = document.getElementById('companyName').value.trim();
                 if (!name) {
-                    alert('Por favor ingresa el nombre de tu empresa');
+                    alert('⚠️ Por favor ingresa el nombre de tu empresa');
+                    return;
+                }
+                
+                // Validar RUT si fue ingresado
+                const rut = document.getElementById('companyRut').value.trim();
+                if (rut && !validateRUT(rut)) {
+                    alert('⚠️ El RUT ingresado no es válido. Verifica el dígito verificador.\n\nEjemplo: 76.123.456-7');
+                    document.getElementById('companyRut').focus();
                     return;
                 }
             }
@@ -354,13 +405,15 @@
             document.getElementById('progressBar').style.width = progress + '%';
             
             currentStep = step;
-        }
+            
+            console.log('✅ Avanzado a paso', step);
+        };
 
-        function prevStep(step) {
+        window.prevStep = function(step) {
             nextStep(step);
-        }
+        };
 
-        async function finishOnboarding() {
+        window.finishOnboarding = async function() {
             try {
                 // Mostrar loading
                 document.getElementById('loadingOverlay').classList.remove('hidden');
@@ -391,16 +444,57 @@
                 document.getElementById('loadingOverlay').classList.add('hidden');
                 alert('Error al crear la empresa: ' + error.message);
             }
-        }
+        };
 
-        // Verificar si ya tiene empresa
-        (async function checkExistingCompany() {
-            const result = await pymaxCompany.getCurrentCompany();
-            if (result && result.company) {
-                console.log('✅ Usuario ya tiene empresa, redirigiendo...');
-                window.location.href = '/empresa';
+        // ============================================================================
+        // INICIALIZACIÓN CUANDO EL DOM ESTÁ LISTO
+        // ============================================================================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Autoformatear RUT mientras se escribe
+            const rutInput = document.getElementById('companyRut');
+            if (rutInput) {
+                rutInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\./g, '').replace(/-/g, '');
+            let formatted = '';
+            
+            if (value.length > 1) {
+                const rut = value.slice(0, -1);
+                const dv = value.slice(-1);
+                
+                // Formatear con puntos
+                let counter = 0;
+                for (let i = rut.length - 1; i >= 0; i--) {
+                    formatted = rut[i] + formatted;
+                    counter++;
+                    if (counter === 3 && i > 0) {
+                        formatted = '.' + formatted;
+                        counter = 0;
+                    }
+                }
+                
+                formatted += '-' + dv;
+            } else {
+                formatted = value;
             }
-        })();
+            
+                    e.target.value = formatted;
+                });
+            }
+
+            // Verificar si ya tiene empresa
+            (async function checkExistingCompany() {
+                try {
+                    const result = await pymaxCompany.getCurrentCompany();
+                    if (result && result.company) {
+                        console.log('✅ Usuario ya tiene empresa, redirigiendo...');
+                        window.location.href = '/empresa';
+                    }
+                } catch (error) {
+                    console.log('ℹ️ Usuario sin empresa, continuando onboarding...');
+                }
+            })();
+        });
     </script>
 
 </body>
