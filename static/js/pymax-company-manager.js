@@ -25,10 +25,11 @@ class PymaxCompanyManager {
         try {
             const { data: { user } } = await this.supabase.auth.getUser();
             if (!user) {
-                throw new Error('Usuario no autenticado');
+                console.warn('⚠️ Usuario no autenticado');
+                return null;
             }
 
-            // Obtener membresía del usuario
+            // Obtener membresía del usuario (maybeSingle NO lanza error si no hay resultados)
             const { data: membership, error: memberError } = await this.supabase
                 .from('company_members')
                 .select(`
@@ -36,10 +37,17 @@ class PymaxCompanyManager {
                     company:companies(*)
                 `)
                 .eq('user_id', user.id)
-                .single();
+                .maybeSingle();
 
+            // Si hay error real (no simplemente "no hay datos")
             if (memberError) {
-                console.warn('Usuario no tiene empresa asignada');
+                console.error('❌ Error consultando membresía:', memberError);
+                return null;
+            }
+
+            // Si no tiene empresa (caso normal en onboarding)
+            if (!membership) {
+                console.log('ℹ️ Usuario sin empresa asignada (onboarding pendiente)');
                 return null;
             }
 
