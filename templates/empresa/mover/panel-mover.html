@@ -40,8 +40,8 @@
     .card-stat {
       background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.4) 100%);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 24px;
-      padding: 28px;
+      border-radius: 20px;
+      padding: 20px;
       position: relative;
       overflow: hidden;
       transition: all 0.3s ease;
@@ -297,41 +297,109 @@
     </p>
   </header>
 
-  <!-- HERO: IA CFO -->
+  <!-- HERO: IA CFO COMANDO CENTRAL -->
   <div class="hero-ia-cfo mb-10 fade-in d-2" style="background: linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(59, 130, 246, 0.1) 100%); border: 1px solid rgba(124, 58, 237, 0.3); border-radius: 24px; padding: 32px; position: relative; overflow: hidden;">
     <div style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.8), transparent);"></div>
     
-    <div class="flex items-start gap-4">
-      <div style="width: 64px; height: 64px; border-radius: 16px; background: linear-gradient(135deg, #4f46e5, #7c3aed); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 30px rgba(124, 58, 237, 0.4);">
-        <i class="ph-fill ph-brain text-3xl text-white"></i>
-      </div>
-      
-      <div class="flex-1">
-        <div class="flex items-center gap-2 mb-2">
-          <h2 class="text-2xl font-bold text-white font-display">AI CFO Assistant</h2>
-          <span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2);">
-            <span style="width: 6px; height: 6px; border-radius: 50%; background: #34d399; animation: pulse 2s infinite;"></span>
-            ACTIVE
-          </span>
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-3">
+        <div style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #4f46e5, #7c3aed); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);">
+          <i class="ph-fill ph-brain text-2xl text-white"></i>
         </div>
-        
-        <p class="text-slate-300 mb-4" id="aiGreeting">Good morning! Analyzing your business performance...</p>
+        <div>
+          <h2 class="text-xl font-bold text-white font-display">AI CFO ASSISTANT</h2>
+          <span style="font-size: 0.7rem; color: #64748b; font-weight: 600;">Financial Command Center</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2);">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: #34d399; animation: pulse 2s infinite;"></span>
+          ACTIVE
+        </span>
+        <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;" id="aiTime">--:--</span>
+      </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      
+      <!-- Score Section (Left) -->
+      <div id="scoreSection" style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 24px; text-align: center;">
+        <!-- Score content will be added in Part 2 -->
+        <div style="font-size: 0.7rem; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">HEALTH SCORE</div>
+        <div style="font-size: 3.5rem; font-weight: 800; line-height: 1; margin: 16px 0; background: linear-gradient(135deg, #fff 0%, #94a3b8 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">78</div>
+        <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin: 16px 0;">
+          <div style="width: 78%; height: 100%; background: linear-gradient(90deg, #10b981, #34d399); border-radius: 4px;"></div>
+        </div>
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2);">
+          <i class="ph-fill ph-check-circle"></i>
+          Healthy
+        </span>
+      </div>
+  
+      <!-- AI Voice Section (Center-Right) -->
+      <div class="md:col-span-2" style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 24px;">
+        <p class="text-slate-300 mb-4" id="aiVoiceMessage" style="font-size: 1rem; line-height: 1.6;">
+          <!-- AI Voice will be populated dynamically -->
+        </p>
         
         <div id="aiInsights" class="space-y-2 mb-4">
-          <!-- Se llena dinámicamente -->
+          <!-- Insights will be populated dynamically -->
         </div>
-        
-        <div class="flex gap-3">
-          <a href="{{ url_for('mover_ia') }}" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 12px; background: rgba(124, 58, 237, 0.2); border: 1px solid rgba(124, 58, 237, 0.4); color: #c4b5fd; font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: all 0.2s;">
-            <i class="ph-bold ph-chat-circle-dots"></i>
-            <span>Chat with AI</span>
-          </a>
-          <button onclick="refreshAIInsights()" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #94a3b8; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;">
-            <i class="ph-bold ph-arrows-clockwise"></i>
-            <span>Refresh</span>
-          </button>
+
+        <div id="aiBenchmark" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.05);">
+          <!-- Benchmark will be added -->
         </div>
       </div>
+    </div>
+
+    <!-- Quick Actions (Bottom) -->
+    <div id="quickActions" class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-3">
+      <a href="{{ url_for('mover_ventas') }}" class="quick-action-btn" style="background: rgba(52, 211, 153, 0.1); border: 1px solid rgba(52, 211, 153, 0.3); color: #34d399; padding: 16px 20px; border-radius: 12px; display: flex; align-items: center; gap: 12px; text-decoration: none; transition: all 0.2s; font-weight: 600;">
+        <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(52, 211, 153, 0.2); display: flex; align-items: center; justify-content: center;">
+          <i class="ph-bold ph-plus-circle" style="font-size: 20px;"></i>
+        </div>
+        <div style="flex: 1;">
+          <div style="font-size: 0.75rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.05em;">Quick Action</div>
+          <div style="font-size: 0.95rem;">Register Sale</div>
+        </div>
+        <i class="ph-bold ph-caret-right"></i>
+      </a>
+      
+      <a href="{{ url_for('mover_obligaciones') }}" class="quick-action-btn" style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); color: #fbbf24; padding: 16px 20px; border-radius: 12px; display: flex; align-items: center; gap: 12px; text-decoration: none; transition: all 0.2s; font-weight: 600;">
+        <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(251, 191, 36, 0.2); display: flex; align-items: center; justify-content: center;">
+          <i class="ph-bold ph-receipt" style="font-size: 20px;"></i>
+        </div>
+        <div style="flex: 1;">
+          <div style="font-size: 0.75rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.05em;">Quick Action</div>
+          <div style="font-size: 0.95rem;">Pay Bill</div>
+        </div>
+        <i class="ph-bold ph-caret-right"></i>
+      </a>
+      
+      <a href="{{ url_for('mover_flujo') }}" class="quick-action-btn" style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; padding: 16px 20px; border-radius: 12px; display: flex; align-items: center; gap: 12px; text-decoration: none; transition: all 0.2s; font-weight: 600;">
+        <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(59, 130, 246, 0.2); display: flex; align-items: center; justify-content: center;">
+          <i class="ph-bold ph-chart-line" style="font-size: 20px;"></i>
+        </div>
+        <div style="flex: 1;">
+          <div style="font-size: 0.75rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.05em;">Quick Action</div>
+          <div style="font-size: 0.95rem;">View Cash Flow</div>
+        </div>
+        <i class="ph-bold ph-caret-right"></i>
+      </a>
+    </div>
+
+    <!-- Footer Buttons -->
+    <div class="flex gap-3 mt-6">
+      <a href="{{ url_for('mover_ia') }}" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 12px; background: rgba(124, 58, 237, 0.2); border: 1px solid rgba(124, 58, 237, 0.4); color: #c4b5fd; font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: all 0.2s;">
+        <i class="ph-bold ph-chat-circle-dots"></i>
+        <span>Chat with AI</span>
+      </a>
+      <button onclick="refreshAIInsights()" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #94a3b8; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;">
+        <i class="ph-bold ph-arrows-clockwise"></i>
+        <span>Refresh</span>
+      </button>
     </div>
   </div>
 
@@ -415,22 +483,25 @@
 
   <!-- MÓDULOS PRINCIPALES -->
   <div class="mb-10">
-    <h2 class="text-xl font-bold text-white mb-6 font-display fade-in d-5" data-i18n="control_modules">Control Modules</h2>
+    <h2 class="text-xl font-bold text-white mb-6 font-display fade-in d-5">Essential Modules</h2>
     
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <!-- 6 Módulos Visibles -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
 
-      <div class="card-module type-finance fade-in d-5">
+      <!-- 1. AI Assistant (DESTACADO) -->
+      <div class="card-module type-ai fade-in d-5" style="border-color: rgba(124, 58, 237, 0.3);">
         <div>
-          <div class="icon-box"><i class="ph-duotone ph-currency-dollar"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">Income & Expenses</h3>
-          <p class="text-slate-400 text-sm">Daily cash flow management</p>
+          <div class="icon-box"><i class="ph-duotone ph-brain"></i></div>
+          <h3 class="text-lg font-bold text-white mb-1 font-display">AI Assistant</h3>
+          <p class="text-slate-300 text-sm">24/7 Intelligent Support</p>
         </div>
-        <a href="{{ url_for('mover_ventas') }}" class="btn-link">
-          <span>Open</span>
-          <i class="ph-bold ph-caret-right"></i>
+        <a href="{{ url_for('mover_ia') }}" class="btn-link btn-ai">
+          <span>Start Chat</span>
+          <i class="ph-bold ph-sparkle"></i>
         </a>
       </div>
 
+      <!-- 2. Cash Flow -->
       <div class="card-module type-finance fade-in d-5">
         <div>
           <div class="icon-box"><i class="ph-duotone ph-chart-line-up"></i></div>
@@ -443,30 +514,20 @@
         </a>
       </div>
 
-      <div class="card-module type-risk fade-in d-6">
+      <!-- 3. Income & Expenses -->
+      <div class="card-module type-finance fade-in d-5">
         <div>
-          <div class="icon-box"><i class="ph-duotone ph-gavel"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">Obligations</h3>
-          <p class="text-slate-400 text-sm">Debts and liabilities</p>
+          <div class="icon-box"><i class="ph-duotone ph-currency-dollar"></i></div>
+          <h3 class="text-lg font-bold text-white mb-1 font-display">Income & Expenses</h3>
+          <p class="text-slate-400 text-sm">Daily cash flow management</p>
         </div>
-        <a href="{{ url_for('mover_obligaciones') }}" class="btn-link">
-          <span>Manage</span>
-          <i class="ph-bold ph-warning-circle"></i>
+        <a href="{{ url_for('mover_ventas') }}" class="btn-link">
+          <span>Open</span>
+          <i class="ph-bold ph-caret-right"></i>
         </a>
       </div>
 
-      <div class="card-module type-system fade-in d-6">
-        <div>
-          <div class="icon-box"><i class="ph-duotone ph-calendar-check"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">Calendar</h3>
-          <p class="text-slate-400 text-sm">Important dates and deadlines</p>
-        </div>
-        <a href="{{ url_for('mover_calendario') }}" class="btn-link">
-          <span>View Schedule</span>
-          <i class="ph-bold ph-calendar"></i>
-        </a>
-      </div>
-
+      <!-- 4. Health Monitor -->
       <div class="card-module type-risk fade-in d-6">
         <div>
           <div class="icon-box"><i class="ph-duotone ph-traffic-signal"></i></div>
@@ -479,30 +540,20 @@
         </a>
       </div>
 
-      <div class="card-module type-ai fade-in d-6" style="border-color: rgba(124, 58, 237, 0.3);">
+      <!-- 5. Obligations -->
+      <div class="card-module type-risk fade-in d-6">
         <div>
-          <div class="icon-box"><i class="ph-duotone ph-brain"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">AI Assistant</h3>
-          <p class="text-slate-300 text-sm">24/7 Intelligent Support - Included</p>
+          <div class="icon-box"><i class="ph-duotone ph-gavel"></i></div>
+          <h3 class="text-lg font-bold text-white mb-1 font-display">Obligations</h3>
+          <p class="text-slate-400 text-sm">Debts and liabilities</p>
         </div>
-        <a href="{{ url_for('mover_ia') }}" class="btn-link btn-ai">
-          <span>Start Chat</span>
-          <i class="ph-bold ph-sparkle"></i>
+        <a href="{{ url_for('mover_obligaciones') }}" class="btn-link">
+          <span>Manage</span>
+          <i class="ph-bold ph-warning-circle"></i>
         </a>
       </div>
 
-      <div class="card-module type-growth fade-in d-6">
-        <div>
-          <div class="icon-box"><i class="ph-duotone ph-medal"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">Performance Level</h3>
-          <p class="text-slate-400 text-sm">Your financial discipline score</p>
-        </div>
-        <a href="{{ url_for('mover_progreso') }}" class="btn-link">
-          <span>View Level</span>
-          <i class="ph-bold ph-trophy"></i>
-        </a>
-      </div>
-
+      <!-- 6. Goals -->
       <div class="card-module type-growth fade-in d-6">
         <div>
           <div class="icon-box"><i class="ph-duotone ph-target"></i></div>
@@ -515,42 +566,88 @@
         </a>
       </div>
 
-      <div class="card-module type-system fade-in d-6">
-        <div>
-          <div class="icon-box"><i class="ph-duotone ph-scroll"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">General Ledger</h3>
-          <p class="text-slate-400 text-sm">Detailed expense audit</p>
-        </div>
-        <a href="{{ url_for('mover_auditoria') }}" class="btn-link">
-          <span>Review</span>
-          <i class="ph-bold ph-magnifying-glass"></i>
-        </a>
-      </div>
+    </div>
 
-      <div class="card-module type-system fade-in d-6">
-        <div>
-          <div class="icon-box"><i class="ph-duotone ph-file-csv"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">Export Data</h3>
-          <p class="text-slate-400 text-sm">Download your reports</p>
-        </div>
-        <a href="{{ url_for('mover_export_excel') }}" class="btn-link">
-          <span>Download</span>
-          <i class="ph-bold ph-download-simple"></i>
-        </a>
-      </div>
+    <!-- Botón More Tools -->
+    <div class="text-center fade-in d-6">
+      <button onclick="toggleMoreTools()" id="moreToolsBtn" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #94a3b8; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;">
+        <i class="ph-bold ph-plus-circle"></i>
+        <span>More Tools</span>
+        <i class="ph-bold ph-caret-down" id="moreToolsIcon"></i>
+      </button>
+    </div>
 
-      <div class="card-module type-growth fade-in d-7" style="border-color: rgba(52, 211, 153, 0.3);">
-        <div>
-          <div class="icon-box" style="background: rgba(52, 211, 153, 0.1); color: #34d399;"><i class="ph-duotone ph-package"></i></div>
-          <h3 class="text-lg font-bold text-white mb-1 font-display">Inventario</h3>
-          <p class="text-slate-400 text-sm">Gestión de stock y productos</p>
-        </div>
-        <a href="{{ url_for('mover_inventario') }}" class="btn-link" style="background: rgba(52, 211, 153, 0.1); color: #34d399;">
-          <span>Gestionar</span>
-          <i class="ph-bold ph-stack"></i>
-        </a>
-      </div>
+    <!-- 5 Herramientas Ocultas -->
+    <div id="moreToolsContainer" style="display: none; margin-top: 24px;">
+      <h3 class="text-lg font-bold text-white mb-4 font-display" style="color: #64748b;">Additional Tools</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
 
+        <!-- 7. Performance Level -->
+        <div class="card-module type-growth">
+          <div>
+            <div class="icon-box"><i class="ph-duotone ph-medal"></i></div>
+            <h3 class="text-base font-bold text-white mb-1 font-display">Performance</h3>
+            <p class="text-slate-400 text-xs">Discipline score</p>
+          </div>
+          <a href="{{ url_for('mover_progreso') }}" class="btn-link">
+            <span>View</span>
+            <i class="ph-bold ph-trophy"></i>
+          </a>
+        </div>
+
+        <!-- 8. Calendar -->
+        <div class="card-module type-system">
+          <div>
+            <div class="icon-box"><i class="ph-duotone ph-calendar-check"></i></div>
+            <h3 class="text-base font-bold text-white mb-1 font-display">Calendar</h3>
+            <p class="text-slate-400 text-xs">Dates & deadlines</p>
+          </div>
+          <a href="{{ url_for('mover_calendario') }}" class="btn-link">
+            <span>View</span>
+            <i class="ph-bold ph-calendar"></i>
+          </a>
+        </div>
+
+        <!-- 9. General Ledger -->
+        <div class="card-module type-system">
+          <div>
+            <div class="icon-box"><i class="ph-duotone ph-scroll"></i></div>
+            <h3 class="text-base font-bold text-white mb-1 font-display">Ledger</h3>
+            <p class="text-slate-400 text-xs">Expense audit</p>
+          </div>
+          <a href="{{ url_for('mover_auditoria') }}" class="btn-link">
+            <span>Review</span>
+            <i class="ph-bold ph-magnifying-glass"></i>
+          </a>
+        </div>
+
+        <!-- 10. Export Data -->
+        <div class="card-module type-system">
+          <div>
+            <div class="icon-box"><i class="ph-duotone ph-file-csv"></i></div>
+            <h3 class="text-base font-bold text-white mb-1 font-display">Export</h3>
+            <p class="text-slate-400 text-xs">Download reports</p>
+          </div>
+          <a href="{{ url_for('mover_export_excel') }}" class="btn-link">
+            <span>Download</span>
+            <i class="ph-bold ph-download-simple"></i>
+          </a>
+        </div>
+
+        <!-- 11. Inventario -->
+        <div class="card-module type-growth" style="border-color: rgba(52, 211, 153, 0.3);">
+          <div>
+            <div class="icon-box" style="background: rgba(52, 211, 153, 0.1); color: #34d399;"><i class="ph-duotone ph-package"></i></div>
+            <h3 class="text-base font-bold text-white mb-1 font-display">Inventory</h3>
+            <p class="text-slate-400 text-xs">Stock management</p>
+          </div>
+          <a href="{{ url_for('mover_inventario') }}" class="btn-link" style="background: rgba(52, 211, 153, 0.1); color: #34d399;">
+            <span>Manage</span>
+            <i class="ph-bold ph-stack"></i>
+          </a>
+        </div>
+
+      </div>
     </div>
   </div>
 
@@ -797,9 +894,12 @@ function loadCashFlowChart(operations) {
   });
 }
 
-// Verificar alertas importantes
+// Verificar alertas importantes (CORREGIDO - No duplicar)
 function checkAlerts(balance, operations) {
   const alertsContainer = document.getElementById('alertsContainer');
+  
+  // LIMPIAR alertas anteriores para evitar duplicados
+  alertsContainer.innerHTML = '';
   
   // Alert 1: Balance bajo
   if (balance < 100000) {
@@ -858,44 +958,150 @@ function checkAlerts(balance, operations) {
   }
 }
 
-// FUNCIÓN: Generar insights de IA
-function generateAIInsights(stats, operations) {
-  const insights = [];
-  const userName = DEMO_USER?.user_metadata?.full_name || 'there';
+// FUNCIÓN: Actualizar Score de Salud
+function updateHealthScore(stats, operations) {
+  // Calcular score basado en múltiples factores
+  let score = 50; // Base
   
-  // Saludo personalizado
-  const hour = new Date().getHours();
-  let greeting = 'Good morning';
-  if (hour >= 12 && hour < 18) greeting = 'Good afternoon';
-  if (hour >= 18) greeting = 'Good evening';
+  // Factor 1: Balance (30 puntos)
+  if (stats.balance > 1000000) score += 30;
+  else if (stats.balance > 500000) score += 20;
+  else if (stats.balance > 100000) score += 10;
+  else if (stats.balance > 0) score += 5;
   
-  document.getElementById('aiGreeting').textContent = `${greeting}, ${userName}! Here's your business overview:`;
+  // Factor 2: Margen (25 puntos)
+  if (stats.margin > 30) score += 25;
+  else if (stats.margin > 20) score += 20;
+  else if (stats.margin > 10) score += 15;
+  else if (stats.margin > 0) score += 10;
   
-  // Insight 1: Balance
-  if (stats.balance > 0) {
-    insights.push({
+  // Factor 3: Actividad reciente (15 puntos)
+  const last7Days = operations.filter(op => {
+    const opDate = new Date(op.created_at);
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    return opDate >= sevenDaysAgo;
+  });
+  if (last7Days.length > 10) score += 15;
+  else if (last7Days.length > 5) score += 10;
+  else if (last7Days.length > 0) score += 5;
+  
+  // Factor 4: Ratio ingreso/egreso (10 puntos)
+  if (stats.income > stats.expenses * 1.5) score += 10;
+  else if (stats.income > stats.expenses) score += 5;
+  
+  // Limitar score entre 0-100
+  score = Math.min(100, Math.max(0, score));
+  
+  // Determinar estado y color
+  let status, statusColor, statusIcon, barColor;
+  if (score >= 80) {
+    status = 'Excellent';
+    statusColor = '#34d399';
+    statusIcon = 'ph-check-circle';
+    barColor = 'linear-gradient(90deg, #10b981, #34d399)';
+  } else if (score >= 60) {
+    status = 'Healthy';
+    statusColor = '#34d399';
+    statusIcon = 'ph-check-circle';
+    barColor = 'linear-gradient(90deg, #10b981, #34d399)';
+  } else if (score >= 40) {
+    status = 'Fair';
+    statusColor = '#fbbf24';
+    statusIcon = 'ph-warning';
+    barColor = 'linear-gradient(90deg, #f59e0b, #fbbf24)';
+  } else {
+    status = 'Needs Attention';
+    statusColor = '#f87171';
+    statusIcon = 'ph-warning-circle';
+    barColor = 'linear-gradient(90deg, #ef4444, #f87171)';
+  }
+  
+  // Actualizar UI del score
+  const scoreSection = document.getElementById('scoreSection');
+  scoreSection.innerHTML = `
+    <div style="font-size: 0.7rem; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">HEALTH SCORE</div>
+    <div style="font-size: 3.5rem; font-weight: 800; line-height: 1; margin: 16px 0; background: linear-gradient(135deg, #fff 0%, #94a3b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${score}</div>
+    <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin: 16px 0;">
+      <div style="width: ${score}%; height: 100%; background: ${barColor}; border-radius: 4px; transition: width 0.5s ease;"></div>
+    </div>
+    <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: ${statusColor}15; color: ${statusColor}; border: 1px solid ${statusColor}30;">
+      <i class="ph-fill ${statusIcon}"></i>
+      ${status}
+    </span>
+  `;
+  
+  return score;
+}
+
+// FUNCIÓN: Generar AI Voice Message
+function generateAIVoiceMessage(stats, operations, score) {
+  const userName = DEMO_USER?.user_metadata?.full_name?.split(' ')[0] || 'there';
+  
+  let message = '';
+  
+  // Mensaje basado en score
+  if (score >= 80) {
+    message = `${userName}, your business is performing excellently! `;
+  } else if (score >= 60) {
+    message = `${userName}, your business is healthy. `;
+  } else if (score >= 40) {
+    message = `${userName}, your business needs some attention. `;
+  } else {
+    message = `${userName}, your business requires immediate action. `;
+  }
+  
+  // Agregar detalles específicos
+  if (stats.margin > 20) {
+    message += `Your profit margin of ${stats.margin}% is excellent. `;
+  } else if (stats.margin > 0) {
+    message += `Your profit margin of ${stats.margin}% could be improved. `;
+  }
+  
+  if (stats.balance < 100000) {
+    message += `However, your balance of ${formatCurrency(stats.balance)} is low and needs attention.`;
+  } else {
+    message += `Your balance of ${formatCurrency(stats.balance)} is solid.`;
+  }
+  
+  document.getElementById('aiVoiceMessage').textContent = message;
+}
+
+// FUNCIÓN: Generar AI Recommendations
+function generateAIRecommendations(stats, operations) {
+  const recommendations = [];
+  
+  // Recomendación 1: Balance
+  if (stats.balance < 100000) {
+    recommendations.push({
       icon: 'ph-wallet',
-      color: '#60a5fa',
-      text: `Current balance: ${formatCurrency(stats.balance)} ${stats.balance > 500000 ? '(Healthy)' : '(Monitor closely)'}`
+      color: '#f87171',
+      text: `Your balance is low. Consider increasing income or reducing expenses.`
+    });
+  } else if (stats.balance > 500000) {
+    recommendations.push({
+      icon: 'ph-wallet',
+      color: '#34d399',
+      text: `Great balance! Consider investing surplus for growth.`
     });
   }
   
-  // Insight 2: Margen
-  if (stats.margin > 20) {
-    insights.push({
+  // Recomendación 2: Margen
+  if (stats.margin < 15) {
+    recommendations.push({
+      icon: 'ph-trend-down',
+      color: '#fbbf24',
+      text: `Profit margin is ${stats.margin}%. Aim for at least 20% by reducing costs.`
+    });
+  } else {
+    recommendations.push({
       icon: 'ph-trend-up',
       color: '#34d399',
-      text: `Excellent profit margin of ${stats.margin}% this month`
-    });
-  } else if (stats.margin > 0) {
-    insights.push({
-      icon: 'ph-warning',
-      color: '#fbbf24',
-      text: `Profit margin is ${stats.margin}%. Consider reducing expenses.`
+      text: `Excellent ${stats.margin}% margin! Keep controlling expenses.`
     });
   }
   
-  // Insight 3: Actividad reciente
+  // Recomendación 3: Actividad
   const last3Days = operations.filter(op => {
     const opDate = new Date(op.created_at);
     const threeDaysAgo = new Date();
@@ -903,28 +1109,83 @@ function generateAIInsights(stats, operations) {
     return opDate >= threeDaysAgo;
   });
   
-  if (last3Days.length > 0) {
-    insights.push({
-      icon: 'ph-check-circle',
-      color: '#34d399',
-      text: `${last3Days.length} transactions recorded in the last 3 days`
-    });
-  } else if (operations.length > 0) {
-    insights.push({
+  if (last3Days.length === 0 && operations.length > 0) {
+    recommendations.push({
       icon: 'ph-info',
       color: '#fbbf24',
-      text: 'No recent activity. Update your records for accurate insights.'
+      text: `No activity in 3 days. Update your records for accurate insights.`
+    });
+  } else if (last3Days.length > 0) {
+    recommendations.push({
+      icon: 'ph-check-circle',
+      color: '#34d399',
+      text: `${last3Days.length} transactions in last 3 days. Good tracking!`
     });
   }
   
-  // Renderizar insights
+  return recommendations;
+}
+
+// FUNCIÓN: Generar Benchmark
+function generateBenchmark(stats) {
+  // Benchmark simulado (en producción vendría de API)
+  const industryAvgMargin = 25;
+  const difference = stats.margin - industryAvgMargin;
+  const percentDiff = industryAvgMargin > 0 ? Math.round((difference / industryAvgMargin) * 100) : 0;
+  
+  let icon, color, text;
+  if (difference > 0) {
+    icon = 'ph-trend-up';
+    color = '#34d399';
+    text = `Your margin (${stats.margin}%) vs Industry avg (${industryAvgMargin}%) → +${Math.abs(percentDiff)}% better 🎉`;
+  } else if (difference < 0) {
+    icon = 'ph-trend-down';
+    color = '#f87171';
+    text = `Your margin (${stats.margin}%) vs Industry avg (${industryAvgMargin}%) → ${percentDiff}% below`;
+  } else {
+    icon = 'ph-equals';
+    color = '#94a3b8';
+    text = `Your margin (${stats.margin}%) matches industry average (${industryAvgMargin}%)`;
+  }
+  
+  document.getElementById('aiBenchmark').innerHTML = `
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <i class="ph-fill ${icon}" style="font-size: 18px; color: ${color};"></i>
+      <span style="font-size: 0.85rem; color: #cbd5e1; font-weight: 600;">📊 Industry Benchmark:</span>
+      <span style="font-size: 0.85rem; color: ${color};">${text}</span>
+    </div>
+  `;
+}
+
+// FUNCIÓN: Generar insights de IA (ACTUALIZADA)
+function generateAIInsights(stats, operations) {
+  // 1. Actualizar Score
+  const score = updateHealthScore(stats, operations);
+  
+  // 2. Generar mensaje conversacional
+  generateAIVoiceMessage(stats, operations, score);
+  
+  // 3. Generar recomendaciones
+  const recommendations = generateAIRecommendations(stats, operations);
+  
+  // 4. Renderizar recomendaciones
   const container = document.getElementById('aiInsights');
-  container.innerHTML = insights.map(insight => `
+  container.innerHTML = recommendations.map(rec => `
     <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(255, 255, 255, 0.03); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05);">
-      <i class="ph-fill ${insight.icon}" style="font-size: 20px; color: ${insight.color};"></i>
-      <span style="color: #cbd5e1; font-size: 0.9rem;">${insight.text}</span>
+      <i class="ph-fill ${rec.icon}" style="font-size: 20px; color: ${rec.color};"></i>
+      <span style="color: #cbd5e1; font-size: 0.9rem;">${rec.text}</span>
     </div>
   `).join('');
+  
+  // 5. Generar benchmark
+  generateBenchmark(stats);
+  
+  // 6. Actualizar hora
+  const now = new Date();
+  document.getElementById('aiTime').textContent = now.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
 }
 
 // FUNCIÓN: Refrescar insights
@@ -978,6 +1239,38 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // Ya NO necesitamos setInterval - Data Manager lo maneja automáticamente cada 30s
 });
+
+// FUNCIÓN: Toggle More Tools
+function toggleMoreTools() {
+  const container = document.getElementById('moreToolsContainer');
+  const icon = document.getElementById('moreToolsIcon');
+  const btn = document.getElementById('moreToolsBtn');
+  
+  if (container.style.display === 'none') {
+    // Mostrar
+    container.style.display = 'block';
+    icon.className = 'ph-bold ph-caret-up';
+    btn.querySelector('span').textContent = 'Less Tools';
+    
+    // Animación de entrada
+    container.style.opacity = '0';
+    container.style.transform = 'translateY(-10px)';
+    setTimeout(() => {
+      container.style.transition = 'all 0.3s ease';
+      container.style.opacity = '1';
+      container.style.transform = 'translateY(0)';
+    }, 10);
+  } else {
+    // Ocultar
+    container.style.opacity = '0';
+    container.style.transform = 'translateY(-10px)';
+    setTimeout(() => {
+      container.style.display = 'none';
+      icon.className = 'ph-bold ph-caret-down';
+      btn.querySelector('span').textContent = 'More Tools';
+    }, 300);
+  }
+}
 
 // Animación de spin para el botón refresh
 const style = document.createElement('style');
