@@ -297,6 +297,44 @@
     </p>
   </header>
 
+  <!-- HERO: IA CFO -->
+  <div class="hero-ia-cfo mb-10 fade-in d-2" style="background: linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(59, 130, 246, 0.1) 100%); border: 1px solid rgba(124, 58, 237, 0.3); border-radius: 24px; padding: 32px; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.8), transparent);"></div>
+    
+    <div class="flex items-start gap-4">
+      <div style="width: 64px; height: 64px; border-radius: 16px; background: linear-gradient(135deg, #4f46e5, #7c3aed); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 30px rgba(124, 58, 237, 0.4);">
+        <i class="ph-fill ph-brain text-3xl text-white"></i>
+      </div>
+      
+      <div class="flex-1">
+        <div class="flex items-center gap-2 mb-2">
+          <h2 class="text-2xl font-bold text-white font-display">AI CFO Assistant</h2>
+          <span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2);">
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: #34d399; animation: pulse 2s infinite;"></span>
+            ACTIVE
+          </span>
+        </div>
+        
+        <p class="text-slate-300 mb-4" id="aiGreeting">Good morning! Analyzing your business performance...</p>
+        
+        <div id="aiInsights" class="space-y-2 mb-4">
+          <!-- Se llena dinámicamente -->
+        </div>
+        
+        <div class="flex gap-3">
+          <a href="{{ url_for('mover_ia') }}" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 12px; background: rgba(124, 58, 237, 0.2); border: 1px solid rgba(124, 58, 237, 0.4); color: #c4b5fd; font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: all 0.2s;">
+            <i class="ph-bold ph-chat-circle-dots"></i>
+            <span>Chat with AI</span>
+          </a>
+          <button onclick="refreshAIInsights()" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #94a3b8; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;">
+            <i class="ph-bold ph-arrows-clockwise"></i>
+            <span>Refresh</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ALERTAS IMPORTANTES -->
   <div id="alertsContainer" class="fade-in d-2">
     <!-- Se llenan dinámicamente -->
@@ -820,6 +858,88 @@ function checkAlerts(balance, operations) {
   }
 }
 
+// FUNCIÓN: Generar insights de IA
+function generateAIInsights(stats, operations) {
+  const insights = [];
+  const userName = DEMO_USER?.user_metadata?.full_name || 'there';
+  
+  // Saludo personalizado
+  const hour = new Date().getHours();
+  let greeting = 'Good morning';
+  if (hour >= 12 && hour < 18) greeting = 'Good afternoon';
+  if (hour >= 18) greeting = 'Good evening';
+  
+  document.getElementById('aiGreeting').textContent = `${greeting}, ${userName}! Here's your business overview:`;
+  
+  // Insight 1: Balance
+  if (stats.balance > 0) {
+    insights.push({
+      icon: 'ph-wallet',
+      color: '#60a5fa',
+      text: `Current balance: ${formatCurrency(stats.balance)} ${stats.balance > 500000 ? '(Healthy)' : '(Monitor closely)'}`
+    });
+  }
+  
+  // Insight 2: Margen
+  if (stats.margin > 20) {
+    insights.push({
+      icon: 'ph-trend-up',
+      color: '#34d399',
+      text: `Excellent profit margin of ${stats.margin}% this month`
+    });
+  } else if (stats.margin > 0) {
+    insights.push({
+      icon: 'ph-warning',
+      color: '#fbbf24',
+      text: `Profit margin is ${stats.margin}%. Consider reducing expenses.`
+    });
+  }
+  
+  // Insight 3: Actividad reciente
+  const last3Days = operations.filter(op => {
+    const opDate = new Date(op.created_at);
+    const threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+    return opDate >= threeDaysAgo;
+  });
+  
+  if (last3Days.length > 0) {
+    insights.push({
+      icon: 'ph-check-circle',
+      color: '#34d399',
+      text: `${last3Days.length} transactions recorded in the last 3 days`
+    });
+  } else if (operations.length > 0) {
+    insights.push({
+      icon: 'ph-info',
+      color: '#fbbf24',
+      text: 'No recent activity. Update your records for accurate insights.'
+    });
+  }
+  
+  // Renderizar insights
+  const container = document.getElementById('aiInsights');
+  container.innerHTML = insights.map(insight => `
+    <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(255, 255, 255, 0.03); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05);">
+      <i class="ph-fill ${insight.icon}" style="font-size: 20px; color: ${insight.color};"></i>
+      <span style="color: #cbd5e1; font-size: 0.9rem;">${insight.text}</span>
+    </div>
+  `).join('');
+}
+
+// FUNCIÓN: Refrescar insights
+function refreshAIInsights() {
+  const stats = pymaxData.getFinancialStats('month');
+  const operations = pymaxData.getData('operations');
+  generateAIInsights(stats, operations);
+  
+  // Animación de refresh
+  const btn = event.target.closest('button');
+  const icon = btn.querySelector('i');
+  icon.style.animation = 'spin 0.5s ease';
+  setTimeout(() => icon.style.animation = '', 500);
+}
+
 // Inicializar
 document.addEventListener('DOMContentLoaded', async () => {
   // Ensure authentication first
@@ -835,12 +955,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     pymaxData.on('data_updated', () => {
       console.log('🔄 Datos actualizados - Refrescando dashboard');
       loadStats();
+      
+      // Actualizar insights de IA
+      const stats = pymaxData.getFinancialStats('month');
+      const operations = pymaxData.getData('operations');
+      generateAIInsights(stats, operations);
     });
     
     // Escuchar cambios de idioma
     window.addEventListener('languageChanged', () => {
       loadStats(); // Re-renderizar con nuevas traducciones
     });
+    
+    // Generar insights iniciales
+    const stats = pymaxData.getFinancialStats('month');
+    const operations = pymaxData.getData('operations');
+    generateAIInsights(stats, operations);
   }
   
   updateLastUpdate();
@@ -848,6 +978,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // Ya NO necesitamos setInterval - Data Manager lo maneja automáticamente cada 30s
 });
+
+// Animación de spin para el botón refresh
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+`;
+document.head.appendChild(style);
 </script>
 
 </body>
