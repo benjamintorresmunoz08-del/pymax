@@ -1108,7 +1108,7 @@
         const userArea = document.getElementById('userArea');
         const heroActionBtn = document.getElementById('heroActionBtn'); 
         const nombre = profile?.full_name || user?.email?.split('@')[0] || 'Usuario';
-        const panelURL = role === 'empresa' ? '/empresa/mover' : '/personal/dashboard';
+        const panelURL = role === 'empresa' ? '/empresa' : '/personal';
         const panelNombre = role === 'empresa' ? 'Panel Empresarial' : 'Panel Personal';
 
         userArea.innerHTML = `
@@ -1203,9 +1203,9 @@
 
             // Redirigir según el rol
             if (role === 'empresa') {
-                window.location.href = '/empresa/mover';
+                window.location.href = '/empresa';
             } else {
-                window.location.href = '/personal/dashboard';
+                window.location.href = '/personal';
             }
 
         } catch (e) {
