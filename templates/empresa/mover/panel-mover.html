@@ -253,6 +253,180 @@
     .d-4 { animation-delay: 0.2s; }
     .d-5 { animation-delay: 0.25s; }
     .d-6 { animation-delay: 0.3s; }
+
+    /* DRAG & DROP ZONE */
+    .drag-drop-zone {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(124, 58, 237, 0.05) 100%);
+      border: 2px dashed rgba(59, 130, 246, 0.3);
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .drag-drop-zone::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), transparent);
+    }
+
+    .drag-drop-zone:hover {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+      border-color: rgba(59, 130, 246, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .drag-drop-zone.drag-over {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%);
+      border-color: rgba(59, 130, 246, 0.7);
+      border-style: solid;
+      transform: scale(1.02);
+    }
+
+    .drag-drop-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(124, 58, 237, 0.2));
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      color: #60a5fa;
+    }
+
+    .drag-drop-zone:hover .drag-drop-icon {
+      transform: scale(1.1);
+      transition: transform 0.3s ease;
+    }
+
+    .file-types {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .file-type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #60a5fa;
+    }
+
+    /* UPLOAD ANIMATIONS */
+    .file-preview-card {
+      animation: slideInUp 0.4s ease-out;
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .upload-progress {
+      position: relative;
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    .upload-progress-bar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    .upload-progress-bar.complete {
+      background: linear-gradient(90deg, #10b981, #34d399);
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: -1000px 0;
+      }
+      100% {
+        background-position: 1000px 0;
+      }
+    }
+
+    .uploading {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .uploading::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    .pulse-icon {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    .bounce-in {
+      animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    @keyframes bounceIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.3);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+      70% {
+        transform: scale(0.9);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
   </style>
 </head>
 
@@ -463,6 +637,49 @@
   <!-- ALERTAS IMPORTANTES -->
   <div id="alertsContainer" class="fade-in d-2">
     <!-- Se llenan dinámicamente -->
+  </div>
+
+  <!-- DRAG & DROP ZONE -->
+  <div class="mb-10 fade-in d-3">
+    <h2 class="text-xl font-bold text-white mb-6 font-display">Carga Rápida de Documentos</h2>
+    
+    <div class="drag-drop-zone" id="dragDropZone">
+      <input type="file" id="fileInput" multiple accept=".pdf,.xlsx,.xls,.csv,.jpg,.jpeg,.png" style="display: none;">
+      
+      <div class="drag-drop-icon">
+        <i class="ph-duotone ph-upload-simple"></i>
+      </div>
+      
+      <h3 class="text-xl font-bold text-white mb-2 font-display">Arrastra facturas, Excel, PDF aquí</h3>
+      <p class="text-slate-400 mb-4">o haz clic para seleccionar archivos</p>
+      
+      <div class="file-types">
+        <span class="file-type-badge">
+          <i class="ph-fill ph-file-pdf"></i>
+          PDF
+        </span>
+        <span class="file-type-badge">
+          <i class="ph-fill ph-file-xls"></i>
+          Excel
+        </span>
+        <span class="file-type-badge">
+          <i class="ph-fill ph-file-csv"></i>
+          CSV
+        </span>
+        <span class="file-type-badge">
+          <i class="ph-fill ph-image"></i>
+          Imágenes
+        </span>
+      </div>
+    </div>
+
+    <!-- Preview de archivos cargados -->
+    <div id="filesPreview" style="display: none; margin-top: 24px;">
+      <h3 class="text-lg font-bold text-white mb-4 font-display">Archivos Cargados</h3>
+      <div id="filesPreviewContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Se llenan dinámicamente -->
+      </div>
+    </div>
   </div>
 
   <!-- GRÁFICO DE FLUJO (7 días) -->
@@ -1281,6 +1498,196 @@ style.textContent = `
   }
 `;
 document.head.appendChild(style);
+
+// ============================================
+// DRAG & DROP FUNCTIONALITY
+// ============================================
+
+let uploadedFiles = [];
+
+// Inicializar Drag & Drop
+function initDragDrop() {
+  const dropZone = document.getElementById('dragDropZone');
+  const fileInput = document.getElementById('fileInput');
+  
+  // Click para abrir selector
+  dropZone.addEventListener('click', () => {
+    fileInput.click();
+  });
+  
+  // Prevenir comportamiento por defecto
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropZone.addEventListener(eventName, preventDefaults, false);
+    document.body.addEventListener(eventName, preventDefaults, false);
+  });
+  
+  // Highlight al arrastrar
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropZone.addEventListener(eventName, () => {
+      dropZone.classList.add('drag-over');
+    }, false);
+  });
+  
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropZone.addEventListener(eventName, () => {
+      dropZone.classList.remove('drag-over');
+    }, false);
+  });
+  
+  // Manejar drop
+  dropZone.addEventListener('drop', handleDrop, false);
+  
+  // Manejar selección de archivos
+  fileInput.addEventListener('change', (e) => {
+    handleFiles(e.target.files);
+  });
+}
+
+function preventDefaults(e) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+
+function handleDrop(e) {
+  const dt = e.dataTransfer;
+  const files = dt.files;
+  handleFiles(files);
+}
+
+function handleFiles(files) {
+  const validFiles = [...files].filter(file => validateFile(file));
+  
+  if (validFiles.length === 0) {
+    pymaxNotifications.show('No se seleccionaron archivos válidos', 'error');
+    return;
+  }
+  
+  // Agregar a la lista
+  uploadedFiles = [...uploadedFiles, ...validFiles];
+  
+  // Mostrar preview
+  displayFilesPreview();
+  
+  // Notificación
+  pymaxNotifications.show(`${validFiles.length} archivo(s) cargado(s) exitosamente`, 'success');
+  
+  // Simular upload (en producción iría a Supabase Storage)
+  uploadFilesToStorage(validFiles);
+}
+
+function validateFile(file) {
+  const validTypes = [
+    'application/pdf',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'text/csv',
+    'image/jpeg',
+    'image/jpg',
+    'image/png'
+  ];
+  
+  const maxSize = 10 * 1024 * 1024; // 10MB
+  
+  if (!validTypes.includes(file.type)) {
+    pymaxNotifications.show(`Tipo de archivo no válido: ${file.name}`, 'error');
+    return false;
+  }
+  
+  if (file.size > maxSize) {
+    pymaxNotifications.show(`Archivo muy grande: ${file.name} (máx 10MB)`, 'error');
+    return false;
+  }
+  
+  return true;
+}
+
+function displayFilesPreview() {
+  const previewSection = document.getElementById('filesPreview');
+  const container = document.getElementById('filesPreviewContainer');
+  
+  if (uploadedFiles.length === 0) {
+    previewSection.style.display = 'none';
+    return;
+  }
+  
+  previewSection.style.display = 'block';
+  
+  container.innerHTML = uploadedFiles.map((file, index) => {
+    const icon = getFileIcon(file.type);
+    const size = formatFileSize(file.size);
+    const color = getFileColor(file.type);
+    
+    return `
+      <div class="file-preview-card" style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 20px; position: relative;">
+        <button onclick="removeFile(${index})" style="position: absolute; top: 12px; right: 12px; width: 28px; height: 28px; border-radius: 8px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;">
+          <i class="ph-bold ph-x" style="font-size: 14px;"></i>
+        </button>
+        
+        <div style="width: 60px; height: 60px; margin: 0 auto 16px; border-radius: 12px; background: ${color}15; border: 1px solid ${color}30; display: flex; align-items: center; justify-content: center;">
+          <i class="${icon}" style="font-size: 28px; color: ${color};"></i>
+        </div>
+        
+        <h4 class="text-white font-semibold text-sm mb-1 truncate" title="${file.name}">${file.name}</h4>
+        <p class="text-slate-400 text-xs">${size}</p>
+        
+        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 0.7rem; color: #34d399;">
+            <i class="ph-fill ph-check-circle"></i>
+            <span>Cargado</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function getFileIcon(type) {
+  if (type.includes('pdf')) return 'ph-fill ph-file-pdf';
+  if (type.includes('excel') || type.includes('spreadsheet')) return 'ph-fill ph-file-xls';
+  if (type.includes('csv')) return 'ph-fill ph-file-csv';
+  if (type.includes('image')) return 'ph-fill ph-image';
+  return 'ph-fill ph-file';
+}
+
+function getFileColor(type) {
+  if (type.includes('pdf')) return '#ef4444';
+  if (type.includes('excel') || type.includes('spreadsheet')) return '#10b981';
+  if (type.includes('csv')) return '#3b82f6';
+  if (type.includes('image')) return '#8b5cf6';
+  return '#94a3b8';
+}
+
+function formatFileSize(bytes) {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+}
+
+function removeFile(index) {
+  uploadedFiles.splice(index, 1);
+  displayFilesPreview();
+  pymaxNotifications.show('Archivo eliminado', 'info');
+}
+
+async function uploadFilesToStorage(files) {
+  // En producción, aquí subirías a Supabase Storage
+  console.log('📤 Uploading files to Supabase Storage:', files);
+  
+  // Simulación de upload
+  for (const file of files) {
+    console.log(`✅ Uploaded: ${file.name}`);
+  }
+  
+  // Aquí podrías extraer datos de PDFs/Excel con IA
+  // y crear operaciones automáticamente
+}
+
+// Inicializar cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+  initDragDrop();
+});
 </script>
 
 </body>
