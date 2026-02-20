@@ -721,6 +721,107 @@
     <!-- Se llenan dinámicamente -->
   </div>
 
+  <!-- FASE 11: INDICADOR RUNWAY (DÍAS HASTA QUIEBRA) -->
+  <div class="mb-10 fade-in d-3">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      
+      <!-- Card Runway -->
+      <div style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 20px; padding: 32px; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.8), transparent);"></div>
+        
+        <div class="flex items-center gap-3 mb-6">
+          <div style="width: 56px; height: 56px; border-radius: 16px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); display: flex; align-items: center; justify-content: center;">
+            <i class="ph-duotone ph-hourglass" style="font-size: 28px; color: #f87171;"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-white font-display">Runway (Pista de Aterrizaje)</h3>
+            <p class="text-xs text-slate-400">Tiempo hasta balance = $0</p>
+          </div>
+        </div>
+
+        <div class="text-center mb-6">
+          <div id="runwayValue" style="font-size: 4rem; font-weight: 800; line-height: 1; margin: 16px 0; background: linear-gradient(135deg, #fff 0%, #f87171 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            --
+          </div>
+          <p id="runwayLabel" class="text-slate-300 text-sm">Calculando...</p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div style="width: 100%; height: 12px; background: rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden; margin-bottom: 16px;">
+          <div id="runwayProgressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #ef4444, #f87171); border-radius: 6px; transition: width 0.5s ease;"></div>
+        </div>
+
+        <!-- Burn Rate -->
+        <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 16px;">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs text-slate-400 font-semibold">BURN RATE (Gasto Neto Mensual)</span>
+            <i class="ph-fill ph-fire" style="color: #f87171; font-size: 16px;"></i>
+          </div>
+          <div id="burnRateValue" class="text-2xl font-bold text-white">-</div>
+          <p class="text-xs text-slate-400 mt-1">Promedio últimos 30 días</p>
+        </div>
+
+        <!-- Alerta -->
+        <div id="runwayAlert" style="margin-top: 16px; padding: 12px; border-radius: 12px; display: none;">
+          <div class="flex items-center gap-2">
+            <i class="ph-fill ph-warning-octagon" style="font-size: 18px;"></i>
+            <span class="text-sm font-semibold"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card Burn Rate Breakdown -->
+      <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 32px;">
+        <h3 class="text-lg font-bold text-white mb-4 font-display">Desglose de Burn Rate</h3>
+        
+        <div class="space-y-4">
+          <!-- Ingresos Promedio -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm text-slate-400">Ingresos Promedio/Mes</span>
+              <span id="avgIncome" class="text-sm font-bold text-emerald-400">-</span>
+            </div>
+            <div style="width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; overflow: hidden;">
+              <div id="avgIncomeBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #10b981, #34d399); border-radius: 3px; transition: width 0.5s ease;"></div>
+            </div>
+          </div>
+
+          <!-- Gastos Promedio -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm text-slate-400">Gastos Promedio/Mes</span>
+              <span id="avgExpenses" class="text-sm font-bold text-rose-400">-</span>
+            </div>
+            <div style="width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; overflow: hidden;">
+              <div id="avgExpensesBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #ef4444, #f87171); border-radius: 3px; transition: width 0.5s ease;"></div>
+            </div>
+          </div>
+
+          <!-- Balance Neto -->
+          <div style="padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-bold text-white">Balance Neto/Mes</span>
+              <span id="netBalance" class="text-sm font-bold">-</span>
+            </div>
+            <p class="text-xs text-slate-400">Ingresos - Gastos</p>
+          </div>
+        </div>
+
+        <!-- Proyección -->
+        <div style="margin-top: 24px; padding: 16px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px;">
+          <div class="flex items-start gap-3">
+            <i class="ph-fill ph-chart-line-up" style="font-size: 20px; color: #60a5fa; flex-shrink: 0; margin-top: 2px;"></i>
+            <div>
+              <h4 class="text-sm font-bold text-white mb-2">Proyección:</h4>
+              <p id="runwayProjection" class="text-sm text-slate-300">-</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- FASE 10: SEMÁFORO PYMAX VISUAL -->
   <div class="mb-10 fade-in d-3">
     <h2 class="text-xl font-bold text-white mb-6 font-display">Semáforo Pymax - Estado de Salud</h2>
@@ -2731,8 +2832,109 @@ document.addEventListener('DOMContentLoaded', () => {
   // Esperar a que Data Manager esté listo
   setTimeout(() => {
     updateTrafficLight();
+    updateRunwayIndicator();
   }, 1000);
 });
+
+// ============================================
+// FASE 11: INDICADOR RUNWAY - LÓGICA
+// ============================================
+
+function updateRunwayIndicator() {
+  const stats = pymaxData.getFinancialStats('month');
+  const operations = pymaxData.getData('operations');
+  
+  // Calcular burn rate y runway
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  
+  const recentOps = operations.filter(op => {
+    const opDate = new Date(op.created_at);
+    return opDate >= thirtyDaysAgo;
+  });
+  
+  const avgIncome = recentOps
+    .filter(op => op.type === 'ingreso')
+    .reduce((sum, op) => sum + parseFloat(op.amount), 0);
+  
+  const avgExpenses = recentOps
+    .filter(op => op.type === 'egreso')
+    .reduce((sum, op) => sum + parseFloat(op.amount), 0);
+  
+  const netBalance = avgIncome - avgExpenses;
+  const burnRate = Math.abs(netBalance);
+  
+  // Calcular runway
+  let runway = null;
+  let runwayMonths = 0;
+  
+  if (netBalance < 0 && burnRate > 0) {
+    runwayMonths = stats.balance / burnRate;
+    runway = runwayMonths;
+  }
+  
+  // Actualizar UI
+  const runwayValue = document.getElementById('runwayValue');
+  const runwayLabel = document.getElementById('runwayLabel');
+  const runwayProgressBar = document.getElementById('runwayProgressBar');
+  const burnRateValue = document.getElementById('burnRateValue');
+  const runwayAlert = document.getElementById('runwayAlert');
+  
+  if (runway === null || runway > 12) {
+    runwayValue.textContent = '∞';
+    runwayLabel.textContent = 'Balance positivo - Sin riesgo';
+    runwayProgressBar.style.width = '100%';
+    runwayProgressBar.style.background = 'linear-gradient(90deg, #10b981, #34d399)';
+    runwayAlert.style.display = 'none';
+  } else {
+    runwayValue.textContent = runwayMonths.toFixed(1);
+    runwayLabel.textContent = runwayMonths > 1 ? 'meses restantes' : 'mes restante';
+    
+    const progressPercent = Math.min(100, (runwayMonths / 12) * 100);
+    runwayProgressBar.style.width = progressPercent + '%';
+    
+    if (runwayMonths < 3) {
+      runwayProgressBar.style.background = 'linear-gradient(90deg, #ef4444, #f87171)';
+      runwayAlert.style.display = 'block';
+      runwayAlert.style.background = 'rgba(239, 68, 68, 0.15)';
+      runwayAlert.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+      runwayAlert.style.color = '#f87171';
+      runwayAlert.querySelector('span').textContent = '⚠️ CRÍTICO: Menos de 3 meses de runway';
+    } else if (runwayMonths < 6) {
+      runwayProgressBar.style.background = 'linear-gradient(90deg, #f59e0b, #fbbf24)';
+      runwayAlert.style.display = 'block';
+      runwayAlert.style.background = 'rgba(251, 191, 36, 0.15)';
+      runwayAlert.style.border = '1px solid rgba(251, 191, 36, 0.3)';
+      runwayAlert.style.color = '#fbbf24';
+      runwayAlert.querySelector('span').textContent = '⚠️ ALERTA: Menos de 6 meses de runway';
+    } else {
+      runwayProgressBar.style.background = 'linear-gradient(90deg, #ef4444, #f87171)';
+      runwayAlert.style.display = 'none';
+    }
+  }
+  
+  burnRateValue.textContent = formatCurrency(burnRate);
+  
+  // Actualizar desglose
+  document.getElementById('avgIncome').textContent = formatCurrency(avgIncome);
+  document.getElementById('avgExpenses').textContent = formatCurrency(avgExpenses);
+  document.getElementById('netBalance').textContent = formatCurrency(netBalance);
+  document.getElementById('netBalance').style.color = netBalance >= 0 ? '#34d399' : '#f87171';
+  
+  const maxAmount = Math.max(avgIncome, avgExpenses);
+  const incomePercent = maxAmount > 0 ? (avgIncome / maxAmount) * 100 : 0;
+  const expensesPercent = maxAmount > 0 ? (avgExpenses / maxAmount) * 100 : 0;
+  
+  document.getElementById('avgIncomeBar').style.width = incomePercent + '%';
+  document.getElementById('avgExpensesBar').style.width = expensesPercent + '%';
+  
+  // Proyección
+  const projection = runway !== null && runway < 12
+    ? `Al ritmo actual, tu balance llegará a $0 en ${runwayMonths.toFixed(1)} meses. ${netBalance < 0 ? 'Reduce gastos o aumenta ingresos urgentemente.' : ''}`
+    : 'Tu balance es positivo. Continúa monitoreando tus finanzas.';
+  
+  document.getElementById('runwayProjection').textContent = projection;
+}
 </script>
 
 </body>
