@@ -505,7 +505,7 @@
     </p>
   </header>
 
-  <!-- ESTADÍSTICAS PRINCIPALES (MOVIDAS ARRIBA) -->
+  <!-- ESTADÍSTICAS PRINCIPALES CON COMPARADOR (FASE 5) -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 fade-in d-2">
     
     <!-- Stat 1: Balance Actual -->
@@ -518,6 +518,15 @@
       <div class="stat-change positive" id="balanceChange">
         <i class="ph-bold ph-equals text-sm"></i>
         <span>0%</span>
+      </div>
+      <!-- Comparador vs mes pasado -->
+      <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.05);">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <span style="font-size: 0.7rem; color: #64748b;">vs Mes Pasado</span>
+          <span id="balanceComparison" style="font-size: 0.75rem; font-weight: 700;">
+            <i class="ph-bold ph-equals" style="font-size: 10px;"></i> 0%
+          </span>
+        </div>
       </div>
     </div>
 
@@ -532,6 +541,15 @@
         <i class="ph-bold ph-equals text-sm"></i>
         <span>0%</span>
       </div>
+      <!-- Comparador vs mes pasado -->
+      <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.05);">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <span style="font-size: 0.7rem; color: #64748b;">vs Mes Pasado</span>
+          <span id="incomeComparison" style="font-size: 0.75rem; font-weight: 700;">
+            <i class="ph-bold ph-equals" style="font-size: 10px;"></i> 0%
+          </span>
+        </div>
+      </div>
     </div>
 
     <!-- Stat 3: Gastos del Mes -->
@@ -545,6 +563,15 @@
         <i class="ph-bold ph-equals text-sm"></i>
         <span>0%</span>
       </div>
+      <!-- Comparador vs mes pasado -->
+      <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.05);">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <span style="font-size: 0.7rem; color: #64748b;">vs Mes Pasado</span>
+          <span id="expensesComparison" style="font-size: 0.75rem; font-weight: 700;">
+            <i class="ph-bold ph-equals" style="font-size: 10px;"></i> 0%
+          </span>
+        </div>
+      </div>
     </div>
 
     <!-- Stat 4: Margen Neto -->
@@ -557,6 +584,15 @@
       <div class="stat-change positive" id="marginChange">
         <i class="ph-bold ph-equals text-sm"></i>
         <span>0%</span>
+      </div>
+      <!-- Comparador vs mes pasado -->
+      <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.05);">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <span style="font-size: 0.7rem; color: #64748b;">vs Mes Pasado</span>
+          <span id="marginComparison" style="font-size: 0.75rem; font-weight: 700;">
+            <i class="ph-bold ph-equals" style="font-size: 10px;"></i> 0%
+          </span>
+        </div>
       </div>
     </div>
 
@@ -976,7 +1012,80 @@ function updateLastUpdate() {
   });
 }
 
-// Cargar estadísticas usando Data Manager
+// ============================================
+// FASE 5: COMPARADOR DE PERÍODOS
+// ============================================
+
+// Obtener stats del mes pasado
+function getPreviousMonthStats() {
+  const operations = pymaxData.getData('operations');
+  const now = new Date();
+  const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+  
+  const lastMonthOps = operations.filter(op => {
+    const opDate = new Date(op.created_at);
+    return opDate >= lastMonth && opDate <= lastMonthEnd;
+  });
+  
+  const income = lastMonthOps
+    .filter(op => op.type === 'ingreso')
+    .reduce((sum, op) => sum + parseFloat(op.amount), 0);
+  
+  const expenses = lastMonthOps
+    .filter(op => op.type === 'egreso')
+    .reduce((sum, op) => sum + parseFloat(op.amount), 0);
+  
+  const balance = income - expenses;
+  const margin = income > 0 ? Math.round(((income - expenses) / income) * 100) : 0;
+  
+  return { balance, income, expenses, margin };
+}
+
+// Actualizar comparadores
+function updateComparisons(currentStats, previousStats) {
+  // Balance
+  const balanceChange = calculateChange(currentStats.balance, previousStats.balance);
+  updateComparisonUI('balanceComparison', balanceChange);
+  
+  // Ingresos
+  const incomeChange = calculateChange(currentStats.income, previousStats.income);
+  updateComparisonUI('incomeComparison', incomeChange);
+  
+  // Gastos (invertido: menos gastos es mejor)
+  const expensesChange = calculateChange(currentStats.expenses, previousStats.expenses);
+  updateComparisonUI('expensesComparison', expensesChange, true);
+  
+  // Margen
+  const marginChange = currentStats.margin - previousStats.margin;
+  updateComparisonUI('marginComparison', marginChange);
+}
+
+// Actualizar UI del comparador
+function updateComparisonUI(elementId, change, invertColors = false) {
+  const element = document.getElementById(elementId);
+  if (!element) return;
+  
+  let icon, color;
+  
+  if (change > 0) {
+    icon = 'ph-arrow-up';
+    color = invertColors ? '#f87171' : '#34d399'; // Rojo si es gasto, verde si es ingreso
+  } else if (change < 0) {
+    icon = 'ph-arrow-down';
+    color = invertColors ? '#34d399' : '#f87171'; // Verde si es gasto, rojo si es ingreso
+  } else {
+    icon = 'ph-equals';
+    color = '#94a3b8';
+  }
+  
+  const absChange = Math.abs(change).toFixed(1);
+  const sign = change > 0 ? '+' : (change < 0 ? '-' : '');
+  
+  element.innerHTML = `<i class="ph-bold ${icon}" style="font-size: 10px; color: ${color};"></i> <span style="color: ${color};">${sign}${absChange}%</span>`;
+}
+
+// Cargar estadísticas usando Data Manager (ACTUALIZADO CON COMPARADOR)
 async function loadStats() {
   try {
     // Usar Data Manager para obtener datos
@@ -993,6 +1102,12 @@ async function loadStats() {
       document.getElementById('incomeChange').innerHTML = '<i class="ph-bold ph-equals text-sm"></i><span>Sin datos aún</span>';
       document.getElementById('expensesChange').innerHTML = '<i class="ph-bold ph-equals text-sm"></i><span>Sin datos aún</span>';
       document.getElementById('marginChange').innerHTML = '<i class="ph-bold ph-equals text-sm"></i><span>Sin datos aún</span>';
+      
+      // Comparadores en 0
+      updateComparisonUI('balanceComparison', 0);
+      updateComparisonUI('incomeComparison', 0);
+      updateComparisonUI('expensesComparison', 0, true);
+      updateComparisonUI('marginComparison', 0);
       
       return;
     }
@@ -1011,6 +1126,10 @@ async function loadStats() {
     document.getElementById('incomeChange').innerHTML = '<i class="ph-bold ph-trend-up text-sm"></i><span>+' + stats.incomeCount + ' ' + transactionsText + '</span>';
     document.getElementById('expensesChange').innerHTML = '<i class="ph-bold ph-trend-down text-sm"></i><span>' + stats.expensesCount + ' ' + transactionsText + '</span>';
     document.getElementById('marginChange').innerHTML = '<i class="ph-bold ph-equals text-sm"></i><span>Current rate</span>';
+
+    // FASE 5: Actualizar comparadores vs mes pasado
+    const previousStats = getPreviousMonthStats();
+    updateComparisons(stats, previousStats);
 
     // Cargar gráfico con operaciones del cache
     const operations = pymaxData.getData('operations');
