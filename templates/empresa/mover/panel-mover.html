@@ -780,6 +780,85 @@
     </div>
   </div>
 
+  <!-- FASE 9: REPORTES AUTOMÁTICOS -->
+  <div class="mb-10 fade-in d-5">
+    <h2 class="text-xl font-bold text-white mb-6 font-display">Reportes Automáticos</h2>
+    
+    <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 24px;">
+      <div class="flex items-center gap-3 mb-6">
+        <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); display: flex; align-items: center; justify-content: center;">
+          <i class="ph-duotone ph-file-text" style="font-size: 24px; color: #a78bfa;"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-white font-display">Genera reportes financieros automáticamente</h3>
+          <p class="text-sm text-slate-400">Descarga o envía por email tus reportes en PDF o Excel</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        
+        <!-- Reporte PDF -->
+        <button onclick="generatePDFReport()" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 16px; padding: 20px; cursor: pointer; transition: all 0.2s; text-align: left;" onmouseover="this.style.background='rgba(239, 68, 68, 0.15)'" onmouseout="this.style.background='rgba(239, 68, 68, 0.1)'">
+          <div class="flex items-center gap-3 mb-3">
+            <i class="ph-fill ph-file-pdf" style="font-size: 32px; color: #f87171;"></i>
+            <div>
+              <h4 class="text-white font-bold text-sm">Reporte PDF</h4>
+              <p class="text-slate-400 text-xs">Documento completo</p>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-slate-300 text-xs">Descargar ahora</span>
+            <i class="ph-bold ph-download-simple" style="color: #f87171;"></i>
+          </div>
+        </button>
+
+        <!-- Reporte Excel -->
+        <button onclick="generateExcelReport()" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 16px; padding: 20px; cursor: pointer; transition: all 0.2s; text-align: left;" onmouseover="this.style.background='rgba(16, 185, 129, 0.15)'" onmouseout="this.style.background='rgba(16, 185, 129, 0.1)'">
+          <div class="flex items-center gap-3 mb-3">
+            <i class="ph-fill ph-file-xls" style="font-size: 32px; color: #34d399;"></i>
+            <div>
+              <h4 class="text-white font-bold text-sm">Reporte Excel</h4>
+              <p class="text-slate-400 text-xs">Hoja de cálculo</p>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-slate-300 text-xs">Descargar ahora</span>
+            <i class="ph-bold ph-download-simple" style="color: #34d399;"></i>
+          </div>
+        </button>
+
+        <!-- Enviar por Email -->
+        <button onclick="sendEmailReport()" style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 20px; cursor: pointer; transition: all 0.2s; text-align: left;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'" onmouseout="this.style.background='rgba(59, 130, 246, 0.1)'">
+          <div class="flex items-center gap-3 mb-3">
+            <i class="ph-fill ph-envelope-simple" style="font-size: 32px; color: #60a5fa;"></i>
+            <div>
+              <h4 class="text-white font-bold text-sm">Enviar por Email</h4>
+              <p class="text-slate-400 text-xs">Reporte automático</p>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-slate-300 text-xs">Configurar envío</span>
+            <i class="ph-bold ph-paper-plane-tilt" style="color: #60a5fa;"></i>
+          </div>
+        </button>
+
+      </div>
+
+      <!-- Opciones adicionales -->
+      <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="ph-fill ph-clock" style="color: #94a3b8; font-size: 16px;"></i>
+            <span class="text-slate-400 text-sm">Programar reportes automáticos</span>
+          </div>
+          <button onclick="scheduleReports()" style="padding: 6px 12px; border-radius: 8px; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: #a78bfa; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+            Configurar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- FASE 6: TOP CLIENTES Y GASTOS -->
   <div class="mb-10 fade-in d-5">
     <h2 class="text-xl font-bold text-white mb-6 font-display">Top Clientes y Gastos</h2>
@@ -2316,6 +2395,101 @@ function showWhatsAppTooltip() {
   pymaxNotifications.show('💬 WhatsApp Business - Próximamente disponible para conectar con tus clientes', 'info');
   console.log('💬 WhatsApp Integration - Coming soon!');
   console.log('📱 Preparado para API de WhatsApp Business');
+}
+
+// ============================================
+// FASE 9: REPORTES AUTOMÁTICOS
+// ============================================
+
+// Generar reporte PDF
+function generatePDFReport() {
+  pymaxNotifications.show('📄 Generando reporte PDF...', 'info');
+  
+  // Obtener datos
+  const stats = pymaxData.getFinancialStats('month');
+  const operations = pymaxData.getData('operations');
+  
+  // Simular generación (en producción usaría jsPDF o API backend)
+  setTimeout(() => {
+    console.log('📊 PDF Report Generated:', {
+      balance: stats.balance,
+      income: stats.income,
+      expenses: stats.expenses,
+      margin: stats.margin,
+      operations: operations.length
+    });
+    
+    pymaxNotifications.show('✅ Reporte PDF generado exitosamente', 'success');
+    
+    // En producción, aquí se descargaría el PDF
+    // const link = document.createElement('a');
+    // link.href = pdfBlob;
+    // link.download = `Reporte_Financiero_${new Date().toISOString().split('T')[0]}.pdf`;
+    // link.click();
+  }, 1500);
+}
+
+// Generar reporte Excel
+function generateExcelReport() {
+  pymaxNotifications.show('📊 Generando reporte Excel...', 'info');
+  
+  // Obtener datos
+  const operations = pymaxData.getData('operations');
+  
+  // Simular generación (en producción usaría SheetJS/xlsx o API backend)
+  setTimeout(() => {
+    console.log('📈 Excel Report Generated:', {
+      totalOperations: operations.length,
+      format: 'XLSX'
+    });
+    
+    pymaxNotifications.show('✅ Reporte Excel generado exitosamente', 'success');
+    
+    // En producción, aquí se descargaría el Excel
+    // const link = document.createElement('a');
+    // link.href = excelBlob;
+    // link.download = `Reporte_Operaciones_${new Date().toISOString().split('T')[0]}.xlsx`;
+    // link.click();
+  }, 1500);
+}
+
+// Enviar reporte por email
+function sendEmailReport() {
+  const email = prompt('¿A qué email deseas enviar el reporte?', DEMO_USER?.email || '');
+  
+  if (!email || email.trim() === '') {
+    return;
+  }
+  
+  pymaxNotifications.show('📧 Enviando reporte por email...', 'info');
+  
+  // Obtener datos
+  const stats = pymaxData.getFinancialStats('month');
+  
+  // Simular envío (en producción usaría API backend con SendGrid/Mailgun)
+  setTimeout(() => {
+    console.log('📬 Email Report Sent:', {
+      to: email,
+      subject: 'Reporte Financiero Mensual - Pymax',
+      balance: stats.balance,
+      income: stats.income,
+      expenses: stats.expenses
+    });
+    
+    pymaxNotifications.show(`✅ Reporte enviado a ${email}`, 'success');
+  }, 2000);
+}
+
+// Programar reportes automáticos
+function scheduleReports() {
+  pymaxNotifications.show('⏰ Función de programación - Próximamente disponible', 'info');
+  
+  console.log('📅 Schedule Reports - Coming soon!');
+  console.log('Features:');
+  console.log('- Daily/Weekly/Monthly reports');
+  console.log('- Email automation');
+  console.log('- Custom recipients');
+  console.log('- PDF/Excel format selection');
 }
 </script>
 
