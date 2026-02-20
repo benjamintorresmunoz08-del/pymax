@@ -444,6 +444,18 @@
     </div>
     
     <div class="flex items-center gap-3">
+      <!-- FASE 7: Asistente de Voz -->
+      <button 
+        onclick="showVoiceAssistantTooltip()" 
+        style="width: 40px; height: 40px; border-radius: 12px; background: rgba(124, 58, 237, 0.15); border: 1px solid rgba(124, 58, 237, 0.3); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; position: relative;"
+        onmouseover="this.style.background='rgba(124, 58, 237, 0.25)'"
+        onmouseout="this.style.background='rgba(124, 58, 237, 0.15)'"
+        title="Asistente de Voz - Próximamente"
+      >
+        <i class="ph-duotone ph-microphone" style="font-size: 20px; color: #c4b5fd;"></i>
+        <span style="position: absolute; top: -4px; right: -4px; width: 12px; height: 12px; background: #fbbf24; border: 2px solid #020617; border-radius: 50%; animation: pulse 2s infinite;"></span>
+      </button>
+      
       <!-- Language Selector -->
       <select data-language-selector class="text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-white/20 transition cursor-pointer">
         <option value="es">ES</option>
@@ -2272,6 +2284,15 @@ function deleteTask(index) {
   renderTasks();
   
   pymaxNotifications.show('Tarea eliminada', 'info');
+}
+
+// ============================================
+// FASE 7: ASISTENTE DE VOZ
+// ============================================
+
+function showVoiceAssistantTooltip() {
+  pymaxNotifications.show('🎤 Asistente de Voz - Próximamente disponible', 'info');
+  console.log('🎤 Voice Assistant - Coming soon!');
 }
 </script>
 
