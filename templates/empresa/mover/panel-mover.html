@@ -768,6 +768,49 @@
     </div>
   </div>
 
+  <!-- FASE 6: TOP CLIENTES Y GASTOS -->
+  <div class="mb-10 fade-in d-5">
+    <h2 class="text-xl font-bold text-white mb-6 font-display">Top Clientes y Gastos</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      
+      <!-- Top 3 Clientes -->
+      <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 24px;">
+        <div class="flex items-center gap-3 mb-4">
+          <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(52, 211, 153, 0.15); border: 1px solid rgba(52, 211, 153, 0.3); display: flex; align-items: center; justify-content: center;">
+            <i class="ph-duotone ph-users-three" style="font-size: 20px; color: #34d399;"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-white font-display">Top 3 Clientes</h3>
+            <p class="text-xs text-slate-400">Por ingresos generados</p>
+          </div>
+        </div>
+        
+        <div id="topClientsContainer" class="space-y-3">
+          <!-- Se llena dinámicamente -->
+        </div>
+      </div>
+      
+      <!-- Top 3 Gastos -->
+      <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 24px;">
+        <div class="flex items-center gap-3 mb-4">
+          <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); display: flex; align-items: center; justify-content: center;">
+            <i class="ph-duotone ph-chart-pie-slice" style="font-size: 20px; color: #f87171;"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-white font-display">Top 3 Gastos</h3>
+            <p class="text-xs text-slate-400">Por categoría</p>
+          </div>
+        </div>
+        
+        <div id="topExpensesContainer" class="space-y-3">
+          <!-- Se llena dinámicamente -->
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
   <!-- MÓDULOS PRINCIPALES -->
   <div class="mb-10">
     <h2 class="text-xl font-bold text-white mb-6 font-display fade-in d-5">Módulos Esenciales</h2>
@@ -1965,7 +2008,110 @@ async function uploadFilesToStorage(files) {
 document.addEventListener('DOMContentLoaded', () => {
   initDragDrop();
   initGreetingAndTasks();
+  loadTopClientsAndExpenses();
 });
+
+// ============================================
+// FASE 6: TOP CLIENTES Y GASTOS
+// ============================================
+
+function loadTopClientsAndExpenses() {
+  const operations = pymaxData.getData('operations');
+  
+  // Top 3 Clientes (por ingresos)
+  const clientsMap = {};
+  operations
+    .filter(op => op.type === 'ingreso' && op.description)
+    .forEach(op => {
+      const client = op.description.trim();
+      if (!clientsMap[client]) {
+        clientsMap[client] = 0;
+      }
+      clientsMap[client] += parseFloat(op.amount);
+    });
+  
+  const topClients = Object.entries(clientsMap)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
+  
+  // Top 3 Gastos (por categoría)
+  const expensesMap = {};
+  operations
+    .filter(op => op.type === 'egreso' && op.description)
+    .forEach(op => {
+      const category = op.description.trim();
+      if (!expensesMap[category]) {
+        expensesMap[category] = 0;
+      }
+      expensesMap[category] += parseFloat(op.amount);
+    });
+  
+  const topExpenses = Object.entries(expensesMap)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
+  
+  // Calcular totales
+  const totalIncome = topClients.reduce((sum, [_, amount]) => sum + amount, 0);
+  const totalExpenses = topExpenses.reduce((sum, [_, amount]) => sum + amount, 0);
+  
+  // Renderizar Top Clientes
+  const clientsContainer = document.getElementById('topClientsContainer');
+  if (topClients.length === 0) {
+    clientsContainer.innerHTML = '<p class="text-slate-400 text-sm text-center py-4">No hay datos de clientes aún</p>';
+  } else {
+    clientsContainer.innerHTML = topClients.map(([client, amount], index) => {
+      const percentage = totalIncome > 0 ? ((amount / totalIncome) * 100).toFixed(1) : 0;
+      const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
+      
+      return `
+        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 16px;">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <span style="font-size: 1.2rem;">${medal}</span>
+              <span class="text-white font-semibold text-sm truncate" style="max-width: 150px;" title="${client}">${client}</span>
+            </div>
+            <span class="text-emerald-400 font-bold text-sm">${formatCurrency(amount)}</span>
+          </div>
+          <div style="width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; overflow: hidden;">
+            <div style="width: ${percentage}%; height: 100%; background: linear-gradient(90deg, #10b981, #34d399); border-radius: 3px; transition: width 0.5s ease;"></div>
+          </div>
+          <div class="flex items-center justify-between mt-2">
+            <span class="text-slate-400 text-xs">${percentage}% del total</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+  
+  // Renderizar Top Gastos
+  const expensesContainer = document.getElementById('topExpensesContainer');
+  if (topExpenses.length === 0) {
+    expensesContainer.innerHTML = '<p class="text-slate-400 text-sm text-center py-4">No hay datos de gastos aún</p>';
+  } else {
+    expensesContainer.innerHTML = topExpenses.map(([category, amount], index) => {
+      const percentage = totalExpenses > 0 ? ((amount / totalExpenses) * 100).toFixed(1) : 0;
+      const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
+      
+      return `
+        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 16px;">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <span style="font-size: 1.2rem;">${medal}</span>
+              <span class="text-white font-semibold text-sm truncate" style="max-width: 150px;" title="${category}">${category}</span>
+            </div>
+            <span class="text-rose-400 font-bold text-sm">${formatCurrency(amount)}</span>
+          </div>
+          <div style="width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; overflow: hidden;">
+            <div style="width: ${percentage}%; height: 100%; background: linear-gradient(90deg, #ef4444, #f87171); border-radius: 3px; transition: width 0.5s ease;"></div>
+          </div>
+          <div class="flex items-center justify-between mt-2">
+            <span class="text-slate-400 text-xs">${percentage}% del total</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+}
 
 // ============================================
 // SALUDO IA + TAREAS (FASE 3)
