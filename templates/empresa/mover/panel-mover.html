@@ -17,6 +17,28 @@
   <script src="/static/js/pymax-data-manager.js"></script>
   <script src="/static/js/pymax-notifications.js"></script>
   <link rel="stylesheet" href="/static/css/pymax-notifications.css">
+  
+  <!-- FASE 21: MINI-WIDGETS SYSTEM -->
+  <script src="/static/js/pymax-widgets.js"></script>
+  <link rel="stylesheet" href="/static/css/pymax-widgets.css">
+  
+  <!-- FASE 13: CALENDAR SYSTEM -->
+  <script src="/static/js/pymax-calendar.js"></script>
+  <link rel="stylesheet" href="/static/css/pymax-calendar.css">
+  
+  <!-- FASE 15: CHAT IA SYSTEM -->
+  <script src="/static/js/pymax-chat.js"></script>
+  <link rel="stylesheet" href="/static/css/pymax-chat.css">
+  
+  <!-- FASE 22: THEME SYSTEM -->
+  <script src="/static/js/pymax-theme.js"></script>
+  <link rel="stylesheet" href="/static/css/pymax-theme.css">
+  
+  <!-- FASE 23: MULTI-CURRENCY SYSTEM -->
+  <script src="/static/js/pymax-currency.js"></script>
+  
+  <!-- FASE 24: BACKUP & EXPORT SYSTEM -->
+  <script src="/static/js/pymax-backup.js"></script>
 
   <style>
     * { 
@@ -721,6 +743,11 @@
     <!-- Se llenan dinámicamente -->
   </div>
 
+  <!-- FASE 21: MINI-WIDGETS INFORMATIVOS -->
+  <div id="pymaxWidgetsContainer" class="pymax-widgets-container fade-in d-3">
+    <!-- Los widgets se cargan dinámicamente desde pymax-widgets.js -->
+  </div>
+
   <!-- FASE 11: INDICADOR RUNWAY (DÍAS HASTA QUIEBRA) -->
   <div class="mb-10 fade-in d-3">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -941,16 +968,47 @@
     </div>
   </div>
 
-  <!-- GRÁFICO DE FLUJO (7 días) -->
+  <!-- FASE 12: GRÁFICO DE FLUJO CON SELECTOR DE PERÍODO -->
   <div class="mb-10 fade-in d-4">
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
       <div>
         <h2 class="text-xl font-bold text-white font-display">Tendencia de Flujo de Caja</h2>
-        <p class="text-sm text-slate-400">Rendimiento de los últimos 7 días</p>
+        <p class="text-sm text-slate-400" id="chartPeriodLabel">Rendimiento de los últimos 7 días</p>
       </div>
-      <a href="{{ url_for('mover_flujo') }}" class="text-sm text-blue-400 hover:text-blue-300 transition font-semibold">
-        <span>Ver Análisis Completo</span> →
-      </a>
+      
+      <div class="flex items-center gap-3">
+        <!-- Selector de Período -->
+        <div style="display: flex; gap: 4px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 4px;">
+          <button 
+            onclick="changePeriod(7)" 
+            id="period-7" 
+            class="period-btn active"
+            style="padding: 6px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3);"
+          >
+            7 días
+          </button>
+          <button 
+            onclick="changePeriod(30)" 
+            id="period-30" 
+            class="period-btn"
+            style="padding: 6px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; background: transparent; color: #94a3b8; border: 1px solid transparent;"
+          >
+            30 días
+          </button>
+          <button 
+            onclick="changePeriod(90)" 
+            id="period-90" 
+            class="period-btn"
+            style="padding: 6px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; background: transparent; color: #94a3b8; border: 1px solid transparent;"
+          >
+            90 días
+          </button>
+        </div>
+        
+        <a href="{{ url_for('mover_flujo') }}" class="text-sm text-blue-400 hover:text-blue-300 transition font-semibold whitespace-nowrap">
+          <span>Ver Análisis Completo</span> →
+        </a>
+      </div>
     </div>
     <div class="chart-container">
       <canvas id="cashFlowChart"></canvas>
@@ -1093,10 +1151,10 @@
           <h3 class="text-lg font-bold text-white mb-1 font-display">Asistente IA</h3>
           <p class="text-slate-300 text-sm">Soporte inteligente 24/7</p>
         </div>
-        <a href="{{ url_for('mover_ia') }}" class="btn-link btn-ai">
+        <button onclick="pymaxChat.open()" class="btn-link btn-ai" style="cursor: pointer;">
           <span>Iniciar Chat</span>
           <i class="ph-bold ph-sparkle"></i>
-        </a>
+        </button>
       </div>
 
       <!-- 2. Cash Flow -->
@@ -1193,17 +1251,17 @@
           </a>
         </div>
 
-        <!-- 8. Calendar -->
+      <!-- 8. Calendar -->
         <div class="card-module type-system">
           <div>
             <div class="icon-box"><i class="ph-duotone ph-calendar-check"></i></div>
             <h3 class="text-base font-bold text-white mb-1 font-display">Calendario</h3>
             <p class="text-slate-400 text-xs">Fechas y plazos</p>
           </div>
-          <a href="{{ url_for('mover_calendario') }}" class="btn-link">
-            <span>Ver</span>
+          <button onclick="pymaxCalendar.open()" class="btn-link" style="cursor: pointer; background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); color: #60a5fa;">
+            <span>Abrir</span>
             <i class="ph-bold ph-calendar"></i>
-          </a>
+          </button>
         </div>
 
         <!-- 9. General Ledger -->
@@ -1223,13 +1281,13 @@
         <div class="card-module type-system">
           <div>
             <div class="icon-box"><i class="ph-duotone ph-file-csv"></i></div>
-            <h3 class="text-base font-bold text-white mb-1 font-display">Exportar</h3>
-            <p class="text-slate-400 text-xs">Descargar reportes</p>
+            <h3 class="text-base font-bold text-white mb-1 font-display">Backup & Export</h3>
+            <p class="text-slate-400 text-xs">Respaldo y exportación</p>
           </div>
-          <a href="{{ url_for('mover_export_excel') }}" class="btn-link">
-            <span>Descargar</span>
-            <i class="ph-bold ph-download-simple"></i>
-          </a>
+          <button onclick="pymaxBackup.showBackupModal()" class="btn-link" style="cursor: pointer; background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); color: #60a5fa;">
+            <span>Abrir</span>
+            <i class="ph-bold ph-database"></i>
+          </button>
         </div>
 
         <!-- 11. Inventario -->
@@ -1468,22 +1526,59 @@ async function loadStats() {
 }
 
 let cashFlowChartInstance = null;
-// Cargar gráfico de flujo de caja
-function loadCashFlowChart(operations) {
+let currentPeriod = 7; // Período actual (7, 30 o 90 días)
+
+// ============================================
+// FASE 12: GRÁFICO CON SELECTOR DE PERÍODO
+// ============================================
+
+// Cambiar período del gráfico
+function changePeriod(days) {
+  currentPeriod = days;
+  
+  // Actualizar botones
+  document.querySelectorAll('.period-btn').forEach(btn => {
+    btn.style.background = 'transparent';
+    btn.style.color = '#94a3b8';
+    btn.style.border = '1px solid transparent';
+  });
+  
+  const activeBtn = document.getElementById(`period-${days}`);
+  activeBtn.style.background = 'rgba(59, 130, 246, 0.2)';
+  activeBtn.style.color = '#60a5fa';
+  activeBtn.style.border = '1px solid rgba(59, 130, 246, 0.3)';
+  
+  // Actualizar label
+  const label = document.getElementById('chartPeriodLabel');
+  label.textContent = `Rendimiento de los últimos ${days} días`;
+  
+  // Recargar gráfico
+  const operations = pymaxData.getData('operations');
+  loadCashFlowChart(operations, days);
+  
+  // Notificación
+  pymaxNotifications.show(`Gráfico actualizado a ${days} días`, 'info');
+}
+
+// Cargar gráfico de flujo de caja con período dinámico
+function loadCashFlowChart(operations, days = 7) {
   if (cashFlowChartInstance) {
     cashFlowChartInstance.destroy();
     cashFlowChartInstance = null;
   }
-  const last7Days = [];
+  
+  const periodDays = [];
   const today = new Date();
   
-  for (let i = 6; i >= 0; i--) {
+  // Generar array de fechas según el período
+  for (let i = days - 1; i >= 0; i--) {
     const date = new Date(today);
     date.setDate(date.getDate() - i);
-    last7Days.push(date);
+    periodDays.push(date);
   }
 
-  const dailyIncome = last7Days.map(date => {
+  // Calcular ingresos y gastos por día
+  const dailyIncome = periodDays.map(date => {
     const dayOps = operations.filter(op => {
       const opDate = new Date(op.created_at);
       return opDate.toDateString() === date.toDateString() && op.type === 'ingreso';
@@ -1491,7 +1586,7 @@ function loadCashFlowChart(operations) {
     return dayOps.reduce((sum, op) => sum + parseFloat(op.amount), 0);
   });
 
-  const dailyExpenses = last7Days.map(date => {
+  const dailyExpenses = periodDays.map(date => {
     const dayOps = operations.filter(op => {
       const opDate = new Date(op.created_at);
       return opDate.toDateString() === date.toDateString() && op.type === 'egreso';
@@ -1499,9 +1594,30 @@ function loadCashFlowChart(operations) {
     return dayOps.reduce((sum, op) => sum + parseFloat(op.amount), 0);
   });
 
-  const labels = last7Days.map(date => 
-    date.toLocaleDateString('en-US', { weekday: 'short' })
-  );
+  // Generar labels según el período
+  let labels;
+  if (days === 7) {
+    // Para 7 días: Lun, Mar, Mié, etc.
+    labels = periodDays.map(date => 
+      date.toLocaleDateString('es-ES', { weekday: 'short' })
+    );
+  } else if (days === 30) {
+    // Para 30 días: 1, 5, 10, 15, 20, 25, 30
+    labels = periodDays.map((date, index) => {
+      if (index % 5 === 0 || index === days - 1) {
+        return date.getDate().toString();
+      }
+      return '';
+    });
+  } else {
+    // Para 90 días: Semana 1, Semana 2, etc.
+    labels = periodDays.map((date, index) => {
+      if (index % 7 === 0) {
+        return `S${Math.floor(index / 7) + 1}`;
+      }
+      return '';
+    });
+  }
 
   const ctx = document.getElementById('cashFlowChart').getContext('2d');
   cashFlowChartInstance = new Chart(ctx, {
@@ -1510,22 +1626,26 @@ function loadCashFlowChart(operations) {
       labels: labels,
       datasets: [
         {
-          label: 'Income',
+          label: 'Ingresos',
           data: dailyIncome,
           borderColor: '#34d399',
           backgroundColor: 'rgba(52, 211, 153, 0.1)',
-          borderWidth: 2,
+          borderWidth: days === 7 ? 2 : days === 30 ? 1.5 : 1,
           tension: 0.4,
-          fill: true
+          fill: true,
+          pointRadius: days === 7 ? 3 : days === 30 ? 2 : 0,
+          pointHoverRadius: days === 7 ? 5 : days === 30 ? 4 : 3
         },
         {
-          label: 'Expenses',
+          label: 'Gastos',
           data: dailyExpenses,
           borderColor: '#f87171',
           backgroundColor: 'rgba(248, 113, 113, 0.1)',
-          borderWidth: 2,
+          borderWidth: days === 7 ? 2 : days === 30 ? 1.5 : 1,
           tension: 0.4,
-          fill: true
+          fill: true,
+          pointRadius: days === 7 ? 3 : days === 30 ? 2 : 0,
+          pointHoverRadius: days === 7 ? 5 : days === 30 ? 4 : 3
         }
       ]
     },
@@ -1552,8 +1672,23 @@ function loadCashFlowChart(operations) {
           padding: 12,
           cornerRadius: 8,
           callbacks: {
+            title: function(context) {
+              const index = context[0].dataIndex;
+              const date = periodDays[index];
+              return date.toLocaleDateString('es-ES', { 
+                weekday: 'short', 
+                day: 'numeric', 
+                month: 'short' 
+              });
+            },
             label: function(context) {
               return context.dataset.label + ': ' + formatCurrency(context.parsed.y);
+            },
+            footer: function(context) {
+              const income = context[0].dataset.label === 'Ingresos' ? context[0].parsed.y : context[1].parsed.y;
+              const expenses = context[0].dataset.label === 'Gastos' ? context[0].parsed.y : context[1].parsed.y;
+              const balance = income - expenses;
+              return '\nBalance: ' + formatCurrency(balance);
             }
           }
         }
@@ -1580,9 +1715,15 @@ function loadCashFlowChart(operations) {
           },
           ticks: {
             color: '#64748b',
-            font: { size: 11, family: 'Inter' }
+            font: { size: 11, family: 'Inter' },
+            maxRotation: 0,
+            autoSkip: false
           }
         }
+      },
+      interaction: {
+        mode: 'index',
+        intersect: false
       }
     }
   });

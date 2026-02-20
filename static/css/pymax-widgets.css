@@ -1,0 +1,423 @@
+/* ============================================
+   FASE 21: MINI-WIDGETS INFORMATIVOS
+   Sistema de widgets modulares y reutilizables
+   ============================================ */
+
+/* Container principal de widgets */
+.pymax-widgets-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* Widget base */
+.pymax-widget {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  animation: widgetFadeIn 0.5s ease-out forwards;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+@keyframes widgetFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pymax-widget:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Widget header */
+.pymax-widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.pymax-widget-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pymax-widget-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.pymax-widget-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pymax-widget-action {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #94a3b8;
+}
+
+.pymax-widget-action:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  transform: scale(1.05);
+}
+
+/* Widget body */
+.pymax-widget-body {
+  margin-bottom: 12px;
+}
+
+.pymax-widget-value {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  margin: 8px 0;
+  font-family: 'Outfit', sans-serif;
+  background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.pymax-widget-subtitle {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* Widget footer */
+.pymax-widget-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pymax-widget-change {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.pymax-widget-change.positive {
+  background: rgba(16, 185, 129, 0.1);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.pymax-widget-change.negative {
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.pymax-widget-change.neutral {
+  background: rgba(148, 163, 184, 0.1);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.pymax-widget-timestamp {
+  font-size: 0.65rem;
+  color: #475569;
+  font-weight: 600;
+}
+
+/* Widget types - Colors */
+.pymax-widget.type-finance .pymax-widget-icon {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.pymax-widget.type-growth .pymax-widget-icon {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.pymax-widget.type-risk .pymax-widget-icon {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.pymax-widget.type-info .pymax-widget-icon {
+  background: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.pymax-widget.type-warning .pymax-widget-icon {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+/* Widget con gráfico mini */
+.pymax-widget-chart {
+  height: 60px;
+  margin-top: 12px;
+  position: relative;
+}
+
+.pymax-widget-chart canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Widget con lista */
+.pymax-widget-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.pymax-widget-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+
+.pymax-widget-list-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.pymax-widget-list-item-label {
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.pymax-widget-list-item-value {
+  color: #e2e8f0;
+  font-weight: 700;
+}
+
+/* Widget con progress bar */
+.pymax-widget-progress {
+  margin-top: 12px;
+}
+
+.pymax-widget-progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.pymax-widget-progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.pymax-widget-progress-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+}
+
+.pymax-widget-progress-label-left {
+  color: #64748b;
+  font-weight: 600;
+}
+
+.pymax-widget-progress-label-right {
+  color: #e2e8f0;
+  font-weight: 700;
+}
+
+/* Widget compacto */
+.pymax-widget.compact {
+  padding: 16px;
+}
+
+.pymax-widget.compact .pymax-widget-value {
+  font-size: 1.5rem;
+}
+
+.pymax-widget.compact .pymax-widget-icon {
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+}
+
+/* Widget expandido */
+.pymax-widget.expanded {
+  grid-column: span 2;
+}
+
+/* Widget con badge */
+.pymax-widget-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pymax-widget-badge.success {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.pymax-widget-badge.warning {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.pymax-widget-badge.danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.pymax-widget-badge.info {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+/* Widget con pulso (para alertas) */
+.pymax-widget.pulse {
+  animation: widgetPulse 2s ease-in-out infinite;
+}
+
+@keyframes widgetPulse {
+  0%, 100% {
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  50% {
+    border-color: rgba(239, 68, 68, 0.4);
+  }
+}
+
+/* Widget skeleton (loading) */
+.pymax-widget.loading {
+  pointer-events: none;
+}
+
+.pymax-widget.loading .pymax-widget-value,
+.pymax-widget.loading .pymax-widget-subtitle {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pymax-widgets-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .pymax-widget.expanded {
+    grid-column: span 1;
+  }
+  
+  .pymax-widget-value {
+    font-size: 1.75rem;
+  }
+}
+
+/* Animaciones de entrada escalonadas */
+.pymax-widget:nth-child(1) { animation-delay: 0.05s; }
+.pymax-widget:nth-child(2) { animation-delay: 0.1s; }
+.pymax-widget:nth-child(3) { animation-delay: 0.15s; }
+.pymax-widget:nth-child(4) { animation-delay: 0.2s; }
+.pymax-widget:nth-child(5) { animation-delay: 0.25s; }
+.pymax-widget:nth-child(6) { animation-delay: 0.3s; }
+.pymax-widget:nth-child(7) { animation-delay: 0.35s; }
+.pymax-widget:nth-child(8) { animation-delay: 0.4s; }
+
+/* Widget interactivo (clickeable) */
+.pymax-widget.interactive {
+  cursor: pointer;
+}
+
+.pymax-widget.interactive:active {
+  transform: translateY(-2px) scale(0.98);
+}
+
+/* Widget con notificación */
+.pymax-widget-notification {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 10px;
+  height: 10px;
+  background: #ef4444;
+  border: 2px solid #020617;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
