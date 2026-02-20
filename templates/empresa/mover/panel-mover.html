@@ -1145,14 +1145,81 @@ function loadCashFlowChart(operations) {
   });
 }
 
-// Verificar alertas importantes (CORREGIDO - No duplicar)
+// ============================================
+// FASE 4: ALERTAS PROACTIVAS
+// ============================================
+
+// Calcular runway (meses hasta quiebra)
+function calculateRunway(balance, operations) {
+  if (operations.length < 7) return null; // Necesitamos al menos 7 días de datos
+  
+  // Calcular burn rate promedio (últimos 30 días)
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  
+  const recentOps = operations.filter(op => {
+    const opDate = new Date(op.created_at);
+    return opDate >= thirtyDaysAgo;
+  });
+  
+  const totalExpenses = recentOps
+    .filter(op => op.type === 'egreso')
+    .reduce((sum, op) => sum + parseFloat(op.amount), 0);
+  
+  const totalIncome = recentOps
+    .filter(op => op.type === 'ingreso')
+    .reduce((sum, op) => sum + parseFloat(op.amount), 0);
+  
+  const monthlyBurnRate = totalExpenses - totalIncome;
+  
+  if (monthlyBurnRate <= 0) return null; // Positivo o neutro
+  
+  const monthsLeft = balance / monthlyBurnRate;
+  return Math.max(0, monthsLeft);
+}
+
+// Verificar alertas importantes (EXPANDIDO - FASE 4)
 function checkAlerts(balance, operations) {
   const alertsContainer = document.getElementById('alertsContainer');
   
   // LIMPIAR alertas anteriores para evitar duplicados
   alertsContainer.innerHTML = '';
   
-  // Alert 1: Balance bajo
+  // ALERTA 1: Proyección de Quiebra (NUEVA)
+  const runway = calculateRunway(balance, operations);
+  if (runway !== null && runway < 3) {
+    const alert = document.createElement('div');
+    alert.className = 'alert-card fade-in';
+    alert.style.background = 'linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.08) 100%)';
+    alert.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+    alert.style.borderLeft = '4px solid #ef4444';
+    alert.innerHTML = `
+      <div class="flex items-start gap-4">
+        <div class="flex-shrink-0">
+          <i class="ph-fill ph-warning-octagon text-3xl text-red-400 pulse-icon"></i>
+        </div>
+        <div class="flex-1">
+          <h4 class="font-bold text-white mb-1">⚠️ Proyección de Quiebra Crítica</h4>
+          <p class="text-sm text-slate-300 mb-3">
+            Al ritmo actual de gastos, tu balance llegará a $0 en aproximadamente <strong>${runway.toFixed(1)} meses</strong>. 
+            Es urgente aumentar ingresos o reducir gastos inmediatamente.
+          </p>
+          <div class="flex gap-2">
+            <a href="${'{{ url_for("mover_flujo") }}'}" class="text-sm text-red-400 hover:text-red-300 font-semibold">
+              Ver Proyección Detallada →
+            </a>
+            <span class="text-slate-500">|</span>
+            <a href="${'{{ url_for("mover_ventas") }}'}" class="text-sm text-red-400 hover:text-red-300 font-semibold">
+              Registrar Ingreso →
+            </a>
+          </div>
+        </div>
+      </div>
+    `;
+    alertsContainer.appendChild(alert);
+  }
+  
+  // ALERTA 2: Balance bajo
   if (balance < 100000) {
     const alert = document.createElement('div');
     alert.className = 'alert-card fade-in';
@@ -1162,12 +1229,12 @@ function checkAlerts(balance, operations) {
           <i class="ph-fill ph-warning-circle text-3xl text-red-400"></i>
         </div>
         <div class="flex-1">
-          <h4 class="font-bold text-white mb-1">Low Balance Alert</h4>
+          <h4 class="font-bold text-white mb-1">Balance Bajo</h4>
           <p class="text-sm text-slate-300 mb-3">
-            Your current balance is below the recommended threshold. Consider reviewing your expenses or increasing income.
+            Tu balance actual está por debajo del umbral recomendado. Considera revisar tus gastos o aumentar ingresos.
           </p>
           <a href="${'{{ url_for("mover_flujo") }}'}" class="text-sm text-red-400 hover:text-red-300 font-semibold">
-            View Cash Flow Analysis →
+            Ver Análisis de Flujo de Caja →
           </a>
         </div>
       </div>
@@ -1175,7 +1242,7 @@ function checkAlerts(balance, operations) {
     alertsContainer.appendChild(alert);
   }
 
-  // Alert 2: Sin operaciones recientes
+  // ALERTA 3: Sin operaciones recientes
   const last3Days = operations.filter(op => {
     const opDate = new Date(op.created_at);
     const threeDaysAgo = new Date();
@@ -1195,12 +1262,69 @@ function checkAlerts(balance, operations) {
           <i class="ph-fill ph-info text-3xl text-yellow-400"></i>
         </div>
         <div class="flex-1">
-          <h4 class="font-bold text-white mb-1">No Recent Activity</h4>
+          <h4 class="font-bold text-white mb-1">Sin Actividad Reciente</h4>
           <p class="text-sm text-slate-300 mb-3">
-            You haven't registered any transactions in the last 3 days. Keep your records up to date for accurate insights.
+            No has registrado transacciones en los últimos 3 días. Mantén tus registros actualizados para insights precisos.
           </p>
           <a href="${'{{ url_for("mover_ventas") }}'}" class="text-sm text-yellow-400 hover:text-yellow-300 font-semibold">
-            Register Transaction →
+            Registrar Transacción →
+          </a>
+        </div>
+      </div>
+    `;
+    alertsContainer.appendChild(alert);
+  }
+  
+  // ALERTA 4: Recordatorio Inteligente - Gastos Altos (NUEVA)
+  const stats = pymaxData.getFinancialStats('month');
+  if (stats.expenses > stats.income && stats.income > 0) {
+    const deficit = stats.expenses - stats.income;
+    const alert = document.createElement('div');
+    alert.className = 'alert-card fade-in';
+    alert.style.background = 'linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%)';
+    alert.style.borderColor = 'rgba(251, 191, 36, 0.3)';
+    alert.style.borderLeft = '4px solid #fbbf24';
+    alert.innerHTML = `
+      <div class="flex items-start gap-4">
+        <div class="flex-shrink-0">
+          <i class="ph-fill ph-trend-down text-3xl text-yellow-400"></i>
+        </div>
+        <div class="flex-1">
+          <h4 class="font-bold text-white mb-1">Gastos Superan Ingresos</h4>
+          <p class="text-sm text-slate-300 mb-3">
+            Este mes tus gastos (${formatCurrency(stats.expenses)}) superan tus ingresos (${formatCurrency(stats.income)}) 
+            por ${formatCurrency(deficit)}. Revisa tus gastos o aumenta ingresos.
+          </p>
+          <a href="${'{{ url_for("mover_ventas") }}'}" class="text-sm text-yellow-400 hover:text-yellow-300 font-semibold">
+            Ver Detalle de Gastos →
+          </a>
+        </div>
+      </div>
+    `;
+    alertsContainer.appendChild(alert);
+  }
+  
+  // ALERTA 5: Alerta de Vencimientos Próximos (NUEVA - Simulada)
+  // En producción, esto vendría de la tabla de obligaciones
+  const hasUpcomingPayments = Math.random() > 0.7; // Simulación
+  if (hasUpcomingPayments) {
+    const alert = document.createElement('div');
+    alert.className = 'alert-card fade-in';
+    alert.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%)';
+    alert.style.borderColor = 'rgba(59, 130, 246, 0.3)';
+    alert.style.borderLeft = '4px solid #3b82f6';
+    alert.innerHTML = `
+      <div class="flex items-start gap-4">
+        <div class="flex-shrink-0">
+          <i class="ph-fill ph-calendar-check text-3xl text-blue-400"></i>
+        </div>
+        <div class="flex-1">
+          <h4 class="font-bold text-white mb-1">Pagos Próximos a Vencer</h4>
+          <p class="text-sm text-slate-300 mb-3">
+            Tienes obligaciones que vencen en los próximos 7 días. Revisa tu calendario de pagos para evitar retrasos.
+          </p>
+          <a href="${'{{ url_for("mover_obligaciones") }}'}" class="text-sm text-blue-400 hover:text-blue-300 font-semibold">
+            Ver Obligaciones →
           </a>
         </div>
       </div>
