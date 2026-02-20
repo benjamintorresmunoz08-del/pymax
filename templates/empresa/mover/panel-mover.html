@@ -721,6 +721,82 @@
     <!-- Se llenan dinámicamente -->
   </div>
 
+  <!-- FASE 10: SEMÁFORO PYMAX VISUAL -->
+  <div class="mb-10 fade-in d-3">
+    <h2 class="text-xl font-bold text-white mb-6 font-display">Semáforo Pymax - Estado de Salud</h2>
+    
+    <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 32px;">
+      
+      <!-- Semáforo Visual -->
+      <div class="flex flex-col md:flex-row items-center gap-8 mb-8">
+        
+        <!-- Semáforo Grande -->
+        <div style="flex-shrink: 0;">
+          <div id="trafficLight" style="width: 120px; height: 280px; background: rgba(0, 0, 0, 0.4); border-radius: 60px; padding: 20px; display: flex; flex-direction: column; gap: 20px; align-items: center; border: 3px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);">
+            <div id="lightGreen" style="width: 70px; height: 70px; border-radius: 50%; background: #1e293b; border: 3px solid #334155; transition: all 0.5s ease;"></div>
+            <div id="lightYellow" style="width: 70px; height: 70px; border-radius: 50%; background: #1e293b; border: 3px solid #334155; transition: all 0.5s ease;"></div>
+            <div id="lightRed" style="width: 70px; height: 70px; border-radius: 50%; background: #1e293b; border: 3px solid #334155; transition: all 0.5s ease;"></div>
+          </div>
+        </div>
+
+        <!-- Información del Estado -->
+        <div style="flex: 1;">
+          <div id="trafficStatus" class="mb-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div id="statusIcon" style="width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;"></div>
+              <div>
+                <h3 id="statusTitle" class="text-2xl font-bold text-white font-display">Calculando...</h3>
+                <p id="statusSubtitle" class="text-sm text-slate-400">Analizando datos financieros</p>
+              </div>
+            </div>
+            <p id="statusDescription" class="text-slate-300 leading-relaxed mb-4"></p>
+          </div>
+
+          <!-- Métricas del Semáforo -->
+          <div class="grid grid-cols-3 gap-4 mb-6">
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 16px; text-align: center;">
+              <div class="text-xs text-slate-400 mb-1">Balance</div>
+              <div id="semaphoreBalance" class="text-lg font-bold text-white">-</div>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 16px; text-align: center;">
+              <div class="text-xs text-slate-400 mb-1">Margen</div>
+              <div id="semaphoreMargin" class="text-lg font-bold text-white">-</div>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 16px; text-align: center;">
+              <div class="text-xs text-slate-400 mb-1">Runway</div>
+              <div id="semaphoreRunway" class="text-lg font-bold text-white">-</div>
+            </div>
+          </div>
+
+          <!-- Recomendaciones -->
+          <div id="trafficRecommendations" style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 16px;">
+            <div class="flex items-start gap-3">
+              <i class="ph-fill ph-lightbulb" style="font-size: 20px; color: #60a5fa; flex-shrink: 0; margin-top: 2px;"></i>
+              <div>
+                <h4 class="text-sm font-bold text-white mb-2">Recomendaciones:</h4>
+                <ul id="recommendationsList" class="text-sm text-slate-300 space-y-1">
+                  <!-- Se llenan dinámicamente -->
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Historial de Estados (opcional) -->
+      <div style="border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 20px;">
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-slate-400">Última actualización: <span id="semaphoreLastUpdate">--:--</span></span>
+          <button onclick="updateTrafficLight()" style="padding: 6px 12px; border-radius: 8px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+            <i class="ph-bold ph-arrows-clockwise"></i> Actualizar
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- DRAG & DROP ZONE -->
   <div class="mb-10 fade-in d-3">
     <h2 class="text-xl font-bold text-white mb-6 font-display">Carga Rápida de Documentos</h2>
@@ -2491,6 +2567,172 @@ function scheduleReports() {
   console.log('- Custom recipients');
   console.log('- PDF/Excel format selection');
 }
+
+// ============================================
+// FASE 10: SEMÁFORO PYMAX VISUAL - LÓGICA
+// ============================================
+
+function updateTrafficLight() {
+  const stats = pymaxData.getFinancialStats('month');
+  const operations = pymaxData.getData('operations');
+  const runway = calculateRunway(stats.balance, operations);
+  
+  // Calcular estado basado en 3 factores
+  let status = 'green'; // Por defecto saludable
+  let score = 0;
+  
+  // Factor 1: Balance (33%)
+  if (stats.balance > 500000) score += 33;
+  else if (stats.balance > 100000) score += 20;
+  else if (stats.balance > 0) score += 10;
+  
+  // Factor 2: Margen (33%)
+  if (stats.margin > 20) score += 33;
+  else if (stats.margin > 10) score += 20;
+  else if (stats.margin > 0) score += 10;
+  
+  // Factor 3: Runway (34%)
+  if (runway === null || runway > 6) score += 34;
+  else if (runway > 3) score += 20;
+  else if (runway > 0) score += 10;
+  
+  // Determinar estado según score
+  if (score >= 70) {
+    status = 'green';
+  } else if (score >= 40) {
+    status = 'yellow';
+  } else {
+    status = 'red';
+  }
+  
+  // Actualizar luces del semáforo
+  const lightGreen = document.getElementById('lightGreen');
+  const lightYellow = document.getElementById('lightYellow');
+  const lightRed = document.getElementById('lightRed');
+  
+  // Apagar todas las luces
+  lightGreen.style.background = '#1e293b';
+  lightGreen.style.border = '3px solid #334155';
+  lightGreen.style.boxShadow = 'none';
+  
+  lightYellow.style.background = '#1e293b';
+  lightYellow.style.border = '3px solid #334155';
+  lightYellow.style.boxShadow = 'none';
+  
+  lightRed.style.background = '#1e293b';
+  lightRed.style.border = '3px solid #334155';
+  lightRed.style.boxShadow = 'none';
+  
+  // Encender luz correspondiente
+  if (status === 'green') {
+    lightGreen.style.background = 'radial-gradient(circle, #22c55e, #16a34a)';
+    lightGreen.style.border = '3px solid #22c55e';
+    lightGreen.style.boxShadow = '0 0 30px #22c55e, inset 0 0 20px rgba(34, 197, 94, 0.5)';
+  } else if (status === 'yellow') {
+    lightYellow.style.background = 'radial-gradient(circle, #fbbf24, #f59e0b)';
+    lightYellow.style.border = '3px solid #fbbf24';
+    lightYellow.style.boxShadow = '0 0 30px #fbbf24, inset 0 0 20px rgba(251, 191, 36, 0.5)';
+  } else {
+    lightRed.style.background = 'radial-gradient(circle, #ef4444, #dc2626)';
+    lightRed.style.border = '3px solid #ef4444';
+    lightRed.style.boxShadow = '0 0 30px #ef4444, inset 0 0 20px rgba(239, 68, 68, 0.5)';
+  }
+  
+  // Actualizar información del estado
+  updateTrafficStatus(status, stats, runway);
+  
+  // Actualizar hora
+  const now = new Date();
+  document.getElementById('semaphoreLastUpdate').textContent = now.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
+function updateTrafficStatus(status, stats, runway) {
+  const statusIcon = document.getElementById('statusIcon');
+  const statusTitle = document.getElementById('statusTitle');
+  const statusSubtitle = document.getElementById('statusSubtitle');
+  const statusDescription = document.getElementById('statusDescription');
+  const recommendationsList = document.getElementById('recommendationsList');
+  const trafficRecommendations = document.getElementById('trafficRecommendations');
+  
+  // Actualizar métricas
+  document.getElementById('semaphoreBalance').textContent = formatCurrency(stats.balance);
+  document.getElementById('semaphoreMargin').textContent = stats.margin + '%';
+  document.getElementById('semaphoreRunway').textContent = runway !== null ? `${runway.toFixed(1)} meses` : '∞';
+  
+  let iconBg, iconColor, icon, title, subtitle, description, recommendations, recoBg, recoBorder;
+  
+  if (status === 'green') {
+    iconBg = 'rgba(34, 197, 94, 0.15)';
+    iconColor = '#22c55e';
+    icon = 'ph-check-circle';
+    title = '🟢 Estado Saludable';
+    subtitle = 'Tu empresa está en excelente forma';
+    description = 'Tus finanzas están sólidas. El balance es positivo, el margen es saludable y tienes suficiente runway. Continúa con esta disciplina financiera.';
+    recommendations = [
+      'Mantén el control de gastos actual',
+      'Considera invertir el excedente para crecimiento',
+      'Revisa oportunidades de expansión'
+    ];
+    recoBg = 'rgba(34, 197, 94, 0.1)';
+    recoBorder = 'rgba(34, 197, 94, 0.3)';
+  } else if (status === 'yellow') {
+    iconBg = 'rgba(251, 191, 36, 0.15)';
+    iconColor = '#fbbf24';
+    icon = 'ph-warning';
+    title = '🟡 Alerta Preventiva';
+    subtitle = 'Requiere atención y ajustes';
+    description = 'Tu situación financiera necesita atención. Algunos indicadores están en zona de precaución. Es momento de tomar medidas preventivas.';
+    recommendations = [
+      'Reduce gastos no esenciales un 10-15%',
+      'Aumenta esfuerzos de ventas',
+      'Revisa contratos y renegocia si es posible',
+      'Monitorea el flujo de caja semanalmente'
+    ];
+    recoBg = 'rgba(251, 191, 36, 0.1)';
+    recoBorder = 'rgba(251, 191, 36, 0.3)';
+  } else {
+    iconBg = 'rgba(239, 68, 68, 0.15)';
+    iconColor = '#ef4444';
+    icon = 'ph-warning-octagon';
+    title = '🔴 Situación Crítica';
+    subtitle = 'Acción inmediata requerida';
+    description = 'Tu empresa está en zona de riesgo. El balance es bajo, el margen es insuficiente o el runway es crítico. Se requieren acciones urgentes.';
+    recommendations = [
+      '⚠️ URGENTE: Reduce gastos inmediatamente',
+      '⚠️ Busca financiamiento o inyección de capital',
+      '⚠️ Acelera cobranzas pendientes',
+      '⚠️ Considera medidas de emergencia',
+      '⚠️ Consulta con un asesor financiero'
+    ];
+    recoBg = 'rgba(239, 68, 68, 0.1)';
+    recoBorder = 'rgba(239, 68, 68, 0.3)';
+  }
+  
+  // Aplicar estilos
+  statusIcon.style.background = iconBg;
+  statusIcon.style.color = iconColor;
+  statusIcon.innerHTML = `<i class="ph-fill ${icon}"></i>`;
+  
+  statusTitle.textContent = title;
+  statusSubtitle.textContent = subtitle;
+  statusDescription.textContent = description;
+  
+  recommendationsList.innerHTML = recommendations.map(rec => `<li>• ${rec}</li>`).join('');
+  
+  trafficRecommendations.style.background = recoBg;
+  trafficRecommendations.style.borderColor = recoBorder;
+}
+
+// Inicializar semáforo al cargar
+document.addEventListener('DOMContentLoaded', () => {
+  // Esperar a que Data Manager esté listo
+  setTimeout(() => {
+    updateTrafficLight();
+  }, 1000);
+});
 </script>
 
 </body>
