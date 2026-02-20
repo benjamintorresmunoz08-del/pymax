@@ -997,6 +997,19 @@
     <p>Pymax Financial System • Secure Connection</p>
   </footer>
 
+  <!-- FASE 8: BOTÓN WHATSAPP FLOTANTE -->
+  <div 
+    id="whatsappFloatingBtn" 
+    onclick="showWhatsAppTooltip()"
+    style="position: fixed; bottom: 24px; right: 24px; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #25D366, #128C7E); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 8px 24px rgba(37, 211, 102, 0.4); transition: all 0.3s ease; z-index: 1000; border: 3px solid rgba(255, 255, 255, 0.2);"
+    onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 12px 32px rgba(37, 211, 102, 0.6)'"
+    onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 8px 24px rgba(37, 211, 102, 0.4)'"
+    title="Conectar WhatsApp - Próximamente"
+  >
+    <i class="ph-fill ph-whatsapp-logo" style="font-size: 32px; color: white;"></i>
+    <span style="position: absolute; top: -4px; right: -4px; width: 18px; height: 18px; background: #ef4444; border: 3px solid #020617; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; color: white;">!</span>
+  </div>
+
 <script>
 // Configuración Supabase (var evita "Identifier 'supabase' has already been declared")
 const SU_URL = '{{ SUPABASE_URL or "https://haqjuyagyvxynmulanhe.supabase.co" }}';
@@ -2293,6 +2306,16 @@ function deleteTask(index) {
 function showVoiceAssistantTooltip() {
   pymaxNotifications.show('🎤 Asistente de Voz - Próximamente disponible', 'info');
   console.log('🎤 Voice Assistant - Coming soon!');
+}
+
+// ============================================
+// FASE 8: BOTÓN WHATSAPP FLOTANTE
+// ============================================
+
+function showWhatsAppTooltip() {
+  pymaxNotifications.show('💬 WhatsApp Business - Próximamente disponible para conectar con tus clientes', 'info');
+  console.log('💬 WhatsApp Integration - Coming soon!');
+  console.log('📱 Preparado para API de WhatsApp Business');
 }
 </script>
 
