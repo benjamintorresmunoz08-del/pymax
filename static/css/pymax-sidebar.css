@@ -14,7 +14,8 @@
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   z-index: 1000;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
+  overflow-x: hidden; /* FIXED: Solo ocultar overflow horizontal */
+  overflow-y: auto; /* FIXED: Permitir scroll vertical */
   backdrop-filter: blur(10px);
   box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
 }
