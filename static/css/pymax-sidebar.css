@@ -31,6 +31,7 @@
   padding: 0 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   position: relative;
+  overflow: visible; /* FIXED: Permitir que el contenido no se corte */
 }
 
 .sidebar-logo {
@@ -54,6 +55,8 @@
   white-space: nowrap;
   transition: opacity 0.3s ease;
   pointer-events: none;
+  min-width: 0; /* FIXED: Permitir que el texto se ajuste */
+  flex: 1; /* FIXED: Ocupar espacio disponible */
 }
 
 .pymax-sidebar.expanded .sidebar-title {
@@ -67,12 +70,17 @@
   color: white;
   margin: 0;
   font-family: 'Outfit', sans-serif;
+  overflow: hidden; /* FIXED: Evitar desbordamiento */
+  text-overflow: ellipsis; /* FIXED: Agregar ... si es muy largo */
 }
 
 .sidebar-title span {
   font-size: 11px;
   color: #64748b;
   font-weight: 600;
+  display: block; /* FIXED: Forzar nueva línea */
+  overflow: hidden; /* FIXED: Evitar desbordamiento */
+  text-overflow: ellipsis; /* FIXED: Agregar ... si es muy largo */
 }
 
 /* Toggle Button */
