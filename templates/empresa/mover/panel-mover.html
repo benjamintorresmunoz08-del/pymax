@@ -767,17 +767,68 @@
   </div>
 
   <!-- ALERTAS IMPORTANTES - COLAPSABLE -->
-  <div id="alertsContainer" class="fade-in d-2">
-    <!-- Se llenan dinámicamente -->
+  <div class="pymax-collapsible-section fade-in d-2" data-section-id="alertas">
+    <div class="section-header">
+      <div class="section-header-left">
+        <div class="section-header-icon" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border-color: rgba(239, 68, 68, 0.3);">
+          <i class="ph-duotone ph-warning-circle"></i>
+        </div>
+        <div class="section-header-title">
+          <h2>Alertas Importantes</h2>
+          <p>Notificaciones y avisos críticos</p>
+        </div>
+      </div>
+      <button class="section-toggle-btn">
+        <i class="ph-bold ph-caret-up"></i>
+      </button>
+    </div>
+    <div class="section-content">
+      <div id="alertsContainer">
+        <!-- Se llenan dinámicamente -->
+      </div>
+    </div>
   </div>
 
-  <!-- FASE 21: MINI-WIDGETS INFORMATIVOS -->
-  <div id="pymaxWidgetsContainer" class="pymax-widgets-container fade-in d-3">
+  <!-- FASE 21: MINI-WIDGETS INFORMATIVOS - COLAPSABLE -->
+  <div class="pymax-collapsible-section fade-in d-3" data-section-id="widgets">
+    <div class="section-header">
+      <div class="section-header-left">
+        <div class="section-header-icon" style="background: rgba(139, 92, 246, 0.15); color: #a78bfa; border-color: rgba(139, 92, 246, 0.3);">
+          <i class="ph-duotone ph-squares-four"></i>
+        </div>
+        <div class="section-header-title">
+          <h2>Mini-Widgets Informativos</h2>
+          <p>Métricas rápidas y KPIs</p>
+        </div>
+      </div>
+      <button class="section-toggle-btn">
+        <i class="ph-bold ph-caret-up"></i>
+      </button>
+    </div>
+    <div class="section-content">
+  <div id="pymaxWidgetsContainer" class="pymax-widgets-container">
     <!-- Los widgets se cargan dinámicamente desde pymax-widgets.js -->
   </div>
+    </div>
+  </div>
 
-  <!-- FASE 11: INDICADOR RUNWAY (DÍAS HASTA QUIEBRA) -->
-  <div class="mb-10 fade-in d-3">
+  <!-- FASE 11: INDICADOR RUNWAY - COLAPSABLE -->
+  <div class="pymax-collapsible-section mb-10 fade-in d-3" data-section-id="runway">
+    <div class="section-header">
+      <div class="section-header-left">
+        <div class="section-header-icon" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border-color: rgba(239, 68, 68, 0.3);">
+          <i class="ph-duotone ph-hourglass"></i>
+        </div>
+        <div class="section-header-title">
+          <h2>Indicador Runway</h2>
+          <p>Tiempo hasta balance = $0</p>
+        </div>
+      </div>
+      <button class="section-toggle-btn">
+        <i class="ph-bold ph-caret-up"></i>
+      </button>
+    </div>
+    <div class="section-content">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       
       <!-- Card Runway -->
@@ -875,11 +926,26 @@
       </div>
 
     </div>
+    </div>
   </div>
 
-  <!-- FASE 10: SEMÁFORO PYMAX VISUAL -->
-  <div class="mb-10 fade-in d-3">
-    <h2 class="text-xl font-bold text-white mb-6 font-display">Semáforo Pymax - Estado de Salud</h2>
+  <!-- FASE 10: SEMÁFORO PYMAX VISUAL - COLAPSABLE -->
+  <div class="pymax-collapsible-section mb-10 fade-in d-3" data-section-id="semaforo">
+    <div class="section-header">
+      <div class="section-header-left">
+        <div class="section-header-icon" style="background: rgba(251, 191, 36, 0.15); color: #fbbf24; border-color: rgba(251, 191, 36, 0.3);">
+          <i class="ph-duotone ph-traffic-signal"></i>
+        </div>
+        <div class="section-header-title">
+          <h2>Semáforo Pymax</h2>
+          <p>Estado de Salud Financiera</p>
+        </div>
+      </div>
+      <button class="section-toggle-btn">
+        <i class="ph-bold ph-caret-up"></i>
+      </button>
+    </div>
+    <div class="section-content">
     
     <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 32px;">
       
@@ -951,11 +1017,26 @@
       </div>
 
     </div>
+    </div>
   </div>
 
-  <!-- DRAG & DROP ZONE -->
-  <div class="mb-10 fade-in d-3">
-    <h2 class="text-xl font-bold text-white mb-6 font-display">Carga Rápida de Documentos</h2>
+  <!-- DRAG & DROP ZONE - COLAPSABLE -->
+  <div class="pymax-collapsible-section mb-10 fade-in d-3" data-section-id="drag-drop">
+    <div class="section-header">
+      <div class="section-header-left">
+        <div class="section-header-icon" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3);">
+          <i class="ph-duotone ph-upload-simple"></i>
+        </div>
+        <div class="section-header-title">
+          <h2>Carga Rápida de Documentos</h2>
+          <p>Arrastra archivos PDF, Excel, CSV</p>
+        </div>
+      </div>
+      <button class="section-toggle-btn">
+        <i class="ph-bold ph-caret-up"></i>
+      </button>
+    </div>
+    <div class="section-content">
     
     <div class="drag-drop-zone" id="dragDropZone">
       <input type="file" id="fileInput" multiple accept=".pdf,.xlsx,.xls,.csv,.jpg,.jpeg,.png" style="display: none;">
@@ -994,10 +1075,26 @@
         <!-- Se llenan dinámicamente -->
       </div>
     </div>
+    </div>
   </div>
 
-  <!-- FASE 12: GRÁFICO DE FLUJO CON SELECTOR DE PERÍODO -->
-  <div class="mb-10 fade-in d-4">
+  <!-- FASE 12: GRÁFICO DE FLUJO - COLAPSABLE -->
+  <div class="pymax-collapsible-section mb-10 fade-in d-4" data-section-id="grafico-flujo">
+    <div class="section-header">
+      <div class="section-header-left">
+        <div class="section-header-icon">
+          <i class="ph-duotone ph-chart-line-up"></i>
+        </div>
+        <div class="section-header-title">
+          <h2>Tendencia de Flujo de Caja</h2>
+          <p>Análisis de ingresos y gastos</p>
+        </div>
+      </div>
+      <button class="section-toggle-btn">
+        <i class="ph-bold ph-caret-up"></i>
+      </button>
+    </div>
+    <div class="section-content">
     <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
       <div>
         <h2 class="text-xl font-bold text-white font-display">Tendencia de Flujo de Caja</h2>
@@ -1041,11 +1138,26 @@
     <div class="chart-container">
       <canvas id="cashFlowChart"></canvas>
     </div>
+    </div>
   </div>
 
-  <!-- FASE 9: REPORTES AUTOMÁTICOS -->
-  <div class="mb-10 fade-in d-5">
-    <h2 class="text-xl font-bold text-white mb-6 font-display">Reportes Automáticos</h2>
+  <!-- FASE 9: REPORTES AUTOMÁTICOS - COLAPSABLE -->
+  <div class="pymax-collapsible-section mb-10 fade-in d-5" data-section-id="reportes">
+    <div class="section-header">
+      <div class="section-header-left">
+        <div class="section-header-icon" style="background: rgba(139, 92, 246, 0.15); color: #a78bfa; border-color: rgba(139, 92, 246, 0.3);">
+          <i class="ph-duotone ph-file-text"></i>
+        </div>
+        <div class="section-header-title">
+          <h2>Reportes Automáticos</h2>
+          <p>Genera PDF, Excel o envía por email</p>
+        </div>
+      </div>
+      <button class="section-toggle-btn">
+        <i class="ph-bold ph-caret-up"></i>
+      </button>
+    </div>
+    <div class="section-content">
     
     <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 24px;">
       <div class="flex items-center gap-3 mb-6">
@@ -1120,11 +1232,26 @@
         </div>
       </div>
     </div>
+    </div>
   </div>
 
-  <!-- FASE 6: TOP CLIENTES Y GASTOS -->
-  <div class="mb-10 fade-in d-5">
-    <h2 class="text-xl font-bold text-white mb-6 font-display">Top Clientes y Gastos</h2>
+  <!-- FASE 6: TOP CLIENTES Y GASTOS - COLAPSABLE -->
+  <div class="pymax-collapsible-section mb-10 fade-in d-5" data-section-id="top-clientes-gastos">
+    <div class="section-header">
+      <div class="section-header-left">
+        <div class="section-header-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">
+          <i class="ph-duotone ph-chart-pie-slice"></i>
+        </div>
+        <div class="section-header-title">
+          <h2>Top Clientes y Gastos</h2>
+          <p>Ranking de ingresos y egresos</p>
+        </div>
+      </div>
+      <button class="section-toggle-btn">
+        <i class="ph-bold ph-caret-up"></i>
+      </button>
+    </div>
+    <div class="section-content">
     
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       
@@ -1163,11 +1290,26 @@
       </div>
       
     </div>
+    </div>
   </div>
 
-  <!-- MÓDULOS PRINCIPALES -->
-  <div class="mb-10">
-    <h2 class="text-xl font-bold text-white mb-6 font-display fade-in d-5">Módulos Esenciales</h2>
+  <!-- MÓDULOS PRINCIPALES - COLAPSABLE -->
+  <div class="pymax-collapsible-section mb-10" data-section-id="modulos">
+    <div class="section-header">
+      <div class="section-header-left">
+        <div class="section-header-icon" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3);">
+          <i class="ph-duotone ph-grid-four"></i>
+        </div>
+        <div class="section-header-title">
+          <h2>Módulos Esenciales</h2>
+          <p>Herramientas principales del sistema</p>
+        </div>
+      </div>
+      <button class="section-toggle-btn">
+        <i class="ph-bold ph-caret-up"></i>
+      </button>
+    </div>
+    <div class="section-content">
     
     <!-- 6 Módulos Visibles -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
@@ -1332,6 +1474,7 @@
         </div>
 
       </div>
+    </div>
     </div>
   </div>
 
