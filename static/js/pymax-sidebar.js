@@ -42,6 +42,9 @@ class PymaxSidebar {
           <h3>PYMAX</h3>
           <span>Control Center</span>
         </div>
+        <button class="sidebar-toggle" id="sidebarToggle">
+          <i class="ph-bold ph-caret-right"></i>
+        </button>
       </div>
 
       <!-- Navigation -->
@@ -151,6 +154,12 @@ class PymaxSidebar {
   }
 
   attachEventListeners() {
+    // Toggle button
+    const toggleBtn = document.getElementById('sidebarToggle');
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => this.toggle());
+    }
+
     // Nav items
     const navItems = document.querySelectorAll('.sidebar-item');
     navItems.forEach(item => {

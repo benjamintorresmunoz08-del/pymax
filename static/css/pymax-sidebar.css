@@ -310,7 +310,7 @@
   pointer-events: auto;
 }
 
-/* Main Content Adjustment - 3 Column Layout */
+/* Main Content Adjustment - 3 Column Layout (EXPANDIBLE) */
 .pymax-main-content {
   margin-left: 70px;
   margin-right: 280px;
@@ -320,8 +320,19 @@
   max-width: 1600px;
 }
 
+/* Sidebar izquierdo expandido */
+.pymax-sidebar.expanded ~ .pymax-main-content {
+  margin-left: 260px;
+}
+
+/* Panel derecho colapsado */
 .pymax-right-panel.collapsed ~ .pymax-main-content {
   margin-right: 0;
+}
+
+/* Ambos expandidos */
+.pymax-sidebar.expanded ~ .pymax-main-content {
+  margin-left: 260px;
 }
 
 /* Responsive */
