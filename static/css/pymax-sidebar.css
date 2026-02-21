@@ -310,15 +310,18 @@
   pointer-events: auto;
 }
 
-/* Main Content Adjustment */
+/* Main Content Adjustment - 3 Column Layout */
 .pymax-main-content {
   margin-left: 70px;
-  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-right: 280px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   min-height: 100vh;
+  padding: 32px 24px;
+  max-width: 1600px;
 }
 
-.pymax-sidebar.expanded ~ .pymax-main-content {
-  margin-left: 260px;
+.pymax-right-panel.collapsed ~ .pymax-main-content {
+  margin-right: 0;
 }
 
 /* Responsive */

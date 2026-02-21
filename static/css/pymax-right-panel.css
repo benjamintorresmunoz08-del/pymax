@@ -1,0 +1,335 @@
+/* ============================================
+   PYMAX RIGHT PANEL
+   Panel lateral derecho con quick actions
+   ============================================ */
+
+.pymax-right-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 280px;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.95);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 24px 16px;
+  overflow-y: auto;
+  z-index: 900;
+  transition: transform 0.3s ease;
+}
+
+.pymax-right-panel.collapsed {
+  transform: translateX(280px);
+}
+
+.pymax-right-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.pymax-right-panel::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.pymax-right-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.pymax-right-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Toggle Button */
+.right-panel-toggle {
+  position: absolute;
+  top: 20px;
+  left: -40px;
+  width: 32px;
+  height: 32px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #94a3b8;
+  transition: all 0.2s ease;
+}
+
+.right-panel-toggle:hover {
+  background: rgba(30, 41, 59, 0.95);
+  color: white;
+}
+
+.right-panel-toggle i {
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.pymax-right-panel.collapsed .right-panel-toggle i {
+  transform: rotate(180deg);
+}
+
+/* Section */
+.right-panel-section {
+  margin-bottom: 24px;
+}
+
+.right-panel-section-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #64748b;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.right-panel-section-title i {
+  font-size: 14px;
+}
+
+/* Quick Action Button */
+.quick-action-btn {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 8px;
+  text-decoration: none;
+}
+
+.quick-action-btn:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.5);
+  transform: translateX(-2px);
+}
+
+.quick-action-btn .icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.quick-action-btn.success .icon {
+  background: rgba(52, 211, 153, 0.15);
+  color: #34d399;
+}
+
+.quick-action-btn.danger .icon {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+
+.quick-action-btn.info .icon {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+}
+
+.quick-action-btn .content {
+  flex: 1;
+}
+
+.quick-action-btn .title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 2px;
+}
+
+.quick-action-btn .subtitle {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+/* Alert Card */
+.right-panel-alert {
+  padding: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-left: 3px solid #ef4444;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.right-panel-alert.warning {
+  background: rgba(251, 191, 36, 0.1);
+  border-color: rgba(251, 191, 36, 0.3);
+  border-left-color: #fbbf24;
+}
+
+.right-panel-alert.info {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+  border-left-color: #3b82f6;
+}
+
+.right-panel-alert .alert-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.right-panel-alert .alert-icon {
+  font-size: 16px;
+}
+
+.right-panel-alert.warning .alert-icon {
+  color: #fbbf24;
+}
+
+.right-panel-alert .alert-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
+}
+
+.right-panel-alert .alert-description {
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+/* Goal Card */
+.right-panel-goal {
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.right-panel-goal .goal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.right-panel-goal .goal-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: white;
+}
+
+.right-panel-goal .goal-percentage {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #60a5fa;
+}
+
+.right-panel-goal .goal-progress {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.right-panel-goal .goal-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+/* Mini Widget */
+.right-panel-widget {
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.right-panel-widget .widget-label {
+  font-size: 0.7rem;
+  color: #64748b;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.right-panel-widget .widget-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1;
+}
+
+.right-panel-widget .widget-change {
+  font-size: 0.75rem;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.right-panel-widget .widget-change.positive {
+  color: #34d399;
+}
+
+.right-panel-widget .widget-change.negative {
+  color: #f87171;
+}
+
+/* Empty State */
+.right-panel-empty {
+  text-align: center;
+  padding: 20px;
+  color: #64748b;
+}
+
+.right-panel-empty i {
+  font-size: 32px;
+  margin-bottom: 8px;
+  opacity: 0.5;
+}
+
+.right-panel-empty p {
+  font-size: 0.8rem;
+}
+
+/* Responsive */
+@media (max-width: 1400px) {
+  .pymax-right-panel {
+    width: 240px;
+  }
+  
+  .pymax-right-panel.collapsed {
+    transform: translateX(240px);
+  }
+}
+
+@media (max-width: 1200px) {
+  .pymax-right-panel {
+    transform: translateX(280px);
+  }
+  
+  .pymax-right-panel.mobile-open {
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .pymax-right-panel {
+    width: 100%;
+    max-width: 320px;
+  }
+}

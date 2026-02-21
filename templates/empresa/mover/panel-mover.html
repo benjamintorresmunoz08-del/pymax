@@ -40,11 +40,11 @@
   <!-- FASE 24: BACKUP & EXPORT SYSTEM -->
   <script src="/static/js/pymax-backup.js"></script>
   
-  <!-- SIDEBAR & PANELS SYSTEM -->
+  <!-- SIDEBAR & PANELS SYSTEM (3 COLUMN LAYOUT) -->
   <link rel="stylesheet" href="/static/css/pymax-sidebar.css">
-  <link rel="stylesheet" href="/static/css/pymax-panels.css">
+  <link rel="stylesheet" href="/static/css/pymax-right-panel.css">
   <script src="/static/js/pymax-sidebar.js"></script>
-  <script src="/static/js/pymax-panels.js"></script>
+  <script src="/static/js/pymax-right-panel.js"></script>
 
   <style>
     * { 
@@ -458,7 +458,9 @@
   </style>
 </head>
 
-<body class="p-4 md:p-8 max-w-[1600px] mx-auto">
+<body>
+
+<div class="pymax-main-content">
 
   <nav class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4 fade-in">
     <div class="flex items-center gap-4">
@@ -1316,6 +1318,8 @@
   <footer class="text-center text-xs text-slate-600 pb-8 pt-4 fade-in d-6">
     <p>Pymax Financial System • Secure Connection</p>
   </footer>
+
+</div><!-- /.pymax-main-content -->
 
   <!-- FASE 8: BOTÓN WHATSAPP FLOTANTE -->
   <div 

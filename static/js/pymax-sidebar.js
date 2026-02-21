@@ -42,9 +42,6 @@ class PymaxSidebar {
           <h3>PYMAX</h3>
           <span>Control Center</span>
         </div>
-        <button class="sidebar-toggle" id="sidebarToggle">
-          <i class="ph-bold ph-caret-right"></i>
-        </button>
       </div>
 
       <!-- Navigation -->
@@ -154,18 +151,6 @@ class PymaxSidebar {
   }
 
   attachEventListeners() {
-    // Toggle button
-    const toggleBtn = document.getElementById('sidebarToggle');
-    if (toggleBtn) {
-      toggleBtn.addEventListener('click', () => this.toggle());
-    }
-
-    // Mobile toggle
-    const mobileToggle = document.getElementById('sidebarMobileToggle');
-    if (mobileToggle) {
-      mobileToggle.addEventListener('click', () => this.toggle());
-    }
-
     // Nav items
     const navItems = document.querySelectorAll('.sidebar-item');
     navItems.forEach(item => {
@@ -245,20 +230,10 @@ class PymaxSidebar {
 
     this.currentSection = section;
 
-    // Emitir evento personalizado
-    const event = new CustomEvent('sidebarNavigate', {
-      detail: { section }
-    });
-    window.dispatchEvent(event);
-
-    // Abrir panel correspondiente
-    if (window.pymaxPanels) {
-      window.pymaxPanels.openPanel(section);
-    }
-
-    // En móvil, cerrar sidebar después de navegar
-    if (window.innerWidth <= 768) {
-      setTimeout(() => this.collapse(), 300);
+    // Scroll suave a la sección en el main content
+    const sectionElement = document.getElementById(`section-${section}`);
+    if (sectionElement) {
+      sectionElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     console.log(`📍 Navegando a: ${section}`);
