@@ -27,8 +27,10 @@ class PymaxCollapsibleSections {
       const sectionId = section.getAttribute('data-section-id');
       if (!sectionId) return;
       
-      // Obtener estado guardado
-      const isCollapsed = this.sections.get(sectionId) || false;
+      // NUEVO: Por defecto TODAS inician colapsadas
+      // Solo se expanden si el usuario las abrió previamente
+      const savedState = this.sections.get(sectionId);
+      const isCollapsed = savedState !== false; // Si no hay estado guardado O es true, colapsar
       
       // Aplicar estado inicial
       if (isCollapsed) {
