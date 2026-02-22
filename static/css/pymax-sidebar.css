@@ -102,7 +102,7 @@
   transition: all 0.2s ease;
   color: #60a5fa;
   font-size: 12px;
-  z-index: 10;
+  z-index: 1001; /* FIXED: Mayor que el sidebar (1000) para que no se corte */
 }
 
 .sidebar-toggle:hover {
