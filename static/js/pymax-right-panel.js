@@ -99,60 +99,73 @@ class PymaxRightPanel {
       ${this.renderGoals()}
       ${this.renderMiniWidgets(stats)}
     `;
+    
+    // Attach collapsible listeners
+    this.attachCollapsibleListeners();
   }
 
   renderQuickActions() {
+    const isCollapsed = localStorage.getItem('pymax_quick_actions_collapsed') === 'true';
+    
     return `
-      <div class="right-panel-section">
-        <div class="right-panel-section-title">
+      <div class="right-panel-section collapsible-section ${isCollapsed ? 'collapsed' : ''}">
+        <div class="right-panel-section-title collapsible-header" data-section="quick-actions">
           <i class="ph-fill ph-lightning"></i>
           QUICK ACTIONS
+          <i class="ph-bold ph-caret-down collapse-icon"></i>
         </div>
         
-        <a href="/empresa/mover/ventas-gastos" class="quick-action-btn success">
-          <div class="icon">
-            <i class="ph-bold ph-plus-circle"></i>
-          </div>
-          <div class="content">
-            <div class="title">Nueva Venta</div>
-            <div class="subtitle">Registrar ingreso</div>
-          </div>
-        </a>
-        
-        <a href="/empresa/mover/ventas-gastos" class="quick-action-btn danger">
-          <div class="icon">
-            <i class="ph-bold ph-minus-circle"></i>
-          </div>
-          <div class="content">
-            <div class="title">Nuevo Gasto</div>
-            <div class="subtitle">Registrar egreso</div>
-          </div>
-        </a>
-        
-        <a href="/empresa/mover/obligaciones" class="quick-action-btn info">
-          <div class="icon">
-            <i class="ph-bold ph-receipt"></i>
-          </div>
-          <div class="content">
-            <div class="title">Pagar Factura</div>
-            <div class="subtitle">Gestionar obligación</div>
-          </div>
-        </a>
+        <div class="collapsible-content">
+          <a href="/empresa/mover/ventas-gastos" class="quick-action-btn success">
+            <div class="icon">
+              <i class="ph-bold ph-plus-circle"></i>
+            </div>
+            <div class="content">
+              <div class="title">Nueva Venta</div>
+              <div class="subtitle">Registrar ingreso</div>
+            </div>
+          </a>
+          
+          <a href="/empresa/mover/ventas-gastos" class="quick-action-btn danger">
+            <div class="icon">
+              <i class="ph-bold ph-minus-circle"></i>
+            </div>
+            <div class="content">
+              <div class="title">Nuevo Gasto</div>
+              <div class="subtitle">Registrar egreso</div>
+            </div>
+          </a>
+          
+          <a href="/empresa/mover/obligaciones" class="quick-action-btn info">
+            <div class="icon">
+              <i class="ph-bold ph-receipt"></i>
+            </div>
+            <div class="content">
+              <div class="title">Pagar Factura</div>
+              <div class="subtitle">Gestionar obligación</div>
+            </div>
+          </a>
+        </div>
       </div>
     `;
   }
 
   renderAlerts(stats, operations) {
+    const isCollapsed = localStorage.getItem('pymax_alerts_collapsed') === 'true';
+    
     if (!stats) {
       return `
-        <div class="right-panel-section">
-          <div class="right-panel-section-title">
+        <div class="right-panel-section collapsible-section ${isCollapsed ? 'collapsed' : ''}">
+          <div class="right-panel-section-title collapsible-header" data-section="alerts">
             <i class="ph-fill ph-warning-circle"></i>
             ALERTAS
+            <i class="ph-bold ph-caret-down collapse-icon"></i>
           </div>
-          <div class="right-panel-empty">
-            <i class="ph-duotone ph-bell"></i>
-            <p>Sin alertas</p>
+          <div class="collapsible-content">
+            <div class="right-panel-empty">
+              <i class="ph-duotone ph-bell"></i>
+              <p>Sin alertas</p>
+            </div>
           </div>
         </div>
       `;
@@ -199,18 +212,21 @@ class PymaxRightPanel {
 
     if (alerts.length === 0) {
       return `
-        <div class="right-panel-section">
-          <div class="right-panel-section-title">
+        <div class="right-panel-section collapsible-section ${isCollapsed ? 'collapsed' : ''}">
+          <div class="right-panel-section-title collapsible-header" data-section="alerts">
             <i class="ph-fill ph-check-circle"></i>
             ALERTAS
+            <i class="ph-bold ph-caret-down collapse-icon"></i>
           </div>
-          <div class="right-panel-alert info">
-            <div class="alert-header">
-              <i class="ph-fill ph-check-circle alert-icon" style="color: #34d399;"></i>
-              <div class="alert-title">Todo en Orden</div>
-            </div>
-            <div class="alert-description">
-              No hay alertas críticas en este momento.
+          <div class="collapsible-content">
+            <div class="right-panel-alert info">
+              <div class="alert-header">
+                <i class="ph-fill ph-check-circle alert-icon" style="color: #34d399;"></i>
+                <div class="alert-title">Todo en Orden</div>
+              </div>
+              <div class="alert-description">
+                No hay alertas críticas en este momento.
+              </div>
             </div>
           </div>
         </div>
@@ -218,25 +234,30 @@ class PymaxRightPanel {
     }
 
     return `
-      <div class="right-panel-section">
-        <div class="right-panel-section-title">
+      <div class="right-panel-section collapsible-section ${isCollapsed ? 'collapsed' : ''}">
+        <div class="right-panel-section-title collapsible-header" data-section="alerts">
           <i class="ph-fill ph-warning-circle"></i>
           ALERTAS
+          <i class="ph-bold ph-caret-down collapse-icon"></i>
         </div>
-        ${alerts.map(alert => `
-          <div class="right-panel-alert ${alert.type}">
-            <div class="alert-header">
-              <i class="ph-fill ${alert.icon} alert-icon"></i>
-              <div class="alert-title">${alert.title}</div>
+        <div class="collapsible-content">
+          ${alerts.map(alert => `
+            <div class="right-panel-alert ${alert.type}">
+              <div class="alert-header">
+                <i class="ph-fill ${alert.icon} alert-icon"></i>
+                <div class="alert-title">${alert.title}</div>
+              </div>
+              <div class="alert-description">${alert.description}</div>
             </div>
-            <div class="alert-description">${alert.description}</div>
-          </div>
-        `).join('')}
+          `).join('')}
+        </div>
       </div>
     `;
   }
 
   renderGoals() {
+    const isCollapsed = localStorage.getItem('pymax_goals_collapsed') === 'true';
+    
     // Simulación de metas (en producción vendría de pymaxData)
     const goals = [
       { title: 'Ingresos Mensuales', current: 180000, target: 200000 },
@@ -246,44 +267,52 @@ class PymaxRightPanel {
 
     if (goals.length === 0) {
       return `
-        <div class="right-panel-section">
-          <div class="right-panel-section-title">
+        <div class="right-panel-section collapsible-section ${isCollapsed ? 'collapsed' : ''}">
+          <div class="right-panel-section-title collapsible-header" data-section="goals">
             <i class="ph-fill ph-target"></i>
             METAS
+            <i class="ph-bold ph-caret-down collapse-icon"></i>
           </div>
-          <div class="right-panel-empty">
-            <i class="ph-duotone ph-target"></i>
-            <p>Sin metas configuradas</p>
+          <div class="collapsible-content">
+            <div class="right-panel-empty">
+              <i class="ph-duotone ph-target"></i>
+              <p>Sin metas configuradas</p>
+            </div>
           </div>
         </div>
       `;
     }
 
     return `
-      <div class="right-panel-section">
-        <div class="right-panel-section-title">
+      <div class="right-panel-section collapsible-section ${isCollapsed ? 'collapsed' : ''}">
+        <div class="right-panel-section-title collapsible-header" data-section="goals">
           <i class="ph-fill ph-target"></i>
           METAS
+          <i class="ph-bold ph-caret-down collapse-icon"></i>
         </div>
-        ${goals.map(goal => {
-          const percentage = Math.min(100, Math.round((goal.current / goal.target) * 100));
-          return `
-            <div class="right-panel-goal">
-              <div class="goal-header">
-                <div class="goal-title">${goal.title}</div>
-                <div class="goal-percentage">${percentage}%</div>
+        <div class="collapsible-content">
+          ${goals.map(goal => {
+            const percentage = Math.min(100, Math.round((goal.current / goal.target) * 100));
+            return `
+              <div class="right-panel-goal">
+                <div class="goal-header">
+                  <div class="goal-title">${goal.title}</div>
+                  <div class="goal-percentage">${percentage}%</div>
+                </div>
+                <div class="goal-progress">
+                  <div class="goal-progress-bar" style="width: ${percentage}%;"></div>
+                </div>
               </div>
-              <div class="goal-progress">
-                <div class="goal-progress-bar" style="width: ${percentage}%;"></div>
-              </div>
-            </div>
-          `;
-        }).join('')}
+            `;
+          }).join('')}
+        </div>
       </div>
     `;
   }
 
   renderMiniWidgets(stats) {
+    const isCollapsed = localStorage.getItem('pymax_metrics_collapsed') === 'true';
+    
     if (!stats) {
       return '';
     }
@@ -292,33 +321,36 @@ class PymaxRightPanel {
     const burnRate = stats.expenses - stats.income;
 
     return `
-      <div class="right-panel-section">
-        <div class="right-panel-section-title">
+      <div class="right-panel-section collapsible-section ${isCollapsed ? 'collapsed' : ''}">
+        <div class="right-panel-section-title collapsible-header" data-section="metrics">
           <i class="ph-fill ph-chart-bar"></i>
           MÉTRICAS
+          <i class="ph-bold ph-caret-down collapse-icon"></i>
         </div>
         
-        <div class="right-panel-widget">
-          <div class="widget-label">Runway</div>
-          <div class="widget-value">${runway !== null ? runway.toFixed(1) : '∞'}</div>
-          <div class="widget-change ${runway !== null && runway < 6 ? 'negative' : 'positive'}">
-            ${runway !== null ? 'meses restantes' : 'Ilimitado'}
+        <div class="collapsible-content">
+          <div class="right-panel-widget">
+            <div class="widget-label">Runway</div>
+            <div class="widget-value">${runway !== null ? runway.toFixed(1) : '∞'}</div>
+            <div class="widget-change ${runway !== null && runway < 6 ? 'negative' : 'positive'}">
+              ${runway !== null ? 'meses restantes' : 'Ilimitado'}
+            </div>
           </div>
-        </div>
-        
-        <div class="right-panel-widget">
-          <div class="widget-label">Burn Rate</div>
-          <div class="widget-value">$${Math.abs(burnRate).toLocaleString()}</div>
-          <div class="widget-change ${burnRate < 0 ? 'negative' : 'positive'}">
-            ${burnRate < 0 ? 'Déficit' : 'Superávit'} mensual
+          
+          <div class="right-panel-widget">
+            <div class="widget-label">Burn Rate</div>
+            <div class="widget-value">$${Math.abs(burnRate).toLocaleString()}</div>
+            <div class="widget-change ${burnRate < 0 ? 'negative' : 'positive'}">
+              ${burnRate < 0 ? 'Déficit' : 'Superávit'} mensual
+            </div>
           </div>
-        </div>
-        
-        <div class="right-panel-widget">
-          <div class="widget-label">Margen Neto</div>
-          <div class="widget-value">${stats.margin}%</div>
-          <div class="widget-change ${stats.margin > 20 ? 'positive' : stats.margin > 10 ? 'neutral' : 'negative'}">
-            ${stats.margin > 20 ? 'Excelente' : stats.margin > 10 ? 'Bueno' : 'Mejorar'}
+          
+          <div class="right-panel-widget">
+            <div class="widget-label">Margen Neto</div>
+            <div class="widget-value">${stats.margin}%</div>
+            <div class="widget-change ${stats.margin > 20 ? 'positive' : stats.margin > 10 ? 'neutral' : 'negative'}">
+              ${stats.margin > 20 ? 'Excelente' : stats.margin > 10 ? 'Bueno' : 'Mejorar'}
+            </div>
           </div>
         </div>
       </div>
@@ -352,6 +384,22 @@ class PymaxRightPanel {
     
     const monthsLeft = stats.balance / monthlyBurnRate;
     return Math.max(0, monthsLeft);
+  }
+
+  attachCollapsibleListeners() {
+    const headers = document.querySelectorAll('.right-panel-section .collapsible-header');
+    headers.forEach(header => {
+      header.addEventListener('click', (e) => {
+        const section = e.currentTarget.closest('.collapsible-section');
+        const sectionName = e.currentTarget.dataset.section;
+        
+        if (section) {
+          section.classList.toggle('collapsed');
+          const isCollapsed = section.classList.contains('collapsed');
+          localStorage.setItem(`pymax_${sectionName}_collapsed`, isCollapsed);
+        }
+      });
+    });
   }
 
   refresh() {
