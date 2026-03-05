@@ -40,6 +40,15 @@
   <!-- FASE 24: BACKUP & EXPORT SYSTEM -->
   <script src="/static/js/pymax-backup.js"></script>
   
+  <!-- FASE 1: PRIORITY ENGINE + OPENAI ADAPTER -->
+  <script src="/static/js/pymax-priority-engine.js"></script>
+  
+  <!-- FASE 2: ORBITAL SYSTEM -->
+  <script src="/static/js/pymax-orbital-system.js"></script>
+  
+  <!-- FASE 3: MODE MANAGER -->
+  <script src="/static/js/pymax-mode-manager.js"></script>
+  
   <!-- SIDEBAR & PANELS SYSTEM (3 COLUMN LAYOUT) -->
   <link rel="stylesheet" href="/static/css/pymax-sidebar.css">
   <link rel="stylesheet" href="/static/css/pymax-right-panel.css">
@@ -49,38 +58,91 @@
   <script src="/static/js/pymax-collapsible-sections.js"></script>
 
   <style>
-    /* ============================================
-       PYMAX COLOR SYSTEM V2 - Refinado
-       Inspirado en Stripe + Linear
-       ============================================ */
+    /* ═══════════════════════════════════════════════════
+       PYMAX MISSION CONTROL - IRIDESCENT INTELLIGENCE
+       Colores holográficos únicos para dashboard futurista
+       ═══════════════════════════════════════════════════ */
     :root {
-      /* COLORES PRIMARIOS (Saturación unificada 85-90%) */
-      --pymax-blue-primary: #2563eb;
-      --pymax-blue-light: #3b82f6;
-      --pymax-blue-dark: #1d4ed8;
-      --pymax-blue-glow: rgba(37, 99, 235, 0.4);
+      /* BASE - Deep Space con tinte púrpura */
+      --bg-void: #0a0118;
+      --bg-space: #150828;
+      --bg-space-light: #1e0f3a;
       
-      --pymax-green: #10b981;
-      --pymax-green-light: #34d399;
-      --pymax-green-dark: #059669;
+      /* GLASS - Holográfico con degradados */
+      --glass-hologram: linear-gradient(
+        135deg,
+        rgba(138, 43, 226, 0.12) 0%,
+        rgba(0, 212, 255, 0.08) 50%,
+        rgba(255, 20, 147, 0.10) 100%
+      );
       
-      --pymax-red: #dc2626;
-      --pymax-red-light: #ef4444;
-      --pymax-red-dark: #b91c1c;
+      /* SIGNALS - Colores vibrantes únicos */
+      --signal-primary: #00d4ff;
+      --signal-secondary: #a855f7;
+      --signal-accent: #ff1493;
+      --signal-success: #00ff9f;
+      --signal-warning: #ffd700;
+      --signal-critical: #ff0066;
       
-      --pymax-amber: #f59e0b;
-      --pymax-amber-light: #fbbf24;
+      /* DEGRADADOS HOLOGRÁFICOS (el secreto del WOW) */
+      --gradient-quantum: linear-gradient(
+        135deg,
+        #a855f7 0%,
+        #00d4ff 25%,
+        #00ff9f 50%,
+        #ffd700 75%,
+        #ff1493 100%
+      );
       
-      /* BACKGROUNDS (Contraste mejorado) */
-      --bg-card: rgba(37, 99, 235, 0.18);
-      --bg-card-hover: rgba(37, 99, 235, 0.25);
-      --bg-subtle: rgba(255, 255, 255, 0.03);
-      --bg-hero: rgba(37, 99, 235, 0.12);
+      --gradient-nebula: conic-gradient(
+        from 180deg at 50% 50%,
+        #a855f7 0deg,
+        #00d4ff 90deg,
+        #00ff9f 180deg,
+        #ff1493 270deg,
+        #a855f7 360deg
+      );
       
-      /* BORDES (Más visibles) */
-      --border-default: rgba(255, 255, 255, 0.15);
-      --border-hover: rgba(255, 255, 255, 0.25);
-      --border-focus: rgba(37, 99, 235, 0.5);
+      --gradient-plasma: linear-gradient(
+        45deg,
+        #00d4ff 0%,
+        #a855f7 33%,
+        #ff1493 66%,
+        #ffd700 100%
+      );
+      
+      /* GLOW EFFECTS - Luces holográficas */
+      --glow-quantum: 
+        0 0 20px rgba(168, 85, 247, 0.4),
+        0 0 40px rgba(0, 212, 255, 0.3),
+        0 0 60px rgba(255, 20, 147, 0.2);
+      
+      --glow-critical: 
+        0 0 30px rgba(255, 0, 102, 0.6),
+        0 0 60px rgba(255, 0, 102, 0.4);
+      
+      --glow-success: 
+        0 0 20px rgba(0, 255, 159, 0.5),
+        0 0 40px rgba(0, 255, 159, 0.3);
+      
+      /* TEXT - Con degradado holográfico */
+      --text-primary: #ffffff;
+      --text-hologram: var(--gradient-quantum);
+      --text-secondary: #b794f6;
+      --text-dim: #6b46a8;
+      
+      /* MODOS - Cada uno con su paleta */
+      --mode-stable-glow: var(--glow-success);
+      --mode-stable-gradient: linear-gradient(135deg, #00ff9f, #00d4ff);
+      
+      --mode-growth-glow: var(--glow-quantum);
+      --mode-growth-gradient: var(--gradient-quantum);
+      
+      --mode-closing-glow: 0 0 30px rgba(255, 215, 0, 0.5);
+      --mode-closing-gradient: linear-gradient(135deg, #ffd700, #ff8c00);
+      
+      --mode-crisis-glow: var(--glow-critical);
+      --mode-crisis-gradient: linear-gradient(135deg, #ff0066, #ff1493);
       
       /* ESPACIADO CONSISTENTE (8px base) */
       --space-xs: 8px;
@@ -88,6 +150,14 @@
       --space-md: 24px;
       --space-lg: 32px;
       --space-xl: 48px;
+      
+      /* Legacy compatibility */
+      --pymax-green: #00ff9f;
+      --pymax-red: #ff0066;
+      --pymax-blue-primary: #00d4ff;
+      --bg-card: rgba(138, 43, 226, 0.12);
+      --bg-subtle: rgba(255, 255, 255, 0.03);
+      --border-default: rgba(255, 255, 255, 0.12);
     }
 
     * { 
@@ -96,14 +166,50 @@
     }
 
     body {
-      background-color: #020617;
+      background: var(--bg-void);
       font-family: 'Inter', sans-serif;
       color: #e2e8f0;
       overflow-x: hidden;
-      background-image: 
-        radial-gradient(circle at 15% 0%, var(--bg-hero), transparent 40%),
-        radial-gradient(circle at 85% 100%, var(--bg-hero), transparent 40%);
-      background-attachment: fixed;
+      position: relative;
+      min-height: 100vh;
+    }
+    
+    /* PLASMA WAVES BACKGROUND */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: 
+        radial-gradient(circle at 30% 40%, rgba(138, 43, 226, 0.12) 0%, transparent 25%),
+        radial-gradient(circle at 70% 60%, rgba(0, 212, 255, 0.08) 0%, transparent 30%),
+        radial-gradient(circle at 50% 80%, rgba(255, 20, 147, 0.1) 0%, transparent 20%);
+      animation: plasma-wave 30s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    @keyframes plasma-wave {
+      0%, 100% { 
+        transform: translate(0, 0) scale(1) rotate(0deg); 
+        opacity: 1;
+      }
+      33% { 
+        transform: translate(-5%, 5%) scale(1.05) rotate(1deg); 
+        opacity: 0.9;
+      }
+      66% { 
+        transform: translate(5%, -5%) scale(0.95) rotate(-1deg); 
+        opacity: 0.95;
+      }
+    }
+    
+    /* Asegurar que el contenido esté encima */
+    .pymax-main-content {
+      position: relative;
+      z-index: 1;
     }
 
     h1, h2, h3, .font-display { font-family: 'Outfit', sans-serif; }
@@ -503,6 +609,95 @@
 
 <body>
 
+<!-- FASE 0.2: FLOATING PARTICLES -->
+<canvas id="particlesCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0;"></canvas>
+
+<script>
+// Inicializar partículas flotantes
+(function() {
+  const canvas = document.getElementById('particlesCanvas');
+  const ctx = canvas.getContext('2d');
+  
+  let particles = [];
+  const particleCount = 80;
+  
+  // Ajustar tamaño del canvas
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+  
+  // Clase Partícula
+  class Particle {
+    constructor() {
+      this.reset();
+    }
+    
+    reset() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 2 + 0.5;
+      this.speedX = (Math.random() - 0.5) * 0.3;
+      this.speedY = (Math.random() - 0.5) * 0.3;
+      this.opacity = Math.random() * 0.5 + 0.2;
+      
+      // Colores holográficos
+      const colors = [
+        'rgba(168, 85, 247,', // Púrpura
+        'rgba(0, 212, 255,',  // Cian
+        'rgba(255, 20, 147,', // Rosa
+        'rgba(0, 255, 159,',  // Verde
+        'rgba(255, 215, 0,'   // Oro
+      ];
+      this.color = colors[Math.floor(Math.random() * colors.length)];
+    }
+    
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      
+      // Wrap around screen
+      if (this.x < 0) this.x = canvas.width;
+      if (this.x > canvas.width) this.x = 0;
+      if (this.y < 0) this.y = canvas.height;
+      if (this.y > canvas.height) this.y = 0;
+    }
+    
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = this.color + this.opacity + ')';
+      ctx.fill();
+      
+      // Glow effect
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = this.color + '0.5)';
+    }
+  }
+  
+  // Crear partículas
+  for (let i = 0; i < particleCount; i++) {
+    particles.push(new Particle());
+  }
+  
+  // Animar
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    particles.forEach(particle => {
+      particle.update();
+      particle.draw();
+    });
+    
+    requestAnimationFrame(animate);
+  }
+  
+  animate();
+})();
+</script>
+
 <div class="pymax-main-content">
 
   <nav class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4 fade-in">
@@ -545,7 +740,7 @@
         <span>Volver</span>
       </a>
     </div>
-  </nav>
+   </nav>
 
   <!-- SALUDO IA + TAREAS -->
   <div class="mb-10 fade-in d-1" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(124, 58, 237, 0.08) 100%); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 20px; padding: 24px;">
@@ -684,6 +879,31 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- MISSION CONTROL: ORBITAL SYSTEM - NUEVO CENTRO DE COMANDO -->
+  <div class="mb-10 fade-in d-2" style="background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(59, 130, 246, 0.08) 100%); border: 1px solid rgba(124, 58, 237, 0.2); border-radius: 24px; padding: 32px; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--gradient-quantum);"></div>
+    
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="text-2xl font-bold text-white font-display mb-2">🛸 Mission Control Center</h2>
+        <p class="text-slate-400 text-sm">Sistema orbital de monitoreo financiero en tiempo real</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="window.pymaxOrbital?.update()" style="padding: 8px 16px; border-radius: 10px; background: rgba(124, 58, 237, 0.15); border: 1px solid rgba(124, 58, 237, 0.3); color: #c4b5fd; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;">
+          <i class="ph-bold ph-arrows-clockwise"></i> Refresh
+        </button>
+      </div>
+    </div>
+    
+    <!-- Contenedor del Sistema Orbital -->
+    <div id="orbitalSystemContainer" style="min-height: 600px; display: flex; align-items: center; justify-content: center;">
+      <div style="text-align: center; color: #94a3b8;">
+        <i class="ph-duotone ph-spinner-gap" style="font-size: 48px; animation: spin 1s linear infinite;"></i>
+        <p style="margin-top: 16px;">Inicializando Mission Control...</p>
+      </div>
+    </div>
   </div>
 
   <!-- HERO: IA CFO COMANDO CENTRAL (COMPACTO) - COLAPSABLE -->
@@ -2491,6 +2711,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       const stats = pymaxData.getFinancialStats('month');
       const operations = pymaxData.getData('operations');
       generateAIInsights(stats, operations);
+      
+      // Actualizar Orbital System
+      if (window.pymaxOrbital) {
+        window.pymaxOrbital.update();
+      }
     });
     
     // Escuchar cambios de idioma
@@ -2502,6 +2727,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     const stats = pymaxData.getFinancialStats('month');
     const operations = pymaxData.getData('operations');
     generateAIInsights(stats, operations);
+    
+    // FASE 4: Inicializar Orbital System
+    console.log('🛸 Initializing Mission Control Orbital System...');
+    window.pymaxOrbital = new PymaxOrbitalSystem('orbitalSystemContainer');
+    const orbitalInitOk = window.pymaxOrbital.init();
+    
+    if (orbitalInitOk) {
+      console.log('✅ Mission Control Orbital System ACTIVE');
+      
+      // Conectar con Mode Manager para transiciones automáticas
+      window.addEventListener('pymaxModeChanged', (event) => {
+        console.log('🔄 Mode changed, updating orbital system:', event.detail.currentMode);
+        if (window.pymaxOrbital) {
+          window.pymaxOrbital.update();
+        }
+      });
+    }
   }
   
   updateLastUpdate();
