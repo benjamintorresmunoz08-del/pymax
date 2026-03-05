@@ -268,28 +268,28 @@ class PymaxOrbitalSystem {
         label: 'BALANCE',
         value: this.formatCurrency(stats.balance),
         color: '#00d4ff',
-        url: '/mover/flujo-caja'
+        url: '/empresa/mover/flujo-caja'
       },
       {
         icon: '<i class="ph-duotone ph-arrow-up-right"></i>',
         label: 'INCOME',
         value: this.formatCurrency(stats.income),
         color: '#00ff9f',
-        url: '/mover/ventas-gastos'
+        url: '/empresa/mover/ventas-gastos'
       },
       {
         icon: '<i class="ph-duotone ph-arrow-down-left"></i>',
         label: 'EXPENSES',
         value: this.formatCurrency(stats.expenses),
         color: '#ff0066',
-        url: '/mover/ventas-gastos'
+        url: '/empresa/mover/ventas-gastos'
       },
       {
         icon: '<i class="ph-duotone ph-chart-line"></i>',
         label: 'MARGIN',
         value: stats.margin + '%',
         color: '#a855f7',
-        url: '/mover/flujo-caja'
+        url: '/empresa/mover/flujo-caja'
       }
     ];
 
@@ -320,35 +320,35 @@ class PymaxOrbitalSystem {
         label: 'FLUJO',
         value: '',
         color: '#00d4ff',
-        url: '/mover/flujo-caja'
+        url: '/empresa/mover/flujo-caja'
       },
       {
         icon: '<i class="ph-duotone ph-traffic-signal"></i>',
         label: 'STATUS',
         value: '',
         color: '#ffd700',
-        url: '/mover/semaforo'
+        url: '/empresa/mover/semaforo'
       },
       {
         icon: '<i class="ph-duotone ph-currency-dollar"></i>',
         label: 'VENTAS',
         value: '',
         color: '#00ff9f',
-        url: '/mover/ventas-gastos'
+        url: '/empresa/mover/ventas-gastos'
       },
       {
         icon: '<i class="ph-duotone ph-warning-circle"></i>',
         label: 'DEUDAS',
         value: '',
         color: '#ff0066',
-        url: '/mover/obligaciones'
+        url: '/empresa/mover/obligaciones'
       },
       {
         icon: '<i class="ph-duotone ph-target"></i>',
         label: 'METAS',
         value: '',
         color: '#ff1493',
-        url: '/mover/metas'
+        url: '/empresa/mover/metas'
       }
     ];
 
