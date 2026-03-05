@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════════════════════
- * PYMAX ORBITAL SYSTEM - FASE 2
+ * PYMAX ORBITAL SYSTEM - FASE 2 UPGRADED
  * Sistema de órbitas circulares estilo NASA/SpaceX
  * ═══════════════════════════════════════════════════════════════
  * 
@@ -10,6 +10,8 @@
  * - Órbita 2 (Outer): 6 herramientas de soporte
  * 
  * CARACTERÍSTICAS:
+ * - Iconos profesionales Phosphor (sin emojis)
+ * - URLs corregidas para navegación correcta
  * - Posicionamiento matemático con sin/cos
  * - Animación sutil de rotación
  * - Responsive (se adapta al tamaño de pantalla)
@@ -220,34 +222,34 @@ class PymaxOrbitalSystem {
   getModeConfig(mode) {
     const configs = {
       crisis: {
-        icon: '🚨',
+        icon: '<i class="ph-fill ph-warning-octagon" style="color: #ff0066;"></i>',
         label: 'CRISIS',
         color: '#ff0066',
-        description: 'Acción inmediata requerida'
+        description: 'Immediate action required'
       },
       warning: {
-        icon: '⚠️',
+        icon: '<i class="ph-fill ph-warning" style="color: #ffd700;"></i>',
         label: 'WARNING',
         color: '#ffd700',
-        description: 'Atención necesaria'
+        description: 'Attention needed'
       },
       growth: {
-        icon: '🚀',
+        icon: '<i class="ph-fill ph-rocket-launch" style="color: #00ff9f;"></i>',
         label: 'GROWTH',
         color: '#00ff9f',
-        description: 'Oportunidad de crecimiento'
+        description: 'Growth opportunity'
       },
       closing: {
-        icon: '📅',
+        icon: '<i class="ph-fill ph-calendar-check" style="color: #ffd700;"></i>',
         label: 'CLOSING',
         color: '#ffd700',
-        description: 'Fin de período cercano'
+        description: 'Period end approaching'
       },
       stable: {
-        icon: '✅',
+        icon: '<i class="ph-fill ph-check-circle" style="color: #00d4ff;"></i>',
         label: 'STABLE',
         color: '#00d4ff',
-        description: 'Todo funcionando normal'
+        description: 'All systems nominal'
       }
     };
 
@@ -262,32 +264,32 @@ class PymaxOrbitalSystem {
     
     const metrics = [
       {
-        icon: '💰',
-        label: 'Balance',
+        icon: '<i class="ph-duotone ph-wallet"></i>',
+        label: 'BALANCE',
         value: this.formatCurrency(stats.balance),
         color: '#00d4ff',
-        url: null
+        url: '/mover/flujo-caja'
       },
       {
-        icon: '📈',
-        label: 'Income',
+        icon: '<i class="ph-duotone ph-arrow-up-right"></i>',
+        label: 'INCOME',
         value: this.formatCurrency(stats.income),
         color: '#00ff9f',
-        url: null
+        url: '/mover/ventas-gastos'
       },
       {
-        icon: '📉',
-        label: 'Expenses',
+        icon: '<i class="ph-duotone ph-arrow-down-left"></i>',
+        label: 'EXPENSES',
         value: this.formatCurrency(stats.expenses),
         color: '#ff0066',
-        url: null
+        url: '/mover/ventas-gastos'
       },
       {
-        icon: '🎯',
-        label: 'Margin',
+        icon: '<i class="ph-duotone ph-chart-line"></i>',
+        label: 'MARGIN',
         value: stats.margin + '%',
         color: '#a855f7',
-        url: null
+        url: '/mover/flujo-caja'
       }
     ];
 
@@ -306,43 +308,44 @@ class PymaxOrbitalSystem {
   renderOrbit2(parent) {
     const tools = [
       {
-        icon: '💬',
-        label: 'Chat IA',
+        icon: '<i class="ph-duotone ph-chats-circle"></i>',
+        label: 'IA CFO',
         value: '',
         color: '#a855f7',
-        url: '/mover/ia-apoyo'
+        url: null,
+        action: () => window.pymaxChat?.open()
       },
       {
-        icon: '📊',
-        label: 'Flujo Caja',
+        icon: '<i class="ph-duotone ph-chart-line-up"></i>',
+        label: 'FLUJO',
         value: '',
         color: '#00d4ff',
         url: '/mover/flujo-caja'
       },
       {
-        icon: '🚦',
-        label: 'Semáforo',
+        icon: '<i class="ph-duotone ph-traffic-signal"></i>',
+        label: 'STATUS',
         value: '',
         color: '#ffd700',
         url: '/mover/semaforo'
       },
       {
-        icon: '📝',
-        label: 'Ventas',
+        icon: '<i class="ph-duotone ph-currency-dollar"></i>',
+        label: 'VENTAS',
         value: '',
         color: '#00ff9f',
         url: '/mover/ventas-gastos'
       },
       {
-        icon: '⚠️',
-        label: 'Deudas',
+        icon: '<i class="ph-duotone ph-warning-circle"></i>',
+        label: 'DEUDAS',
         value: '',
         color: '#ff0066',
         url: '/mover/obligaciones'
       },
       {
-        icon: '🎯',
-        label: 'Metas',
+        icon: '<i class="ph-duotone ph-target"></i>',
+        label: 'METAS',
         value: '',
         color: '#ff1493',
         url: '/mover/metas'
@@ -400,11 +403,13 @@ class PymaxOrbitalSystem {
     `;
 
     // Click handler
-    if (data.url) {
-      item.addEventListener('click', () => {
+    item.addEventListener('click', () => {
+      if (data.action) {
+        data.action();
+      } else if (data.url) {
         window.location.href = data.url;
-      });
-    }
+      }
+    });
 
     // Hover effect
     item.addEventListener('mouseenter', () => {
