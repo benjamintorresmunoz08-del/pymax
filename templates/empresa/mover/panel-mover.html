@@ -951,9 +951,21 @@
     </div>
 
     <!-- Content Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
       
-      <!-- Score Section (Left) - DINÁMICO CON ANIMACIÓN -->
+      <!-- HOLOGRAM AI (NEW - Left) -->
+      <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 24px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <div id="pymaxHologramContainer" style="width: 100%; height: 250px; position: relative;">
+          <!-- Hologram se renderiza aquí -->
+        </div>
+        <div style="margin-top: 16px;">
+          <button onclick="testHologramStates()" style="padding: 8px 16px; border-radius: 8px; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); color: #a855f7; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+            <i class="ph-bold ph-play-circle"></i> Test States
+          </button>
+        </div>
+      </div>
+      
+      <!-- Score Section - DINÁMICO CON ANIMACIÓN -->
       <div id="scoreSection" style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 24px; text-align: center;">
         <div style="font-size: 0.7rem; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">HEALTH SCORE</div>
         <div id="healthScoreValue" style="font-size: 3.5rem; font-weight: 800; line-height: 1; margin: 16px 0; background: linear-gradient(135deg, #fff 0%, #94a3b8 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
@@ -2695,6 +2707,110 @@ function refreshAIInsights() {
   setTimeout(() => icon.style.animation = '', 500);
 }
 
+// ============================================
+// HOLOGRAM AI - INICIALIZACIÓN Y TESTS
+// ============================================
+
+// Inicializar Hologram AI
+function initHologram() {
+  if (window.pymaxHologram) {
+    console.log('⚠️ Hologram already initialized');
+    return;
+  }
+  
+  window.pymaxHologram = new PymaxHologram({
+    containerId: 'pymaxHologramContainer'
+  });
+  
+  const success = window.pymaxHologram.init();
+  
+  if (success) {
+    console.log('✅ Hologram AI initialized successfully');
+    
+    // Estado inicial
+    setTimeout(() => {
+      window.pymaxHologram.idle();
+    }, 500);
+  }
+}
+
+// Test de estados del hologram
+function testHologramStates() {
+  if (!window.pymaxHologram) {
+    console.error('❌ Hologram not initialized');
+    return;
+  }
+  
+  console.log('🎬 Testing Hologram states...');
+  
+  const sequence = [
+    { state: 'idle', duration: 2000, message: 'Ready to assist' },
+    { state: 'listening', duration: 2000, message: 'Listening...' },
+    { state: 'processing', duration: 2000, message: 'Processing your request...' },
+    { state: 'speaking', duration: 3000, text: 'Hello! I am your AI financial assistant. How can I help you today?' },
+    { state: 'alert', duration: 2000, message: 'Critical alert detected!' },
+    { state: 'idle', duration: 1000, message: 'Test complete' }
+  ];
+  
+  let currentIndex = 0;
+  
+  function runNext() {
+    if (currentIndex >= sequence.length) {
+      console.log('✅ Hologram test complete');
+      return;
+    }
+    
+    const step = sequence[currentIndex];
+    
+    switch (step.state) {
+      case 'idle':
+        window.pymaxHologram.idle();
+        break;
+      case 'listening':
+        window.pymaxHologram.listen();
+        break;
+      case 'processing':
+        window.pymaxHologram.process(step.message);
+        break;
+      case 'speaking':
+        window.pymaxHologram.speak(step.text);
+        break;
+      case 'alert':
+        window.pymaxHologram.alert(step.message);
+        break;
+    }
+    
+    currentIndex++;
+    setTimeout(runNext, step.duration);
+  }
+  
+  runNext();
+}
+
+// Integrar Hologram con Priority Engine
+function syncHologramWithMode(mode) {
+  if (!window.pymaxHologram) return;
+  
+  switch (mode) {
+    case 'crisis':
+      window.pymaxHologram.alert('Critical financial situation detected!');
+      setTimeout(() => window.pymaxHologram.idle(), 3000);
+      break;
+      
+    case 'warning':
+      window.pymaxHologram.process('Attention required - analyzing data');
+      setTimeout(() => window.pymaxHologram.idle(), 2000);
+      break;
+      
+    case 'growth':
+      window.pymaxHologram.speak('Excellent performance! Growth opportunity detected.');
+      break;
+      
+    default:
+      window.pymaxHologram.idle();
+  }
+}
+
 // Inicializar
 document.addEventListener('DOMContentLoaded', async () => {
   // Ensure authentication first
@@ -2746,8 +2862,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (window.pymaxOrbital) {
           window.pymaxOrbital.update();
         }
+        
+        // Sincronizar Hologram con modo
+        syncHologramWithMode(event.detail.currentMode);
       });
     }
+    
+    // FASE HOLOGRAM: Inicializar Hologram AI
+    console.log('🤖 Initializing Hologram AI...');
+    initHologram();
   }
   
   updateLastUpdate();
