@@ -268,7 +268,7 @@ class PymaxOrbitalSystem {
         label: 'BALANCE',
         value: this.formatCurrency(stats.balance),
         color: '#00d4ff',
-        url: '/empresa/mover/flujo-caja'
+        url: '/empresa/mover/flujo'
       },
       {
         icon: '<i class="ph-duotone ph-arrow-up-right"></i>',
@@ -289,7 +289,7 @@ class PymaxOrbitalSystem {
         label: 'MARGIN',
         value: stats.margin + '%',
         color: '#a855f7',
-        url: '/empresa/mover/flujo-caja'
+        url: '/empresa/mover/flujo'
       }
     ];
 
@@ -320,7 +320,7 @@ class PymaxOrbitalSystem {
         label: 'FLUJO',
         value: '',
         color: '#00d4ff',
-        url: '/empresa/mover/flujo-caja'
+        url: '/empresa/mover/flujo'
       },
       {
         icon: '<i class="ph-duotone ph-traffic-signal"></i>',
