@@ -49,6 +49,47 @@
   <script src="/static/js/pymax-collapsible-sections.js"></script>
 
   <style>
+    /* ============================================
+       PYMAX COLOR SYSTEM V2 - Refinado
+       Inspirado en Stripe + Linear
+       ============================================ */
+    :root {
+      /* COLORES PRIMARIOS (Saturación unificada 85-90%) */
+      --pymax-blue-primary: #2563eb;
+      --pymax-blue-light: #3b82f6;
+      --pymax-blue-dark: #1d4ed8;
+      --pymax-blue-glow: rgba(37, 99, 235, 0.4);
+      
+      --pymax-green: #10b981;
+      --pymax-green-light: #34d399;
+      --pymax-green-dark: #059669;
+      
+      --pymax-red: #dc2626;
+      --pymax-red-light: #ef4444;
+      --pymax-red-dark: #b91c1c;
+      
+      --pymax-amber: #f59e0b;
+      --pymax-amber-light: #fbbf24;
+      
+      /* BACKGROUNDS (Contraste mejorado) */
+      --bg-card: rgba(37, 99, 235, 0.18);
+      --bg-card-hover: rgba(37, 99, 235, 0.25);
+      --bg-subtle: rgba(255, 255, 255, 0.03);
+      --bg-hero: rgba(37, 99, 235, 0.12);
+      
+      /* BORDES (Más visibles) */
+      --border-default: rgba(255, 255, 255, 0.15);
+      --border-hover: rgba(255, 255, 255, 0.25);
+      --border-focus: rgba(37, 99, 235, 0.5);
+      
+      /* ESPACIADO CONSISTENTE (8px base) */
+      --space-xs: 8px;
+      --space-sm: 16px;
+      --space-md: 24px;
+      --space-lg: 32px;
+      --space-xl: 48px;
+    }
+
     * { 
       -webkit-font-smoothing: antialiased; 
       -moz-osx-font-smoothing: grayscale; 
@@ -60,8 +101,8 @@
       color: #e2e8f0;
       overflow-x: hidden;
       background-image: 
-        radial-gradient(circle at 15% 0%, rgba(59, 130, 246, 0.12), transparent 40%),
-        radial-gradient(circle at 85% 100%, rgba(124, 58, 237, 0.12), transparent 40%);
+        radial-gradient(circle at 15% 0%, var(--bg-hero), transparent 40%),
+        radial-gradient(circle at 85% 100%, var(--bg-hero), transparent 40%);
       background-attachment: fixed;
     }
 
@@ -69,9 +110,9 @@
 
     .card-stat {
       background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.4) 100%);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--border-default);
       border-radius: 20px;
-      padding: 20px;
+      padding: var(--space-md);
       position: relative;
       overflow: hidden;
       transition: all 0.3s ease;
@@ -89,7 +130,7 @@
 
     .card-stat:hover {
       transform: translateY(-4px);
-      border-color: rgba(255, 255, 255, 0.2);
+      border-color: var(--border-hover);
       box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
     }
 
@@ -126,21 +167,21 @@
 
     .stat-change.positive {
       background: rgba(16, 185, 129, 0.1);
-      color: #34d399;
+      color: var(--pymax-green);
       border: 1px solid rgba(16, 185, 129, 0.2);
     }
 
     .stat-change.negative {
-      background: rgba(239, 68, 68, 0.1);
-      color: #f87171;
-      border: 1px solid rgba(239, 68, 68, 0.2);
+      background: rgba(220, 38, 38, 0.1);
+      color: var(--pymax-red);
+      border: 1px solid rgba(220, 38, 38, 0.2);
     }
 
     .card-module {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-default);
       border-radius: 20px;
-      padding: 24px;
+      padding: var(--space-md);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -152,8 +193,8 @@
 
     .card-module:hover {
       transform: translateY(-4px);
-      background: rgba(30, 41, 59, 0.8);
-      border-color: rgba(255, 255, 255, 0.2);
+      background: var(--bg-card);
+      border-color: var(--border-hover);
       box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
     }
 
@@ -186,30 +227,30 @@
     }
 
     .type-finance .icon-box { 
-      background: rgba(59, 130, 246, 0.15); 
-      color: #60a5fa; 
-      border-color: rgba(59, 130, 246, 0.3); 
+      background: rgba(37, 99, 235, 0.15); 
+      color: var(--pymax-blue-light); 
+      border-color: rgba(37, 99, 235, 0.3); 
     }
     .type-risk .icon-box { 
-      background: rgba(244, 63, 94, 0.15); 
-      color: #fb7185; 
-      border-color: rgba(244, 63, 94, 0.3); 
+      background: rgba(220, 38, 38, 0.15); 
+      color: var(--pymax-red); 
+      border-color: rgba(220, 38, 38, 0.3); 
     }
     .type-growth .icon-box { 
       background: rgba(16, 185, 129, 0.15); 
-      color: #34d399; 
+      color: var(--pymax-green-light); 
       border-color: rgba(16, 185, 129, 0.3); 
     }
     .type-system .icon-box { 
-      background: rgba(139, 92, 246, 0.15); 
-      color: #a78bfa; 
-      border-color: rgba(139, 92, 246, 0.3); 
+      background: rgba(37, 99, 235, 0.15); 
+      color: var(--pymax-blue-light); 
+      border-color: rgba(37, 99, 235, 0.3); 
     }
     .type-ai .icon-box { 
-      background: linear-gradient(135deg, #4f46e5, #7c3aed); 
+      background: linear-gradient(135deg, var(--pymax-blue-primary), var(--pymax-blue-dark)); 
       color: white; 
       border: none; 
-      box-shadow: 0 0 20px rgba(124, 58, 237, 0.4); 
+      box-shadow: 0 0 20px var(--pymax-blue-glow); 
     }
 
     .btn-link {
@@ -248,19 +289,19 @@
     }
 
     .alert-card {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      border-left: 4px solid #ef4444;
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%);
+      border: 1px solid rgba(220, 38, 38, 0.3);
+      border-left: 4px solid var(--pymax-red);
       border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 24px;
+      padding: var(--space-md);
+      margin-bottom: var(--space-md);
     }
 
     .chart-container {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-default);
       border-radius: 20px;
-      padding: 24px;
+      padding: var(--space-md);
       height: 280px;
     }
 
@@ -286,8 +327,8 @@
 
     /* DRAG & DROP ZONE */
     .drag-drop-zone {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(124, 58, 237, 0.05) 100%);
-      border: 2px dashed rgba(59, 130, 246, 0.3);
+      background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-subtle) 100%);
+      border: 2px dashed var(--border-default);
       border-radius: 20px;
       padding: 40px;
       text-align: center;
@@ -304,18 +345,18 @@
       left: 0;
       right: 0;
       height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), transparent);
+      background: linear-gradient(90deg, transparent, var(--pymax-blue-primary), transparent);
     }
 
     .drag-drop-zone:hover {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
-      border-color: rgba(59, 130, 246, 0.5);
+      background: linear-gradient(135deg, var(--bg-card-hover) 0%, var(--bg-card) 100%);
+      border-color: var(--border-hover);
       transform: translateY(-2px);
     }
 
     .drag-drop-zone.drag-over {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%);
-      border-color: rgba(59, 130, 246, 0.7);
+      background: var(--bg-card-hover);
+      border-color: var(--pymax-blue-primary);
       border-style: solid;
       transform: scale(1.02);
     }
@@ -324,13 +365,13 @@
       width: 80px;
       height: 80px;
       margin: 0 auto 20px;
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(124, 58, 237, 0.2));
+      background: linear-gradient(135deg, var(--pymax-blue-primary), var(--pymax-blue-dark));
       border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 40px;
-      color: #60a5fa;
+      color: white;
     }
 
     .drag-drop-zone:hover .drag-drop-icon {
@@ -351,12 +392,12 @@
       align-items: center;
       gap: 6px;
       padding: 6px 12px;
-      background: rgba(59, 130, 246, 0.1);
-      border: 1px solid rgba(59, 130, 246, 0.3);
+      background: rgba(37, 99, 235, 0.1);
+      border: 1px solid rgba(37, 99, 235, 0.3);
       border-radius: 8px;
       font-size: 0.75rem;
       font-weight: 600;
-      color: #60a5fa;
+      color: var(--pymax-blue-light);
     }
 
     /* UPLOAD ANIMATIONS */
@@ -390,13 +431,13 @@
       left: 0;
       top: 0;
       height: 100%;
-      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+      background: linear-gradient(90deg, var(--pymax-blue-primary), var(--pymax-blue-light));
       border-radius: 2px;
       transition: width 0.3s ease;
     }
 
     .upload-progress-bar.complete {
-      background: linear-gradient(90deg, #10b981, #34d399);
+      background: linear-gradient(90deg, var(--pymax-green-dark), var(--pymax-green));
     }
 
     @keyframes shimmer {
@@ -563,12 +604,15 @@
         <i class="ph-bold ph-equals text-sm"></i>
         <span>0%</span>
       </div>
-      <!-- Comparador vs mes pasado -->
-      <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.05);">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-          <span style="font-size: 0.7rem; color: #64748b;">vs Mes Pasado</span>
-          <span id="balanceComparison" style="font-size: 0.75rem; font-weight: 700;">
-            <i class="ph-bold ph-equals" style="font-size: 10px;"></i> 0%
+      <!-- Comparador vs mes pasado - GIGANTE Y PROMINENTE -->
+      <div style="margin-top: 12px; padding: 12px; background: rgba(255, 255, 255, 0.03); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.08);">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+          <span style="font-size: 0.7rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">vs Mes Pasado</span>
+        </div>
+        <div style="display: flex; align-items: baseline; gap: 6px;">
+          <span id="balanceComparison" style="font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; gap: 4px;">
+            <i class="ph-bold ph-equals" style="font-size: 18px;"></i> 
+            <span>0%</span>
           </span>
         </div>
       </div>
@@ -685,17 +729,18 @@
     <!-- Content Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       
-      <!-- Score Section (Left) -->
+      <!-- Score Section (Left) - DINÁMICO CON ANIMACIÓN -->
       <div id="scoreSection" style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 24px; text-align: center;">
-        <!-- Score content will be added in Part 2 -->
         <div style="font-size: 0.7rem; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">HEALTH SCORE</div>
-        <div style="font-size: 3.5rem; font-weight: 800; line-height: 1; margin: 16px 0; background: linear-gradient(135deg, #fff 0%, #94a3b8 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">78</div>
-        <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin: 16px 0;">
-          <div style="width: 78%; height: 100%; background: linear-gradient(90deg, #10b981, #34d399); border-radius: 4px;"></div>
+        <div id="healthScoreValue" style="font-size: 3.5rem; font-weight: 800; line-height: 1; margin: 16px 0; background: linear-gradient(135deg, #fff 0%, #94a3b8 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+          <span class="score-loading">--</span>
         </div>
-        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2);">
-          <i class="ph-fill ph-check-circle"></i>
-          Healthy
+        <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin: 16px 0;">
+          <div id="healthScoreBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #10b981, #34d399); border-radius: 4px; transition: width 1s ease;"></div>
+        </div>
+        <span id="healthScoreBadge" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: rgba(148, 163, 184, 0.1); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.2);">
+          <i class="ph-fill ph-circle-notch"></i>
+          Calculando...
         </span>
       </div>
   
@@ -766,8 +811,8 @@
     </div>
   </div>
 
-  <!-- ALERTAS IMPORTANTES - COLAPSABLE -->
-  <div class="pymax-collapsible-section fade-in d-2" data-section-id="alertas">
+  <!-- ALERTAS IMPORTANTES - COLAPSABLE (CERRADA POR DEFECTO) -->
+  <div class="pymax-collapsible-section fade-in d-2 collapsed" data-section-id="alertas">
     <div class="section-header">
       <div class="section-header-left">
         <div class="section-header-icon" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border-color: rgba(239, 68, 68, 0.3);">
@@ -789,8 +834,8 @@
     </div>
   </div>
 
-  <!-- FASE 21: MINI-WIDGETS INFORMATIVOS - COLAPSABLE -->
-  <div class="pymax-collapsible-section fade-in d-3" data-section-id="widgets">
+  <!-- FASE 21: MINI-WIDGETS INFORMATIVOS - COLAPSABLE (CERRADA POR DEFECTO) -->
+  <div class="pymax-collapsible-section fade-in d-3 collapsed" data-section-id="widgets">
     <div class="section-header">
       <div class="section-header-left">
         <div class="section-header-icon" style="background: rgba(139, 92, 246, 0.15); color: #a78bfa; border-color: rgba(139, 92, 246, 0.3);">
@@ -812,8 +857,8 @@
     </div>
   </div>
 
-  <!-- FASE 11: INDICADOR RUNWAY - COLAPSABLE -->
-  <div class="pymax-collapsible-section mb-10 fade-in d-3" data-section-id="runway">
+  <!-- FASE 11: INDICADOR RUNWAY - COLAPSABLE (CERRADA POR DEFECTO) -->
+  <div class="pymax-collapsible-section mb-10 fade-in d-3 collapsed" data-section-id="runway">
     <div class="section-header">
       <div class="section-header-left">
         <div class="section-header-icon" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border-color: rgba(239, 68, 68, 0.3);">
@@ -929,8 +974,8 @@
     </div>
   </div>
 
-  <!-- FASE 10: SEMÁFORO PYMAX VISUAL - COLAPSABLE -->
-  <div class="pymax-collapsible-section mb-10 fade-in d-3" data-section-id="semaforo">
+  <!-- FASE 10: SEMÁFORO PYMAX VISUAL - COLAPSABLE (CERRADA POR DEFECTO) -->
+  <div class="pymax-collapsible-section mb-10 fade-in d-3 collapsed" data-section-id="semaforo">
     <div class="section-header">
       <div class="section-header-left">
         <div class="section-header-icon" style="background: rgba(251, 191, 36, 0.15); color: #fbbf24; border-color: rgba(251, 191, 36, 0.3);">
@@ -1020,8 +1065,8 @@
     </div>
   </div>
 
-  <!-- DRAG & DROP ZONE - COLAPSABLE -->
-  <div class="pymax-collapsible-section mb-10 fade-in d-3" data-section-id="drag-drop">
+  <!-- DRAG & DROP ZONE - COLAPSABLE (CERRADA POR DEFECTO) -->
+  <div class="pymax-collapsible-section mb-10 fade-in d-3 collapsed" data-section-id="drag-drop">
     <div class="section-header">
       <div class="section-header-left">
         <div class="section-header-icon" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3);">
@@ -1078,8 +1123,8 @@
     </div>
   </div>
 
-  <!-- FASE 12: GRÁFICO DE FLUJO - COLAPSABLE -->
-  <div class="pymax-collapsible-section mb-10 fade-in d-4" data-section-id="grafico-flujo">
+  <!-- FASE 12: GRÁFICO DE FLUJO - COLAPSABLE (CERRADA POR DEFECTO) -->
+  <div class="pymax-collapsible-section mb-10 fade-in d-4 collapsed" data-section-id="grafico-flujo">
     <div class="section-header">
       <div class="section-header-left">
         <div class="section-header-icon">
@@ -1141,8 +1186,8 @@
     </div>
   </div>
 
-  <!-- FASE 9: REPORTES AUTOMÁTICOS - COLAPSABLE -->
-  <div class="pymax-collapsible-section mb-10 fade-in d-5" data-section-id="reportes">
+  <!-- FASE 9: REPORTES AUTOMÁTICOS - COLAPSABLE (CERRADA POR DEFECTO) -->
+  <div class="pymax-collapsible-section mb-10 fade-in d-5 collapsed" data-section-id="reportes">
     <div class="section-header">
       <div class="section-header-left">
         <div class="section-header-icon" style="background: rgba(139, 92, 246, 0.15); color: #a78bfa; border-color: rgba(139, 92, 246, 0.3);">
@@ -1235,8 +1280,8 @@
     </div>
   </div>
 
-  <!-- FASE 6: TOP CLIENTES Y GASTOS - COLAPSABLE -->
-  <div class="pymax-collapsible-section mb-10 fade-in d-5" data-section-id="top-clientes-gastos">
+  <!-- FASE 6: TOP CLIENTES Y GASTOS - COLAPSABLE (CERRADA POR DEFECTO) -->
+  <div class="pymax-collapsible-section mb-10 fade-in d-5 collapsed" data-section-id="top-clientes-gastos">
     <div class="section-header">
       <div class="section-header-left">
         <div class="section-header-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">
@@ -1935,158 +1980,245 @@ function calculateRunway(balance, operations) {
   return Math.max(0, monthsLeft);
 }
 
-// Verificar alertas importantes (EXPANDIDO - FASE 4)
+// CRÍTICA #2: Sistema de priorización de alertas (Solo TOP 1 + botón "Ver más")
 function checkAlerts(balance, operations) {
   const alertsContainer = document.getElementById('alertsContainer');
-  
-  // LIMPIAR alertas anteriores para evitar duplicados
   alertsContainer.innerHTML = '';
   
-  // ALERTA 1: Proyección de Quiebra (NUEVA)
+  // Array para almacenar todas las alertas con su prioridad
+  const allAlerts = [];
+  
+  const stats = pymaxData.getFinancialStats('month');
   const runway = calculateRunway(balance, operations);
+  
+  // ALERTA 1: Proyección de Quiebra (Prioridad: 100 - CRÍTICA)
   if (runway !== null && runway < 3) {
-    const alert = document.createElement('div');
-    alert.className = 'alert-card fade-in';
-    alert.style.background = 'linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.08) 100%)';
-    alert.style.borderColor = 'rgba(239, 68, 68, 0.4)';
-    alert.style.borderLeft = '4px solid #ef4444';
-    alert.innerHTML = `
-      <div class="flex items-start gap-4">
-        <div class="flex-shrink-0">
-          <i class="ph-fill ph-warning-octagon text-3xl text-red-400 pulse-icon"></i>
+    allAlerts.push({
+      priority: 100,
+      urgencyScore: (3 - runway) * 40, // Mayor urgencia = menor tiempo
+      type: 'critical',
+      html: `
+        <div class="flex items-start gap-4">
+          <div class="flex-shrink-0">
+            <i class="ph-fill ph-warning-octagon text-3xl text-red-400 pulse-icon"></i>
+          </div>
+          <div class="flex-1">
+            <h4 class="font-bold text-white mb-1">⚠️ Proyección de Quiebra Crítica</h4>
+            <p class="text-sm text-slate-300 mb-3">
+              Al ritmo actual de gastos, tu balance llegará a $0 en aproximadamente <strong>${runway.toFixed(1)} meses</strong>. 
+              Es urgente aumentar ingresos o reducir gastos inmediatamente.
+            </p>
+            <div class="flex gap-2">
+              <a href="${'{{ url_for("mover_flujo") }}'}" class="text-sm text-red-400 hover:text-red-300 font-semibold">
+                Ver Proyección Detallada →
+              </a>
+            </div>
+          </div>
         </div>
-        <div class="flex-1">
-          <h4 class="font-bold text-white mb-1">⚠️ Proyección de Quiebra Crítica</h4>
-          <p class="text-sm text-slate-300 mb-3">
-            Al ritmo actual de gastos, tu balance llegará a $0 en aproximadamente <strong>${runway.toFixed(1)} meses</strong>. 
-            Es urgente aumentar ingresos o reducir gastos inmediatamente.
-          </p>
-          <div class="flex gap-2">
-            <a href="${'{{ url_for("mover_flujo") }}'}" class="text-sm text-red-400 hover:text-red-300 font-semibold">
-              Ver Proyección Detallada →
-            </a>
-            <span class="text-slate-500">|</span>
-            <a href="${'{{ url_for("mover_ventas") }}'}" class="text-sm text-red-400 hover:text-red-300 font-semibold">
-              Registrar Ingreso →
+      `,
+      bgStyle: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.08) 100%)',
+      borderColor: 'rgba(239, 68, 68, 0.4)',
+      borderLeft: '4px solid #ef4444'
+    });
+  }
+  
+  // ALERTA 2: Gastos Superan Ingresos (Prioridad: 80)
+  if (stats.expenses > stats.income && stats.income > 0) {
+    const deficit = stats.expenses - stats.income;
+    const impactScore = (deficit / stats.income) * 100; // % de déficit
+    allAlerts.push({
+      priority: 80,
+      urgencyScore: impactScore,
+      type: 'warning',
+      html: `
+        <div class="flex items-start gap-4">
+          <div class="flex-shrink-0">
+            <i class="ph-fill ph-trend-down text-3xl text-yellow-400"></i>
+          </div>
+          <div class="flex-1">
+            <h4 class="font-bold text-white mb-1">Gastos Superan Ingresos</h4>
+            <p class="text-sm text-slate-300 mb-3">
+              Este mes tus gastos (${formatCurrency(stats.expenses)}) superan tus ingresos (${formatCurrency(stats.income)}) 
+              por ${formatCurrency(deficit)}. Revisa tus gastos o aumenta ingresos.
+            </p>
+            <a href="${'{{ url_for("mover_ventas") }}'}" class="text-sm text-yellow-400 hover:text-yellow-300 font-semibold">
+              Ver Detalle de Gastos →
             </a>
           </div>
         </div>
-      </div>
-    `;
-    alertsContainer.appendChild(alert);
+      `,
+      bgStyle: 'linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%)',
+      borderColor: 'rgba(251, 191, 36, 0.3)',
+      borderLeft: '4px solid #fbbf24'
+    });
   }
   
-  // ALERTA 2: Balance bajo
+  // ALERTA 3: Balance Bajo (Prioridad: 60)
   if (balance < 100000) {
-    const alert = document.createElement('div');
-    alert.className = 'alert-card fade-in';
-    alert.innerHTML = `
-      <div class="flex items-start gap-4">
-        <div class="flex-shrink-0">
-          <i class="ph-fill ph-warning-circle text-3xl text-red-400"></i>
+    const criticality = ((100000 - balance) / 100000) * 100;
+    allAlerts.push({
+      priority: 60,
+      urgencyScore: criticality,
+      type: 'warning',
+      html: `
+        <div class="flex items-start gap-4">
+          <div class="flex-shrink-0">
+            <i class="ph-fill ph-warning-circle text-3xl text-red-400"></i>
+          </div>
+          <div class="flex-1">
+            <h4 class="font-bold text-white mb-1">Balance Bajo</h4>
+            <p class="text-sm text-slate-300 mb-3">
+              Tu balance actual está por debajo del umbral recomendado. Considera revisar tus gastos o aumentar ingresos.
+            </p>
+            <a href="${'{{ url_for("mover_flujo") }}'}" class="text-sm text-red-400 hover:text-red-300 font-semibold">
+              Ver Análisis de Flujo de Caja →
+            </a>
+          </div>
         </div>
-        <div class="flex-1">
-          <h4 class="font-bold text-white mb-1">Balance Bajo</h4>
-          <p class="text-sm text-slate-300 mb-3">
-            Tu balance actual está por debajo del umbral recomendado. Considera revisar tus gastos o aumentar ingresos.
-          </p>
-          <a href="${'{{ url_for("mover_flujo") }}'}" class="text-sm text-red-400 hover:text-red-300 font-semibold">
-            Ver Análisis de Flujo de Caja →
-          </a>
-        </div>
-      </div>
-    `;
-    alertsContainer.appendChild(alert);
+      `,
+      bgStyle: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.08) 100%)',
+      borderColor: 'rgba(239, 68, 68, 0.4)',
+      borderLeft: '4px solid #ef4444'
+    });
   }
-
-  // ALERTA 3: Sin operaciones recientes
+  
+  // ALERTA 4: Sin Actividad Reciente (Prioridad: 30)
   const last3Days = operations.filter(op => {
     const opDate = new Date(op.created_at);
     const threeDaysAgo = new Date();
     threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
     return opDate >= threeDaysAgo;
   });
-
+  
   if (last3Days.length === 0 && operations.length > 0) {
-    const alert = document.createElement('div');
-    alert.className = 'alert-card fade-in';
-    alert.style.background = 'linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%)';
-    alert.style.borderColor = 'rgba(251, 191, 36, 0.3)';
-    alert.style.borderLeft = '4px solid #fbbf24';
-    alert.innerHTML = `
-      <div class="flex items-start gap-4">
-        <div class="flex-shrink-0">
-          <i class="ph-fill ph-info text-3xl text-yellow-400"></i>
+    allAlerts.push({
+      priority: 30,
+      urgencyScore: 50,
+      type: 'info',
+      html: `
+        <div class="flex items-start gap-4">
+          <div class="flex-shrink-0">
+            <i class="ph-fill ph-info text-3xl text-yellow-400"></i>
+          </div>
+          <div class="flex-1">
+            <h4 class="font-bold text-white mb-1">Sin Actividad Reciente</h4>
+            <p class="text-sm text-slate-300 mb-3">
+              No has registrado transacciones en los últimos 3 días. Mantén tus registros actualizados para insights precisos.
+            </p>
+            <a href="${'{{ url_for("mover_ventas") }}'}" class="text-sm text-yellow-400 hover:text-yellow-300 font-semibold">
+              Registrar Transacción →
+            </a>
+          </div>
         </div>
-        <div class="flex-1">
-          <h4 class="font-bold text-white mb-1">Sin Actividad Reciente</h4>
-          <p class="text-sm text-slate-300 mb-3">
-            No has registrado transacciones en los últimos 3 días. Mantén tus registros actualizados para insights precisos.
-          </p>
-          <a href="${'{{ url_for("mover_ventas") }}'}" class="text-sm text-yellow-400 hover:text-yellow-300 font-semibold">
-            Registrar Transacción →
-          </a>
-        </div>
-      </div>
-    `;
-    alertsContainer.appendChild(alert);
+      `,
+      bgStyle: 'linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%)',
+      borderColor: 'rgba(251, 191, 36, 0.3)',
+      borderLeft: '4px solid #fbbf24'
+    });
   }
   
-  // ALERTA 4: Recordatorio Inteligente - Gastos Altos (NUEVA)
-  const stats = pymaxData.getFinancialStats('month');
-  if (stats.expenses > stats.income && stats.income > 0) {
-    const deficit = stats.expenses - stats.income;
-    const alert = document.createElement('div');
-    alert.className = 'alert-card fade-in';
-    alert.style.background = 'linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%)';
-    alert.style.borderColor = 'rgba(251, 191, 36, 0.3)';
-    alert.style.borderLeft = '4px solid #fbbf24';
-    alert.innerHTML = `
-      <div class="flex items-start gap-4">
-        <div class="flex-shrink-0">
-          <i class="ph-fill ph-trend-down text-3xl text-yellow-400"></i>
-        </div>
-        <div class="flex-1">
-          <h4 class="font-bold text-white mb-1">Gastos Superan Ingresos</h4>
-          <p class="text-sm text-slate-300 mb-3">
-            Este mes tus gastos (${formatCurrency(stats.expenses)}) superan tus ingresos (${formatCurrency(stats.income)}) 
-            por ${formatCurrency(deficit)}. Revisa tus gastos o aumenta ingresos.
-          </p>
-          <a href="${'{{ url_for("mover_ventas") }}'}" class="text-sm text-yellow-400 hover:text-yellow-300 font-semibold">
-            Ver Detalle de Gastos →
-          </a>
-        </div>
-      </div>
-    `;
-    alertsContainer.appendChild(alert);
-  }
-  
-  // ALERTA 5: Alerta de Vencimientos Próximos (NUEVA - Simulada)
-  // En producción, esto vendría de la tabla de obligaciones
-  const hasUpcomingPayments = Math.random() > 0.7; // Simulación
+  // ALERTA 5: Pagos Próximos (Prioridad: 50 - Simulada)
+  const hasUpcomingPayments = Math.random() > 0.7;
   if (hasUpcomingPayments) {
-    const alert = document.createElement('div');
-    alert.className = 'alert-card fade-in';
-    alert.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%)';
-    alert.style.borderColor = 'rgba(59, 130, 246, 0.3)';
-    alert.style.borderLeft = '4px solid #3b82f6';
-    alert.innerHTML = `
-      <div class="flex items-start gap-4">
-        <div class="flex-shrink-0">
-          <i class="ph-fill ph-calendar-check text-3xl text-blue-400"></i>
+    allAlerts.push({
+      priority: 50,
+      urgencyScore: 60,
+      type: 'info',
+      html: `
+        <div class="flex items-start gap-4">
+          <div class="flex-shrink-0">
+            <i class="ph-fill ph-calendar-check text-3xl text-blue-400"></i>
+          </div>
+          <div class="flex-1">
+            <h4 class="font-bold text-white mb-1">Pagos Próximos a Vencer</h4>
+            <p class="text-sm text-slate-300 mb-3">
+              Tienes obligaciones que vencen en los próximos 7 días. Revisa tu calendario de pagos para evitar retrasos.
+            </p>
+            <a href="${'{{ url_for("mover_obligaciones") }}'}" class="text-sm text-blue-400 hover:text-blue-300 font-semibold">
+              Ver Obligaciones →
+            </a>
+          </div>
         </div>
-        <div class="flex-1">
-          <h4 class="font-bold text-white mb-1">Pagos Próximos a Vencer</h4>
-          <p class="text-sm text-slate-300 mb-3">
-            Tienes obligaciones que vencen en los próximos 7 días. Revisa tu calendario de pagos para evitar retrasos.
-          </p>
-          <a href="${'{{ url_for("mover_obligaciones") }}'}" class="text-sm text-blue-400 hover:text-blue-300 font-semibold">
-            Ver Obligaciones →
-          </a>
-        </div>
+      `,
+      bgStyle: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%)',
+      borderColor: 'rgba(59, 130, 246, 0.3)',
+      borderLeft: '4px solid #3b82f6'
+    });
+  }
+  
+  // Ordenar por prioridad y urgencia
+  allAlerts.sort((a, b) => {
+    const scoreA = a.priority + a.urgencyScore;
+    const scoreB = b.priority + b.urgencyScore;
+    return scoreB - scoreA;
+  });
+  
+  // Mostrar solo TOP 1 alerta
+  if (allAlerts.length > 0) {
+    const topAlert = allAlerts[0];
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert-card fade-in';
+    alertDiv.style.background = topAlert.bgStyle;
+    alertDiv.style.borderColor = topAlert.borderColor;
+    alertDiv.style.borderLeft = topAlert.borderLeft;
+    alertDiv.innerHTML = topAlert.html;
+    alertsContainer.appendChild(alertDiv);
+    
+    // Si hay más alertas, mostrar botón "Ver más"
+    if (allAlerts.length > 1) {
+      const moreBtn = document.createElement('div');
+      moreBtn.style.textAlign = 'center';
+      moreBtn.style.marginTop = '16px';
+      moreBtn.innerHTML = `
+        <button onclick="toggleAllAlerts()" id="viewMoreAlertsBtn" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #94a3b8; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;">
+          <i class="ph-bold ph-caret-down"></i>
+          <span>Ver ${allAlerts.length - 1} alerta${allAlerts.length - 1 > 1 ? 's' : ''} más</span>
+        </button>
+        <div id="hiddenAlerts" style="display: none; margin-top: 16px;"></div>
+      `;
+      alertsContainer.appendChild(moreBtn);
+      
+      // Guardar alertas ocultas en variable global para el toggle
+      window.hiddenAlertsList = allAlerts.slice(1);
+    }
+  } else {
+    // Sin alertas
+    alertsContainer.innerHTML = `
+      <div style="text-align: center; padding: 40px 20px; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 16px;">
+        <i class="ph-duotone ph-check-circle" style="font-size: 48px; color: #34d399; opacity: 0.8;"></i>
+        <h4 class="text-lg font-bold text-white mt-4 mb-2">¡Todo en orden!</h4>
+        <p class="text-slate-400 text-sm">No hay alertas críticas en este momento. Sigue así.</p>
       </div>
     `;
-    alertsContainer.appendChild(alert);
+  }
+}
+
+// Función para toggle de alertas adicionales
+function toggleAllAlerts() {
+  const hiddenContainer = document.getElementById('hiddenAlerts');
+  const btn = document.getElementById('viewMoreAlertsBtn');
+  const icon = btn.querySelector('i');
+  const span = btn.querySelector('span');
+  
+  if (hiddenContainer.style.display === 'none') {
+    // Mostrar alertas ocultas
+    hiddenContainer.innerHTML = window.hiddenAlertsList.map(alert => {
+      return `
+        <div class="alert-card fade-in" style="background: ${alert.bgStyle}; border-color: ${alert.borderColor}; border-left: ${alert.borderLeft}; margin-top: 16px;">
+          ${alert.html}
+        </div>
+      `;
+    }).join('');
+    hiddenContainer.style.display = 'block';
+    icon.className = 'ph-bold ph-caret-up';
+    span.textContent = 'Ver menos alertas';
+    btn.style.background = 'rgba(255, 255, 255, 0.08)';
+  } else {
+    // Ocultar
+    hiddenContainer.style.display = 'none';
+    icon.className = 'ph-bold ph-caret-down';
+    span.textContent = `Ver ${window.hiddenAlertsList.length} alerta${window.hiddenAlertsList.length > 1 ? 's' : ''} más`;
+    btn.style.background = 'rgba(255, 255, 255, 0.05)';
   }
 }
 
@@ -2166,96 +2298,102 @@ function updateHealthScore(stats, operations) {
   return score;
 }
 
-// FUNCIÓN: Generar AI Voice Message
+// CRÍTICA #1: HERO IA ACCIONABLE - Mostrar QUÉ HACER para mejorar score
 function generateAIVoiceMessage(stats, operations, score) {
   const userName = DEMO_USER?.user_metadata?.full_name?.split(' ')[0] || 'there';
   
   let message = '';
+  let topAction = '';
   
-  // Mensaje basado en score
-  if (score >= 80) {
-    message = `${userName}, your business is performing excellently! `;
-  } else if (score >= 60) {
-    message = `${userName}, your business is healthy. `;
-  } else if (score >= 40) {
-    message = `${userName}, your business needs some attention. `;
-  } else {
-    message = `${userName}, your business requires immediate action. `;
-  }
+  // Calcular la acción TOP 1 para llegar al siguiente nivel
+  const targetScore = score < 60 ? 60 : score < 80 ? 80 : 90;
+  const gap = targetScore - score;
   
-  // Agregar detalles específicos
-  if (stats.margin > 20) {
-    message += `Your profit margin of ${stats.margin}% is excellent. `;
-  } else if (stats.margin > 0) {
-    message += `Your profit margin of ${stats.margin}% could be improved. `;
-  }
-  
+  // Determinar acción más impactante
   if (stats.balance < 100000) {
-    message += `However, your balance of ${formatCurrency(stats.balance)} is low and needs attention.`;
+    topAction = `To reach ${targetScore}: Increase balance by ${formatCurrency(100000 - stats.balance)} (${Math.ceil(gap * 0.6)} points)`;
+  } else if (stats.margin < 20) {
+    const targetMargin = 20;
+    const marginGap = targetMargin - stats.margin;
+    topAction = `To reach ${targetScore}: Improve margin to ${targetMargin}% (reduce expenses by ${marginGap.toFixed(1)}% or increase income)`;
+  } else if (stats.expenses > stats.income) {
+    const deficit = stats.expenses - stats.income;
+    topAction = `To reach ${targetScore}: Close deficit of ${formatCurrency(deficit)} (cut expenses or boost sales)`;
   } else {
-    message += `Your balance of ${formatCurrency(stats.balance)} is solid.`;
+    topAction = `To reach ${targetScore}: Maintain current performance and increase revenue by 10%`;
+  }
+  
+  // Mensaje accionable
+  if (score >= 80) {
+    message = `${userName}, excellent work! Score: ${score}/100. ${topAction}`;
+  } else if (score >= 60) {
+    message = `${userName}, you're doing well. Score: ${score}/100. ${topAction}`;
+  } else if (score >= 40) {
+    message = `${userName}, action needed. Score: ${score}/100. ${topAction}`;
+  } else {
+    message = `${userName}, URGENT action required. Score: ${score}/100. ${topAction}`;
   }
   
   document.getElementById('aiVoiceMessage').textContent = message;
 }
 
-// FUNCIÓN: Generar AI Recommendations
+// CRÍTICA #1: TOP 3 ACCIONES ESPECÍFICAS (no genéricas)
 function generateAIRecommendations(stats, operations) {
   const recommendations = [];
   
-  // Recomendación 1: Balance
-  if (stats.balance < 100000) {
+  // Calcular acciones con impacto cuantificado
+  
+  // Acción 1: Reducir gastos operativos (si aplicable)
+  if (stats.margin < 20 && stats.expenses > 0) {
+    const targetReduction = stats.expenses * 0.08; // 8%
+    const impactOnMargin = ((stats.income - (stats.expenses - targetReduction)) / stats.income * 100) - stats.margin;
     recommendations.push({
-      icon: 'ph-wallet',
-      color: '#f87171',
-      text: `Your balance is low. Consider increasing income or reducing expenses.`
-    });
-  } else if (stats.balance > 500000) {
-    recommendations.push({
-      icon: 'ph-wallet',
-      color: '#34d399',
-      text: `Great balance! Consider investing surplus for growth.`
+      icon: 'ph-scissors',
+      color: '#f59e0b',
+      text: `1. Cut operational expenses by 8% (${formatCurrency(targetReduction)}) → +${impactOnMargin.toFixed(1)}% margin`,
+      priority: 'high',
+      action: 'mover_ventas'
     });
   }
   
-  // Recomendación 2: Margen
-  if (stats.margin < 15) {
+  // Acción 2: Cobrar facturas pendientes (simulado)
+  if (stats.balance < 200000) {
+    const pendingAmount = Math.floor(Math.random() * 50000) + 30000; // Simulado
     recommendations.push({
-      icon: 'ph-trend-down',
-      color: '#fbbf24',
-      text: `Profit margin is ${stats.margin}%. Aim for at least 20% by reducing costs.`
+      icon: 'ph-money',
+      color: '#10b981',
+      text: `2. Collect pending invoices (~${formatCurrency(pendingAmount)}) → Improve cash flow`,
+      priority: 'high',
+      action: 'mover_obligaciones'
     });
-  } else {
+  }
+  
+  // Acción 3: Aumentar margen en servicio top
+  if (stats.margin < 30 && operations.length > 0) {
+    const topService = 'Service X'; // En producción: analizar top servicio
+    const potentialIncrease = stats.income * 0.05; // 5%
     recommendations.push({
       icon: 'ph-trend-up',
       color: '#34d399',
-      text: `Excellent ${stats.margin}% margin! Keep controlling expenses.`
+      text: `3. Increase margin on "${topService}" by 5% → +${formatCurrency(potentialIncrease)}/month`,
+      priority: 'medium',
+      action: 'mover_ventas'
     });
   }
   
-  // Recomendación 3: Actividad
-  const last3Days = operations.filter(op => {
-    const opDate = new Date(op.created_at);
-    const threeDaysAgo = new Date();
-    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
-    return opDate >= threeDaysAgo;
-  });
-  
-  if (last3Days.length === 0 && operations.length > 0) {
+  // Si todo está bien, dar recomendaciones de crecimiento
+  if (recommendations.length === 0) {
     recommendations.push({
-      icon: 'ph-info',
-      color: '#fbbf24',
-      text: `No activity in 3 days. Update your records for accurate insights.`
-    });
-  } else if (last3Days.length > 0) {
-    recommendations.push({
-      icon: 'ph-check-circle',
+      icon: 'ph-rocket-launch',
       color: '#34d399',
-      text: `${last3Days.length} transactions in last 3 days. Good tracking!`
+      text: `1. Strong position! Consider scaling: hire, expand, or invest surplus`,
+      priority: 'low',
+      action: 'mover_metas'
     });
   }
   
-  return recommendations;
+  // Limitar a TOP 3
+  return recommendations.slice(0, 3);
 }
 
 // FUNCIÓN: Generar Benchmark
