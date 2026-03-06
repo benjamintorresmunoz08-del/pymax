@@ -56,6 +56,10 @@
   <!-- JARVIS AI INTERACTIVE SYSTEM -->
   <script src="/static/js/pymax-jarvis.js"></script>
   
+  <!-- HOLO COMMAND CENTER SYSTEM -->
+  <script src="/static/js/pymax-holo-command.js"></script>
+  <link rel="stylesheet" href="/static/css/pymax-holo-command.css">
+  
   <!-- SIDEBAR & PANELS SYSTEM (3 COLUMN LAYOUT) -->
   <link rel="stylesheet" href="/static/css/pymax-sidebar.css">
   <link rel="stylesheet" href="/static/css/pymax-right-panel.css">
@@ -707,78 +711,112 @@
 
 <div class="pymax-main-content">
 
-  <!-- 🤖 HOLOGRAM AI JARVIS - HEADER PROMINENTE -->
-  <div class="mb-10 fade-in" style="background: linear-gradient(135deg, rgba(10, 1, 24, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 28px; padding: 32px; position: relative; overflow: hidden; box-shadow: 0 0 60px rgba(0, 212, 255, 0.3), inset 0 0 60px rgba(124, 58, 237, 0.1);">
-    <!-- Animated scan line top -->
-    <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, #00d4ff, #a855f7, #00ff9f, transparent); background-size: 200% 100%; animation: scanline-sweep 3s linear infinite;"></div>
+  <!-- ============================================
+       HOLO COMMAND CENTER - SISTEMA HOLOGRÁFICO
+       ============================================ -->
+  <div class="holo-command-center mb-10 fade-in">
     
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+    <!-- Sistema de Partículas -->
+    <div class="holo-particles"></div>
+    
+    <!-- Contenedor Principal -->
+    <div class="holo-container">
       
-      <!-- LEFT: HOLOGRAM AVATAR (4 cols) -->
-      <div class="lg:col-span-4 flex justify-center">
-        <div id="pymaxHologramJarvis" style="width: 280px; height: 280px; position: relative;"></div>
-      </div>
-      
-      <!-- CENTER: AI STATUS & INFO (5 cols) -->
-      <div class="lg:col-span-5">
-        <div class="flex items-center gap-3 mb-4">
-          <div style="width: 12px; height: 12px; border-radius: 50%; background: #00ff9f; box-shadow: 0 0 20px #00ff9f; animation: pulse 2s infinite;"></div>
-          <div>
-            <h1 class="text-3xl font-bold text-white font-display" style="background: linear-gradient(135deg, #ffffff, #00d4ff, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
-              PYMAX AI ASSISTANT
-            </h1>
-            <p class="text-slate-400 text-sm font-semibold">Artificial Intelligence Financial Advisor</p>
-          </div>
+      <!-- WIDGETS IZQUIERDA -->
+      <div style="grid-column: 1; grid-row: 1; display: flex; flex-direction: column; gap: 20px;">
+        <!-- Widget Usuario -->
+        <div class="holo-widget" data-widget="usuario">
+          <div class="widget-header">USER PROFILE</div>
+          <div class="widget-value">Cargando...</div>
+          <div class="widget-subtext">Usuario Principal</div>
         </div>
         
-        <!-- AI Voice Message -->
-        <div id="jarvisVoiceMessage" style="background: rgba(0, 212, 255, 0.08); border-left: 3px solid #00d4ff; padding: 16px 20px; border-radius: 12px; margin-bottom: 16px;">
-          <p class="text-slate-200 text-base leading-relaxed" style="font-family: 'Inter', sans-serif;">
-            <span class="text-cyan-400 font-bold">Good evening, Sir.</span> Your financial systems are online and operating at optimal efficiency. How may I assist you today?
-          </p>
-        </div>
-        
-        <!-- Quick Stats -->
-        <div class="grid grid-cols-3 gap-3">
-          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 12px; text-align: center;">
-            <div class="text-xs text-slate-400 mb-1">SYSTEM STATUS</div>
-            <div class="text-emerald-400 font-bold text-sm">ONLINE</div>
-          </div>
-          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 12px; text-align: center;">
-            <div class="text-xs text-slate-400 mb-1">HEALTH SCORE</div>
-            <div class="text-cyan-400 font-bold text-sm" id="jarvisHealthScore">--</div>
-          </div>
-          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 12px; text-align: center;">
-            <div class="text-xs text-slate-400 mb-1">ALERTS</div>
-            <div class="text-yellow-400 font-bold text-sm" id="jarvisAlerts">0</div>
-          </div>
+        <!-- Widget Balance -->
+        <div class="holo-widget" data-widget="balance">
+          <div class="widget-header">BALANCE ACTUAL</div>
+          <div class="widget-value">$0</div>
+          <div class="widget-subtext">Balance Total</div>
         </div>
       </div>
       
-      <!-- RIGHT: QUICK ACTIONS (3 cols) -->
-      <div class="lg:col-span-3">
-        <div class="space-y-3">
-          <button onclick="jarvisSpeak('Analyzing your financial data now, sir.')" style="width: 100%; padding: 14px 20px; background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 212, 255, 0.1)); border: 1px solid rgba(0, 212, 255, 0.4); border-radius: 12px; color: #00d4ff; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: space-between;" onmouseover="this.style.background='linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(0, 212, 255, 0.15))'" onmouseout="this.style.background='linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 212, 255, 0.1))'">
-            <span>💬 Talk to JARVIS</span>
-            <i class="ph-bold ph-waveform"></i>
-          </button>
+      <!-- WIDGETS DERECHA ARRIBA -->
+      <div style="grid-column: 3; grid-row: 1; display: flex; flex-direction: column; gap: 20px;">
+        <!-- Widget Health Score -->
+        <div class="holo-widget" data-widget="health">
+          <div class="widget-header">HEALTH SCORE</div>
+          <div class="widget-value">--</div>
+          <div class="widget-subtext">Financial Health</div>
+        </div>
+        
+        <!-- Widget Runway -->
+        <div class="holo-widget" data-widget="runway">
+          <div class="widget-header">RUNWAY</div>
+          <div class="widget-value">-- meses</div>
+          <div class="widget-subtext">Tiempo Restante</div>
+        </div>
+      </div>
+      
+      <!-- HOLOGRAMA CENTRAL -->
+      <div class="holo-center">
+        <!-- Pedestal Holográfico -->
+        <div class="holo-pedestal">
+          <!-- Anillos Giratorios -->
+          <div class="holo-rings">
+            <div class="holo-ring"></div>
+            <div class="holo-ring"></div>
+            <div class="holo-ring"></div>
+          </div>
           
-          <button onclick="jarvisAnalyze()" style="width: 100%; padding: 14px 20px; background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.1)); border: 1px solid rgba(168, 85, 247, 0.4); border-radius: 12px; color: #a855f7; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: space-between;" onmouseover="this.style.background='linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(168, 85, 247, 0.15))'" onmouseout="this.style.background='linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.1))'">
-            <span>🧠 AI Analysis</span>
-            <i class="ph-bold ph-brain"></i>
-          </button>
+          <!-- Avatar Central -->
+          <div class="holo-avatar">
+            <div class="holo-avatar-inner">
+              P
+            </div>
+          </div>
           
-          <button onclick="jarvisAlert()" style="width: 100%; padding: 14px 20px; background: linear-gradient(135deg, rgba(0, 255, 159, 0.2), rgba(0, 255, 159, 0.1)); border: 1px solid rgba(0, 255, 159, 0.4); border-radius: 12px; color: #00ff9f; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: space-between;" onmouseover="this.style.background='linear-gradient(135deg, rgba(0, 255, 159, 0.3), rgba(0, 255, 159, 0.15))'" onmouseout="this.style.background='linear-gradient(135deg, rgba(0, 255, 159, 0.2), rgba(0, 255, 159, 0.1))'">
-            <span>⚡ System Check</span>
-            <i class="ph-bold ph-lightning"></i>
-          </button>
+          <!-- Base -->
+          <div class="holo-base"></div>
+        </div>
+        
+        <!-- Label -->
+        <div class="holo-label">PYMAX AI</div>
+      </div>
+      
+      <!-- WIDGETS IZQUIERDA ABAJO -->
+      <div style="grid-column: 1; grid-row: 2; display: flex; flex-direction: column; gap: 20px;">
+        <!-- Widget Ingresos -->
+        <div class="holo-widget" data-widget="ingresos">
+          <div class="widget-header">INGRESOS MES</div>
+          <div class="widget-value">$0</div>
+          <div class="widget-subtext">Income</div>
+        </div>
+        
+        <!-- Widget Alertas -->
+        <div class="holo-widget" data-widget="alertas">
+          <div class="widget-header">ALERTAS</div>
+          <div class="widget-value">Sin alertas</div>
+          <div class="widget-subtext">0 alerta(s)</div>
+        </div>
+      </div>
+      
+      <!-- WIDGETS DERECHA ABAJO -->
+      <div style="grid-column: 3; grid-row: 2; display: flex; flex-direction: column; gap: 20px;">
+        <!-- Widget Gastos -->
+        <div class="holo-widget" data-widget="gastos">
+          <div class="widget-header">GASTOS MES</div>
+          <div class="widget-value">$0</div>
+          <div class="widget-subtext">Expenses</div>
+        </div>
+        
+        <!-- Widget AI Status -->
+        <div class="holo-widget" data-widget="ai-status">
+          <div class="widget-header">AI STATUS</div>
+          <div class="widget-value">En Espera</div>
+          <div class="widget-subtext">Estado de IA</div>
         </div>
       </div>
       
     </div>
-    
-    <!-- Bottom status bar -->
-    <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.5), transparent);"></div>
   </div>
 
   <nav class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4 fade-in">

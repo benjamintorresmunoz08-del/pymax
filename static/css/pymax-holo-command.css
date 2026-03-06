@@ -1,0 +1,523 @@
+/**
+ * PYMAX HOLOGRAPHIC COMMAND CENTER - STYLES
+ * Diseño holográfico futurista tipo imagen de referencia
+ */
+
+.holo-command-center {
+    position: relative;
+    width: 100%;
+    min-height: 600px;
+    background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1429 100%);
+    border-radius: 20px;
+    padding: 40px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3);
+}
+
+/* Fondo con estrellas animadas */
+.holo-command-center::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(2px 2px at 20% 30%, white, transparent),
+        radial-gradient(2px 2px at 60% 70%, white, transparent),
+        radial-gradient(1px 1px at 50% 50%, white, transparent),
+        radial-gradient(1px 1px at 80% 10%, white, transparent),
+        radial-gradient(2px 2px at 90% 60%, white, transparent),
+        radial-gradient(1px 1px at 33% 80%, white, transparent);
+    background-size: 200% 200%;
+    animation: stars-move 30s linear infinite;
+    opacity: 0.3;
+    z-index: 0;
+}
+
+@keyframes stars-move {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 100% 100%; }
+}
+
+/* Contenedor principal */
+.holo-container {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 400px 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 30px;
+    height: 100%;
+    z-index: 1;
+}
+
+/* ============================================
+   HOLOGRAMA CENTRAL
+   ============================================ */
+
+.holo-center {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 10;
+}
+
+/* Pedestal holográfico */
+.holo-pedestal {
+    position: relative;
+    width: 300px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.holo-pedestal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 280px;
+    height: 380px;
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 212, 255, 0.1) 0%,
+        rgba(0, 212, 255, 0.3) 50%,
+        rgba(0, 212, 255, 0.1) 100%
+    );
+    border: 2px solid rgba(0, 212, 255, 0.5);
+    border-radius: 10px;
+    box-shadow: 
+        inset 0 0 40px rgba(0, 212, 255, 0.3),
+        0 0 60px rgba(0, 212, 255, 0.4);
+    animation: pedestal-pulse 3s ease-in-out infinite;
+}
+
+@keyframes pedestal-pulse {
+    0%, 100% { 
+        box-shadow: 
+            inset 0 0 40px rgba(0, 212, 255, 0.3),
+            0 0 60px rgba(0, 212, 255, 0.4);
+        border-color: rgba(0, 212, 255, 0.5);
+    }
+    50% { 
+        box-shadow: 
+            inset 0 0 60px rgba(0, 212, 255, 0.5),
+            0 0 100px rgba(0, 212, 255, 0.6);
+        border-color: rgba(0, 212, 255, 0.8);
+    }
+}
+
+/* Base circular del pedestal */
+.holo-base {
+    position: absolute;
+    bottom: -20px;
+    width: 320px;
+    height: 10px;
+    background: linear-gradient(90deg, 
+        transparent 0%,
+        rgba(0, 212, 255, 0.6) 20%,
+        rgba(0, 212, 255, 0.8) 50%,
+        rgba(0, 212, 255, 0.6) 80%,
+        transparent 100%
+    );
+    border-radius: 50%;
+    box-shadow: 0 0 40px rgba(0, 212, 255, 0.8);
+    animation: base-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes base-glow {
+    0% { box-shadow: 0 0 40px rgba(0, 212, 255, 0.6); }
+    100% { box-shadow: 0 0 80px rgba(0, 212, 255, 1); }
+}
+
+/* Anillos horizontales giratorios */
+.holo-rings {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 340px;
+    height: 340px;
+}
+
+.holo-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotateX(75deg);
+    border: 2px solid rgba(0, 212, 255, 0.6);
+    border-radius: 50%;
+    animation: ring-rotate 10s linear infinite;
+}
+
+.holo-ring:nth-child(1) {
+    width: 280px;
+    height: 280px;
+    animation-duration: 8s;
+}
+
+.holo-ring:nth-child(2) {
+    width: 240px;
+    height: 240px;
+    animation-duration: 10s;
+    animation-direction: reverse;
+}
+
+.holo-ring:nth-child(3) {
+    width: 200px;
+    height: 200px;
+    animation-duration: 12s;
+}
+
+@keyframes ring-rotate {
+    0% { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(0deg); }
+    100% { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(360deg); }
+}
+
+/* Avatar central */
+.holo-avatar {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    z-index: 5;
+    transform-style: preserve-3d;
+}
+
+.holo-avatar-inner {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(138, 43, 226, 0.3));
+    border: 3px solid rgba(0, 212, 255, 0.8);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    font-weight: 700;
+    color: #00d4ff;
+    text-shadow: 0 0 20px rgba(0, 212, 255, 1);
+    box-shadow: 
+        inset 0 0 40px rgba(0, 212, 255, 0.4),
+        0 0 60px rgba(0, 212, 255, 0.6);
+    animation: avatar-float 4s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
+}
+
+.holo-avatar-inner::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.3) 50%,
+        transparent 70%
+    );
+    animation: shine 3s linear infinite;
+}
+
+@keyframes avatar-float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+}
+
+@keyframes shine {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Estado cuando IA está hablando */
+.holo-pedestal.ai-speaking::before {
+    animation: pedestal-speaking 0.5s ease-in-out infinite;
+}
+
+@keyframes pedestal-speaking {
+    0%, 100% { 
+        box-shadow: 
+            inset 0 0 60px rgba(0, 212, 255, 0.5),
+            0 0 100px rgba(0, 212, 255, 0.8);
+    }
+    50% { 
+        box-shadow: 
+            inset 0 0 80px rgba(138, 43, 226, 0.6),
+            0 0 120px rgba(138, 43, 226, 0.9);
+    }
+}
+
+.holo-avatar.ai-active .holo-avatar-inner {
+    animation: avatar-active 0.5s ease-in-out infinite;
+    border-color: rgba(138, 43, 226, 0.8);
+}
+
+@keyframes avatar-active {
+    0%, 100% { 
+        box-shadow: 
+            inset 0 0 40px rgba(0, 212, 255, 0.6),
+            0 0 80px rgba(0, 212, 255, 0.8);
+    }
+    50% { 
+        box-shadow: 
+            inset 0 0 60px rgba(138, 43, 226, 0.8),
+            0 0 100px rgba(138, 43, 226, 1);
+    }
+}
+
+/* Label bajo el avatar */
+.holo-label {
+    margin-top: 30px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #00d4ff;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+}
+
+/* ============================================
+   WIDGETS FLOTANTES
+   ============================================ */
+
+.holo-widget {
+    background: rgba(10, 14, 39, 0.8);
+    border: 2px solid rgba(0, 212, 255, 0.4);
+    border-radius: 15px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.holo-widget::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        transparent 0%,
+        rgba(0, 212, 255, 0.8) 50%,
+        transparent 100%
+    );
+}
+
+.holo-widget:hover {
+    border-color: rgba(0, 212, 255, 0.8);
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+    transform: translateY(-5px);
+}
+
+.widget-header {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(0, 212, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.widget-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 5px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.widget-subtext {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Estados de widgets */
+.holo-widget.positive .widget-value {
+    color: #00ff88;
+    text-shadow: 0 0 15px rgba(0, 255, 136, 0.6);
+}
+
+.holo-widget.negative .widget-value {
+    color: #ff4466;
+    text-shadow: 0 0 15px rgba(255, 68, 102, 0.6);
+}
+
+.holo-widget.warning {
+    border-color: rgba(255, 165, 0, 0.6);
+}
+
+.holo-widget.warning::before {
+    background: linear-gradient(90deg, 
+        transparent 0%,
+        rgba(255, 165, 0, 0.8) 50%,
+        transparent 100%
+    );
+}
+
+.holo-widget.critical {
+    border-color: rgba(255, 0, 68, 0.6);
+    animation: critical-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes critical-pulse {
+    0%, 100% { 
+        box-shadow: 0 0 20px rgba(255, 0, 68, 0.4);
+    }
+    50% { 
+        box-shadow: 0 0 40px rgba(255, 0, 68, 0.8);
+    }
+}
+
+/* Widget highlighted por IA */
+.holo-widget.highlighted {
+    border-color: rgba(138, 43, 226, 0.8);
+    box-shadow: 0 0 40px rgba(138, 43, 226, 0.6);
+    animation: highlight-pulse 0.5s ease-in-out 3;
+}
+
+@keyframes highlight-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Animación de rotación de datos */
+.holo-widget.rotating {
+    animation: widget-rotate 0.5s ease-in-out;
+}
+
+@keyframes widget-rotate {
+    0% { opacity: 1; transform: rotateY(0deg); }
+    50% { opacity: 0.3; transform: rotateY(90deg); }
+    100% { opacity: 1; transform: rotateY(0deg); }
+}
+
+/* ============================================
+   SISTEMA DE PARTÍCULAS
+   ============================================ */
+
+.holo-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.holo-particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: rgba(0, 212, 255, 0.8);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+    animation: particle-float linear infinite;
+}
+
+@keyframes particle-float {
+    0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+    }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% {
+        transform: translateY(-100vh) translateX(20px);
+        opacity: 0;
+    }
+}
+
+/* ============================================
+   CONEXIONES LUMINOSAS ENTRE WIDGETS
+   ============================================ */
+
+.holo-connections {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.holo-connection-line {
+    position: absolute;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent 0%,
+        rgba(0, 212, 255, 0.4) 50%,
+        transparent 100%
+    );
+    transform-origin: left center;
+    animation: connection-pulse 3s ease-in-out infinite;
+}
+
+@keyframes connection-pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 1200px) {
+    .holo-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        gap: 20px;
+    }
+    
+    .holo-center {
+        grid-column: 1;
+        grid-row: 1;
+    }
+    
+    .holo-pedestal {
+        width: 250px;
+        height: 350px;
+    }
+    
+    .holo-avatar {
+        width: 120px;
+        height: 120px;
+    }
+}
+
+@media (max-width: 768px) {
+    .holo-command-center {
+        padding: 20px;
+        min-height: 400px;
+    }
+    
+    .holo-pedestal {
+        width: 200px;
+        height: 300px;
+    }
+    
+    .holo-avatar {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .holo-avatar-inner {
+        font-size: 36px;
+    }
+    
+    .widget-value {
+        font-size: 22px;
+    }
+}
