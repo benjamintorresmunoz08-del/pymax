@@ -2341,7 +2341,7 @@ function checkAlerts(balance, operations) {
               Es urgente aumentar ingresos o reducir gastos inmediatamente.
             </p>
             <div class="flex gap-2">
-              <a href="${'{{ url_for("mover_flujo") }}'}" class="text-sm text-red-400 hover:text-red-300 font-semibold">
+              <a href="/empresa/mover/flujo" class="text-sm text-red-400 hover:text-red-300 font-semibold">
                 Ver Proyección Detallada →
               </a>
             </div>
@@ -2373,7 +2373,7 @@ function checkAlerts(balance, operations) {
               Este mes tus gastos (${formatCurrency(stats.expenses)}) superan tus ingresos (${formatCurrency(stats.income)}) 
               por ${formatCurrency(deficit)}. Revisa tus gastos o aumenta ingresos.
             </p>
-            <a href="${'{{ url_for("mover_ventas") }}'}" class="text-sm text-yellow-400 hover:text-yellow-300 font-semibold">
+            <a href="/empresa/mover/ventas-gastos" class="text-sm text-yellow-400 hover:text-yellow-300 font-semibold">
               Ver Detalle de Gastos →
             </a>
           </div>
@@ -2402,7 +2402,7 @@ function checkAlerts(balance, operations) {
             <p class="text-sm text-slate-300 mb-3">
               Tu balance actual está por debajo del umbral recomendado. Considera revisar tus gastos o aumentar ingresos.
             </p>
-            <a href="${'{{ url_for("mover_flujo") }}'}" class="text-sm text-red-400 hover:text-red-300 font-semibold">
+            <a href="/empresa/mover/flujo" class="text-sm text-red-400 hover:text-red-300 font-semibold">
               Ver Análisis de Flujo de Caja →
             </a>
           </div>
@@ -2437,7 +2437,7 @@ function checkAlerts(balance, operations) {
             <p class="text-sm text-slate-300 mb-3">
               No has registrado transacciones en los últimos 3 días. Mantén tus registros actualizados para insights precisos.
             </p>
-            <a href="${'{{ url_for("mover_ventas") }}'}" class="text-sm text-yellow-400 hover:text-yellow-300 font-semibold">
+            <a href="/empresa/mover/ventas-gastos" class="text-sm text-yellow-400 hover:text-yellow-300 font-semibold">
               Registrar Transacción →
             </a>
           </div>
@@ -2466,7 +2466,7 @@ function checkAlerts(balance, operations) {
             <p class="text-sm text-slate-300 mb-3">
               Tienes obligaciones que vencen en los próximos 7 días. Revisa tu calendario de pagos para evitar retrasos.
             </p>
-            <a href="${'{{ url_for("mover_obligaciones") }}'}" class="text-sm text-blue-400 hover:text-blue-300 font-semibold">
+            <a href="/empresa/mover/obligaciones" class="text-sm text-blue-400 hover:text-blue-300 font-semibold">
               Ver Obligaciones →
             </a>
           </div>
