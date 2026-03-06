@@ -42,7 +42,170 @@
   z-index: 1;
 }
 
-/* ===== ORB CENTRAL (AVATAR) ===== */
+/* ===== LOGO CONTAINER (NUEVO) ===== */
+.hologram-logo-container {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+/* Logo "P" de PYMAX - ULTRA FUTURISTA */
+.hologram-logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3.5rem;
+  font-weight: 900;
+  font-family: 'Outfit', sans-serif;
+  color: #00d4ff;
+  text-shadow: 
+    0 0 5px rgba(0, 212, 255, 1),
+    0 0 10px rgba(0, 212, 255, 0.9),
+    0 0 20px rgba(0, 212, 255, 0.7),
+    0 0 30px rgba(0, 212, 255, 0.5),
+    0 0 40px rgba(0, 212, 255, 0.3),
+    0 0 60px rgba(0, 212, 255, 0.2),
+    0 0 80px rgba(0, 212, 255, 0.1);
+  animation: logo-glow-ultra 2s ease-in-out infinite;
+  z-index: 5;
+  user-select: none;
+  filter: brightness(1.2) saturate(1.3);
+}
+
+@keyframes logo-glow-ultra {
+  0%, 100% { 
+    opacity: 1;
+    filter: brightness(1.2) saturate(1.3);
+    text-shadow: 
+      0 0 5px rgba(0, 212, 255, 1),
+      0 0 10px rgba(0, 212, 255, 0.9),
+      0 0 20px rgba(0, 212, 255, 0.7),
+      0 0 30px rgba(0, 212, 255, 0.5),
+      0 0 40px rgba(0, 212, 255, 0.3),
+      0 0 60px rgba(0, 212, 255, 0.2),
+      0 0 80px rgba(0, 212, 255, 0.1);
+  }
+  50% { 
+    opacity: 1;
+    filter: brightness(1.5) saturate(1.5);
+    text-shadow: 
+      0 0 8px rgba(0, 212, 255, 1),
+      0 0 15px rgba(0, 212, 255, 1),
+      0 0 25px rgba(0, 212, 255, 0.9),
+      0 0 35px rgba(0, 212, 255, 0.7),
+      0 0 50px rgba(0, 212, 255, 0.5),
+      0 0 70px rgba(0, 212, 255, 0.3),
+      0 0 100px rgba(0, 212, 255, 0.2);
+  }
+}
+
+/* Anillos orbitales - ULTRA NEON */
+.hologram-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  border-width: 3px;
+  border-style: solid;
+  filter: brightness(1.3);
+}
+
+.hologram-ring.ring-1 {
+  width: 80px;
+  height: 80px;
+  transform: translate(-50%, -50%) rotate(0deg);
+  animation: ring-rotate-1 8s linear infinite, ring-pulse-1 2s ease-in-out infinite;
+  border-color: rgba(0, 212, 255, 0.8);
+  box-shadow: 
+    0 0 5px rgba(0, 212, 255, 0.8),
+    0 0 15px rgba(0, 212, 255, 0.6),
+    0 0 25px rgba(0, 212, 255, 0.4),
+    inset 0 0 15px rgba(0, 212, 255, 0.3),
+    inset 0 0 25px rgba(0, 212, 255, 0.2);
+}
+
+.hologram-ring.ring-2 {
+  width: 100px;
+  height: 100px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  animation: ring-rotate-2 6s linear infinite reverse, ring-pulse-2 2.5s ease-in-out infinite;
+  border-color: rgba(168, 85, 247, 0.7);
+  box-shadow: 
+    0 0 5px rgba(168, 85, 247, 0.7),
+    0 0 15px rgba(168, 85, 247, 0.5),
+    0 0 25px rgba(168, 85, 247, 0.3),
+    inset 0 0 15px rgba(168, 85, 247, 0.3),
+    inset 0 0 25px rgba(168, 85, 247, 0.2);
+}
+
+.hologram-ring.ring-3 {
+  width: 120px;
+  height: 120px;
+  transform: translate(-50%, -50%) rotate(90deg);
+  animation: ring-rotate-3 10s linear infinite, ring-pulse-3 3s ease-in-out infinite;
+  border-color: rgba(0, 255, 159, 0.6);
+  box-shadow: 
+    0 0 5px rgba(0, 255, 159, 0.6),
+    0 0 15px rgba(0, 255, 159, 0.4),
+    0 0 25px rgba(0, 255, 159, 0.3),
+    inset 0 0 15px rgba(0, 255, 159, 0.25),
+    inset 0 0 25px rgba(0, 255, 159, 0.15);
+}
+
+@keyframes ring-pulse-1 {
+  0%, 100% { 
+    opacity: 1;
+    filter: brightness(1.3);
+  }
+  50% { 
+    opacity: 0.8;
+    filter: brightness(1.6);
+  }
+}
+
+@keyframes ring-pulse-2 {
+  0%, 100% { 
+    opacity: 1;
+    filter: brightness(1.3);
+  }
+  50% { 
+    opacity: 0.7;
+    filter: brightness(1.7);
+  }
+}
+
+@keyframes ring-pulse-3 {
+  0%, 100% { 
+    opacity: 1;
+    filter: brightness(1.3);
+  }
+  50% { 
+    opacity: 0.6;
+    filter: brightness(1.8);
+  }
+}
+
+@keyframes ring-rotate-1 {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes ring-rotate-2 {
+  from { transform: translate(-50%, -50%) rotate(45deg); }
+  to { transform: translate(-50%, -50%) rotate(405deg); }
+}
+
+@keyframes ring-rotate-3 {
+  from { transform: translate(-50%, -50%) rotate(90deg); }
+  to { transform: translate(-50%, -50%) rotate(450deg); }
+}
+
+/* ===== ORB CENTRAL (AVATAR) - LEGACY (mantener compatibilidad) ===== */
 .hologram-orb {
   position: absolute;
   width: 80px;
@@ -245,24 +408,58 @@
   }
 }
 
-/* ===== MINI VERSION (para esquina) ===== */
+/* ===== MINI VERSION (para navbar) ===== */
 .pymax-hologram-mini {
-  width: 120px;
-  height: 120px;
-  padding: 10px;
+  width: 60px !important;
+  height: 60px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  overflow: visible !important;
 }
 
-.pymax-hologram-mini .hologram-orb {
-  width: 50px;
-  height: 50px;
+.pymax-hologram-mini .hologram-canvas {
+  width: 60px !important;
+  height: 60px !important;
+}
+
+.pymax-hologram-mini .hologram-logo-container {
+  width: 60px !important;
+  height: 60px !important;
+  top: 50% !important;
+  left: 50% !important;
+}
+
+.pymax-hologram-mini .hologram-logo {
+  font-size: 1.8rem !important;
+}
+
+.pymax-hologram-mini .hologram-ring.ring-1 {
+  width: 50px !important;
+  height: 50px !important;
+}
+
+.pymax-hologram-mini .hologram-ring.ring-2 {
+  width: 55px !important;
+  height: 55px !important;
+}
+
+.pymax-hologram-mini .hologram-ring.ring-3 {
+  width: 60px !important;
+  height: 60px !important;
 }
 
 .pymax-hologram-mini .hologram-wave-container {
-  display: none;
+  display: none !important;
 }
 
 .pymax-hologram-mini .hologram-status {
-  display: none;
+  display: none !important;
+}
+
+.pymax-hologram-mini::before,
+.pymax-hologram-mini::after {
+  display: none !important;
 }
 
 /* ===== ANIMACIONES ADICIONALES ===== */

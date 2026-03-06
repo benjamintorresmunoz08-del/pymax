@@ -81,25 +81,34 @@ class PymaxHologram {
   }
 
   /**
-   * Crear estructura HTML del hologram
+   * Crear estructura HTML del hologram con logo PYMAX
    */
   createHologramStructure() {
     this.container.innerHTML = '';
     this.container.className = 'pymax-hologram-container';
 
-    // Canvas para partículas y efectos
+    // Canvas para partículas, anillos y efectos
     this.canvas = document.createElement('canvas');
     this.canvas.className = 'hologram-canvas';
-    this.canvas.width = 300;
-    this.canvas.height = 300;
+    
+    // Ajustar tamaño según container
+    const rect = this.container.getBoundingClientRect();
+    this.canvas.width = rect.width || 300;
+    this.canvas.height = rect.height || 300;
     this.ctx = this.canvas.getContext('2d');
     
-    // Orb central (avatar)
-    const orb = document.createElement('div');
-    orb.className = 'hologram-orb';
-    orb.id = 'hologramOrb';
+    // Logo "P" de PYMAX en el centro
+    const logoContainer = document.createElement('div');
+    logoContainer.className = 'hologram-logo-container';
+    logoContainer.id = 'hologramLogo';
+    logoContainer.innerHTML = `
+      <div class="hologram-logo">P</div>
+      <div class="hologram-ring ring-1"></div>
+      <div class="hologram-ring ring-2"></div>
+      <div class="hologram-ring ring-3"></div>
+    `;
     
-    // Visualizador de ondas
+    // Visualizador de ondas (más sutil)
     const waveContainer = document.createElement('div');
     waveContainer.className = 'hologram-wave-container';
     waveContainer.id = 'hologramWaves';
@@ -115,7 +124,7 @@ class PymaxHologram {
 
     // Ensamblar
     this.container.appendChild(this.canvas);
-    this.container.appendChild(orb);
+    this.container.appendChild(logoContainer);
     this.container.appendChild(waveContainer);
     this.container.appendChild(statusContainer);
   }
