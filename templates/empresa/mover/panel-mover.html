@@ -53,6 +53,9 @@
   <script src="/static/js/pymax-hologram.js"></script>
   <link rel="stylesheet" href="/static/css/pymax-hologram.css">
   
+  <!-- JARVIS AI INTERACTIVE SYSTEM -->
+  <script src="/static/js/pymax-jarvis.js"></script>
+  
   <!-- SIDEBAR & PANELS SYSTEM (3 COLUMN LAYOUT) -->
   <link rel="stylesheet" href="/static/css/pymax-sidebar.css">
   <link rel="stylesheet" href="/static/css/pymax-right-panel.css">
@@ -704,10 +707,85 @@
 
 <div class="pymax-main-content">
 
+  <!-- 🤖 HOLOGRAM AI JARVIS - HEADER PROMINENTE -->
+  <div class="mb-10 fade-in" style="background: linear-gradient(135deg, rgba(10, 1, 24, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%); border: 2px solid rgba(0, 212, 255, 0.3); border-radius: 28px; padding: 32px; position: relative; overflow: hidden; box-shadow: 0 0 60px rgba(0, 212, 255, 0.3), inset 0 0 60px rgba(124, 58, 237, 0.1);">
+    <!-- Animated scan line top -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, #00d4ff, #a855f7, #00ff9f, transparent); background-size: 200% 100%; animation: scanline-sweep 3s linear infinite;"></div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      
+      <!-- LEFT: HOLOGRAM AVATAR (4 cols) -->
+      <div class="lg:col-span-4 flex justify-center">
+        <div id="pymaxHologramJarvis" style="width: 280px; height: 280px; position: relative;"></div>
+      </div>
+      
+      <!-- CENTER: AI STATUS & INFO (5 cols) -->
+      <div class="lg:col-span-5">
+        <div class="flex items-center gap-3 mb-4">
+          <div style="width: 12px; height: 12px; border-radius: 50%; background: #00ff9f; box-shadow: 0 0 20px #00ff9f; animation: pulse 2s infinite;"></div>
+          <div>
+            <h1 class="text-3xl font-bold text-white font-display" style="background: linear-gradient(135deg, #ffffff, #00d4ff, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+              PYMAX AI ASSISTANT
+            </h1>
+            <p class="text-slate-400 text-sm font-semibold">Artificial Intelligence Financial Advisor</p>
+          </div>
+        </div>
+        
+        <!-- AI Voice Message -->
+        <div id="jarvisVoiceMessage" style="background: rgba(0, 212, 255, 0.08); border-left: 3px solid #00d4ff; padding: 16px 20px; border-radius: 12px; margin-bottom: 16px;">
+          <p class="text-slate-200 text-base leading-relaxed" style="font-family: 'Inter', sans-serif;">
+            <span class="text-cyan-400 font-bold">Good evening, Sir.</span> Your financial systems are online and operating at optimal efficiency. How may I assist you today?
+          </p>
+        </div>
+        
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-3 gap-3">
+          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 12px; text-align: center;">
+            <div class="text-xs text-slate-400 mb-1">SYSTEM STATUS</div>
+            <div class="text-emerald-400 font-bold text-sm">ONLINE</div>
+          </div>
+          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 12px; text-align: center;">
+            <div class="text-xs text-slate-400 mb-1">HEALTH SCORE</div>
+            <div class="text-cyan-400 font-bold text-sm" id="jarvisHealthScore">--</div>
+          </div>
+          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 12px; text-align: center;">
+            <div class="text-xs text-slate-400 mb-1">ALERTS</div>
+            <div class="text-yellow-400 font-bold text-sm" id="jarvisAlerts">0</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- RIGHT: QUICK ACTIONS (3 cols) -->
+      <div class="lg:col-span-3">
+        <div class="space-y-3">
+          <button onclick="jarvisSpeak('Analyzing your financial data now, sir.')" style="width: 100%; padding: 14px 20px; background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 212, 255, 0.1)); border: 1px solid rgba(0, 212, 255, 0.4); border-radius: 12px; color: #00d4ff; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: space-between;" onmouseover="this.style.background='linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(0, 212, 255, 0.15))'" onmouseout="this.style.background='linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 212, 255, 0.1))'">
+            <span>💬 Talk to JARVIS</span>
+            <i class="ph-bold ph-waveform"></i>
+          </button>
+          
+          <button onclick="jarvisAnalyze()" style="width: 100%; padding: 14px 20px; background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.1)); border: 1px solid rgba(168, 85, 247, 0.4); border-radius: 12px; color: #a855f7; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: space-between;" onmouseover="this.style.background='linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(168, 85, 247, 0.15))'" onmouseout="this.style.background='linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.1))'">
+            <span>🧠 AI Analysis</span>
+            <i class="ph-bold ph-brain"></i>
+          </button>
+          
+          <button onclick="jarvisAlert()" style="width: 100%; padding: 14px 20px; background: linear-gradient(135deg, rgba(0, 255, 159, 0.2), rgba(0, 255, 159, 0.1)); border: 1px solid rgba(0, 255, 159, 0.4); border-radius: 12px; color: #00ff9f; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: space-between;" onmouseover="this.style.background='linear-gradient(135deg, rgba(0, 255, 159, 0.3), rgba(0, 255, 159, 0.15))'" onmouseout="this.style.background='linear-gradient(135deg, rgba(0, 255, 159, 0.2), rgba(0, 255, 159, 0.1))'">
+            <span>⚡ System Check</span>
+            <i class="ph-bold ph-lightning"></i>
+          </button>
+        </div>
+      </div>
+      
+    </div>
+    
+    <!-- Bottom status bar -->
+    <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.5), transparent);"></div>
+  </div>
+
   <nav class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4 fade-in">
     <div class="flex items-center gap-4">
-      <!-- Hologram AI Mini (camuflado en navbar) -->
-      <div id="pymaxHologramNavbar" style="width: 60px; height: 60px; position: relative;"></div>
+      <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold font-display text-xl shadow-lg">
+        P
+      </div>
       
       <div>
         <h2 class="text-white font-bold text-base tracking-wide font-display">PYMAX</h2>
@@ -2967,27 +3045,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     }
     
-    // FASE HOLOGRAM: Inicializar Hologram AI MINI en navbar
-    console.log('🤖 Initializing Mini Hologram AI in navbar...');
-    window.pymaxHologramMini = new PymaxHologram({
-      containerId: 'pymaxHologramNavbar'
-    });
-    
-    const miniSuccess = window.pymaxHologramMini.init();
-    
-    if (miniSuccess) {
-      console.log('✅ Mini Hologram AI initialized in navbar');
-      
-      // Agregar clase mini al container
-      const miniContainer = document.getElementById('pymaxHologramNavbar');
-      if (miniContainer && miniContainer.querySelector('.pymax-hologram-container')) {
-        miniContainer.querySelector('.pymax-hologram-container').classList.add('pymax-hologram-mini');
-      }
-      
-      // Estado inicial idle
-      setTimeout(() => {
-        window.pymaxHologramMini.idle();
-      }, 500);
+    // FASE JARVIS: Inicializar JARVIS AI en header (pymax-jarvis.js maneja todo)
+    if (typeof initJarvisHeader === 'function') {
+      initJarvisHeader();
     }
   }
   
