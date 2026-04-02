@@ -781,25 +781,20 @@
         </button>
       </div>
       
-      <!-- RECORDATORIOS BANNER - AJUSTADO -->
-      <div class="holo-reminders" style="bottom: 15px; left: 15px; right: 15px; max-height: 120px; overflow-y: auto;">
-        <div class="holo-reminders-header">
-          <div class="holo-reminders-title">
-            <i class="ph-fill ph-bell-ringing"></i>
-            RECORDATORIOS DE HOY
+      <!-- RECORDATORIOS BANNER - COMPACTO Y FINO -->
+      <div class="holo-reminders" style="bottom: 10px; left: 10px; right: 10px; padding: 8px 16px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0;">
+            <div style="font-size: 0.7rem; color: rgba(59, 130, 246, 0.9); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;">
+              <i class="ph-fill ph-bell-ringing"></i> HOY
+            </div>
+            <div id="holoRemindersList" style="flex: 1; min-width: 0; font-size: 0.8rem; color: rgba(255, 255, 255, 0.9); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+              Sin tareas pendientes hoy
+            </div>
           </div>
-          <button onclick="addNewTask()" style="padding: 4px 12px; border-radius: 8px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; font-size: 0.75rem; font-weight: 600; cursor: pointer;">
+          <button onclick="addNewTask()" style="padding: 4px 10px; border-radius: 6px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; font-size: 0.7rem; font-weight: 600; cursor: pointer; white-space: nowrap;">
             <i class="ph-bold ph-plus"></i> Nueva
           </button>
-        </div>
-        
-        <!-- Lista de recordatorios (se llena dinámicamente) -->
-        <div class="holo-reminders-list" id="holoRemindersList">
-          <!-- Si hay tareas -->
-          <div class="holo-reminder-item">
-            <div class="holo-reminder-checkbox"></div>
-            <div class="holo-reminder-text">Revisar facturas pendientes</div>
-          </div>
         </div>
       </div>
       
@@ -810,43 +805,17 @@
   // Sincronizar recordatorios con sistema de tareas
   function syncHoloReminders() {
     const remindersList = document.getElementById('holoRemindersList');
-    const tourButton = document.getElementById('holoTourButton');
     
     if (!remindersList) return;
     
     const pendingTasks = userTasks.filter(t => !t.completed);
     
     if (pendingTasks.length === 0) {
-      // Sin tareas: mostrar botón de tour
-      remindersList.innerHTML = `
-        <div style="text-align: center; padding: 20px;">
-          <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.85rem; margin-bottom: 16px;">
-            ✨ Sin tareas pendientes hoy
-          </p>
-          <button class="holo-tour-btn" onclick="startHoloTour()">
-            <i class="ph-bold ph-magic-wand"></i>
-            <span>Iniciar Tour IA - Análisis Completo</span>
-          </button>
-        </div>
-      `;
+      remindersList.textContent = 'Sin tareas pendientes hoy';
+    } else if (pendingTasks.length === 1) {
+      remindersList.textContent = pendingTasks[0].text;
     } else {
-      // Con tareas: mostrar lista
-      remindersList.innerHTML = pendingTasks.slice(0, 3).map((task, index) => `
-        <div class="holo-reminder-item">
-          <div class="holo-reminder-checkbox ${task.completed ? 'checked' : ''}" onclick="toggleTask(${userTasks.indexOf(task)})"></div>
-          <div class="holo-reminder-text">${task.text}</div>
-        </div>
-      `).join('');
-      
-      if (pendingTasks.length > 3) {
-        remindersList.innerHTML += `
-          <div style="text-align: center; margin-top: 12px;">
-            <button onclick="document.querySelector('[data-section-id=\\"tareas\\"]')?.scrollIntoView({behavior: 'smooth'})" style="font-size: 0.75rem; color: rgba(59, 130, 246, 0.8); background: none; border: none; cursor: pointer;">
-              Ver ${pendingTasks.length - 3} más →
-            </button>
-          </div>
-        `;
-      }
+      remindersList.textContent = `${pendingTasks.length} tareas: ${pendingTasks[0].text}${pendingTasks.length > 1 ? ` (+${pendingTasks.length - 1} más)` : ''}`;
     }
   }
   
