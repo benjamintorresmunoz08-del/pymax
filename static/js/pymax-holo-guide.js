@@ -25,14 +25,19 @@ class PyMaxHoloGuide {
     this.isBlinking = false;
     this.lastBlink = Date.now();
     
-    // Mensajes por herramienta
+    // Mensajes por herramienta (TODAS las disponibles)
     this.toolMessages = {
       'calendario': 'Gestiona fechas importantes y plazos de pago',
+      'ia': 'Chat inteligente con asistente financiero IA',
       'ventas': 'Registra ingresos y gastos diarios',
+      'flujo': 'Analiza proyecciones de liquidez',
       'metas': 'Define y sigue tus objetivos financieros',
+      'obligaciones': 'Gestiona deudas y compromisos de pago',
       'inventario': 'Controla tu stock y productos',
       'libro': 'Revisa el historial completo de transacciones',
-      'flujo': 'Analiza proyecciones de liquidez'
+      'progreso': 'Mide tu rendimiento y disciplina financiera',
+      'semaforo': 'Visualiza el estado de salud financiera',
+      'exportar': 'Descarga reportes en Excel o PDF'
     };
     
     this.init();

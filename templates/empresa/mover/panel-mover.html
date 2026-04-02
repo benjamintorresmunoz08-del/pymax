@@ -741,43 +741,68 @@
         <div class="holo-ai-label">PYMAX AI</div>
       </div>
       
-      <!-- BOTONES HERRAMIENTAS (DISTRIBUCIÓN CIRCULAR) -->
+      <!-- BOTONES HERRAMIENTAS (TODAS LAS DISPONIBLES) -->
       <div class="tool-buttons">
-        <!-- Arriba: Calendario -->
-        <button class="tool-btn top" data-tool="calendario" onclick="pymaxCalendar.open()">
+        <!-- Fila 1: Top -->
+        <button class="tool-btn" style="top: 5px; left: 50%; transform: translateX(-50%);" data-tool="calendario" onclick="pymaxCalendar.open()">
           <i class="ph-duotone ph-calendar-check"></i>
           <span>Calendario</span>
         </button>
         
-        <!-- Arriba Derecha: Ventas/Gastos -->
-        <button class="tool-btn top-right" data-tool="ventas" onclick="window.location.href='/empresa/mover/ventas-gastos'">
+        <!-- Fila 2: Top sides -->
+        <button class="tool-btn" style="top: 40px; left: 25%;" data-tool="ia" onclick="window.location.href='/empresa/mover/ia-apoyo'">
+          <i class="ph-duotone ph-brain"></i>
+          <span>IA Chat</span>
+        </button>
+        
+        <button class="tool-btn" style="top: 40px; right: 25%;" data-tool="ventas" onclick="window.location.href='/empresa/mover/ventas-gastos'">
           <i class="ph-duotone ph-currency-dollar"></i>
           <span>Ventas & Gastos</span>
         </button>
         
-        <!-- Derecha: Metas -->
-        <button class="tool-btn right" data-tool="metas" onclick="window.location.href='/empresa/mover/metas'">
+        <!-- Fila 3: Middle sides -->
+        <button class="tool-btn" style="top: 50%; left: 5px; transform: translateY(-50%);" data-tool="flujo" onclick="window.location.href='/empresa/mover/flujo-caja'">
+          <i class="ph-duotone ph-chart-line-up"></i>
+          <span>Flujo de Caja</span>
+        </button>
+        
+        <button class="tool-btn" style="top: 50%; right: 5px; transform: translateY(-50%);" data-tool="metas" onclick="window.location.href='/empresa/mover/metas'">
           <i class="ph-duotone ph-target"></i>
           <span>Metas</span>
         </button>
         
-        <!-- Abajo Derecha: Inventario -->
-        <button class="tool-btn bottom-right" data-tool="inventario" onclick="window.location.href='/empresa/mover/inventario'">
+        <!-- Fila 4: Middle-bottom sides -->
+        <button class="tool-btn" style="bottom: 110px; left: 15px;" data-tool="obligaciones" onclick="window.location.href='/empresa/mover/obligaciones'">
+          <i class="ph-duotone ph-gavel"></i>
+          <span>Obligaciones</span>
+        </button>
+        
+        <button class="tool-btn" style="bottom: 110px; right: 15px;" data-tool="inventario" onclick="window.location.href='/empresa/mover/inventario'">
           <i class="ph-duotone ph-package"></i>
           <span>Inventario</span>
           <div class="tool-btn-badge">12</div>
         </button>
         
-        <!-- Abajo Izquierda: Libro Mayor -->
-        <button class="tool-btn bottom-left" data-tool="libro" onclick="window.location.href='/empresa/mover/auditoria'">
+        <!-- Fila 5: Bottom sides -->
+        <button class="tool-btn" style="bottom: 60px; left: 35%;" data-tool="libro" onclick="window.location.href='/empresa/mover/auditoria'">
           <i class="ph-duotone ph-scroll"></i>
           <span>Libro Mayor</span>
         </button>
         
-        <!-- Izquierda: Flujo de Caja -->
-        <button class="tool-btn left" data-tool="flujo" onclick="window.location.href='/empresa/mover/flujo-caja'">
-          <i class="ph-duotone ph-chart-line-up"></i>
-          <span>Flujo de Caja</span>
+        <button class="tool-btn" style="bottom: 60px; right: 35%;" data-tool="progreso" onclick="window.location.href='/empresa/mover/progreso'">
+          <i class="ph-duotone ph-medal"></i>
+          <span>Progreso</span>
+        </button>
+        
+        <!-- Fila 6: Bottom center area -->
+        <button class="tool-btn" style="bottom: 60px; left: 20%;" data-tool="semaforo" onclick="window.location.href='/empresa/mover/semaforo'">
+          <i class="ph-duotone ph-traffic-signal"></i>
+          <span>Semáforo</span>
+        </button>
+        
+        <button class="tool-btn" style="bottom: 60px; right: 20%;" data-tool="exportar" onclick="window.location.href='/empresa/mover/exportar-excel'">
+          <i class="ph-duotone ph-file-xls"></i>
+          <span>Exportar</span>
         </button>
       </div>
       
