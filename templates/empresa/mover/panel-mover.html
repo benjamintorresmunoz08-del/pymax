@@ -741,71 +741,68 @@
         <div class="holo-ai-label">PYMAX AI</div>
       </div>
       
-      <!-- BOTONES HERRAMIENTAS (DISTRIBUCIÓN CIRCULAR SIMÉTRICA) -->
+      <!-- BOTONES HERRAMIENTAS - DISTRIBUCIÓN LIMPIA SIN SOLAPAMIENTO -->
       <div class="tool-buttons" style="pointer-events: none;">
         <!-- TOP CENTER -->
-        <button class="tool-btn" style="top: 10px; left: 50%; transform: translateX(-50%); pointer-events: all;" data-tool="calendario" onclick="pymaxCalendar.open()">
+        <button class="tool-btn" style="top: 15px; left: 50%; transform: translateX(-50%); pointer-events: all;" data-tool="calendario" onclick="pymaxCalendar.open()">
           <i class="ph-duotone ph-calendar-check"></i>
           <span>Calendario</span>
         </button>
         
         <!-- TOP LEFT -->
-        <button class="tool-btn" style="top: 60px; left: 18%; pointer-events: all;" data-tool="ia" onclick="window.location.href='/empresa/mover/ia-apoyo'">
+        <button class="tool-btn" style="top: 70px; left: 80px; pointer-events: all;" data-tool="ia" onclick="window.location.href='/empresa/mover/ia-apoyo'">
           <i class="ph-duotone ph-brain"></i>
           <span>IA Chat</span>
         </button>
         
         <!-- TOP RIGHT -->
-        <button class="tool-btn" style="top: 60px; right: 18%; pointer-events: all;" data-tool="ventas" onclick="window.location.href='/empresa/mover/ventas-gastos'">
+        <button class="tool-btn" style="top: 70px; right: 80px; pointer-events: all;" data-tool="ventas" onclick="window.location.href='/empresa/mover/ventas-gastos'">
           <i class="ph-duotone ph-currency-dollar"></i>
           <span>Ventas & Gastos</span>
         </button>
         
         <!-- MIDDLE LEFT -->
-        <button class="tool-btn" style="top: 50%; left: 10px; transform: translateY(-50%); pointer-events: all;" data-tool="flujo" onclick="window.location.href='/empresa/mover/flujo-caja'">
+        <button class="tool-btn" style="top: 50%; left: 20px; transform: translateY(-50%); pointer-events: all;" data-tool="flujo" onclick="window.location.href='/empresa/mover/flujo-caja'">
           <i class="ph-duotone ph-chart-line-up"></i>
           <span>Flujo de Caja</span>
         </button>
         
         <!-- MIDDLE RIGHT -->
-        <button class="tool-btn" style="top: 50%; right: 10px; transform: translateY(-50%); pointer-events: all;" data-tool="metas" onclick="window.location.href='/empresa/mover/metas'">
+        <button class="tool-btn" style="top: 50%; right: 20px; transform: translateY(-50%); pointer-events: all;" data-tool="metas" onclick="window.location.href='/empresa/mover/metas'">
           <i class="ph-duotone ph-target"></i>
           <span>Metas</span>
         </button>
         
-        <!-- BOTTOM LEFT TOP -->
-        <button class="tool-btn" style="bottom: 140px; left: 60px; pointer-events: all;" data-tool="obligaciones" onclick="window.location.href='/empresa/mover/obligaciones'">
+        <!-- MIDDLE-BOTTOM LEFT -->
+        <button class="tool-btn" style="bottom: 160px; left: 80px; pointer-events: all;" data-tool="obligaciones" onclick="window.location.href='/empresa/mover/obligaciones'">
           <i class="ph-duotone ph-gavel"></i>
           <span>Obligaciones</span>
         </button>
         
-        <!-- BOTTOM RIGHT TOP -->
-        <button class="tool-btn" style="bottom: 140px; right: 60px; pointer-events: all;" data-tool="inventario" onclick="window.location.href='/empresa/mover/inventario'">
+        <!-- MIDDLE-BOTTOM RIGHT -->
+        <button class="tool-btn" style="bottom: 160px; right: 80px; pointer-events: all;" data-tool="inventario" onclick="window.location.href='/empresa/mover/inventario'">
           <i class="ph-duotone ph-package"></i>
           <span>Inventario</span>
           <div class="tool-btn-badge">12</div>
         </button>
         
-        <!-- BOTTOM LEFT -->
-        <button class="tool-btn" style="bottom: 70px; left: 18%; pointer-events: all;" data-tool="semaforo" onclick="window.location.href='/empresa/mover/semaforo'">
+        <!-- BOTTOM ROW - 4 BOTONES BIEN ESPACIADOS -->
+        <button class="tool-btn" style="bottom: 80px; left: 12%; pointer-events: all;" data-tool="semaforo" onclick="window.location.href='/empresa/mover/semaforo'">
           <i class="ph-duotone ph-traffic-signal"></i>
           <span>Semáforo</span>
         </button>
         
-        <!-- BOTTOM CENTER LEFT -->
-        <button class="tool-btn" style="bottom: 70px; left: 36%; pointer-events: all;" data-tool="libro" onclick="window.location.href='/empresa/mover/auditoria'">
+        <button class="tool-btn" style="bottom: 80px; left: 30%; pointer-events: all;" data-tool="libro" onclick="window.location.href='/empresa/mover/auditoria'">
           <i class="ph-duotone ph-scroll"></i>
           <span>Libro Mayor</span>
         </button>
         
-        <!-- BOTTOM CENTER RIGHT -->
-        <button class="tool-btn" style="bottom: 70px; right: 36%; pointer-events: all;" data-tool="progreso" onclick="window.location.href='/empresa/mover/progreso'">
+        <button class="tool-btn" style="bottom: 80px; right: 30%; pointer-events: all;" data-tool="progreso" onclick="window.location.href='/empresa/mover/progreso'">
           <i class="ph-duotone ph-medal"></i>
           <span>Progreso</span>
         </button>
         
-        <!-- BOTTOM RIGHT -->
-        <button class="tool-btn" style="bottom: 70px; right: 18%; pointer-events: all;" data-tool="exportar" onclick="window.location.href='/empresa/mover/exportar-excel'">
+        <button class="tool-btn" style="bottom: 80px; right: 12%; pointer-events: all;" data-tool="exportar" onclick="window.location.href='/empresa/mover/exportar-excel'">
           <i class="ph-duotone ph-file-xls"></i>
           <span>Exportar</span>
         </button>

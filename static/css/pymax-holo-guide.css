@@ -26,7 +26,37 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
+/* GRID HOLOGRÁFICO IMPRESIONANTE */
 .holo-guide-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(255, 20, 147, 0.05) 0%, transparent 50%);
+  background-size: 40px 40px, 40px 40px, 100% 100%, 100% 100%, 100% 100%;
+  animation: grid-pulse 8s ease-in-out infinite, grid-move 20s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes grid-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes grid-move {
+  from { background-position: 0 0, 0 0, 0 0, 0 0, 0 0; }
+  to { background-position: 40px 40px, 40px 40px, 0 0, 0 0, 0 0; }
+}
+
+/* Borde superior animado */
+.holo-guide-container::after {
   content: '';
   position: absolute;
   top: 0;
@@ -36,12 +66,13 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(0, 212, 255, 0.5),
-    rgba(168, 85, 247, 0.5),
-    rgba(255, 20, 147, 0.5),
+    rgba(0, 212, 255, 0.6),
+    rgba(168, 85, 247, 0.6),
+    rgba(255, 20, 147, 0.6),
     transparent
   );
   animation: glow-pulse 3s ease-in-out infinite;
+  z-index: 1;
 }
 
 @keyframes glow-pulse {
@@ -376,96 +407,26 @@
   left: 40px;
 }
 
-/* ANIMACIONES HOVER PREMIUM - EXPERIENCIAS DE LUJO */
+/* HOVER SIMPLE - SOLO MINI ZOOM SIN BUG */
 .tool-btn:hover {
   background: 
     radial-gradient(circle at 50% 50%, rgba(0, 212, 255, 0.3) 0%, transparent 70%),
     linear-gradient(135deg, rgba(0, 212, 255, 0.25) 0%, rgba(168, 85, 247, 0.25) 50%, rgba(255, 20, 147, 0.2) 100%);
   border-color: rgba(0, 212, 255, 0.8);
-  transform: translateX(-50%) translateY(-8px) scale(1.1);
+  transform: scale(1.08);
   box-shadow: 
-    0 12px 40px rgba(0, 212, 255, 0.4),
-    0 0 60px rgba(0, 212, 255, 0.3),
-    0 0 100px rgba(168, 85, 247, 0.2),
-    inset 0 0 30px rgba(0, 212, 255, 0.1);
+    0 8px 30px rgba(0, 212, 255, 0.5),
+    0 0 50px rgba(0, 212, 255, 0.4),
+    0 0 80px rgba(168, 85, 247, 0.3);
   color: white;
-  animation: tool-glow 1.5s ease-in-out infinite alternate;
-}
-
-@keyframes tool-glow {
-  from { 
-    box-shadow: 
-      0 12px 40px rgba(0, 212, 255, 0.4),
-      0 0 60px rgba(0, 212, 255, 0.3),
-      0 0 100px rgba(168, 85, 247, 0.2);
-  }
-  to { 
-    box-shadow: 
-      0 16px 50px rgba(0, 212, 255, 0.5),
-      0 0 80px rgba(0, 212, 255, 0.4),
-      0 0 120px rgba(168, 85, 247, 0.3);
-  }
 }
 
 .tool-btn:hover i {
-  animation: icon-bounce 0.6s ease-in-out infinite alternate;
-  filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.8));
-}
-
-@keyframes icon-bounce {
-  from { transform: translateY(0) scale(1); }
-  to { transform: translateY(-4px) scale(1.1); }
+  filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.8));
 }
 
 .tool-btn:hover span {
-  text-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
-}
-
-/* Hover para botones en posición right/left */
-.tool-btn.right:hover,
-.tool-btn.left:hover {
-  transform: translateY(-50%) scale(1.1);
-}
-
-.tool-btn.right:hover {
-  transform: translateY(-50%) translateX(-4px) scale(1.1);
-}
-
-.tool-btn.left:hover {
-  transform: translateY(-50%) translateX(4px) scale(1.1);
-}
-
-/* Partículas de energía al hover */
-.tool-btn::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, transparent 70%);
-  border-radius: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  opacity: 0;
-  transition: all 0.4s ease;
-  pointer-events: none;
-}
-
-.tool-btn:hover::before {
-  transform: translate(-50%, -50%) scale(1.5);
-  opacity: 1;
-  animation: energy-pulse 1.2s ease-in-out infinite;
-}
-
-@keyframes energy-pulse {
-  0%, 100% { 
-    transform: translate(-50%, -50%) scale(1.3);
-    opacity: 0.6;
-  }
-  50% { 
-    transform: translate(-50%, -50%) scale(1.7);
-    opacity: 0.3;
-  }
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
 }
 
 /* Badge de notificaciones */
