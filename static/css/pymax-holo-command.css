@@ -6,12 +6,13 @@
 .holo-command-center {
     position: relative;
     width: 100%;
-    min-height: 600px;
-    background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1429 100%);
-    border-radius: 20px;
-    padding: 40px;
+    min-height: 300px;
+    background: linear-gradient(135deg, rgba(10, 14, 39, 0.6) 0%, rgba(26, 31, 58, 0.4) 50%, rgba(15, 20, 41, 0.6) 100%);
+    border-radius: 16px;
+    padding: 24px;
     overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 8px 24px rgba(0, 212, 255, 0.15);
+    backdrop-filter: blur(10px);
 }
 
 /* Fondo con estrellas animadas */
@@ -66,11 +67,11 @@
     z-index: 10;
 }
 
-/* Pedestal holográfico */
+/* Pedestal holográfico - REDISEÑO COMPACTO Y ELEGANTE */
 .holo-pedestal {
     position: relative;
-    width: 300px;
-    height: 400px;
+    width: 200px;
+    height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -79,71 +80,71 @@
 .holo-pedestal::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
-    width: 280px;
-    height: 380px;
-    background: linear-gradient(
-        to bottom,
-        rgba(0, 212, 255, 0.1) 0%,
-        rgba(0, 212, 255, 0.3) 50%,
-        rgba(0, 212, 255, 0.1) 100%
+    transform: translate(-50%, -50%);
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(
+        circle at center,
+        rgba(0, 212, 255, 0.05) 0%,
+        rgba(0, 212, 255, 0.15) 50%,
+        rgba(0, 212, 255, 0.05) 100%
     );
-    border: 2px solid rgba(0, 212, 255, 0.5);
-    border-radius: 10px;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 50%;
     box-shadow: 
-        inset 0 0 40px rgba(0, 212, 255, 0.3),
-        0 0 60px rgba(0, 212, 255, 0.4);
-    animation: pedestal-pulse 3s ease-in-out infinite;
+        inset 0 0 30px rgba(0, 212, 255, 0.2),
+        0 0 30px rgba(0, 212, 255, 0.2);
+    animation: pedestal-pulse 4s ease-in-out infinite;
 }
 
 @keyframes pedestal-pulse {
     0%, 100% { 
         box-shadow: 
-            inset 0 0 40px rgba(0, 212, 255, 0.3),
-            0 0 60px rgba(0, 212, 255, 0.4);
-        border-color: rgba(0, 212, 255, 0.5);
+            inset 0 0 30px rgba(0, 212, 255, 0.2),
+            0 0 30px rgba(0, 212, 255, 0.2);
+        border-color: rgba(0, 212, 255, 0.3);
     }
     50% { 
         box-shadow: 
-            inset 0 0 60px rgba(0, 212, 255, 0.5),
-            0 0 100px rgba(0, 212, 255, 0.6);
-        border-color: rgba(0, 212, 255, 0.8);
+            inset 0 0 40px rgba(0, 212, 255, 0.3),
+            0 0 40px rgba(0, 212, 255, 0.3);
+        border-color: rgba(0, 212, 255, 0.5);
     }
 }
 
-/* Base circular del pedestal */
+/* Base circular del pedestal - MÁS SUTIL */
 .holo-base {
     position: absolute;
-    bottom: -20px;
-    width: 320px;
-    height: 10px;
+    bottom: -10px;
+    width: 220px;
+    height: 6px;
     background: linear-gradient(90deg, 
         transparent 0%,
-        rgba(0, 212, 255, 0.6) 20%,
-        rgba(0, 212, 255, 0.8) 50%,
-        rgba(0, 212, 255, 0.6) 80%,
+        rgba(0, 212, 255, 0.4) 20%,
+        rgba(0, 212, 255, 0.6) 50%,
+        rgba(0, 212, 255, 0.4) 80%,
         transparent 100%
     );
     border-radius: 50%;
-    box-shadow: 0 0 40px rgba(0, 212, 255, 0.8);
-    animation: base-glow 2s ease-in-out infinite alternate;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+    animation: base-glow 3s ease-in-out infinite alternate;
 }
 
 @keyframes base-glow {
-    0% { box-shadow: 0 0 40px rgba(0, 212, 255, 0.6); }
-    100% { box-shadow: 0 0 80px rgba(0, 212, 255, 1); }
+    0% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.4); }
+    100% { box-shadow: 0 0 30px rgba(0, 212, 255, 0.6); }
 }
 
-/* Anillos horizontales giratorios */
+/* Anillos horizontales giratorios - MÁS SUTILES Y ELEGANTES */
 .holo-rings {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 340px;
-    height: 340px;
+    width: 220px;
+    height: 220px;
 }
 
 .holo-ring {
@@ -151,28 +152,29 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) rotateX(75deg);
-    border: 2px solid rgba(0, 212, 255, 0.6);
+    border: 1px solid rgba(0, 212, 255, 0.3);
     border-radius: 50%;
-    animation: ring-rotate 10s linear infinite;
+    animation: ring-rotate 15s linear infinite;
+    opacity: 0.6;
 }
 
 .holo-ring:nth-child(1) {
-    width: 280px;
-    height: 280px;
-    animation-duration: 8s;
+    width: 180px;
+    height: 180px;
+    animation-duration: 12s;
 }
 
 .holo-ring:nth-child(2) {
-    width: 240px;
-    height: 240px;
-    animation-duration: 10s;
+    width: 150px;
+    height: 150px;
+    animation-duration: 15s;
     animation-direction: reverse;
 }
 
 .holo-ring:nth-child(3) {
-    width: 200px;
-    height: 200px;
-    animation-duration: 12s;
+    width: 120px;
+    height: 120px;
+    animation-duration: 18s;
 }
 
 @keyframes ring-rotate {
@@ -180,11 +182,11 @@
     100% { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(360deg); }
 }
 
-/* Avatar central */
+/* Avatar central - REDISEÑO ELEGANTE Y SUAVE */
 .holo-avatar {
     position: relative;
-    width: 150px;
-    height: 150px;
+    width: 100px;
+    height: 100px;
     z-index: 5;
     transform-style: preserve-3d;
 }
@@ -192,22 +194,25 @@
 .holo-avatar-inner {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(138, 43, 226, 0.3));
-    border: 3px solid rgba(0, 212, 255, 0.8);
+    background: radial-gradient(
+        circle at 30% 30%,
+        rgba(100, 200, 255, 0.3) 0%,
+        rgba(0, 212, 255, 0.2) 50%,
+        rgba(0, 150, 255, 0.1) 100%
+    );
+    border: 2px solid rgba(0, 212, 255, 0.5);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 48px;
-    font-weight: 700;
-    color: #00d4ff;
-    text-shadow: 0 0 20px rgba(0, 212, 255, 1);
     box-shadow: 
-        inset 0 0 40px rgba(0, 212, 255, 0.4),
-        0 0 60px rgba(0, 212, 255, 0.6);
-    animation: avatar-float 4s ease-in-out infinite;
+        inset 0 0 30px rgba(0, 212, 255, 0.3),
+        0 0 40px rgba(0, 212, 255, 0.4),
+        0 0 60px rgba(0, 212, 255, 0.2);
+    animation: avatar-float 6s ease-in-out infinite;
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(5px);
 }
 
 .holo-avatar-inner::before {
@@ -219,21 +224,38 @@
     height: 200%;
     background: linear-gradient(
         45deg,
-        transparent 30%,
-        rgba(255, 255, 255, 0.3) 50%,
-        transparent 70%
+        transparent 40%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 60%
     );
-    animation: shine 3s linear infinite;
+    animation: shine 6s linear infinite;
+}
+
+/* Ícono central elegante */
+.holo-avatar-inner::after {
+    content: '●';
+    position: relative;
+    font-size: 24px;
+    color: rgba(0, 212, 255, 0.8);
+    text-shadow: 
+        0 0 10px rgba(0, 212, 255, 1),
+        0 0 20px rgba(0, 212, 255, 0.8);
+    animation: pulse-dot 3s ease-in-out infinite;
 }
 
 @keyframes avatar-float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-15px); }
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-8px) scale(1.02); }
 }
 
 @keyframes shine {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
 }
 
 /* Estado cuando IA está hablando */
@@ -272,16 +294,16 @@
     }
 }
 
-/* Label bajo el avatar */
+/* Label bajo el avatar - MÁS SUTIL */
 .holo-label {
-    margin-top: 30px;
-    font-size: 18px;
+    margin-top: 16px;
+    font-size: 13px;
     font-weight: 600;
-    color: #00d4ff;
+    color: rgba(0, 212, 255, 0.8);
     text-align: center;
     text-transform: uppercase;
-    letter-spacing: 3px;
-    text-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+    letter-spacing: 2px;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
 }
 
 /* ============================================
