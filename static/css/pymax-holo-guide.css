@@ -83,19 +83,42 @@
   height: 120px;
   background: radial-gradient(
     circle,
-    rgba(0, 212, 255, 0.15) 0%,
-    rgba(168, 85, 247, 0.1) 50%,
+    rgba(0, 212, 255, 0.25) 0%,
+    rgba(168, 85, 247, 0.15) 30%,
+    rgba(255, 20, 147, 0.1) 60%,
     transparent 100%
   );
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid rgba(0, 212, 255, 0.3);
+  border: 2px solid rgba(0, 212, 255, 0.4);
   box-shadow: 
-    0 0 30px rgba(0, 212, 255, 0.3),
-    0 0 60px rgba(168, 85, 247, 0.2),
-    inset 0 0 30px rgba(0, 212, 255, 0.1);
+    0 0 40px rgba(0, 212, 255, 0.4),
+    0 0 80px rgba(168, 85, 247, 0.3),
+    inset 0 0 40px rgba(0, 212, 255, 0.15),
+    inset 0 0 80px rgba(168, 85, 247, 0.1);
+  animation: ai-breathe 4s ease-in-out infinite;
+  backdrop-filter: blur(10px);
+}
+
+.holo-ai-face::before {
+  content: '';
+  position: absolute;
+  width: 90%;
+  height: 90%;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: ai-breathe 4s ease-in-out infinite reverse;
+}
+
+.holo-ai-face::after {
+  content: '';
+  position: absolute;
+  width: 70%;
+  height: 70%;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 212, 255, 0.2);
   animation: ai-breathe 4s ease-in-out infinite;
 }
 
@@ -284,49 +307,49 @@
   line-height: 1.2;
 }
 
-/* Posiciones circulares */
+/* Posiciones circulares - MÁS CERCANAS */
 .tool-btn.top {
-  top: 20px;
+  top: 10px;
   left: 50%;
   transform: translateX(-50%);
 }
 
 .tool-btn.top-right {
-  top: 80px;
-  right: 60px;
+  top: 50px;
+  right: 40px;
 }
 
 .tool-btn.right {
-  right: 20px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
 }
 
 .tool-btn.bottom-right {
-  bottom: 80px;
-  right: 60px;
+  bottom: 50px;
+  right: 40px;
 }
 
 .tool-btn.bottom {
-  bottom: 20px;
+  bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
 }
 
 .tool-btn.bottom-left {
-  bottom: 80px;
-  left: 60px;
+  bottom: 50px;
+  left: 40px;
 }
 
 .tool-btn.left {
-  left: 20px;
+  left: 10px;
   top: 50%;
   transform: translateY(-50%);
 }
 
 .tool-btn.top-left {
-  top: 80px;
-  left: 60px;
+  top: 50px;
+  left: 40px;
 }
 
 /* Hover effects */
