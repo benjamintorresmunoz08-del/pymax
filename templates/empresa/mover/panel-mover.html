@@ -721,201 +721,224 @@
 <div class="pymax-main-content">
 
   <!-- ============================================
-       INTERACTIVE HOLO GUIDE SYSTEM
-       IA Holográfica con Tracking Eyes + Botones Circulares
+       BARRA SIMPLE DE HERRAMIENTAS PRINCIPALES
+       Minimalista pero con WOW factor
        ============================================ -->
-  <div class="holo-guide-container mb-10 fade-in">
-    <div class="holo-guide-layout">
-      
-      <!-- IA CENTRAL CON TRACKING EYES -->
-      <div class="holo-ai-center">
-        <!-- Rostro Holográfico -->
-        <div class="holo-ai-face">
-          <div class="holo-ai-eyes">
-            <div class="eye" id="eye-left"></div>
-            <div class="eye" id="eye-right"></div>
-          </div>
-        </div>
-        
-        <!-- Label -->
-        <div class="holo-ai-label">PYMAX AI</div>
+  <div class="pymax-simple-toolbar mb-10 fade-in">
+    <!-- Calendario -->
+    <button class="toolbar-btn" onclick="pymaxCalendar.open()">
+      <div class="toolbar-btn-icon">
+        <i class="ph-duotone ph-calendar-check"></i>
       </div>
-      
-      <!-- BOTONES HERRAMIENTAS - DISTRIBUCIÓN LIMPIA SIN SOLAPAMIENTO -->
-      <div class="tool-buttons" style="pointer-events: none;">
-        <!-- TOP CENTER -->
-        <button class="tool-btn" style="top: 15px; left: 50%; transform: translateX(-50%); pointer-events: all;" data-tool="calendario" onclick="pymaxCalendar.open()">
-          <i class="ph-duotone ph-calendar-check"></i>
-          <span>Calendario</span>
-        </button>
-        
-        <!-- TOP LEFT -->
-        <button class="tool-btn" style="top: 70px; left: 80px; pointer-events: all;" data-tool="ia" onclick="window.location.href='/empresa/mover/ia-apoyo'">
-          <i class="ph-duotone ph-brain"></i>
-          <span>IA Chat</span>
-        </button>
-        
-        <!-- TOP RIGHT -->
-        <button class="tool-btn" style="top: 70px; right: 80px; pointer-events: all;" data-tool="ventas" onclick="window.location.href='/empresa/mover/ventas-gastos'">
-          <i class="ph-duotone ph-currency-dollar"></i>
-          <span>Ventas & Gastos</span>
-        </button>
-        
-        <!-- MIDDLE LEFT -->
-        <button class="tool-btn" style="top: 50%; left: 20px; transform: translateY(-50%); pointer-events: all;" data-tool="flujo" onclick="window.location.href='/empresa/mover/flujo-caja'">
-          <i class="ph-duotone ph-chart-line-up"></i>
-          <span>Flujo de Caja</span>
-        </button>
-        
-        <!-- MIDDLE RIGHT -->
-        <button class="tool-btn" style="top: 50%; right: 20px; transform: translateY(-50%); pointer-events: all;" data-tool="metas" onclick="window.location.href='/empresa/mover/metas'">
-          <i class="ph-duotone ph-target"></i>
-          <span>Metas</span>
-        </button>
-        
-        <!-- MIDDLE-BOTTOM LEFT -->
-        <button class="tool-btn" style="bottom: 160px; left: 80px; pointer-events: all;" data-tool="obligaciones" onclick="window.location.href='/empresa/mover/obligaciones'">
-          <i class="ph-duotone ph-gavel"></i>
-          <span>Obligaciones</span>
-        </button>
-        
-        <!-- MIDDLE-BOTTOM RIGHT -->
-        <button class="tool-btn" style="bottom: 160px; right: 80px; pointer-events: all;" data-tool="inventario" onclick="window.location.href='/empresa/mover/inventario'">
-          <i class="ph-duotone ph-package"></i>
-          <span>Inventario</span>
-          <div class="tool-btn-badge">12</div>
-        </button>
-        
-        <!-- BOTTOM ROW - 4 BOTONES BIEN ESPACIADOS -->
-        <button class="tool-btn" style="bottom: 80px; left: 12%; pointer-events: all;" data-tool="semaforo" onclick="window.location.href='/empresa/mover/semaforo'">
-          <i class="ph-duotone ph-traffic-signal"></i>
-          <span>Semáforo</span>
-        </button>
-        
-        <button class="tool-btn" style="bottom: 80px; left: 30%; pointer-events: all;" data-tool="libro" onclick="window.location.href='/empresa/mover/auditoria'">
-          <i class="ph-duotone ph-scroll"></i>
-          <span>Libro Mayor</span>
-        </button>
-        
-        <button class="tool-btn" style="bottom: 80px; right: 30%; pointer-events: all;" data-tool="progreso" onclick="window.location.href='/empresa/mover/progreso'">
-          <i class="ph-duotone ph-medal"></i>
-          <span>Progreso</span>
-        </button>
-        
-        <button class="tool-btn" style="bottom: 80px; right: 12%; pointer-events: all;" data-tool="exportar" onclick="window.location.href='/empresa/mover/exportar-excel'">
-          <i class="ph-duotone ph-file-xls"></i>
-          <span>Exportar</span>
-        </button>
+      <div class="toolbar-btn-label">Calendario</div>
+    </button>
+    
+    <!-- Metas -->
+    <button class="toolbar-btn" onclick="window.location.href='/empresa/mover/metas'">
+      <div class="toolbar-btn-icon">
+        <i class="ph-duotone ph-target"></i>
       </div>
-      
-      <!-- RECORDATORIOS BANNER - COMPACTO Y FINO -->
-      <div class="holo-reminders" style="bottom: 10px; left: 10px; right: 10px; padding: 8px 16px;">
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-          <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0;">
-            <div style="font-size: 0.7rem; color: rgba(59, 130, 246, 0.9); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;">
-              <i class="ph-fill ph-bell-ringing"></i> HOY
-            </div>
-            <div id="holoRemindersList" style="flex: 1; min-width: 0; font-size: 0.8rem; color: rgba(255, 255, 255, 0.9); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-              Sin tareas pendientes hoy
-            </div>
-          </div>
-          <button onclick="addNewTask()" style="padding: 4px 10px; border-radius: 6px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; font-size: 0.7rem; font-weight: 600; cursor: pointer; white-space: nowrap;">
-            <i class="ph-bold ph-plus"></i> Nueva
-          </button>
-        </div>
+      <div class="toolbar-btn-label">Metas</div>
+    </button>
+    
+    <!-- Flujo de Caja -->
+    <button class="toolbar-btn" onclick="window.location.href='/empresa/mover/flujo-caja'">
+      <div class="toolbar-btn-icon">
+        <i class="ph-duotone ph-chart-line-up"></i>
       </div>
-      
-    </div>
+      <div class="toolbar-btn-label">Flujo de Caja</div>
+    </button>
+    
+    <!-- Ventas & Gastos -->
+    <button class="toolbar-btn" onclick="window.location.href='/empresa/mover/ventas-gastos'">
+      <div class="toolbar-btn-icon">
+        <i class="ph-duotone ph-currency-dollar"></i>
+      </div>
+      <div class="toolbar-btn-label">Ventas & Gastos</div>
+    </button>
   </div>
 
-  <script>
-  // Sincronizar recordatorios con sistema de tareas
-  function syncHoloReminders() {
-    const remindersList = document.getElementById('holoRemindersList');
-    
-    if (!remindersList) return;
-    
-    const pendingTasks = userTasks.filter(t => !t.completed);
-    
-    if (pendingTasks.length === 0) {
-      remindersList.textContent = 'Sin tareas pendientes hoy';
-    } else if (pendingTasks.length === 1) {
-      remindersList.textContent = pendingTasks[0].text;
-    } else {
-      remindersList.textContent = `${pendingTasks.length} tareas: ${pendingTasks[0].text}${pendingTasks.length > 1 ? ` (+${pendingTasks.length - 1} más)` : ''}`;
-    }
-  }
-  
-  // Tour IA (preparado para GPT-3)
-  function startHoloTour() {
-    if (!window.holoGuide) {
-      pymaxNotifications.show('Sistema Holo Guide no inicializado', 'error');
-      return;
-    }
-    
-    pymaxNotifications.show('🚀 Iniciando Tour IA...', 'info');
-    
-    // Cambiar emoción de la IA
-    window.holoGuide.setEmotion('thinking');
-    
-    // Obtener datos financieros
-    const stats = pymaxData.getFinancialStats('month');
-    
-    // Tour simulado (en producción usaría GPT-3)
-    const tourSteps = [
-      {
-        target: 'ventas',
-        message: `Tus ventas este mes: ${formatCurrency(stats.income)}. ${stats.income > 0 ? '¡Buen trabajo!' : 'Necesitas registrar más ventas.'}`
-      },
-      {
-        target: 'gastos',
-        message: `Gastos del mes: ${formatCurrency(stats.expenses)}. Margen actual: ${stats.margin}%`
-      },
-      {
-        target: 'metas',
-        message: `Tienes 3 metas activas. ${stats.margin > 20 ? 'Vas por buen camino' : 'Revisa tu estrategia'}`
-      }
-    ];
-    
-    let currentStep = 0;
-    
-    function nextStep() {
-      if (currentStep >= tourSteps.length) {
-        window.holoGuide.setEmotion('happy');
-        pymaxNotifications.show('✅ Tour completado', 'success');
-        return;
-      }
-      
-      const step = tourSteps[currentStep];
-      
-      // Apuntar con partículas al botón
-      const button = document.querySelector(`[data-tool="${step.target}"]`);
-      if (button) {
-        const rect = button.getBoundingClientRect();
-        // La IA apunta hacia ese botón (ya implementado en holo-guide.js)
-      }
-      
-      // Mostrar mensaje
-      pymaxNotifications.show(step.message, 'info');
-      
-      currentStep++;
-      setTimeout(nextStep, 3000);
+  <style>
+    /* ============================================
+       BARRA SIMPLE DE HERRAMIENTAS - MINIMALISTA CON WOW
+       ============================================ */
+    .pymax-simple-toolbar {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      padding: 32px 48px;
+      background: linear-gradient(
+        135deg,
+        rgba(10, 1, 24, 0.95) 0%,
+        rgba(21, 8, 40, 0.9) 100%
+      );
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
     
-    nextStep();
-  }
-  
-  // Inicializar cuando carguen las tareas
-  document.addEventListener('DOMContentLoaded', () => {
-    // Esperar a que las tareas se carguen
-    setTimeout(() => {
-      syncHoloReminders();
-    }, 500);
+    /* Borde superior con glow */
+    .pymax-simple-toolbar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 212, 255, 0.6),
+        rgba(168, 85, 247, 0.6),
+        rgba(255, 20, 147, 0.6),
+        transparent
+      );
+      animation: glow-pulse 3s ease-in-out infinite;
+    }
     
-    // Actualizar cuando cambien las tareas
-    window.addEventListener('tasksUpdated', syncHoloReminders);
-  });
-  </script>
+    @keyframes glow-pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+    
+    /* Botón individual */
+    .toolbar-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 32px 48px;
+      background: linear-gradient(
+        135deg,
+        rgba(0, 212, 255, 0.08) 0%,
+        rgba(168, 85, 247, 0.08) 100%
+      );
+      border: 2px solid rgba(0, 212, 255, 0.25);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      min-width: 180px;
+    }
+    
+    /* Efecto de brillo interno */
+    .toolbar-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+      );
+      transition: left 0.5s ease;
+    }
+    
+    .toolbar-btn:hover::before {
+      left: 100%;
+    }
+    
+    /* Hover con WOW */
+    .toolbar-btn:hover {
+      background: 
+        radial-gradient(circle at 50% 50%, rgba(0, 212, 255, 0.2) 0%, transparent 70%),
+        linear-gradient(135deg, rgba(0, 212, 255, 0.15) 0%, rgba(168, 85, 247, 0.15) 50%, rgba(255, 20, 147, 0.12) 100%);
+      border-color: rgba(0, 212, 255, 0.6);
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 
+        0 12px 40px rgba(0, 212, 255, 0.3),
+        0 0 60px rgba(0, 212, 255, 0.2),
+        inset 0 0 30px rgba(0, 212, 255, 0.1);
+    }
+    
+    .toolbar-btn:active {
+      transform: translateY(-2px) scale(1.01);
+    }
+    
+    /* Ícono del botón */
+    .toolbar-btn-icon {
+      font-size: 48px;
+      color: rgba(0, 212, 255, 0.9);
+      transition: all 0.3s ease;
+      filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5));
+    }
+    
+    .toolbar-btn:hover .toolbar-btn-icon {
+      color: rgba(0, 212, 255, 1);
+      filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.8));
+      transform: scale(1.1);
+    }
+    
+    /* Label del botón */
+    .toolbar-btn-label {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.8);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: all 0.3s ease;
+    }
+    
+    .toolbar-btn:hover .toolbar-btn-label {
+      color: rgba(255, 255, 255, 1);
+      text-shadow: 0 0 10px rgba(0, 212, 255, 0.6);
+    }
+    
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .pymax-simple-toolbar {
+        gap: 24px;
+        padding: 24px 32px;
+      }
+      
+      .toolbar-btn {
+        padding: 24px 32px;
+        min-width: 140px;
+      }
+      
+      .toolbar-btn-icon {
+        font-size: 40px;
+      }
+      
+      .toolbar-btn-label {
+        font-size: 0.85rem;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .pymax-simple-toolbar {
+        flex-wrap: wrap;
+        gap: 16px;
+        padding: 20px;
+      }
+      
+      .toolbar-btn {
+        flex: 1 1 calc(50% - 8px);
+        min-width: auto;
+        padding: 20px;
+      }
+      
+      .toolbar-btn-icon {
+        font-size: 36px;
+      }
+      
+      .toolbar-btn-label {
+        font-size: 0.8rem;
+      }
+    }
+  </style>
 
   <nav class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4 fade-in">
     <div class="flex items-center gap-4">
