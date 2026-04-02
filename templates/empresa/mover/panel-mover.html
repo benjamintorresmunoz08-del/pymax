@@ -65,6 +65,10 @@
   <script src="/static/js/pymax-holo-command.js"></script>
   <link rel="stylesheet" href="/static/css/pymax-holo-command.css">
   
+  <!-- HOLO GUIDE SYSTEM (Interactive IA with Tracking Eyes) -->
+  <script src="/static/js/pymax-holo-guide.js"></script>
+  <link rel="stylesheet" href="/static/css/pymax-holo-guide.css">
+  
   <!-- SIDEBAR & PANELS SYSTEM (3 COLUMN LAYOUT) -->
   <link rel="stylesheet" href="/static/css/pymax-sidebar.css">
   <link rel="stylesheet" href="/static/css/pymax-right-panel.css">
@@ -717,112 +721,216 @@
 <div class="pymax-main-content">
 
   <!-- ============================================
-       HOLO COMMAND CENTER - SISTEMA HOLOGRÁFICO
+       INTERACTIVE HOLO GUIDE SYSTEM
+       IA Holográfica con Tracking Eyes + Botones Circulares
        ============================================ -->
-  <div class="holo-command-center mb-10 fade-in">
-    
-    <!-- Sistema de Partículas -->
-    <div class="holo-particles"></div>
-    
-    <!-- Contenedor Principal -->
-    <div class="holo-container">
+  <div class="holo-guide-container mb-10 fade-in">
+    <div class="holo-guide-layout">
       
-      <!-- WIDGETS IZQUIERDA -->
-      <div style="grid-column: 1; grid-row: 1; display: flex; flex-direction: column; gap: 20px;">
-        <!-- Widget Usuario -->
-        <div class="holo-widget" data-widget="usuario">
-          <div class="widget-header">USER PROFILE</div>
-          <div class="widget-value">Cargando...</div>
-          <div class="widget-subtext">Usuario Principal</div>
-        </div>
-        
-        <!-- Widget Balance -->
-        <div class="holo-widget" data-widget="balance">
-          <div class="widget-header">BALANCE ACTUAL</div>
-          <div class="widget-value">$0</div>
-          <div class="widget-subtext">Balance Total</div>
-        </div>
-      </div>
-      
-      <!-- WIDGETS DERECHA ARRIBA -->
-      <div style="grid-column: 3; grid-row: 1; display: flex; flex-direction: column; gap: 20px;">
-        <!-- Widget Health Score -->
-        <div class="holo-widget" data-widget="health">
-          <div class="widget-header">HEALTH SCORE</div>
-          <div class="widget-value">--</div>
-          <div class="widget-subtext">Financial Health</div>
-        </div>
-        
-        <!-- Widget Runway -->
-        <div class="holo-widget" data-widget="runway">
-          <div class="widget-header">RUNWAY</div>
-          <div class="widget-value">-- meses</div>
-          <div class="widget-subtext">Tiempo Restante</div>
-        </div>
-      </div>
-      
-      <!-- HOLOGRAMA CENTRAL -->
-      <div class="holo-center">
-        <!-- Pedestal Holográfico -->
-        <div class="holo-pedestal">
-          <!-- Anillos Giratorios -->
-          <div class="holo-rings">
-            <div class="holo-ring"></div>
-            <div class="holo-ring"></div>
-            <div class="holo-ring"></div>
+      <!-- IA CENTRAL CON TRACKING EYES -->
+      <div class="holo-ai-center">
+        <!-- Rostro Holográfico -->
+        <div class="holo-ai-face">
+          <div class="holo-ai-eyes">
+            <div class="eye" id="eye-left"></div>
+            <div class="eye" id="eye-right"></div>
           </div>
-          
-          <!-- Avatar Central -->
-          <div class="holo-avatar">
-            <div class="holo-avatar-inner">
-              <!-- El CSS maneja el punto elegante automáticamente -->
-            </div>
-          </div>
-          
-          <!-- Base -->
-          <div class="holo-base"></div>
         </div>
         
         <!-- Label -->
-        <div class="holo-label">PYMAX AI</div>
+        <div class="holo-ai-label">PYMAX AI</div>
       </div>
       
-      <!-- WIDGETS IZQUIERDA ABAJO -->
-      <div style="grid-column: 1; grid-row: 2; display: flex; flex-direction: column; gap: 20px;">
-        <!-- Widget Ingresos -->
-        <div class="holo-widget" data-widget="ingresos">
-          <div class="widget-header">INGRESOS MES</div>
-          <div class="widget-value">$0</div>
-          <div class="widget-subtext">Income</div>
-        </div>
+      <!-- BOTONES HERRAMIENTAS (DISTRIBUCIÓN CIRCULAR) -->
+      <div class="tool-buttons">
+        <!-- Arriba: Calendario -->
+        <button class="tool-btn top" data-tool="calendario" onclick="pymaxCalendar.open()">
+          <i class="ph-duotone ph-calendar-check"></i>
+          <span>Calendario</span>
+        </button>
         
-        <!-- Widget Alertas -->
-        <div class="holo-widget" data-widget="alertas">
-          <div class="widget-header">ALERTAS</div>
-          <div class="widget-value">Sin alertas</div>
-          <div class="widget-subtext">0 alerta(s)</div>
-        </div>
+        <!-- Arriba Derecha: Ventas/Gastos -->
+        <button class="tool-btn top-right" data-tool="ventas" onclick="window.location.href='/empresa/mover/ventas-gastos'">
+          <i class="ph-duotone ph-currency-dollar"></i>
+          <span>Ventas & Gastos</span>
+        </button>
+        
+        <!-- Derecha: Metas -->
+        <button class="tool-btn right" data-tool="metas" onclick="window.location.href='/empresa/mover/metas'">
+          <i class="ph-duotone ph-target"></i>
+          <span>Metas</span>
+        </button>
+        
+        <!-- Abajo Derecha: Inventario -->
+        <button class="tool-btn bottom-right" data-tool="inventario" onclick="window.location.href='/empresa/mover/inventario'">
+          <i class="ph-duotone ph-package"></i>
+          <span>Inventario</span>
+          <div class="tool-btn-badge">12</div>
+        </button>
+        
+        <!-- Abajo Izquierda: Libro Mayor -->
+        <button class="tool-btn bottom-left" data-tool="libro" onclick="window.location.href='/empresa/mover/auditoria'">
+          <i class="ph-duotone ph-scroll"></i>
+          <span>Libro Mayor</span>
+        </button>
+        
+        <!-- Izquierda: Flujo de Caja -->
+        <button class="tool-btn left" data-tool="flujo" onclick="window.location.href='/empresa/mover/flujo-caja'">
+          <i class="ph-duotone ph-chart-line-up"></i>
+          <span>Flujo de Caja</span>
+        </button>
       </div>
       
-      <!-- WIDGETS DERECHA ABAJO -->
-      <div style="grid-column: 3; grid-row: 2; display: flex; flex-direction: column; gap: 20px;">
-        <!-- Widget Gastos -->
-        <div class="holo-widget" data-widget="gastos">
-          <div class="widget-header">GASTOS MES</div>
-          <div class="widget-value">$0</div>
-          <div class="widget-subtext">Expenses</div>
+      <!-- RECORDATORIOS BANNER -->
+      <div class="holo-reminders">
+        <div class="holo-reminders-header">
+          <div class="holo-reminders-title">
+            <i class="ph-fill ph-bell-ringing"></i>
+            RECORDATORIOS DE HOY
+          </div>
+          <button onclick="addNewTask()" style="padding: 4px 12px; border-radius: 8px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; font-size: 0.75rem; font-weight: 600; cursor: pointer;">
+            <i class="ph-bold ph-plus"></i> Nueva
+          </button>
         </div>
         
-        <!-- Widget AI Status -->
-        <div class="holo-widget" data-widget="ai-status">
-          <div class="widget-header">AI STATUS</div>
-          <div class="widget-value">En Espera</div>
-          <div class="widget-subtext">Estado de IA</div>
+        <!-- Lista de recordatorios (se llena dinámicamente) -->
+        <div class="holo-reminders-list" id="holoRemindersList">
+          <!-- Si hay tareas -->
+          <div class="holo-reminder-item">
+            <div class="holo-reminder-checkbox"></div>
+            <div class="holo-reminder-text">Revisar facturas pendientes</div>
+          </div>
+          
+          <!-- Si NO hay tareas: Tour Button -->
+          <div id="holoTourButton" style="display: none;">
+            <p style="text-align: center; color: rgba(255, 255, 255, 0.6); font-size: 0.85rem; margin-bottom: 16px;">
+              ✨ Sin tareas pendientes hoy
+            </p>
+            <button class="holo-tour-btn" onclick="startHoloTour()">
+              <i class="ph-bold ph-magic-wand"></i>
+              <span>Iniciar Tour IA - Análisis Completo</span>
+            </button>
+          </div>
         </div>
       </div>
       
     </div>
   </div>
+
+  <script>
+  // Sincronizar recordatorios con sistema de tareas
+  function syncHoloReminders() {
+    const remindersList = document.getElementById('holoRemindersList');
+    const tourButton = document.getElementById('holoTourButton');
+    
+    if (!remindersList) return;
+    
+    const pendingTasks = userTasks.filter(t => !t.completed);
+    
+    if (pendingTasks.length === 0) {
+      // Sin tareas: mostrar botón de tour
+      remindersList.innerHTML = `
+        <div style="text-align: center; padding: 20px;">
+          <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.85rem; margin-bottom: 16px;">
+            ✨ Sin tareas pendientes hoy
+          </p>
+          <button class="holo-tour-btn" onclick="startHoloTour()">
+            <i class="ph-bold ph-magic-wand"></i>
+            <span>Iniciar Tour IA - Análisis Completo</span>
+          </button>
+        </div>
+      `;
+    } else {
+      // Con tareas: mostrar lista
+      remindersList.innerHTML = pendingTasks.slice(0, 3).map((task, index) => `
+        <div class="holo-reminder-item">
+          <div class="holo-reminder-checkbox ${task.completed ? 'checked' : ''}" onclick="toggleTask(${userTasks.indexOf(task)})"></div>
+          <div class="holo-reminder-text">${task.text}</div>
+        </div>
+      `).join('');
+      
+      if (pendingTasks.length > 3) {
+        remindersList.innerHTML += `
+          <div style="text-align: center; margin-top: 12px;">
+            <button onclick="document.querySelector('[data-section-id=\\"tareas\\"]')?.scrollIntoView({behavior: 'smooth'})" style="font-size: 0.75rem; color: rgba(59, 130, 246, 0.8); background: none; border: none; cursor: pointer;">
+              Ver ${pendingTasks.length - 3} más →
+            </button>
+          </div>
+        `;
+      }
+    }
+  }
+  
+  // Tour IA (preparado para GPT-3)
+  function startHoloTour() {
+    if (!window.holoGuide) {
+      pymaxNotifications.show('Sistema Holo Guide no inicializado', 'error');
+      return;
+    }
+    
+    pymaxNotifications.show('🚀 Iniciando Tour IA...', 'info');
+    
+    // Cambiar emoción de la IA
+    window.holoGuide.setEmotion('thinking');
+    
+    // Obtener datos financieros
+    const stats = pymaxData.getFinancialStats('month');
+    
+    // Tour simulado (en producción usaría GPT-3)
+    const tourSteps = [
+      {
+        target: 'ventas',
+        message: `Tus ventas este mes: ${formatCurrency(stats.income)}. ${stats.income > 0 ? '¡Buen trabajo!' : 'Necesitas registrar más ventas.'}`
+      },
+      {
+        target: 'gastos',
+        message: `Gastos del mes: ${formatCurrency(stats.expenses)}. Margen actual: ${stats.margin}%`
+      },
+      {
+        target: 'metas',
+        message: `Tienes 3 metas activas. ${stats.margin > 20 ? 'Vas por buen camino' : 'Revisa tu estrategia'}`
+      }
+    ];
+    
+    let currentStep = 0;
+    
+    function nextStep() {
+      if (currentStep >= tourSteps.length) {
+        window.holoGuide.setEmotion('happy');
+        pymaxNotifications.show('✅ Tour completado', 'success');
+        return;
+      }
+      
+      const step = tourSteps[currentStep];
+      
+      // Apuntar con partículas al botón
+      const button = document.querySelector(`[data-tool="${step.target}"]`);
+      if (button) {
+        const rect = button.getBoundingClientRect();
+        // La IA apunta hacia ese botón (ya implementado en holo-guide.js)
+      }
+      
+      // Mostrar mensaje
+      pymaxNotifications.show(step.message, 'info');
+      
+      currentStep++;
+      setTimeout(nextStep, 3000);
+    }
+    
+    nextStep();
+  }
+  
+  // Inicializar cuando carguen las tareas
+  document.addEventListener('DOMContentLoaded', () => {
+    // Esperar a que las tareas se carguen
+    setTimeout(() => {
+      syncHoloReminders();
+    }, 500);
+    
+    // Actualizar cuando cambien las tareas
+    window.addEventListener('tasksUpdated', syncHoloReminders);
+  });
+  </script>
 
   <nav class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4 fade-in">
     <div class="flex items-center gap-4">
