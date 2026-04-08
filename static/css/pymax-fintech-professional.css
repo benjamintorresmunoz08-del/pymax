@@ -15,6 +15,11 @@
   --bg-elevated: #ffffff;
   --bg-hover: #fafafa;
   
+  /* Variables antiguas que deben apuntar a colores BLANCOS */
+  --bg-subtle: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fafafa;
+  
   /* Text - Negro suave y grises */
   --text-primary: #0f172a;
   --text-secondary: #475569;
