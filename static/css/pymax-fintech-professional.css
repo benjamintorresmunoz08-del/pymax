@@ -1,36 +1,36 @@
 /**
  * ════════════════════════════════════════════════════════════
  * PYMAX FINTECH PROFESSIONAL DESIGN SYSTEM
- * Diseño limpio, minimalista y profesional tipo Chipax/Fintech
+ * Modo Claro: Blanco puro con negro (Google/Apple style)
+ * Modo Oscuro: Azul oscuro profesional (actual)
  * ════════════════════════════════════════════════════════════
  */
 
 /* ═══════════════════════════════════════════════════════════
-   VARIABLES GLOBALES - TEMA CLARO PRINCIPAL
+   MODO CLARO (DEFAULT) - BLANCO PURO CON NEGRO
    ═══════════════════════════════════════════════════════════ */
 :root {
-  /* Backgrounds - Gris claro profesional como Chipax */
-  --bg-main: #f5f5f5;
+  /* Backgrounds - TODO BLANCO PURO */
+  --bg-main: #ffffff;
   --bg-surface: #ffffff;
   --bg-elevated: #ffffff;
-  --bg-hover: #fafafa;
-  
-  /* Variables antiguas que deben apuntar a colores BLANCOS */
+  --bg-hover: #f9fafb;
   --bg-subtle: #ffffff;
   --bg-card: #ffffff;
-  --bg-card-hover: #fafafa;
+  --bg-card-hover: #f9fafb;
   
-  /* Text - Negro suave y grises */
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
-  --text-disabled: #cbd5e1;
+  /* Text - NEGRO y grises */
+  --text-primary: #000000;
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
+  --text-disabled: #d1d5db;
   
-  /* Borders - Líneas sutiles */
-  --border-light: #f1f5f9;
+  /* Borders - Grises sutiles */
+  --border-light: #f3f4f6;
   --border-default: #e5e7eb;
   --border-medium: #d1d5db;
-  --border-strong: #94a3b8;
+  --border-strong: #9ca3af;
+  --border-hover: #d1d5db;
   
   /* Accents - Colores corporativos */
   --accent-blue: #2563eb;
@@ -43,14 +43,22 @@
   --accent-amber: #f59e0b;
   --accent-purple: #8b5cf6;
   
-  /* Shadows - Sutiles y profesionales */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
-  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
-  --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.18);
+  /* Pymax colors (para compatibilidad) */
+  --pymax-blue-primary: #2563eb;
+  --pymax-blue-light: #3b82f6;
+  --pymax-blue-dark: #1e40af;
+  --pymax-green: #10b981;
+  --pymax-green-light: #34d399;
+  --pymax-red: #ef4444;
   
-  /* Spacing - Sistema de 4px */
+  /* Shadows - Sutiles */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+  
+  /* Spacing */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -58,9 +66,7 @@
   --space-5: 20px;
   --space-6: 24px;
   --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --space-16: 64px;
+  --space-md: 24px;
   
   /* Border Radius */
   --radius-sm: 6px;
@@ -74,7 +80,41 @@
 }
 
 /* ═══════════════════════════════════════════════════════════
-   RESET Y BASE
+   MODO OSCURO (OPCIONAL) - AZUL OSCURO PROFESIONAL
+   ═══════════════════════════════════════════════════════════ */
+[data-theme="dark"] {
+  /* Backgrounds - Azul oscuro profesional */
+  --bg-main: #0f172a;
+  --bg-surface: #1e293b;
+  --bg-elevated: #334155;
+  --bg-hover: #1e293b;
+  --bg-subtle: #1e293b;
+  --bg-card: #1e293b;
+  --bg-card-hover: #334155;
+  
+  /* Text - Blanco y grises claros */
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-disabled: #64748b;
+  
+  /* Borders - Grises oscuros */
+  --border-light: #1e293b;
+  --border-default: #334155;
+  --border-medium: #475569;
+  --border-strong: #64748b;
+  --border-hover: #475569;
+  
+  /* Shadows - Más intensas */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.6);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BASE STYLES
    ═══════════════════════════════════════════════════════════ */
 * {
   -webkit-font-smoothing: antialiased;
@@ -91,7 +131,7 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   TIPOGRAFÍA PROFESIONAL
+   TYPOGRAPHY
    ═══════════════════════════════════════════════════════════ */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
@@ -114,79 +154,29 @@ h4 { font-size: 14px; }
 .text-secondary { color: var(--text-secondary); }
 
 /* ═══════════════════════════════════════════════════════════
-   LAYOUT PRINCIPAL
+   CARDS - Blancas en modo claro, oscuras en modo oscuro
    ═══════════════════════════════════════════════════════════ */
-.pymax-main-content {
-  margin-left: 70px;
-  margin-right: 0;
-  padding: var(--space-8) var(--space-6);
-  max-width: 1400px;
-  margin-left: auto;
-  margin-right: auto;
-  min-height: 100vh;
-}
-
-.pymax-sidebar.expanded ~ .pymax-main-content {
-  margin-left: 260px;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   CARDS PROFESIONALES - BLANCAS SOBRE FONDO GRIS
-   ═══════════════════════════════════════════════════════════ */
-.card-stat {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+.card-stat,
+.card-module,
+.section-container,
+.chart-container {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
   transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
 }
 
-.card-stat:hover {
-  border-color: #d1d5db;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+.card-stat:hover,
+.card-module:hover {
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
 
-.stat-label {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-  margin-bottom: var(--space-2);
-}
-
-.stat-value {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: var(--space-2) 0;
-  font-family: var(--font-display);
-}
-
-.stat-change {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.stat-change.positive {
-  background: rgba(16, 185, 129, 0.1);
-  color: var(--accent-green);
-}
-
-.stat-change.negative {
-  background: rgba(239, 68, 68, 0.1);
-  color: var(--accent-red);
-}
-
 /* ═══════════════════════════════════════════════════════════
-   BOTONES MINIMALISTAS
+   BOTONES
    ═══════════════════════════════════════════════════════════ */
 .btn {
   display: inline-flex;
@@ -214,7 +204,7 @@ h4 { font-size: 14px; }
 }
 
 .btn-secondary {
-  background: #ffffff;
+  background: var(--bg-surface);
   color: var(--text-secondary);
   border: 1px solid var(--border-default);
 }
@@ -224,239 +214,11 @@ h4 { font-size: 14px; }
   color: var(--text-primary);
 }
 
-.btn-ghost {
-  background: transparent;
-  color: var(--text-secondary);
-}
-
-.btn-ghost:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-}
-
 /* ═══════════════════════════════════════════════════════════
-   ICONOS DISCRETOS
-   ═══════════════════════════════════════════════════════════ */
-.icon-sm { font-size: 16px; }
-.icon-md { font-size: 18px; }
-.icon-lg { font-size: 20px; }
-
-.icon-box {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  color: var(--text-secondary);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   SECCIONES COLAPSABLES - BLANCAS
-   ═══════════════════════════════════════════════════════════ */
-.section-container {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: var(--radius-lg);
-  margin-bottom: var(--space-6);
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-}
-
-.section-header {
-  padding: var(--space-5);
-  border-bottom: 1px solid var(--border-light);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-.section-header:hover {
-  background: var(--bg-hover);
-}
-
-.section-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.section-subtitle {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-top: 2px;
-}
-
-.section-content {
-  padding: var(--space-6);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   GRÁFICOS - BLANCOS
-   ═══════════════════════════════════════════════════════════ */
-.chart-container {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  min-height: 300px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   MÓDULOS - BLANCOS
-   ═══════════════════════════════════════════════════════════ */
-.card-module {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: var(--radius-lg);
-  padding: var(--space-5);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-}
-
-.card-module:hover {
-  border-color: #d1d5db;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-  transform: translateY(-2px);
-}
-
-.module-link {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--space-3);
-  margin-top: var(--space-4);
-  border-radius: var(--radius-md);
-  background: var(--bg-hover);
-  border: 1px solid var(--border-light);
-  color: var(--text-secondary);
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.15s ease;
-}
-
-.module-link:hover {
-  background: #ffffff;
-  border-color: var(--border-default);
-  color: var(--text-primary);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   HEADER MINIMALISTA
-   ═══════════════════════════════════════════════════════════ */
-.page-header {
-  margin-bottom: var(--space-8);
-  padding-bottom: var(--space-6);
-  border-bottom: 1px solid var(--border-light);
-}
-
-.page-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: var(--space-2);
-}
-
-.page-description {
-  font-size: 14px;
-  color: var(--text-muted);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   NAVEGACIÓN SUPERIOR LIMPIA
-   ═══════════════════════════════════════════════════════════ */
-.top-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--space-4) var(--space-6);
-  background: #ffffff;
-  border-bottom: 1px solid var(--border-default);
-  margin-bottom: var(--space-6);
-}
-
-.nav-brand {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.brand-logo {
-  width: 32px;
-  height: 32px;
-  background: var(--accent-blue);
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 700;
-  font-size: 14px;
-}
-
-.brand-text {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   BADGES Y ETIQUETAS
-   ═══════════════════════════════════════════════════════════ */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.badge-success {
-  background: rgba(16, 185, 129, 0.1);
-  color: var(--accent-green);
-}
-
-.badge-warning {
-  background: rgba(245, 158, 11, 0.1);
-  color: var(--accent-amber);
-}
-
-.badge-danger {
-  background: rgba(239, 68, 68, 0.1);
-  color: var(--accent-red);
-}
-
-.badge-info {
-  background: rgba(37, 99, 235, 0.1);
-  color: var(--accent-blue);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   INPUTS Y FORMS
+   INPUTS
    ═══════════════════════════════════════════════════════════ */
 input, select, textarea {
-  background: #ffffff;
+  background: var(--bg-surface);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
   padding: 8px 12px;
@@ -472,22 +234,12 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   UTILIDADES
+   UTILITIES
    ═══════════════════════════════════════════════════════════ */
-.divider {
-  height: 1px;
-  background: var(--border-default);
-  margin: var(--space-6) 0;
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
 }
 
-.space-y-2 > * + * { margin-top: var(--space-2); }
-.space-y-3 > * + * { margin-top: var(--space-3); }
-.space-y-4 > * + * { margin-top: var(--space-4); }
-.space-y-6 > * + * { margin-top: var(--space-6); }
-
-/* ═══════════════════════════════════════════════════════════
-   ANIMACIONES SUTILES
-   ═══════════════════════════════════════════════════════════ */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -497,10 +249,6 @@ input:focus, select:focus, textarea:focus {
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-.fade-in {
-  animation: fadeIn 0.3s ease-out;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -514,24 +262,4 @@ input:focus, select:focus, textarea:focus {
   
   h1 { font-size: 20px; }
   h2 { font-size: 16px; }
-  
-  .stat-value { font-size: 24px; }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   TEMA OSCURO (Opcional)
-   ═══════════════════════════════════════════════════════════ */
-[data-theme="dark"] {
-  --bg-main: #0f172a;
-  --bg-surface: #1e293b;
-  --bg-elevated: #334155;
-  --bg-hover: #1e293b;
-  
-  --text-primary: #f1f5f9;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-  
-  --border-light: #1e293b;
-  --border-default: #334155;
-  --border-medium: #475569;
 }
