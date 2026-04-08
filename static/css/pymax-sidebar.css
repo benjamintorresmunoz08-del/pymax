@@ -10,13 +10,13 @@
   top: 0;
   height: 100vh;
   width: 70px;
-  background: #ffffff;
-  border-right: 1px solid #e2e8f0;
+  background: var(--bg-surface); /* Blanco en modo claro */
+  border-right: 1px solid var(--border-default);
   z-index: 1000;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow-x: hidden;
   overflow-y: auto;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  box-shadow: none; /* Sin sombra */
 }
 
 .pymax-sidebar.expanded {
@@ -67,20 +67,20 @@
 .sidebar-title h3 {
   font-size: 16px;
   font-weight: 700;
-  color: white;
+  color: var(--text-primary); /* Negro en modo claro */
   margin: 0;
   font-family: 'Outfit', sans-serif;
-  overflow: hidden; /* FIXED: Evitar desbordamiento */
-  text-overflow: ellipsis; /* FIXED: Agregar ... si es muy largo */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sidebar-title span {
   font-size: 11px;
-  color: #64748b;
+  color: var(--text-muted);
   font-weight: 600;
-  display: block; /* FIXED: Forzar nueva línea */
-  overflow: hidden; /* FIXED: Evitar desbordamiento */
-  text-overflow: ellipsis; /* FIXED: Agregar ... si es muy largo */
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Toggle Button */

@@ -10,12 +10,12 @@
   width: 220px; /* Más angosto */
   height: 100vh;
   background: var(--bg-surface);
-  border-left: 1px solid var(--border-light); /* Borde sutil blanco */
+  border-left: none; /* SIN BORDE */
   padding: 20px 14px;
   overflow-y: auto;
   z-index: 900;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Transición suave profesional */
-  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.03); /* Sombra muy sutil */
+  box-shadow: none; /* Sin sombra */
 }
 
 .pymax-right-panel.collapsed {
@@ -39,24 +39,24 @@
   background: var(--border-medium);
 }
 
-/* Toggle Button - Clean */
+/* Toggle Button - Más pequeño y visible */
 .right-panel-toggle {
   position: absolute;
   top: 20px;
-  left: -36px;
-  width: 28px;
-  height: 28px;
+  left: -32px; /* Más a la izquierda para que se vea completo */
+  width: 24px; /* Más pequeño */
+  height: 24px; /* Más pequeño */
   background: var(--bg-surface);
   border: 1px solid var(--border-light);
   border-right: none;
-  border-radius: 6px 0 0 6px;
+  border-radius: 4px 0 0 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   color: var(--text-muted);
   transition: all 0.25s ease;
-  box-shadow: -2px 0 4px rgba(0, 0, 0, 0.03);
+  box-shadow: none;
 }
 
 .right-panel-toggle:hover {
@@ -65,7 +65,7 @@
 }
 
 .right-panel-toggle i {
-  font-size: 14px;
+  font-size: 11px; /* Flecha más pequeña */
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
