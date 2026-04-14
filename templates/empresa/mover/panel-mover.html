@@ -48,6 +48,9 @@
   
   <script src="/static/js/pymax-holo-guide.js"></script>
   <link rel="stylesheet" href="/static/css/pymax-holo-guide.css">
+  
+  <script src="/static/js/pymax-tasks.js"></script>
+  <link rel="stylesheet" href="/static/css/pymax-tasks.css">
 
   <style>
     * {
@@ -258,7 +261,7 @@
     .health-label {
       font-size: 12px;
       font-weight: 600;
-      color: #6b7280;
+      color: #374151;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
@@ -542,12 +545,7 @@
       </div>
       
       <div class="nav-actions">
-        <div class="nav-error">
-          <i class="ph-fill ph-warning-circle"></i>
-          <span>Errors as undefined.</span>
-          <i class="ph ph-x" style="cursor: pointer;"></i>
-        </div>
-        <button class="nav-btn" onclick="addNewTask()">
+        <button class="nav-btn" onclick="openTaskModal()">
           <i class="ph-bold ph-plus"></i>
           <span>Nueva Tarea</span>
         </button>
@@ -749,6 +747,30 @@
 
   </main>
 
+</div>
+
+<!-- MODAL DE TAREAS -->
+<div class="task-modal-overlay" id="taskModal" onclick="if(event.target === this) closeTaskModal()">
+  <div class="task-modal">
+    <div class="task-modal-header">
+      <h2 class="task-modal-title">Nueva Tarea</h2>
+      <button class="task-modal-close" onclick="closeTaskModal()">
+        <i class="ph-bold ph-x"></i>
+      </button>
+    </div>
+    <div class="task-input-group">
+      <label class="task-input-label" for="taskNameInput">Nombre de la tarea *</label>
+      <input type="text" id="taskNameInput" class="task-input" placeholder="Ej: Revisar facturas pendientes" />
+    </div>
+    <div class="task-input-group">
+      <label class="task-input-label" for="taskDescInput">Descripción (opcional)</label>
+      <textarea id="taskDescInput" class="task-input task-textarea" placeholder="Agrega más detalles sobre la tarea..."></textarea>
+    </div>
+    <div class="task-modal-actions">
+      <button class="task-btn task-btn-secondary" onclick="closeTaskModal()">Cancelar</button>
+      <button class="task-btn task-btn-primary" onclick="addTaskFromModal()">Agregar Tarea</button>
+    </div>
+  </div>
 </div>
 
 <!-- ============================================
