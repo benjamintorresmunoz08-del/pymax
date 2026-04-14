@@ -646,7 +646,7 @@
             <i class="ph-duotone ph-clipboard-text"></i>
             <span>Monitor de Salud/Obligaciones</span>
           </a>
-          <a href="#" class="tool-item goals">
+          <a href="{{ url_for('mover_metas') }}" class="tool-item goals">
             <i class="ph-duotone ph-target"></i>
             <span>Metas</span>
           </a>
@@ -696,44 +696,60 @@
       <h2 class="additional-title">Herramientas Adicionales</h2>
       
       <div class="additional-grid">
-        <!-- Rendimiento -->
-        <a href="#" class="additional-card">
+        <!-- Flujo de Caja -->
+        <a href="{{ url_for('mover_flujo') }}" class="additional-card">
           <div class="additional-icon" style="background: #e0f2fe; color: #0284c7;">
+            <i class="ph-duotone ph-chart-line-up"></i>
+          </div>
+          <span class="additional-label">Flujo de Caja</span>
+        </a>
+
+        <!-- Progreso -->
+        <a href="{{ url_for('mover_progreso') }}" class="additional-card">
+          <div class="additional-icon" style="background: #dbeafe; color: #1d4ed8;">
             <i class="ph-duotone ph-gauge"></i>
           </div>
-          <span class="additional-label">Rendimiento</span>
+          <span class="additional-label">Progreso</span>
         </a>
 
         <!-- Calendario -->
-        <a href="#" class="additional-card">
+        <a href="{{ url_for('mover_calendario') }}" class="additional-card">
           <div class="additional-icon" style="background: #f0fdf4; color: #16a34a;">
             <i class="ph-duotone ph-calendar"></i>
           </div>
           <span class="additional-label">Calendario</span>
         </a>
 
-        <!-- Libro Mayor -->
-        <a href="#" class="additional-card">
+        <!-- Semáforo -->
+        <a href="{{ url_for('mover_semaforo') }}" class="additional-card">
           <div class="additional-icon" style="background: #fef3c7; color: #d97706;">
-            <i class="ph-duotone ph-notebook"></i>
+            <i class="ph-duotone ph-traffic-sign"></i>
           </div>
-          <span class="additional-label">Libro Mayor</span>
+          <span class="additional-label">Semáforo</span>
         </a>
 
-        <!-- Backup -->
-        <a href="#" class="additional-card">
+        <!-- Auditoría -->
+        <a href="{{ url_for('mover_auditoria') }}" class="additional-card">
           <div class="additional-icon" style="background: #ddd6fe; color: #7c3aed;">
-            <i class="ph-duotone ph-database"></i>
+            <i class="ph-duotone ph-notebook"></i>
           </div>
-          <span class="additional-label">Backup</span>
+          <span class="additional-label">Auditoría</span>
         </a>
 
         <!-- Inventario -->
-        <a href="#" class="additional-card">
+        <a href="{{ url_for('mover_inventario') }}" class="additional-card">
           <div class="additional-icon" style="background: #fee2e2; color: #dc2626;">
             <i class="ph-duotone ph-package"></i>
           </div>
           <span class="additional-label">Inventario</span>
+        </a>
+
+        <!-- Exportar Excel -->
+        <a href="{{ url_for('mover_export_excel') }}" class="additional-card">
+          <div class="additional-icon" style="background: #d1fae5; color: #059669;">
+            <i class="ph-duotone ph-file-xls"></i>
+          </div>
+          <span class="additional-label">Exportar</span>
         </a>
       </div>
     </section>
