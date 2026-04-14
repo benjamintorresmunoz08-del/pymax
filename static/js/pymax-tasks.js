@@ -74,6 +74,48 @@ function updateTasksDisplay() {
     taskText.textContent = `${taskCount} tareas pendientes`;
   }
   
+  // Update welcome message based on tasks
+  const tasksInfo = document.querySelector('.tasks-info div');
+  const tasksCheck = document.querySelector('.tasks-check');
+  
+  if (taskCount === 0) {
+    // No tasks
+    if (tasksInfo) {
+      tasksInfo.innerHTML = '¡Todo listo! No tienes tareas pendientes';
+      tasksInfo.style.color = '#1f2937';
+    }
+    if (tasksCheck) {
+      tasksCheck.style.background = '#38A169';
+      tasksCheck.innerHTML = '<i class="ph-bold ph-check"></i>';
+    }
+  } else {
+    // Has tasks - show them
+    if (tasksInfo) {
+      tasksInfo.innerHTML = `
+        <div style="margin-bottom: 12px; font-weight: 600; color: #1f2937; font-size: 14px;">
+          ${taskCount} tarea${taskCount > 1 ? 's' : ''} pendiente${taskCount > 1 ? 's' : ''}:
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; max-height: 120px; overflow-y: auto;">
+          ${pendingTasks.map(task => `
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px; background: white; border-radius: 8px; border: 1px solid #e5e7eb;">
+              <div style="flex: 1;">
+                <div style="font-size: 13px; font-weight: 600; color: #111827;">${task.name}</div>
+                ${task.description ? `<div style="font-size: 11px; color: #6b7280; margin-top: 2px;">${task.description}</div>` : ''}
+              </div>
+              <button onclick="deleteTask(${task.id})" style="background: #fee2e2; color: #dc2626; border: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#fecaca'" onmouseout="this.style.background='#fee2e2'">
+                ×
+              </button>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+    if (tasksCheck) {
+      tasksCheck.style.background = '#f59e0b';
+      tasksCheck.innerHTML = `<span style="font-size: 18px; font-weight: 800;">${taskCount}</span>`;
+    }
+  }
+  
   // Update tasks list if exists
   const tasksList = document.getElementById('tasksList');
   if (tasksList && pendingTasks.length > 0) {
