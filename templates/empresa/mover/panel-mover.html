@@ -71,116 +71,20 @@
     }
 
     .dashboard-container {
-      display: flex;
       min-height: 100vh;
       background: #FFFFFF;
-    }
-
-    /* ============================================
-       SIDEBAR IZQUIERDO - CLEAN & MINIMAL
-       ============================================ */
-    .sidebar {
-      width: 280px;
-      background: #FFFFFF;
-      border-right: 1px solid #e5e7eb;
-      padding: 32px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 32px;
-      position: fixed;
-      left: 0;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-    }
-
-    .sidebar-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 0 8px;
-    }
-
-    .logo-icon {
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 700;
-      font-size: 18px;
-    }
-
-    .logo-text {
-      font-weight: 700;
-      font-size: 20px;
-      color: #1f2937;
-    }
-
-    .sidebar-section {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .sidebar-title {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #9ca3af;
-      padding: 0 12px;
-      margin-bottom: 8px;
-    }
-
-    .sidebar-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 12px;
-      border-radius: 10px;
-      color: #6b7280;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.2s ease;
-      cursor: pointer;
-    }
-
-    .sidebar-item:hover {
-      background: #f9fafb;
-      color: #374151;
-    }
-
-    .sidebar-item.active {
-      background: #f3f4f6;
-      color: #1f2937;
-      font-weight: 600;
-    }
-
-    .sidebar-item i {
-      font-size: 20px;
-      color: #9ca3af;
-      transition: color 0.2s ease;
-    }
-
-    .sidebar-item:hover i,
-    .sidebar-item.active i {
-      color: #6b7280;
     }
 
     /* ============================================
        MAIN CONTENT AREA
        ============================================ */
     .main-content {
-      margin-left: 280px;
       flex: 1;
       background: #F8F9FA;
       padding: 32px;
       min-height: 100vh;
+      max-width: 1600px;
+      margin: 0 auto;
     }
 
     /* ============================================
@@ -454,6 +358,7 @@
 
     .tool-item.ai i {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -592,21 +497,6 @@
     }
 
     @media (max-width: 768px) {
-      .sidebar {
-        width: 70px;
-        padding: 32px 12px;
-      }
-      
-      .sidebar-logo .logo-text,
-      .sidebar-title,
-      .sidebar-item span {
-        display: none;
-      }
-      
-      .main-content {
-        margin-left: 70px;
-      }
-      
       .health-grid {
         grid-template-columns: 1fr;
       }
@@ -642,67 +532,6 @@
 
 <div class="dashboard-container">
   
-  <!-- ============================================
-       SIDEBAR IZQUIERDO
-       ============================================ -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-icon">P</div>
-      <div class="logo-text">PYMAX</div>
-    </div>
-
-    <!-- Dashboard Section -->
-    <div class="sidebar-section">
-      <div class="sidebar-title">Dashboard</div>
-      <a href="{{ url_for('mover_panel') }}" class="sidebar-item active">
-        <i class="ph ph-house"></i>
-        <span>Vista</span>
-      </a>
-    </div>
-
-    <!-- Herramientas Section -->
-    <div class="sidebar-section">
-      <div class="sidebar-title">Herramientas</div>
-      <a href="{{ url_for('mover_ia') }}" class="sidebar-item">
-        <i class="ph ph-robot"></i>
-        <span>Asistente IA</span>
-      </a>
-      <a href="{{ url_for('mover_flujo') }}" class="sidebar-item">
-        <i class="ph ph-flow-arrow"></i>
-        <span>Flujo de Caja</span>
-      </a>
-      <a href="{{ url_for('mover_obligaciones') }}" class="sidebar-item">
-        <i class="ph ph-clipboard-text"></i>
-        <span>Monitor de Salud</span>
-      </a>
-      <a href="#" class="sidebar-item">
-        <i class="ph ph-archive"></i>
-        <span>Documentos</span>
-      </a>
-    </div>
-
-    <!-- Mini Widgets Section -->
-    <div class="sidebar-section">
-      <div class="sidebar-title">Mini-Widgets Informativos</div>
-      <a href="#" class="sidebar-item">
-        <i class="ph ph-traffic-sign"></i>
-        <span>Semáforo</span>
-      </a>
-      <a href="#" class="sidebar-item">
-        <i class="ph ph-upload-simple"></i>
-        <span>Carga de Documentos</span>
-      </a>
-      <a href="#" class="sidebar-item">
-        <i class="ph ph-file-text"></i>
-        <span>Reportes Automáticos</span>
-      </a>
-      <a href="#" class="sidebar-item">
-        <i class="ph ph-chart-line"></i>
-        <span>Flujo de Caja</span>
-      </a>
-    </div>
-  </aside>
-
   <!-- ============================================
        MAIN CONTENT
        ============================================ -->
