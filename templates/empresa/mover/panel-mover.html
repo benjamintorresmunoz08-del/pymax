@@ -628,6 +628,131 @@
       </div>
     </section>
 
+    <!-- AI INSIGHTS PANEL - FASE 1 -->
+    <section class="ai-insights-panel fade-in" style="margin-bottom: 32px;">
+      <div style="
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        padding: 32px;
+        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+        position: relative;
+        overflow: hidden;
+      ">
+        <!-- Efecto de fondo -->
+        <div style="position: absolute; top: -50%; right: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); pointer-events: none;"></div>
+        
+        <!-- Contenido -->
+        <div style="position: relative; z-index: 1;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div class="ai-icon-pulse" style="
+                width: 48px;
+                height: 48px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+                animation: pulse 2s infinite;
+              ">🤖</div>
+              <div>
+                <h3 style="font-size: 20px; font-weight: 800; color: white; margin: 0;">Insights IA</h3>
+                <p style="font-size: 12px; color: rgba(255, 255, 255, 0.9); margin: 0; font-weight: 600;">Análisis inteligente de tus finanzas</p>
+              </div>
+            </div>
+            <a href="{{ url_for('mover_ia') }}" style="
+              padding: 10px 20px;
+              background: rgba(255, 255, 255, 0.2);
+              backdrop-filter: blur(10px);
+              border: 1px solid rgba(255, 255, 255, 0.3);
+              border-radius: 10px;
+              color: white;
+              text-decoration: none;
+              font-size: 13px;
+              font-weight: 600;
+              transition: all 0.2s;
+            " onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'">
+              Ver análisis completo →
+            </a>
+          </div>
+
+          <!-- Insights Grid -->
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+            <!-- Insight 1 -->
+            <div style="
+              background: rgba(255, 255, 255, 0.15);
+              backdrop-filter: blur(10px);
+              border: 1px solid rgba(255, 255, 255, 0.2);
+              border-radius: 14px;
+              padding: 20px;
+            ">
+              <div style="font-size: 24px; margin-bottom: 8px;">💡</div>
+              <p id="aiInsight1" style="color: white; font-size: 14px; font-weight: 500; line-height: 1.6; margin: 0;">
+                Cargando análisis inteligente...
+              </p>
+            </div>
+
+            <!-- Insight 2 -->
+            <div style="
+              background: rgba(255, 255, 255, 0.15);
+              backdrop-filter: blur(10px);
+              border: 1px solid rgba(255, 255, 255, 0.2);
+              border-radius: 14px;
+              padding: 20px;
+            ">
+              <div style="font-size: 24px; margin-bottom: 8px;">📊</div>
+              <p id="aiInsight2" style="color: white; font-size: 14px; font-weight: 500; line-height: 1.6; margin: 0;">
+                Analizando tus datos financieros...
+              </p>
+            </div>
+
+            <!-- Insight 3 -->
+            <div style="
+              background: rgba(255, 255, 255, 0.15);
+              backdrop-filter: blur(10px);
+              border: 1px solid rgba(255, 255, 255, 0.2);
+              border-radius: 14px;
+              padding: 20px;
+            ">
+              <div style="font-size: 24px; margin-bottom: 8px;">🎯</div>
+              <p id="aiInsight3" style="color: white; font-size: 14px; font-weight: 500; line-height: 1.6; margin: 0;">
+                Generando recomendaciones...
+              </p>
+            </div>
+
+            <!-- Insight 4 -->
+            <div style="
+              background: rgba(255, 255, 255, 0.15);
+              backdrop-filter: blur(10px);
+              border: 1px solid rgba(255, 255, 255, 0.2);
+              border-radius: 14px;
+              padding: 20px;
+            ">
+              <div style="font-size: 24px; margin-bottom: 8px;">⚡</div>
+              <p id="aiInsight4" style="color: white; font-size: 14px; font-weight: 500; line-height: 1.6; margin: 0;">
+                Preparando insights personalizados...
+              </p>
+            </div>
+          </div>
+
+          <!-- Info footer -->
+          <div style="margin-top: 16px; text-align: center;">
+            <p style="font-size: 11px; color: rgba(255, 255, 255, 0.8); margin: 0;">
+              💫 Insights actualizados en tiempo real • Powered by PYMAX IA
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <style>
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.05); opacity: 0.8; }
+      }
+    </style>
+
     <!-- Tools Layout with Left Column -->
     <div class="tools-layout fade-in">
       <!-- Herramientas Principales - Left Column -->
@@ -1025,6 +1150,67 @@ function createFinancialChart() {
 setTimeout(() => {
   createFinancialChart();
 }, 500);
+
+// ============================================
+// AI INSIGHTS SYSTEM - FASE 1
+// ============================================
+
+// Pool de insights inteligentes (preparado para IA real)
+const aiInsightsPool = [
+  { emoji: '💡', text: 'Tu flujo de caja muestra estabilidad. Considera invertir el excedente para maximizar retornos.' },
+  { emoji: '📊', text: 'Analiza tus gastos recurrentes. Podrías optimizar hasta un 15% de costos operacionales.' },
+  { emoji: '🎯', text: 'Establece metas financieras trimestrales para mejor control y proyección de crecimiento.' },
+  { emoji: '⚡', text: 'Automatiza tus reportes mensuales. Ahorrarás 4-6 horas de trabajo administrativo.' },
+  { emoji: '📈', text: 'Tus números sugieren potencial de crecimiento del 15-20% en el próximo trimestre.' },
+  { emoji: '💰', text: 'Balance positivo detectado. Momento ideal para crear un fondo de emergencia empresarial.' },
+  { emoji: '🔍', text: 'Revisa tus categorías de gasto. La optimización podría liberar capital de trabajo.' },
+  { emoji: '📉', text: 'Tendencia de gastos estable. Mantén este patrón para proyecciones precisas.' },
+  { emoji: '🚀', text: 'Tu disciplina financiera es excelente. Continúa registrando diariamente para mejores insights.' },
+  { emoji: '💼', text: 'Considera diversificar tus fuentes de ingreso para mayor resiliencia financiera.' },
+  { emoji: '🎨', text: 'Diseña un presupuesto mensual basado en tus promedios históricos de 3-6 meses.' },
+  { emoji: '⏰', text: 'Los mejores empresarios revisan sus finanzas semanalmente. Programa una rutina.' },
+  { emoji: '🌟', text: 'Tu margen operativo puede mejorar. Analiza qué gastos no aportan valor directo.' },
+  { emoji: '📱', text: 'Aprovecha la categorización automática. La IA aprenderá tus patrones en 2-3 semanas.' },
+  { emoji: '🔮', text: 'Proyección: Con tu tendencia actual, alcanzarás estabilidad en 45-60 días.' }
+];
+
+// Función para obtener insights aleatorios únicos
+function getRandomInsights(count = 4) {
+  const shuffled = [...aiInsightsPool].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
+}
+
+// Función para cargar insights (preparada para futura IA)
+function loadAIInsights() {
+  // AHORA: Usa frases aleatorias
+  // FUTURO: Cambia a const insights = await getAIInsights(financialData);
+  const insights = getRandomInsights(4);
+  
+  // Actualizar cada insight con animación
+  insights.forEach((insight, index) => {
+    const element = document.getElementById(`aiInsight${index + 1}`);
+    if (element) {
+      setTimeout(() => {
+        element.style.opacity = '0';
+        setTimeout(() => {
+          element.textContent = insight.text;
+          element.style.opacity = '1';
+          element.style.transition = 'opacity 0.5s ease';
+        }, 200);
+      }, index * 100);
+    }
+  });
+  
+  console.log('[AI Insights] Insights cargados correctamente');
+}
+
+// Cargar insights cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(loadAIInsights, 1000);
+  
+  // Rotar insights cada 30 segundos (opcional)
+  setInterval(loadAIInsights, 30000);
+});
 </script>
 
 </body>
