@@ -283,9 +283,16 @@ class PyMaxAICompanion {
     }
 
     /**
-     * Manifestación de bienvenida - Versión profesional y elegante
+     * Manifestación de bienvenida - Popup cristalino profesional
      */
     async manifestWelcome() {
+        // Verificar si ya se mostró antes
+        const hasSeenWelcome = localStorage.getItem('pymaxWelcomeShown');
+        if (hasSeenWelcome === 'true') {
+            console.log('[AICompanion] Bienvenida ya mostrada previamente');
+            return;
+        }
+
         const userName = this.getUserName();
         const now = new Date();
         const hour = now.getHours();
@@ -294,38 +301,147 @@ class PyMaxAICompanion {
         // Saludo según hora
         let greeting = 'Buenas';
         let icon = '🌆';
+        let timeOfDay = 'tardes';
         if (hour >= 5 && hour < 12) {
             greeting = 'Buenos días';
             icon = '☀️';
+            timeOfDay = 'mañana';
         } else if (hour >= 12 && hour < 19) {
             greeting = 'Buenas tardes';
             icon = '🌤️';
+            timeOfDay = 'tarde';
         } else {
             greeting = 'Buenas noches';
             icon = '🌙';
+            timeOfDay = 'noche';
         }
 
         // Frases motivadoras inteligentes
         const motivationalPhrases = [
-            '💡 Cada decisión financiera es una inversión en tu futuro',
-            '🎯 Tu disciplina financiera de hoy define tu libertad de mañana',
-            '📈 El éxito es la suma de pequeñas decisiones inteligentes',
-            '🚀 Estás construyendo algo grande, paso a paso',
-            '💪 Tu constancia es tu mayor activo financiero',
-            '🌟 Hoy es un gran día para tomar mejores decisiones',
-            '🎨 Diseña el futuro financiero que mereces',
-            '⚡ La claridad financiera es poder',
-            '🏆 Cada registro es un paso hacia tus metas',
-            '🌱 Tu negocio crece con cada decisión informada'
+            'Cada decisión financiera es una inversión en tu futuro',
+            'Tu disciplina financiera de hoy define tu libertad de mañana',
+            'El éxito es la suma de pequeñas decisiones inteligentes',
+            'Estás construyendo algo grande, paso a paso',
+            'Tu constancia es tu mayor activo financiero',
+            'Hoy es un gran día para tomar mejores decisiones',
+            'Diseña el futuro financiero que mereces',
+            'La claridad financiera es poder',
+            'Cada registro es un paso hacia tus metas',
+            'Tu negocio crece con cada decisión informada'
         ];
         const randomPhrase = motivationalPhrases[Math.floor(Math.random() * motivationalPhrases.length)];
 
-        // NO mostrar el modal - la funcionalidad será manejada por localStorage en panel-mover.html
+        // Crear popup cristalino
+        const popup = document.createElement('div');
+        popup.id = 'pymaxWelcomePopup';
+        popup.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        `;
+
+        popup.innerHTML = `
+            <div style="
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(20px);
+                border-radius: 24px;
+                padding: 48px;
+                max-width: 500px;
+                width: 90%;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                border: 1px solid rgba(255, 255, 255, 0.8);
+                transform: scale(0.9);
+                transition: transform 0.3s ease;
+            " id="welcomeCard">
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <div style="font-size: 64px; margin-bottom: 16px;">${icon}</div>
+                    <div style="font-size: 14px; color: #6b7280; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px;">
+                        ${hour}:${minutes} • ${timeOfDay}
+                    </div>
+                    <h2 style="font-size: 32px; font-weight: 800; color: #000000; margin-bottom: 8px;">
+                        ${greeting}, ${userName}
+                    </h2>
+                    <p style="font-size: 16px; color: #374151; font-weight: 500;">
+                        Bienvenido a tu Dashboard Financiero
+                    </p>
+                </div>
+
+                <div style="
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    border-radius: 16px;
+                    padding: 24px;
+                    margin-bottom: 32px;
+                    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+                ">
+                    <div style="display: flex; align-items: flex-start; gap: 12px;">
+                        <div style="font-size: 24px;">💡</div>
+                        <div>
+                            <div style="font-size: 11px; color: rgba(255, 255, 255, 0.9); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">
+                                Consejo IA del Día
+                            </div>
+                            <p style="font-size: 15px; color: white; font-weight: 500; line-height: 1.6; margin: 0;">
+                                ${randomPhrase}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="window.pymaxAICompanion.closeWelcomePopup()" style="
+                    width: 100%;
+                    padding: 16px;
+                    background: #000000;
+                    color: white;
+                    border: none;
+                    border-radius: 12px;
+                    font-size: 15px;
+                    font-weight: 700;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    font-family: 'Inter', sans-serif;
+                " onmouseover="this.style.background='#1f2937'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.2)'" onmouseout="this.style.background='#000000'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                    Comenzar
+                </button>
+            </div>
+        `;
+
+        document.body.appendChild(popup);
+
+        // Animar entrada
+        setTimeout(() => {
+            popup.style.opacity = '1';
+            const card = document.getElementById('welcomeCard');
+            if (card) card.style.transform = 'scale(1)';
+        }, 100);
+
         console.log(`[AICompanion] ${greeting}, ${userName} - ${hour}:${minutes}`);
         console.log(`[AICompanion] Frase del día: ${randomPhrase}`);
+    }
+
+    /**
+     * Cerrar popup de bienvenida
+     */
+    closeWelcomePopup() {
+        const popup = document.getElementById('pymaxWelcomePopup');
+        if (popup) {
+            popup.style.opacity = '0';
+            setTimeout(() => {
+                popup.remove();
+            }, 300);
+        }
         
-        // El modal ya no se muestra, se gestiona desde el dashboard
-        return;
+        // Marcar como visto para que no aparezca más
+        localStorage.setItem('pymaxWelcomeShown', 'true');
+        console.log('[AICompanion] Bienvenida marcada como vista');
     }
 
     /**
