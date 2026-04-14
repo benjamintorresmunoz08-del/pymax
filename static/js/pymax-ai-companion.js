@@ -283,39 +283,49 @@ class PyMaxAICompanion {
     }
 
     /**
-     * Manifestación de bienvenida
+     * Manifestación de bienvenida - Versión profesional y elegante
      */
     async manifestWelcome() {
         const userName = this.getUserName();
-        const hour = new Date().getHours();
+        const now = new Date();
+        const hour = now.getHours();
+        const minutes = now.getMinutes().toString().padStart(2, '0');
         
+        // Saludo según hora
         let greeting = 'Buenas';
-        if (hour >= 5 && hour < 12) greeting = 'Buenos días';
-        else if (hour >= 12 && hour < 19) greeting = 'Buenas tardes';
-        else greeting = 'Buenas noches';
-
-        // Obtener comparación de hoy vs ayer
-        const comparison = this.memory?.compare('hoy', 'ayer');
-        
-        let message = `${greeting}, ${userName}.`;
-        
-        if (comparison) {
-            const balanceDiff = comparison.balance;
-            if (balanceDiff) {
-                message += `<br><br>📊 <strong>Resumen rápido:</strong><br>`;
-                message += `Balance hoy: ${this.memory.formatCurrency(balanceDiff.valor1)}<br>`;
-                message += `vs Ayer: ${this.memory.formatCurrency(balanceDiff.valor2)} `;
-                message += `(${balanceDiff.tendencia === 'up' ? '↑' : balanceDiff.tendencia === 'down' ? '↓' : '→'} ${this.memory.formatCurrency(Math.abs(balanceDiff.diferencia))})`;
-            }
+        let icon = '🌆';
+        if (hour >= 5 && hour < 12) {
+            greeting = 'Buenos días';
+            icon = '☀️';
+        } else if (hour >= 12 && hour < 19) {
+            greeting = 'Buenas tardes';
+            icon = '🌤️';
+        } else {
+            greeting = 'Buenas noches';
+            icon = '🌙';
         }
 
-        this.manifest(this.LEVELS.INFORMATIVE, {
-            title: `${greeting}, ${userName}`,
-            message: message,
-            actions: [
-                { label: 'Ver detalles', action: () => this.expandToPanel() }
-            ]
-        });
+        // Frases motivadoras inteligentes
+        const motivationalPhrases = [
+            '💡 Cada decisión financiera es una inversión en tu futuro',
+            '🎯 Tu disciplina financiera de hoy define tu libertad de mañana',
+            '📈 El éxito es la suma de pequeñas decisiones inteligentes',
+            '🚀 Estás construyendo algo grande, paso a paso',
+            '💪 Tu constancia es tu mayor activo financiero',
+            '🌟 Hoy es un gran día para tomar mejores decisiones',
+            '🎨 Diseña el futuro financiero que mereces',
+            '⚡ La claridad financiera es poder',
+            '🏆 Cada registro es un paso hacia tus metas',
+            '🌱 Tu negocio crece con cada decisión informada'
+        ];
+        const randomPhrase = motivationalPhrases[Math.floor(Math.random() * motivationalPhrases.length)];
+
+        // NO mostrar el modal - la funcionalidad será manejada por localStorage en panel-mover.html
+        console.log(`[AICompanion] ${greeting}, ${userName} - ${hour}:${minutes}`);
+        console.log(`[AICompanion] Frase del día: ${randomPhrase}`);
+        
+        // El modal ya no se muestra, se gestiona desde el dashboard
+        return;
     }
 
     /**
