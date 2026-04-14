@@ -173,13 +173,13 @@
     .welcome-content h1 {
       font-size: 28px;
       font-weight: 700;
-      color: #1f2937;
+      color: #111827;
       margin-bottom: 8px;
     }
 
     .welcome-date {
       font-size: 14px;
-      color: #6b7280;
+      color: #374151;
       font-weight: 500;
     }
 
@@ -547,7 +547,7 @@
           <span>Errors as undefined.</span>
           <i class="ph ph-x" style="cursor: pointer;"></i>
         </div>
-        <button class="nav-btn">
+        <button class="nav-btn" onclick="addNewTask()">
           <i class="ph-bold ph-plus"></i>
           <span>Nueva Tarea</span>
         </button>
@@ -769,7 +769,38 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Set up event listeners
   setupEventListeners();
+  
+  // Hide AI Guide/Popup if already shown before
+  hideWelcomePopupIfShown();
 });
+
+// Hide welcome popup after first visit
+function hideWelcomePopupIfShown() {
+  const hasSeenWelcome = localStorage.getItem('pymaxWelcomeShown');
+  
+  if (hasSeenWelcome === 'true') {
+    // Hide all AI companion popups/modals
+    const holoGuide = document.querySelector('.pymax-holo-guide');
+    const aiCompanion = document.querySelector('.ai-companion-modal');
+    const welcomeModal = document.querySelector('[class*="welcome"]');
+    
+    if (holoGuide) holoGuide.style.display = 'none';
+    if (aiCompanion) aiCompanion.style.display = 'none';
+  } else {
+    // Mark as shown for next time
+    localStorage.setItem('pymaxWelcomeShown', 'true');
+  }
+}
+
+// Add new task function
+function addNewTask() {
+  const taskName = prompt('¿Qué tarea deseas agregar?');
+  if (taskName && taskName.trim()) {
+    alert(`Tarea "${taskName}" agregada correctamente`);
+    // Here you can add logic to save the task to database
+    console.log('Nueva tarea:', taskName);
+  }
+}
 
 function loadFinancialData() {
   // Simulated data loading - replace with actual API calls
