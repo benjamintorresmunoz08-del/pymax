@@ -215,16 +215,17 @@
     }
 
     .health-title {
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 16px;
+      color: #111827;
+      margin-bottom: 12px;
     }
 
     .health-subtitle {
-      font-size: 13px;
-      color: #6b7280;
-      margin-bottom: 16px;
+      font-size: 14px;
+      color: #374151;
+      margin-bottom: 20px;
+      font-weight: 500;
     }
 
     .health-grid {
@@ -662,17 +663,32 @@
         </div>
       </div>
 
-      <!-- Content Area - Placeholder for charts/content -->
+      <!-- Content Area - Financial Chart -->
       <div class="content-area">
-        <h3 style="font-size: 18px; font-weight: 700; color: #1f2937; margin-bottom: 16px;">Vista General</h3>
-        <p style="color: #6b7280; font-size: 14px; line-height: 1.6;">
-          Bienvenido a tu panel de control financiero. Desde aquí puedes acceder a todas las herramientas y visualizar el estado de tus finanzas en tiempo real.
+        <h3 style="font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 16px;">Flujo Financiero - Últimos 6 Meses</h3>
+        <p style="color: #374151; font-size: 14px; line-height: 1.6; margin-bottom: 24px;">
+          Visualización de tus ingresos y gastos mensuales para un mejor seguimiento de tu salud financiera.
         </p>
         
-        <!-- Placeholder for future chart/content -->
-        <div style="margin-top: 32px; padding: 48px; background: #f9fafb; border-radius: 12px; text-align: center; border: 2px dashed #e5e7eb;">
-          <i class="ph-duotone ph-chart-line" style="font-size: 48px; color: #d1d5db; margin-bottom: 16px;"></i>
-          <p style="color: #9ca3af; font-size: 14px; font-weight: 500;">Área disponible para gráficos y análisis</p>
+        <!-- Chart Container -->
+        <div style="position: relative; height: 350px; background: white;">
+          <canvas id="financialChart"></canvas>
+        </div>
+        
+        <!-- Chart Legend -->
+        <div style="margin-top: 24px; display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="width: 16px; height: 16px; background: #38A169; border-radius: 4px;"></div>
+            <span style="font-size: 13px; color: #374151; font-weight: 600;">Ingresos</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="width: 16px; height: 16px; background: #E53E3E; border-radius: 4px;"></div>
+            <span style="font-size: 13px; color: #374151; font-weight: 600;">Gastos</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="width: 16px; height: 16px; background: #3b82f6; border-radius: 4px;"></div>
+            <span style="font-size: 13px; color: #374151; font-weight: 600;">Balance Neto</span>
+          </div>
         </div>
       </div>
     </div>
@@ -800,6 +816,146 @@ function updatePendingTasks(count) {
     tasksText.textContent = `${count} tareas pendientes`;
   }
 }
+
+// Create Financial Chart
+function createFinancialChart() {
+  const ctx = document.getElementById('financialChart');
+  if (!ctx) return;
+  
+  // Get last 6 months
+  const months = [];
+  const now = new Date();
+  for (let i = 5; i >= 0; i--) {
+    const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push(date.toLocaleDateString('es-ES', { month: 'short', year: '2-digit' }));
+  }
+  
+  // Simulated data - Replace with real data from API
+  const ingresos = [0, 0, 0, 0, 0, 0];  // Replace with actual income data
+  const gastos = [0, 0, 0, 0, 0, 1222]; // Replace with actual expenses data
+  const balance = ingresos.map((ing, idx) => ing - gastos[idx]);
+  
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: 'Ingresos',
+          data: ingresos,
+          borderColor: '#38A169',
+          backgroundColor: 'rgba(56, 161, 105, 0.1)',
+          borderWidth: 3,
+          tension: 0.4,
+          fill: true,
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          pointBackgroundColor: '#38A169',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2
+        },
+        {
+          label: 'Gastos',
+          data: gastos,
+          borderColor: '#E53E3E',
+          backgroundColor: 'rgba(229, 62, 62, 0.1)',
+          borderWidth: 3,
+          tension: 0.4,
+          fill: true,
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          pointBackgroundColor: '#E53E3E',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2
+        },
+        {
+          label: 'Balance Neto',
+          data: balance,
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+          borderWidth: 3,
+          tension: 0.4,
+          fill: true,
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          pointBackgroundColor: '#3b82f6',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          borderDash: [5, 5]
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: 'rgba(17, 24, 39, 0.95)',
+          titleColor: '#fff',
+          bodyColor: '#fff',
+          borderColor: '#374151',
+          borderWidth: 1,
+          padding: 12,
+          displayColors: true,
+          callbacks: {
+            label: function(context) {
+              let label = context.dataset.label || '';
+              if (label) {
+                label += ': ';
+              }
+              label += '$' + Math.abs(context.parsed.y).toLocaleString();
+              return label;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: '#f3f4f6',
+            drawBorder: false
+          },
+          ticks: {
+            color: '#6b7280',
+            font: {
+              size: 12,
+              weight: '500'
+            },
+            callback: function(value) {
+              return '$' + value.toLocaleString();
+            }
+          }
+        },
+        x: {
+          grid: {
+            display: false,
+            drawBorder: false
+          },
+          ticks: {
+            color: '#6b7280',
+            font: {
+              size: 12,
+              weight: '600'
+            }
+          }
+        }
+      },
+      interaction: {
+        intersect: false,
+        mode: 'index'
+      }
+    }
+  });
+}
+
+// Initialize chart after DOM is loaded
+setTimeout(() => {
+  createFinancialChart();
+}, 500);
 </script>
 
 </body>
