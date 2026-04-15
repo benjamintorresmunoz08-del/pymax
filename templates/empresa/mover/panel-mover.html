@@ -628,6 +628,9 @@
       </div>
     </section>
 
+    <!-- ALERTAS AUTOMÁTICAS - FASE 1.2 -->
+    <div id="alertasContainer" style="margin-bottom: 24px;"></div>
+
     <!-- AI INSIGHTS PANEL - FASE 1 -->
     <section class="ai-insights-panel fade-in" style="margin-bottom: 32px;">
       <div style="
@@ -1211,6 +1214,155 @@ document.addEventListener('DOMContentLoaded', function() {
   // Rotar insights cada 30 segundos (opcional)
   setInterval(loadAIInsights, 30000);
 });
+
+// ============================================
+// SISTEMA DE ALERTAS AUTOMÁTICAS - FASE 1.2
+// ============================================
+
+// Función para crear alerta visual
+function createAlerta(tipo, titulo, mensaje, accion = null) {
+  const colores = {
+    critico: { bg: '#fee2e2', border: '#fecaca', icon: '🚨', color: '#dc2626' },
+    advertencia: { bg: '#fef3c7', border: '#fde68a', icon: '⚠️', color: '#d97706' },
+    info: { bg: '#dbeafe', border: '#bfdbfe', icon: 'ℹ️', color: '#2563eb' },
+    exito: { bg: '#d1fae5', border: '#a7f3d0', icon: '✅', color: '#059669' }
+  };
+  
+  const style = colores[tipo] || colores.info;
+  
+  const alertaHTML = `
+    <div class="alerta-automatica fade-in" style="
+      background: ${style.bg};
+      border: 1px solid ${style.border};
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      animation: slideIn 0.5s ease;
+    ">
+      <div style="font-size: 24px;">${style.icon}</div>
+      <div style="flex: 1;">
+        <div style="font-size: 14px; font-weight: 700; color: ${style.color}; margin-bottom: 4px;">
+          ${titulo}
+        </div>
+        <div style="font-size: 13px; color: #374151; font-weight: 500;">
+          ${mensaje}
+        </div>
+      </div>
+      ${accion ? `
+        <button onclick="${accion.onClick}" style="
+          padding: 8px 16px;
+          background: ${style.color};
+          color: white;
+          border: none;
+          border-radius: 8px;
+          font-size: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+          white-space: nowrap;
+        " onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+          ${accion.label}
+        </button>
+      ` : ''}
+    </div>
+  `;
+  
+  return alertaHTML;
+}
+
+// Analizar métricas financieras y generar alertas
+function analizarYGenerarAlertas() {
+  const container = document.getElementById('alertasContainer');
+  if (!container) return;
+  
+  // Obtener datos actuales (simulados - reemplazar con datos reales)
+  const ingresos = parseInt(document.getElementById('monthIncome')?.textContent?.replace(/[^0-9]/g, '') || 0);
+  const gastos = parseInt(document.getElementById('monthExpenses')?.textContent?.replace(/[^0-9]/g, '') || 0);
+  const balance = parseInt(document.getElementById('currentBalance')?.textContent?.replace(/[^0-9]/g, '') || 0);
+  
+  let alertas = [];
+  
+  // ALERTA 1: Gastos mayores a ingresos
+  if (gastos > ingresos && gastos > 0) {
+    alertas.push(createAlerta(
+      'critico',
+      'Gastos superan ingresos',
+      `Has gastado $${gastos.toLocaleString()} pero solo ingresaste $${ingresos.toLocaleString()} este mes. Revisa tus gastos urgentemente.`,
+      { label: 'Ver detalle', onClick: "window.location.href='{{ url_for('mover_ventas') }}'" }
+    ));
+  }
+  
+  // ALERTA 2: Balance bajo
+  if (balance > 0 && balance < 500) {
+    alertas.push(createAlerta(
+      'advertencia',
+      'Balance bajo detectado',
+      `Tu balance actual es de $${balance.toLocaleString()}. Considera ajustar gastos o aumentar ingresos para mantener estabilidad.`,
+      { label: 'Ver flujo', onClick: "window.location.href='{{ url_for('mover_flujo') }}'" }
+    ));
+  }
+  
+  // ALERTA 3: Sin ingresos este mes
+  if (ingresos === 0 && gastos > 0) {
+    alertas.push(createAlerta(
+      'advertencia',
+      'No hay ingresos registrados',
+      'No has registrado ingresos este mes. ¿Ya ingresaste todas tus transacciones?',
+      { label: 'Registrar ingreso', onClick: "window.location.href='{{ url_for('mover_ventas') }}'" }
+    ));
+  }
+  
+  // ALERTA 4: Todo bien (si no hay problemas)
+  if (alertas.length === 0 && (ingresos > 0 || gastos > 0)) {
+    alertas.push(createAlerta(
+      'exito',
+      '¡Todo en orden!',
+      'Tus finanzas están equilibradas. Continúa con tu excelente gestión financiera.'
+    ));
+  }
+  
+  // ALERTA 5: Sin actividad (ni ingresos ni gastos)
+  if (ingresos === 0 && gastos === 0) {
+    alertas.push(createAlerta(
+      'info',
+      'Comienza a registrar',
+      'Aún no tienes transacciones registradas este mes. Empieza a llevar control de tus finanzas ahora.',
+      { label: 'Empezar', onClick: "window.location.href='{{ url_for('mover_ventas') }}'" }
+    ));
+  }
+  
+  // Renderizar alertas
+  container.innerHTML = alertas.join('');
+  
+  console.log('[Alertas] Sistema de alertas automáticas activado - ' + alertas.length + ' alertas generadas');
+}
+
+// Ejecutar análisis al cargar
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(analizarYGenerarAlertas, 1500);
+  
+  // Re-analizar cada 60 segundos
+  setInterval(analizarYGenerarAlertas, 60000);
+});
+
+// Animación de slide
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`;
+document.head.appendChild(style);
 </script>
 
 </body>
