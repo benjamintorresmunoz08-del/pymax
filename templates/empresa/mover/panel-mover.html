@@ -666,119 +666,129 @@
       </div>
     </section>
 
-    <!-- AI INSIGHTS PANEL - VERSIÓN PROFESIONAL ELEGANTE -->
+    <!-- AI INSIGHTS PANEL - PROFESIONAL CON PRESENCIA -->
     <section class="ai-insights-panel fade-in" style="margin-bottom: 32px;">
       <div style="
-        background: white;
-        border-radius: 16px;
-        padding: 28px 32px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        border: 1px solid #f3f4f6;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-radius: 20px;
+        padding: 32px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
       ">
+        <!-- Decorative element -->
+        <div style="position: absolute; top: 0; right: 0; width: 200px; height: 200px; background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, transparent 70%); pointer-events: none;"></div>
+        
         <!-- Header -->
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #f3f4f6;">
-          <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px;">
+          <div style="display: flex; align-items: center; gap: 16px;">
             <div style="
-              width: 8px;
-              height: 8px;
+              width: 48px;
+              height: 48px;
               background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-              border-radius: 50%;
-              animation: subtlePulse 3s infinite;
-            "></div>
+              border-radius: 12px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            ">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/>
+              </svg>
+            </div>
             <div>
-              <h3 style="font-size: 16px; font-weight: 700; color: #111827; margin: 0; letter-spacing: -0.01em;">
+              <h3 style="font-size: 20px; font-weight: 800; color: #0f172a; margin: 0; letter-spacing: -0.02em;">
                 Insights IA
               </h3>
-              <p style="font-size: 12px; color: #6b7280; margin: 0; font-weight: 500;">
-                Análisis inteligente de tus finanzas
+              <p style="font-size: 13px; color: #64748b; margin: 0; font-weight: 600;">
+                Análisis inteligente en tiempo real
               </p>
             </div>
           </div>
           <a href="{{ url_for('mover_ia') }}" style="
-            padding: 8px 16px;
-            background: white;
-            color: #3b82f6;
-            border: 1px solid #3b82f6;
-            border-radius: 8px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
             text-decoration: none;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.2s;
-          " onmouseover="this.style.background='#3b82f6'; this.style.color='white'" onmouseout="this.style.background='white'; this.style.color='#3b82f6'">
+            font-size: 13px;
+            font-weight: 700;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+          " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(59, 130, 246, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(59, 130, 246, 0.3)'">
             Ver análisis completo →
           </a>
         </div>
 
         <!-- Insights Grid -->
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;">
+        <div style="position: relative; z-index: 1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
           <!-- Insight 1 -->
           <div style="
-            background: #f9fafb;
-            border-left: 3px solid #3b82f6;
-            border-radius: 8px;
-            padding: 18px 20px;
-            transition: all 0.2s;
-          " onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='#f9fafb'">
-            <p id="aiInsight1" style="color: #374151; font-size: 13px; font-weight: 500; line-height: 1.6; margin: 0;">
+            background: white;
+            border-left: 4px solid #3b82f6;
+            border-radius: 12px;
+            padding: 20px 22px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+          " onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(59, 130, 246, 0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.04)'">
+            <p id="aiInsight1" style="color: #1e293b; font-size: 14px; font-weight: 600; line-height: 1.7; margin: 0;">
               Analizando tu comportamiento financiero...
             </p>
           </div>
 
           <!-- Insight 2 -->
           <div style="
-            background: #f9fafb;
-            border-left: 3px solid #10b981;
-            border-radius: 8px;
-            padding: 18px 20px;
-            transition: all 0.2s;
-          " onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='#f9fafb'">
-            <p id="aiInsight2" style="color: #374151; font-size: 13px; font-weight: 500; line-height: 1.6; margin: 0;">
+            background: white;
+            border-left: 4px solid #10b981;
+            border-radius: 12px;
+            padding: 20px 22px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+          " onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(16, 185, 129, 0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.04)'">
+            <p id="aiInsight2" style="color: #1e293b; font-size: 14px; font-weight: 600; line-height: 1.7; margin: 0;">
               Procesando datos financieros en tiempo real...
             </p>
           </div>
 
           <!-- Insight 3 -->
           <div style="
-            background: #f9fafb;
-            border-left: 3px solid #f59e0b;
-            border-radius: 8px;
-            padding: 18px 20px;
-            transition: all 0.2s;
-          " onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='#f9fafb'">
-            <p id="aiInsight3" style="color: #374151; font-size: 13px; font-weight: 500; line-height: 1.6; margin: 0;">
+            background: white;
+            border-left: 4px solid #f59e0b;
+            border-radius: 12px;
+            padding: 20px 22px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+          " onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(245, 158, 11, 0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.04)'">
+            <p id="aiInsight3" style="color: #1e293b; font-size: 14px; font-weight: 600; line-height: 1.7; margin: 0;">
               Generando recomendaciones personalizadas...
             </p>
           </div>
 
           <!-- Insight 4 -->
           <div style="
-            background: #f9fafb;
-            border-left: 3px solid #8b5cf6;
-            border-radius: 8px;
-            padding: 18px 20px;
-            transition: all 0.2s;
-          " onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='#f9fafb'">
-            <p id="aiInsight4" style="color: #374151; font-size: 13px; font-weight: 500; line-height: 1.6; margin: 0;">
+            background: white;
+            border-left: 4px solid #8b5cf6;
+            border-radius: 12px;
+            padding: 20px 22px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+          " onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(139, 92, 246, 0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.04)'">
+            <p id="aiInsight4" style="color: #1e293b; font-weight: 600; line-height: 1.7; margin: 0;">
               Preparando insights estratégicos...
             </p>
           </div>
         </div>
 
         <!-- Info footer -->
-        <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #f3f4f6; text-align: center;">
-          <p style="font-size: 11px; color: #9ca3af; margin: 0; font-weight: 500;">
-            Insights actualizados en tiempo real • Powered by PYMAX IA
+        <div style="position: relative; z-index: 1; margin-top: 24px; text-align: center;">
+          <p style="font-size: 12px; color: #64748b; margin: 0; font-weight: 600;">
+            ⚡ Insights actualizados en tiempo real • Powered by PYMAX IA
           </p>
         </div>
       </div>
     </section>
-
-    <style>
-      @keyframes subtlePulse {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.6; transform: scale(0.95); }
-      }
-    </style>
 
     <!-- Tools Layout with Left Column -->
     <div class="tools-layout fade-in">
