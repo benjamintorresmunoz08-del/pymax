@@ -52,56 +52,85 @@ def empresa_home():
     return render_template('empresa/index-empresa.html')
 
 # ==============================================================================
-# RUTAS MOVER (Servicio Básico)
+# RUTAS ESSENTIAL (Plan Essential - El Cimiento de Hierro)
+# ==============================================================================
+
+@app.route('/empresa/essential')
+def essential_panel():
+    return render_template('empresa/essential/panel-essential.html')
+
+@app.route('/empresa/essential/ventas-gastos')
+def essential_ventas():
+    return render_template('empresa/essential/ventas-gastos.html')
+
+@app.route('/empresa/essential/flujo')
+def essential_flujo():
+    return render_template('empresa/essential/flujo-caja.html')
+
+@app.route('/empresa/essential/deudas')
+def essential_deudas():
+    return render_template('empresa/essential/deudas.html')
+
+@app.route('/empresa/essential/metas')
+def essential_metas():
+    return render_template('empresa/essential/metas.html')
+
+@app.route('/empresa/essential/inventario')
+def essential_inventario():
+    return render_template('empresa/essential/inventario.html')
+
+@app.route('/empresa/essential/auditoria')
+def essential_auditoria():
+    return render_template('empresa/essential/auditoria.html')
+
+@app.route('/empresa/essential/semaforo')
+def essential_semaforo():
+    return render_template('empresa/essential/semaforo.html')
+
+@app.route('/empresa/essential/progreso')
+def essential_progreso():
+    return render_template('empresa/essential/progreso.html')
+
+@app.route('/empresa/essential/calendario')
+def essential_calendario():
+    return render_template('empresa/essential/calendario.html')
+
+@app.route('/empresa/essential/ia-apoyo')
+def essential_ia():
+    return render_template('empresa/essential/ia-apoyo.html')
+
+@app.route('/empresa/essential/exportar-excel')
+def essential_export_excel():
+    return render_template('empresa/essential/exportar-excel.html')
+
+# Nuevas herramientas del Plan Essential
+@app.route('/empresa/essential/fuga-dinero')
+def essential_fuga_dinero():
+    return render_template('empresa/essential/fuga-dinero.html')
+
+@app.route('/empresa/essential/punto-equilibrio')
+def essential_punto_equilibrio():
+    return render_template('empresa/essential/punto-equilibrio.html')
+
+@app.route('/empresa/essential/boveda-documentos')
+def essential_boveda():
+    return render_template('empresa/essential/boveda-documentos.html')
+
+@app.route('/empresa/essential/orden-express')
+def essential_orden_express():
+    return render_template('empresa/essential/orden-express.html')
+
+@app.route('/empresa/essential/comunidad-starter')
+def essential_comunidad():
+    return render_template('empresa/essential/comunidad-starter.html')
+
+# ==============================================================================
+# RUTAS MOVER (Deprecated - Redirige a Essential)
 # ==============================================================================
 
 @app.route('/empresa/mover')
 def mover_panel():
-    return render_template('empresa/mover/panel-mover.html')
-
-@app.route('/empresa/mover/ventas-gastos')
-def mover_ventas():
-    return render_template('empresa/mover/ventas-gastos.html')
-
-@app.route('/empresa/mover/flujo')
-def mover_flujo():
-    return render_template('empresa/mover/flujo-caja.html')
-
-@app.route('/empresa/mover/obligaciones')
-def mover_obligaciones():
-    return render_template('empresa/mover/obligaciones.html')
-
-@app.route('/empresa/mover/metas')
-def mover_metas():
-    return render_template('empresa/mover/metas.html')
-
-@app.route('/empresa/mover/inventario')
-def mover_inventario():
-    return render_template('empresa/mover/inventario.html')
-
-@app.route('/empresa/mover/auditoria')
-def mover_auditoria():
-    return render_template('empresa/mover/auditoria.html')
-
-@app.route('/empresa/mover/semaforo')
-def mover_semaforo():
-    return render_template('empresa/mover/semaforo.html')
-
-@app.route('/empresa/mover/progreso')
-def mover_progreso():
-    return render_template('empresa/mover/progreso.html')
-
-@app.route('/empresa/mover/calendario')
-def mover_calendario():
-    return render_template('empresa/mover/calendario.html')
-
-@app.route('/empresa/mover/ia-apoyo')
-def mover_ia():
-    return render_template('empresa/mover/ia-apoyo.html')
-
-@app.route('/empresa/mover/exportar-excel')
-def mover_export_excel():
-    return render_template('empresa/mover/exportar-excel.html')
+    return redirect(url_for('essential_panel'))
 
 # ==============================================================================
 # RUTAS TIBURÓN (CRM Premium)

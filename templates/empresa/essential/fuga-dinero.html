@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pymax | Detector de Fuga de Dinero</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="bg-gray-50">
+  <div class="max-w-6xl mx-auto p-8">
+    <!-- Header -->
+    <div class="mb-8">
+      <a href="{{ url_for('essential_panel') }}" class="inline-flex items-center text-gray-600 hover:text-gray-900 mb-4">
+        <i class="ph-bold ph-arrow-left mr-2"></i> Volver al Dashboard
+      </a>
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">🔍 Detector de Fuga de Dinero</h1>
+      <p class="text-gray-600">Sistema inteligente que detecta cobros duplicados y alzas inesperadas en suscripciones</p>
+    </div>
+
+    <!-- Estado del Análisis -->
+    <div class="bg-white rounded-xl p-6 shadow-sm mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold">Estado del Análisis</h2>
+        <button onclick="analizarFugas()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+          <i class="ph-bold ph-magnifying-glass mr-2"></i>Ejecutar Análisis
+        </button>
+      </div>
+      <div id="estadoAnalisis" class="text-gray-500">
+        <p>Haz clic en "Ejecutar Análisis" para detectar posibles fugas de dinero en tus transacciones.</p>
+      </div>
+    </div>
+
+    <!-- Alertas Detectadas -->
+    <div id="alertasContainer" class="space-y-4">
+      <!-- Las alertas se cargarán aquí dinámicamente -->
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+      <div class="bg-white rounded-xl p-6 shadow-sm">
+        <div class="text-sm text-gray-600 mb-2">Cobros Analizados</div>
+        <div class="text-3xl font-bold text-gray-900" id="totalCobros">0</div>
+      </div>
+      <div class="bg-white rounded-xl p-6 shadow-sm">
+        <div class="text-sm text-gray-600 mb-2">Posibles Duplicados</div>
+        <div class="text-3xl font-bold text-orange-600" id="totalDuplicados">0</div>
+      </div>
+      <div class="bg-white rounded-xl p-6 shadow-sm">
+        <div class="text-sm text-gray-600 mb-2">Ahorro Potencial</div>
+        <div class="text-3xl font-bold text-green-600" id="ahorroPotencial">$0</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function analizarFugas() {
+      const estado = document.getElementById('estadoAnalisis');
+      const alertasContainer = document.getElementById('alertasContainer');
+      
+      estado.innerHTML = '<p class="text-blue-600"><i class="ph-bold ph-spinner ph-spin mr-2"></i>Analizando transacciones...</p>';
+      
+      setTimeout(() => {
+        estado.innerHTML = '<p class="text-green-600"><i class="ph-bold ph-check-circle mr-2"></i>Análisis completado</p>';
+        
+        // Simular detección de fugas
+        const alertas = [
+          {
+            tipo: 'duplicado',
+            titulo: 'Cobro Duplicado Detectado',
+            mensaje: 'Se detectó un cobro de $15.000 el 10/04 y otro idéntico el 12/04 - Proveedor: "Servicio Web"',
+            monto: 15000
+          },
+          {
+            tipo: 'alza',
+            titulo: 'Alza Inesperada en Suscripción',
+            mensaje: 'Netflix aumentó de $8.990 a $11.990 (+33%) sin notificación',
+            monto: 3000
+          },
+          {
+            tipo: 'alerta',
+            titulo: 'Suscripción No Utilizada',
+            mensaje: 'No has usado "Software XYZ" en 3 meses - $25.000/mes',
+            monto: 75000
+          }
+        ];
+        
+        let html = '';
+        let totalAhorro = 0;
+        
+        alertas.forEach(alerta => {
+          totalAhorro += alerta.monto;
+          const color = alerta.tipo === 'duplicado' ? 'red' : alerta.tipo === 'alza' ? 'orange' : 'yellow';
+          html += `
+            <div class="bg-white rounded-xl p-6 shadow-sm border-l-4 border-${color}-500">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h3 class="font-semibold text-gray-900 mb-2">${alerta.titulo}</h3>
+                  <p class="text-gray-600 text-sm mb-3">${alerta.mensaje}</p>
+                  <div class="text-lg font-bold text-${color}-600">Impacto: $${alerta.monto.toLocaleString()}</div>
+                </div>
+                <button class="bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded text-sm">
+                  Resolver
+                </button>
+              </div>
+            </div>
+          `;
+        });
+        
+        alertasContainer.innerHTML = html;
+        document.getElementById('totalCobros').textContent = '147';
+        document.getElementById('totalDuplicados').textContent = alertas.length;
+        document.getElementById('ahorroPotencial').textContent = '$' + totalAhorro.toLocaleString();
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
