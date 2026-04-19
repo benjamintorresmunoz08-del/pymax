@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pymax | Configuración del Negocio</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- PYMAX CORE -->
+  <script src="/static/js/pymax-business-dna.js"></script>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #FFFFFF;
+      color: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .config-container {
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .config-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .config-logo {
+      font-size: 28px;
+      font-weight: 800;
+      color: #1a1a1a;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+
+    .config-title {
+      font-size: 36px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .config-subtitle {
+      font-size: 16px;
+      color: #64748b;
+    }
+
+    /* Badge del mundo seleccionado */
+    .selected-business-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 40px;
+      border: 2px solid currentColor;
+    }
+
+    .selected-business-badge .icon {
+      font-size: 24px;
+    }
+
+    /* Paso indicator */
+    .step-indicator {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 14px;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .step-indicator span {
+      color: #1a1a1a;
+      font-weight: 700;
+    }
+
+    /* Form card */
+    .form-card {
+      background: #FFFFFF;
+      border: 2px solid #E5E7EB;
+      border-radius: 24px;
+      padding: 40px;
+      margin-bottom: 30px;
+    }
+
+    /* Form groups */
+    .form-group {
+      margin-bottom: 28px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .form-label .required {
+      color: #ef4444;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 15px;
+      border: 2px solid #E5E7EB;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+      background: #FFFFFF;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #1a1a1a;
+    }
+
+    .form-input::placeholder {
+      color: #94a3b8;
+    }
+
+    .form-hint {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 6px;
+    }
+
+    /* Currency selector */
+    .currency-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .currency-option {
+      padding: 14px;
+      border: 2px solid #E5E7EB;
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #FFFFFF;
+    }
+
+    .currency-option:hover {
+      border-color: #94a3b8;
+    }
+
+    .currency-option.selected {
+      border-color: #1a1a1a;
+      background: #F9FAFB;
+    }
+
+    .currency-option .symbol {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .currency-option .label {
+      font-size: 12px;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    /* Action buttons */
+    .action-buttons {
+      display: flex;
+      gap: 16px;
+    }
+
+    .button {
+      flex: 1;
+      padding: 16px 32px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .button-secondary {
+      background: #F1F5F9;
+      color: #475569;
+    }
+
+    .button-secondary:hover {
+      background: #E2E8F0;
+    }
+
+    .button-primary {
+      background: #1a1a1a;
+      color: white;
+    }
+
+    .button-primary:hover {
+      transform: scale(1.02);
+      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.3);
+    }
+
+    .button-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Animación de entrada */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .form-card {
+      animation: fadeIn 0.5s ease-out;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="config-container">
+    
+    <!-- Header -->
+    <div class="config-header">
+      <div class="config-logo">PYMAX</div>
+      <h1 class="config-title">Configura tu Negocio</h1>
+      <p class="config-subtitle">Solo faltan un par de detalles</p>
+    </div>
+
+    <!-- Paso indicator -->
+    <div class="step-indicator">
+      Paso <span>2</span> de 3
+    </div>
+
+    <!-- Badge del mundo seleccionado -->
+    <div style="text-align: center;">
+      <div class="selected-business-badge" id="businessBadge">
+        <span class="icon">🔧</span>
+        <span>Cargando...</span>
+      </div>
+    </div>
+
+    <!-- Form card -->
+    <div class="form-card">
+      <form id="configForm">
+        
+        <!-- Nombre del negocio -->
+        <div class="form-group">
+          <label class="form-label">
+            Nombre de tu negocio <span class="required">*</span>
+          </label>
+          <input 
+            type="text" 
+            id="businessName"
+            class="form-input" 
+            placeholder="Ej: Taller Mecánico El Rayo"
+            required
+            autocomplete="organization"
+          />
+          <div class="form-hint">Este nombre aparecerá en tu panel de control</div>
+        </div>
+
+        <!-- Moneda preferida -->
+        <div class="form-group">
+          <label class="form-label">
+            Moneda preferida <span class="required">*</span>
+          </label>
+          <div class="currency-selector">
+            <div class="currency-option selected" data-currency="CLP">
+              <div class="symbol">$</div>
+              <div class="label">CLP</div>
+            </div>
+            <div class="currency-option" data-currency="USD">
+              <div class="symbol">US$</div>
+              <div class="label">USD</div>
+            </div>
+            <div class="currency-option" data-currency="EUR">
+              <div class="symbol">€</div>
+              <div class="label">EUR</div>
+            </div>
+          </div>
+          <div class="form-hint">Podrás cambiarla después en configuración</div>
+        </div>
+
+        <!-- Email de contacto (opcional) -->
+        <div class="form-group">
+          <label class="form-label">
+            Email de contacto
+          </label>
+          <input 
+            type="email" 
+            id="contactEmail"
+            class="form-input" 
+            placeholder="tu@email.com"
+            autocomplete="email"
+          />
+          <div class="form-hint">Opcional - Para recibir alertas y reportes</div>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="action-buttons">
+      <button class="button button-secondary" id="backButton">
+        <i class="ph-bold ph-arrow-left"></i>
+        Atrás
+      </button>
+      <button class="button button-primary" id="continueButton">
+        Finalizar Configuración
+        <i class="ph-bold ph-arrow-right"></i>
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    // Configuración de Supabase
+    const SUPABASE_URL = '{{ SUPABASE_URL }}' || 'https://haqjuyagyvxynmulanhe.supabase.co';
+    const SUPABASE_KEY = '{{ SUPABASE_KEY }}' || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let selectedCurrency = 'CLP';
+    let businessType = null;
+
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', () => {
+      // Recuperar tipo de negocio seleccionado
+      businessType = localStorage.getItem('pymax_onboarding_business_type');
+      
+      if (!businessType) {
+        // Si no hay selección, volver al paso 1
+        window.location.href = '/empresa/onboarding';
+        return;
+      }
+
+      // Mostrar badge del negocio
+      renderBusinessBadge();
+
+      // Setup de selección de moneda
+      setupCurrencySelector();
+
+      // Setup de botones
+      setupButtons();
+
+      // Validación en tiempo real
+      setupValidation();
+    });
+
+    // Renderizar badge del negocio seleccionado
+    function renderBusinessBadge() {
+      const config = getBusinessConfig(businessType);
+      if (!config) return;
+
+      const badge = document.getElementById('businessBadge');
+      badge.style.color = config.color;
+      badge.innerHTML = `
+        <span class="icon">${config.icon}</span>
+        <span>${config.label}</span>
+      `;
+    }
+
+    // Setup selector de moneda
+    function setupCurrencySelector() {
+      document.querySelectorAll('.currency-option').forEach(option => {
+        option.addEventListener('click', () => {
+          // Remover selección anterior
+          document.querySelectorAll('.currency-option').forEach(opt => {
+            opt.classList.remove('selected');
+          });
+          
+          // Agregar nueva selección
+          option.classList.add('selected');
+          selectedCurrency = option.dataset.currency;
+        });
+      });
+    }
+
+    // Setup de botones
+    function setupButtons() {
+      // Botón atrás
+      document.getElementById('backButton').addEventListener('click', () => {
+        window.location.href = '/empresa/onboarding';
+      });
+
+      // Botón continuar
+      document.getElementById('continueButton').addEventListener('click', async () => {
+        await handleSubmit();
+      });
+
+      // Submit con Enter
+      document.getElementById('configForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await handleSubmit();
+      });
+    }
+
+    // Validación en tiempo real
+    function setupValidation() {
+      const nameInput = document.getElementById('businessName');
+      const continueBtn = document.getElementById('continueButton');
+
+      nameInput.addEventListener('input', () => {
+        continueBtn.disabled = nameInput.value.trim().length === 0;
+      });
+
+      // Estado inicial
+      continueBtn.disabled = nameInput.value.trim().length === 0;
+    }
+
+    // Manejar envío del formulario
+    async function handleSubmit() {
+      const businessName = document.getElementById('businessName').value.trim();
+      const contactEmail = document.getElementById('contactEmail').value.trim();
+
+      if (!businessName) {
+        alert('Por favor ingresa el nombre de tu negocio');
+        return;
+      }
+
+      // Guardar configuración temporal
+      const config = {
+        business_type: businessType,
+        business_name: businessName,
+        currency: selectedCurrency,
+        contact_email: contactEmail || null
+      };
+
+      localStorage.setItem('pymax_onboarding_config', JSON.stringify(config));
+      localStorage.setItem('pymax_onboarding_step', '3');
+
+      // Redirigir a pantalla de carga
+      window.location.href = '/empresa/onboarding/loading';
+    }
+  </script>
+</body>
+</html>
