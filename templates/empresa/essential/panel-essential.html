@@ -49,6 +49,10 @@
   <script src="/static/js/pymax-holo-guide.js"></script>
   <link rel="stylesheet" href="/static/css/pymax-holo-guide.css">
   
+  <!-- PYMAX ONBOARDING & ADAPTATION -->
+  <script src="/static/js/pymax-business-dna.js"></script>
+  <script src="/static/js/pymax-dashboard-adapter.js"></script>
+  
   <script src="/static/js/pymax-tasks.js"></script>
   <link rel="stylesheet" href="/static/css/pymax-tasks.css">
 
@@ -1522,6 +1526,40 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Re-calcular cada 90 segundos
   setInterval(generarPredicciones, 90000);
+});
+
+// ============================================
+// DASHBOARD ADAPTER INITIALIZATION
+// ============================================
+document.addEventListener('DOMContentLoaded', async function() {
+  console.log('🎯 Inicializando Dashboard Adapter...');
+  
+  // Crear cliente Supabase
+  const SUPABASE_URL = '{{ SUPABASE_URL }}' || 'https://haqjuyagyvxynmulanhe.supabase.co';
+  const SUPABASE_KEY = '{{ SUPABASE_KEY }}' || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  
+  // Inicializar adapter
+  if (window.PymaxDashboardAdapter) {
+    const adapter = new window.PymaxDashboardAdapter();
+    const initialized = await adapter.init(supabase);
+    
+    if (initialized) {
+      console.log('✅ Dashboard adaptado correctamente');
+      
+      // Guardar referencia global
+      window.pymaxAdapter = adapter;
+      
+      // Mostrar información del perfil en consola
+      const profile = adapter.getProfile();
+      const config = adapter.getConfig();
+      console.log(`📊 Negocio: ${profile.business_name}`);
+      console.log(`🏢 Tipo: ${config.label}`);
+      console.log(`🎨 Color: ${config.color}`);
+    } else {
+      console.warn('⚠️ Dashboard adapter no inicializado (usuario sin onboarding)');
+    }
+  }
 });
 </script>
 
