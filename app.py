@@ -125,6 +125,25 @@ def essential_comunidad():
     return render_template('empresa/essential/comunidad-starter.html')
 
 # ==============================================================================
+# RUTAS ONBOARDING (Configuración inicial del negocio)
+# ==============================================================================
+
+@app.route('/empresa/onboarding')
+def onboarding_business_selector():
+    """Paso 1: Selección del tipo de negocio"""
+    return render_template('empresa/onboarding/business-selector.html')
+
+@app.route('/empresa/onboarding/config')
+def onboarding_config():
+    """Paso 2: Configuración básica del negocio"""
+    return render_template('empresa/onboarding/config-wizard.html')
+
+@app.route('/empresa/onboarding/loading')
+def onboarding_loading():
+    """Paso 3: Pantalla de carga con animación"""
+    return render_template('empresa/onboarding/loading-animation.html')
+
+# ==============================================================================
 # RUTAS MOVER (Deprecated - Redirige a Essential)
 # ==============================================================================
 

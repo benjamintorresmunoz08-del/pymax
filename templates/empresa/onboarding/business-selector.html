@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pymax | Selecciona tu Campo de Batalla</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- PYMAX CORE -->
+  <script src="/static/js/pymax-business-dna.js"></script>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #FFFFFF;
+      color: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .onboarding-container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Header del onboarding */
+    .onboarding-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .onboarding-logo {
+      font-size: 32px;
+      font-weight: 800;
+      color: #1a1a1a;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .onboarding-title {
+      font-size: 48px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .onboarding-subtitle {
+      font-size: 18px;
+      color: #64748b;
+      font-weight: 400;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Grid de cards */
+    .business-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    /* Card de negocio */
+    .business-card {
+      background: #FFFFFF;
+      border: 2px solid #E5E7EB;
+      border-radius: 24px;
+      padding: 32px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .business-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, transparent 0%, transparent 100%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 0;
+    }
+
+    .business-card:hover {
+      transform: translateY(-8px);
+      border-color: currentColor;
+      box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);
+    }
+
+    .business-card:hover::before {
+      opacity: 0.05;
+    }
+
+    .business-card.selected {
+      border-color: currentColor;
+      border-width: 3px;
+      box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15);
+    }
+
+    .business-card.selected::before {
+      opacity: 0.1;
+    }
+
+    .business-card-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .business-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .business-label {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #1a1a1a;
+    }
+
+    .business-description {
+      font-size: 14px;
+      color: #64748b;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .business-features {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .business-feature {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #475569;
+    }
+
+    .business-feature i {
+      font-size: 16px;
+      opacity: 0.6;
+    }
+
+    /* Checkmark para selección */
+    .selection-badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: currentColor;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.3s;
+    }
+
+    .business-card.selected .selection-badge {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .selection-badge i {
+      color: white;
+      font-size: 18px;
+    }
+
+    /* Botón de continuar */
+    .continue-button {
+      display: block;
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px 40px;
+      background: #1a1a1a;
+      color: white;
+      border: none;
+      border-radius: 100px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .continue-button.enabled {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .continue-button.enabled:hover {
+      transform: scale(1.02);
+      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.3);
+    }
+
+    /* Indicador de paso */
+    .step-indicator {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 14px;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .step-indicator span {
+      color: #1a1a1a;
+      font-weight: 700;
+    }
+
+    /* Animación de entrada */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .business-card {
+      animation: fadeInUp 0.5s ease-out forwards;
+    }
+
+    .business-card:nth-child(1) { animation-delay: 0.1s; opacity: 0; }
+    .business-card:nth-child(2) { animation-delay: 0.2s; opacity: 0; }
+    .business-card:nth-child(3) { animation-delay: 0.3s; opacity: 0; }
+    .business-card:nth-child(4) { animation-delay: 0.4s; opacity: 0; }
+    .business-card:nth-child(5) { animation-delay: 0.5s; opacity: 0; }
+  </style>
+</head>
+
+<body>
+  <div class="onboarding-container">
+    
+    <!-- Header -->
+    <div class="onboarding-header">
+      <div class="onboarding-logo">PYMAX</div>
+      <h1 class="onboarding-title">Selecciona tu Campo de Batalla</h1>
+      <p class="onboarding-subtitle">
+        Elige el tipo de negocio que diriges y personalizaremos todo el sistema para ti.
+      </p>
+    </div>
+
+    <!-- Indicador de paso -->
+    <div class="step-indicator">
+      Paso <span>1</span> de 3
+    </div>
+
+    <!-- Grid de opciones -->
+    <div class="business-grid" id="businessGrid">
+      <!-- Las cards se generan dinámicamente desde JavaScript -->
+    </div>
+
+    <!-- Botón de continuar -->
+    <button class="continue-button" id="continueButton" disabled>
+      Continuar
+      <i class="ph-bold ph-arrow-right ml-2"></i>
+    </button>
+
+  </div>
+
+  <script>
+    // Configuración de Supabase
+    const SUPABASE_URL = '{{ SUPABASE_URL }}' || 'https://haqjuyagyvxynmulanhe.supabase.co';
+    const SUPABASE_KEY = '{{ SUPABASE_KEY }}' || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let selectedBusinessType = null;
+
+    // Renderizar cards de negocios
+    function renderBusinessCards() {
+      const grid = document.getElementById('businessGrid');
+      const businessTypes = getAllBusinessTypes();
+
+      businessTypes.forEach(business => {
+        const card = document.createElement('div');
+        card.className = 'business-card';
+        card.style.color = business.color;
+        card.dataset.businessId = business.id;
+
+        card.innerHTML = `
+          <div class="selection-badge">
+            <i class="ph-fill ph-check"></i>
+          </div>
+          <div class="business-card-content">
+            <span class="business-icon">${business.icon}</span>
+            <h3 class="business-label">${business.label}</h3>
+            <p class="business-description">${business.description}</p>
+            <div class="business-features">
+              ${business.widgets.slice(0, 3).map(w => `
+                <div class="business-feature">
+                  <i class="ph ph-check-circle"></i>
+                  <span>${w.title}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+
+        // Event listener para selección
+        card.addEventListener('click', () => selectBusiness(business.id));
+        
+        grid.appendChild(card);
+      });
+    }
+
+    // Seleccionar un negocio
+    function selectBusiness(businessId) {
+      // Remover selección anterior
+      document.querySelectorAll('.business-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+
+      // Agregar selección nueva
+      const selectedCard = document.querySelector(`[data-business-id="${businessId}"]`);
+      selectedCard.classList.add('selected');
+
+      selectedBusinessType = businessId;
+
+      // Habilitar botón de continuar
+      const continueBtn = document.getElementById('continueButton');
+      continueBtn.classList.add('enabled');
+      continueBtn.disabled = false;
+    }
+
+    // Continuar al siguiente paso
+    document.getElementById('continueButton').addEventListener('click', async () => {
+      if (!selectedBusinessType) return;
+
+      // Guardar selección temporalmente
+      localStorage.setItem('pymax_onboarding_business_type', selectedBusinessType);
+      localStorage.setItem('pymax_onboarding_step', '2');
+
+      // Redirigir a la pantalla de configuración
+      window.location.href = '/empresa/onboarding/config';
+    });
+
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', () => {
+      renderBusinessCards();
+
+      // Recuperar selección si vuelve atrás
+      const savedSelection = localStorage.getItem('pymax_onboarding_business_type');
+      if (savedSelection) {
+        selectBusiness(savedSelection);
+      }
+    });
+  </script>
+</body>
+</html>
