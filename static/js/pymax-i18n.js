@@ -474,7 +474,7 @@ const translations = {
         semaforo_health_trend: 'Tendencia de Salud',
         
         // Páginas de servicio
-        mover: 'MOVER',
+        essential: 'ESSENTIAL',
         tiburon: 'TIBURÓN',
         hambre: 'HAMBRE DE PODER',
         
@@ -1031,7 +1031,7 @@ const translations = {
         semaforo_health_trend: 'Health Trend',
         
         // Service pages
-        mover: 'MOVER',
+        essential: 'ESSENTIAL',
         tiburon: 'SHARK',
         hambre: 'HUNGER FOR POWER',
         
@@ -1588,7 +1588,7 @@ const translations = {
         semaforo_health_trend: 'Tendência de Saúde',
         
         // Páginas de serviço
-        mover: 'MOVER',
+        essential: 'ESSENTIAL',
         tiburon: 'TUBARÃO',
         hambre: 'FOME DE PODER',
         

@@ -303,7 +303,7 @@ class PymaxPanels {
             <p class="panel-empty-description">
               Define tus objetivos financieros y haz seguimiento de tu progreso
             </p>
-            <a href="/empresa/mover/metas" class="panel-empty-action">
+            <a href="/empresa/essential/metas" class="panel-empty-action">
               <i class="ph-bold ph-plus-circle"></i>
               Crear Primera Meta
             </a>
@@ -321,7 +321,7 @@ class PymaxPanels {
           Módulos Principales
         </h3>
         <div class="panel-section-content">
-          <div class="panel-card" onclick="window.location.href='/empresa/mover/ventas-gastos'" style="cursor: pointer;">
+          <div class="panel-card" onclick="window.location.href='/empresa/essential/ventas-gastos'" style="cursor: pointer;">
             <div class="panel-card-header">
               <span class="panel-card-title">💰 Ingresos y Gastos</span>
               <i class="ph-bold ph-caret-right" style="color: #60a5fa;"></i>
@@ -329,7 +329,7 @@ class PymaxPanels {
             <p class="panel-card-description">Gestión diaria de caja</p>
           </div>
           
-          <div class="panel-card" onclick="window.location.href='/empresa/mover/flujo-caja'" style="cursor: pointer;">
+          <div class="panel-card" onclick="window.location.href='/empresa/essential/flujo-caja'" style="cursor: pointer;">
             <div class="panel-card-header">
               <span class="panel-card-title">📈 Flujo de Caja</span>
               <i class="ph-bold ph-caret-right" style="color: #60a5fa;"></i>
@@ -337,7 +337,7 @@ class PymaxPanels {
             <p class="panel-card-description">Proyección de liquidez</p>
           </div>
           
-          <div class="panel-card" onclick="window.location.href='/empresa/mover/obligaciones'" style="cursor: pointer;">
+          <div class="panel-card" onclick="window.location.href='/empresa/essential/obligaciones'" style="cursor: pointer;">
             <div class="panel-card-header">
               <span class="panel-card-title">⚖️ Obligaciones</span>
               <i class="ph-bold ph-caret-right" style="color: #60a5fa;"></i>
@@ -345,7 +345,7 @@ class PymaxPanels {
             <p class="panel-card-description">Deudas y pasivos</p>
           </div>
           
-          <div class="panel-card" onclick="window.location.href='/empresa/mover/inventario'" style="cursor: pointer;">
+          <div class="panel-card" onclick="window.location.href='/empresa/essential/inventario'" style="cursor: pointer;">
             <div class="panel-card-header">
               <span class="panel-card-title">📦 Inventario</span>
               <i class="ph-bold ph-caret-right" style="color: #60a5fa;"></i>

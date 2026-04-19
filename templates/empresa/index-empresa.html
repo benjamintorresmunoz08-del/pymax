@@ -245,7 +245,7 @@
           <thead>
             <tr>
               <th style="vertical-align: bottom;"><span class="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2">Especificaciones</span></th>
-              <th><div class="text-lg font-bold text-white font-future">Mover Fichas</div><div class="text-2xl font-bold text-slate-400 my-2">$38.000</div></th>
+              <th><div class="text-lg font-bold text-white font-future">Plan Essential</div><div class="text-2xl font-bold text-slate-400 my-2">$38.000</div></th>
               <th><div class="text-xs font-bold text-cyan-400 uppercase mb-1">Recomendado</div><div class="text-lg font-bold text-white font-future">Modo Tiburón</div><div class="text-2xl font-bold text-cyan-400 my-2">$42.000</div></th>
               <th class="header-premium"><div class="text-lg font-bold text-white font-future">Hambre de Poder</div><div class="text-2xl font-bold text-violet-400 my-2">$49.990</div></th>
             </tr>
@@ -358,7 +358,7 @@
                 if (url && url.includes('.html')) {
                     e.preventDefault(); 
                     let nuevaRuta = url.replace('.html', '');
-                    if (url.includes('panel-mover.html')) nuevaRuta = "/empresa/mover";
+                    if (url.includes('panel-essential.html')) nuevaRuta = "/empresa/essential";
                     if (url.includes('index-empresa.html')) nuevaRuta = "/empresa";
                     if (url.includes('index.html')) nuevaRuta = "/";
                     window.location.href = nuevaRuta;

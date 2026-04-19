@@ -457,7 +457,7 @@ class PyMaxAICompanion {
             await this.manifestMetas();
         } else if (path.includes('flujo-caja')) {
             await this.manifestFlujoCaja();
-        } else if (path.includes('panel-mover')) {
+        } else if (path.includes('panel-essential')) {
             await this.manifestDashboard();
         }
     }

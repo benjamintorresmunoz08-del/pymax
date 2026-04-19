@@ -116,7 +116,7 @@ class PymaxRightPanel {
         </div>
         
         <div class="collapsible-content">
-          <a href="/empresa/mover/ventas-gastos" class="quick-action-btn success">
+          <a href="/empresa/essential/ventas-gastos" class="quick-action-btn success">
             <div class="icon">
               <i class="ph-bold ph-plus-circle"></i>
             </div>
@@ -126,7 +126,7 @@ class PymaxRightPanel {
             </div>
           </a>
           
-          <a href="/empresa/mover/ventas-gastos" class="quick-action-btn danger">
+          <a href="/empresa/essential/ventas-gastos" class="quick-action-btn danger">
             <div class="icon">
               <i class="ph-bold ph-minus-circle"></i>
             </div>
@@ -136,7 +136,7 @@ class PymaxRightPanel {
             </div>
           </a>
           
-          <a href="/empresa/mover/obligaciones" class="quick-action-btn info">
+          <a href="/empresa/essential/obligaciones" class="quick-action-btn info">
             <div class="icon">
               <i class="ph-bold ph-receipt"></i>
             </div>

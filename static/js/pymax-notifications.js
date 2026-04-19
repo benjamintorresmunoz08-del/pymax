@@ -360,7 +360,7 @@ class PymaxNotifications {
             action: {
                 label: 'Ver Detalles',
                 icon: 'ph-bold ph-chart-line',
-                callback: 'window.location.href="/empresa/mover/ventas-gastos"'
+                callback: 'window.location.href="/empresa/essential/ventas-gastos"'
             }
         });
     }
@@ -375,7 +375,7 @@ class PymaxNotifications {
             action: {
                 label: 'Ver Obligación',
                 icon: 'ph-bold ph-calendar',
-                callback: 'window.location.href="/empresa/mover/obligaciones"'
+                callback: 'window.location.href="/empresa/essential/obligaciones"'
             }
         });
     }
@@ -390,7 +390,7 @@ class PymaxNotifications {
             action: {
                 label: 'Ver Inventario',
                 icon: 'ph-bold ph-package',
-                callback: 'window.location.href="/empresa/mover/inventario"'
+                callback: 'window.location.href="/empresa/essential/inventario"'
             }
         });
     }
