@@ -351,21 +351,171 @@
   </div>
 
   <script>
-    // Configuración de Supabase
-    const SUPABASE_URL = '{{ SUPABASE_URL }}' || 'https://haqjuyagyvxynmulanhe.supabase.co';
-    const SUPABASE_KEY = '{{ SUPABASE_KEY }}' || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
     let selectedCurrency = 'CLP';
     let businessType = null;
 
-    // Inicializar
-    document.addEventListener('DOMContentLoaded', () => {
+    // Datos de negocios (fallback si el módulo no carga)
+    const businessData = {
+      'tecnico': { icon: '🔧', label: 'Técnico & Talleres', color: '#3b82f6' },
+      'gastronomia': { icon: '🍳', label: 'Gastronómico', color: '#f59e0b' },
+      'profesional': { icon: '💼', label: 'Servicios Profesionales', color: '#8b5cf6' },
+      'bienestar': { icon: '💪', label: 'Bienestar & Recurrencia', color: '#10b981' },
+      'retail': { icon: '🛒', label: 'Retail & Almacenes', color: '#ec4899' }
+    };
+
+    // Renderizar badge del negocio seleccionado
+    function renderBusinessBadge() {
+      const badge = document.getElementById('businessBadge');
+      if (!badge) return;
+      
+      const config = businessData[businessType];
+      if (!config) {
+        badge.innerHTML = '<span>⚙️ Configuración</span>';
+        return;
+      }
+
+      badge.style.color = config.color;
+      badge.innerHTML = `
+        <span class="icon">${config.icon}</span>
+        <span>${config.label}</span>
+      `;
+      
+      console.log('✅ Badge renderizado:', config.label);
+    }
+
+    // Setup selector de moneda
+    function setupCurrencySelector() {
+      const options = document.querySelectorAll('.currency-option');
+      console.log('💱 Configurando selector de moneda. Opciones encontradas:', options.length);
+      
+      options.forEach(option => {
+        option.addEventListener('click', function() {
+          console.log('💱 Moneda clickeada:', this.dataset.currency);
+          
+          // Remover selección anterior
+          options.forEach(opt => opt.classList.remove('selected'));
+          
+          // Agregar nueva selección
+          this.classList.add('selected');
+          selectedCurrency = this.dataset.currency;
+          
+          console.log('✅ Moneda seleccionada:', selectedCurrency);
+        });
+      });
+    }
+
+    // Setup de botones
+    function setupButtons() {
+      const backBtn = document.getElementById('backButton');
+      const continueBtn = document.getElementById('continueButton');
+      const form = document.getElementById('configForm');
+      
+      console.log('🔘 Configurando botones...');
+      console.log('Botón Atrás:', backBtn ? 'OK' : 'NO ENCONTRADO');
+      console.log('Botón Continuar:', continueBtn ? 'OK' : 'NO ENCONTRADO');
+      
+      // Botón atrás
+      if (backBtn) {
+        backBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          console.log('⬅️ Volviendo al paso 1...');
+          window.location.href = '/empresa/onboarding';
+        });
+      }
+
+      // Botón continuar
+      if (continueBtn) {
+        continueBtn.addEventListener('click', async function(e) {
+          e.preventDefault();
+          console.log('➡️ Click en Finalizar Configuración');
+          await handleSubmit();
+        });
+      }
+
+      // Submit con Enter
+      if (form) {
+        form.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          console.log('📝 Submit del formulario');
+          await handleSubmit();
+        });
+      }
+      
+      console.log('✅ Botones configurados');
+    }
+
+    // Validación en tiempo real
+    function setupValidation() {
+      const nameInput = document.getElementById('businessName');
+      const continueBtn = document.getElementById('continueButton');
+
+      if (!nameInput || !continueBtn) {
+        console.error('❌ No se encontraron los elementos para validación');
+        return;
+      }
+
+      nameInput.addEventListener('input', function() {
+        const isValid = this.value.trim().length > 0;
+        continueBtn.disabled = !isValid;
+        console.log('Validación:', isValid ? '✅ OK' : '❌ Nombre requerido');
+      });
+
+      // Estado inicial
+      continueBtn.disabled = nameInput.value.trim().length === 0;
+      console.log('✅ Validación configurada');
+    }
+
+    // Manejar envío del formulario
+    async function handleSubmit() {
+      console.log('🚀 Iniciando submit...');
+      
+      const businessName = document.getElementById('businessName').value.trim();
+      const contactEmail = document.getElementById('contactEmail').value.trim();
+
+      console.log('Datos:', { businessName, selectedCurrency, contactEmail });
+
+      if (!businessName) {
+        alert('Por favor ingresa el nombre de tu negocio');
+        return;
+      }
+
+      // Guardar configuración temporal
+      const config = {
+        business_type: businessType,
+        business_name: businessName,
+        currency: selectedCurrency,
+        contact_email: contactEmail || null
+      };
+
+      console.log('💾 Guardando configuración:', config);
+      localStorage.setItem('pymax_onboarding_config', JSON.stringify(config));
+      localStorage.setItem('pymax_onboarding_step', '3');
+
+      console.log('✅ Configuración guardada');
+      console.log('🔄 Redirigiendo a /empresa/onboarding/loading...');
+
+      // Redirigir a pantalla de carga
+      window.location.href = '/empresa/onboarding/loading';
+    }
+
+    // Inicializar inmediatamente
+    console.log('🎯 Script config-wizard cargado');
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+    
+    function init() {
+      console.log('🚀 Inicializando configuración...');
+      
       // Recuperar tipo de negocio seleccionado
       businessType = localStorage.getItem('pymax_onboarding_business_type');
+      console.log('Tipo de negocio:', businessType);
       
       if (!businessType) {
-        // Si no hay selección, volver al paso 1
+        console.warn('⚠️ No hay tipo de negocio seleccionado');
         window.location.href = '/empresa/onboarding';
         return;
       }
@@ -381,92 +531,8 @@
 
       // Validación en tiempo real
       setupValidation();
-    });
-
-    // Renderizar badge del negocio seleccionado
-    function renderBusinessBadge() {
-      const config = getBusinessConfig(businessType);
-      if (!config) return;
-
-      const badge = document.getElementById('businessBadge');
-      badge.style.color = config.color;
-      badge.innerHTML = `
-        <span class="icon">${config.icon}</span>
-        <span>${config.label}</span>
-      `;
-    }
-
-    // Setup selector de moneda
-    function setupCurrencySelector() {
-      document.querySelectorAll('.currency-option').forEach(option => {
-        option.addEventListener('click', () => {
-          // Remover selección anterior
-          document.querySelectorAll('.currency-option').forEach(opt => {
-            opt.classList.remove('selected');
-          });
-          
-          // Agregar nueva selección
-          option.classList.add('selected');
-          selectedCurrency = option.dataset.currency;
-        });
-      });
-    }
-
-    // Setup de botones
-    function setupButtons() {
-      // Botón atrás
-      document.getElementById('backButton').addEventListener('click', () => {
-        window.location.href = '/empresa/onboarding';
-      });
-
-      // Botón continuar
-      document.getElementById('continueButton').addEventListener('click', async () => {
-        await handleSubmit();
-      });
-
-      // Submit con Enter
-      document.getElementById('configForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await handleSubmit();
-      });
-    }
-
-    // Validación en tiempo real
-    function setupValidation() {
-      const nameInput = document.getElementById('businessName');
-      const continueBtn = document.getElementById('continueButton');
-
-      nameInput.addEventListener('input', () => {
-        continueBtn.disabled = nameInput.value.trim().length === 0;
-      });
-
-      // Estado inicial
-      continueBtn.disabled = nameInput.value.trim().length === 0;
-    }
-
-    // Manejar envío del formulario
-    async function handleSubmit() {
-      const businessName = document.getElementById('businessName').value.trim();
-      const contactEmail = document.getElementById('contactEmail').value.trim();
-
-      if (!businessName) {
-        alert('Por favor ingresa el nombre de tu negocio');
-        return;
-      }
-
-      // Guardar configuración temporal
-      const config = {
-        business_type: businessType,
-        business_name: businessName,
-        currency: selectedCurrency,
-        contact_email: contactEmail || null
-      };
-
-      localStorage.setItem('pymax_onboarding_config', JSON.stringify(config));
-      localStorage.setItem('pymax_onboarding_step', '3');
-
-      // Redirigir a pantalla de carga
-      window.location.href = '/empresa/onboarding/loading';
+      
+      console.log('✅ Configuración inicializada correctamente');
     }
   </script>
 </body>
