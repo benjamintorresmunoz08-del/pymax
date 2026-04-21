@@ -297,63 +297,71 @@
   </div>
 
   <script>
-    // Configuración de Supabase
-    const SUPABASE_URL = '{{ SUPABASE_URL }}' || 'https://haqjuyagyvxynmulanhe.supabase.co';
-    const SUPABASE_KEY = '{{ SUPABASE_KEY }}' || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
     let selectedBusinessType = null;
 
-    // Renderizar cards de negocios
-    function renderBusinessCards() {
-      const grid = document.getElementById('businessGrid');
-      
-      // Verificar que getAllBusinessTypes existe
-      if (typeof getAllBusinessTypes !== 'function') {
-        console.error('getAllBusinessTypes no está definida. Cargando datos manualmente...');
-        renderCardsManually();
-        return;
+    // Datos de los negocios
+    const businessesData = [
+      {
+        id: 'tecnico',
+        label: 'Técnico & Talleres',
+        description: 'Mecánicos, Maestros, Climatización, Reparación',
+        icon: '🔧',
+        color: '#3b82f6',
+        widgets: [
+          { title: 'Hoja de Ruta de Reparación' },
+          { title: 'Inventario de Repuestos' },
+          { title: 'Margen por Trabajo' }
+        ]
+      },
+      {
+        id: 'gastronomia',
+        label: 'Gastronómico',
+        description: 'Cafeterías, Pastelerías, Restaurantes, Food-trucks',
+        icon: '🍳',
+        color: '#f59e0b',
+        widgets: [
+          { title: 'Ingeniería de Menú' },
+          { title: 'Inventario de Insumos' },
+          { title: 'Monitor de Mermas' }
+        ]
+      },
+      {
+        id: 'profesional',
+        label: 'Servicios Profesionales',
+        description: 'Abogados, Consultores, Salud, Estética',
+        icon: '💼',
+        color: '#8b5cf6',
+        widgets: [
+          { title: 'Tablero de Cobranza' },
+          { title: 'Gastos Reembolsables' },
+          { title: 'Bóveda de Documentos' }
+        ]
+      },
+      {
+        id: 'bienestar',
+        label: 'Bienestar & Recurrencia',
+        description: 'Gimnasios, Jardines Infantiles, Academias',
+        icon: '💪',
+        color: '#10b981',
+        widgets: [
+          { title: 'Radar de Morosidad' },
+          { title: 'Calculadora de Capacidad' },
+          { title: 'Fichas Críticas' }
+        ]
+      },
+      {
+        id: 'retail',
+        label: 'Retail & Almacenes',
+        description: 'Minimarkets, Tiendas, Peluquerías con stock',
+        icon: '🛒',
+        color: '#ec4899',
+        widgets: [
+          { title: 'Inventario Maestro' },
+          { title: 'Ranking de Rentabilidad' },
+          { title: 'Alerta de Reposición' }
+        ]
       }
-      
-      const businessTypes = getAllBusinessTypes();
-      
-      if (!businessTypes || businessTypes.length === 0) {
-        console.error('No se obtuvieron tipos de negocio');
-        renderCardsManually();
-        return;
-      }
-
-      businessTypes.forEach(business => {
-        const card = document.createElement('div');
-        card.className = 'business-card';
-        card.style.color = business.color;
-        card.dataset.businessId = business.id;
-
-        card.innerHTML = `
-          <div class="selection-badge">
-            <i class="ph-fill ph-check"></i>
-          </div>
-          <div class="business-card-content">
-            <span class="business-icon">${business.icon}</span>
-            <h3 class="business-label">${business.label}</h3>
-            <p class="business-description">${business.description}</p>
-            <div class="business-features">
-              ${business.widgets.slice(0, 3).map(w => `
-                <div class="business-feature">
-                  <i class="ph ph-check-circle"></i>
-                  <span>${w.title}</span>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-        `;
-
-        // Event listener para selección
-        card.addEventListener('click', () => selectBusiness(business.id));
-        
-        grid.appendChild(card);
-      });
-    }
+    ];
 
     // Seleccionar un negocio
     function selectBusiness(businessId) {
@@ -386,74 +394,17 @@
       window.location.href = '/empresa/onboarding/config';
     });
 
-    // Renderizar manualmente si falla la carga del módulo
-    function renderCardsManually() {
+    // Renderizar cards
+    function renderCards() {
       const grid = document.getElementById('businessGrid');
+      if (!grid) {
+        console.error('No se encontró el grid');
+        return;
+      }
       
-      const businessesData = [
-        {
-          id: 'tecnico',
-          label: 'Técnico & Talleres',
-          description: 'Mecánicos, Maestros, Climatización, Reparación',
-          icon: '🔧',
-          color: '#3b82f6',
-          widgets: [
-            { title: 'Hoja de Ruta de Reparación' },
-            { title: 'Inventario de Repuestos' },
-            { title: 'Margen por Trabajo' }
-          ]
-        },
-        {
-          id: 'gastronomia',
-          label: 'Gastronómico',
-          description: 'Cafeterías, Pastelerías, Restaurantes, Food-trucks',
-          icon: '🍳',
-          color: '#f59e0b',
-          widgets: [
-            { title: 'Ingeniería de Menú' },
-            { title: 'Inventario de Insumos' },
-            { title: 'Monitor de Mermas' }
-          ]
-        },
-        {
-          id: 'profesional',
-          label: 'Servicios Profesionales',
-          description: 'Abogados, Consultores, Salud, Estética',
-          icon: '💼',
-          color: '#8b5cf6',
-          widgets: [
-            { title: 'Tablero de Cobranza' },
-            { title: 'Gastos Reembolsables' },
-            { title: 'Bóveda de Documentos' }
-          ]
-        },
-        {
-          id: 'bienestar',
-          label: 'Bienestar & Recurrencia',
-          description: 'Gimnasios, Jardines Infantiles, Academias',
-          icon: '💪',
-          color: '#10b981',
-          widgets: [
-            { title: 'Radar de Morosidad' },
-            { title: 'Calculadora de Capacidad' },
-            { title: 'Fichas Críticas' }
-          ]
-        },
-        {
-          id: 'retail',
-          label: 'Retail & Almacenes',
-          description: 'Minimarkets, Tiendas, Peluquerías con stock',
-          icon: '🛒',
-          color: '#ec4899',
-          widgets: [
-            { title: 'Inventario Maestro' },
-            { title: 'Ranking de Rentabilidad' },
-            { title: 'Alerta de Reposición' }
-          ]
-        }
-      ];
+      grid.innerHTML = ''; // Limpiar
       
-      businessesData.forEach(business => {
+      businessesData.forEach((business, index) => {
         const card = document.createElement('div');
         card.className = 'business-card';
         card.style.color = business.color;
@@ -478,27 +429,33 @@
           </div>
         `;
 
+        // Event listener
         card.addEventListener('click', () => selectBusiness(business.id));
+        
         grid.appendChild(card);
+        
+        // Forzar animación
+        setTimeout(() => {
+          card.style.opacity = '1';
+        }, index * 100);
       });
       
-      console.log('✅ Cards renderizadas manualmente');
+      console.log('✅ ' + businessesData.length + ' cards renderizadas');
     }
 
-    // Inicializar
-    document.addEventListener('DOMContentLoaded', () => {
-      console.log('🚀 Inicializando selector de negocios...');
-      
-      // Esperar un poco para asegurar que los scripts se carguen
-      setTimeout(() => {
-        renderBusinessCards();
-
-        // Recuperar selección si vuelve atrás
-        const savedSelection = localStorage.getItem('pymax_onboarding_business_type');
-        if (savedSelection) {
-          setTimeout(() => selectBusiness(savedSelection), 100);
-        }
-      }, 100);
+    // Inicializar inmediatamente
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', renderCards);
+    } else {
+      renderCards();
+    }
+    
+    // Recuperar selección guardada
+    window.addEventListener('load', () => {
+      const savedSelection = localStorage.getItem('pymax_onboarding_business_type');
+      if (savedSelection) {
+        selectBusiness(savedSelection);
+      }
     });
   </script>
 </body>
