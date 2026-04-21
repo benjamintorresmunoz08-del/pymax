@@ -3,22 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pymax | Configurando tu CFO Personal</title>
-  
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Pymax | Configurando tu Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/@phosphor-icons/web"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
-  <!-- PYMAX CORE -->
-  <script src="/static/js/pymax-business-dna.js"></script>
-  
+
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Inter', sans-serif;
@@ -28,144 +17,112 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
     }
 
     .loading-container {
       text-align: center;
-      max-width: 600px;
+      max-width: 500px;
       padding: 40px;
+      width: 100%;
     }
 
-    /* Logo animado */
     .loading-logo {
-      font-size: 48px;
+      font-size: 40px;
       font-weight: 800;
       color: #1a1a1a;
       letter-spacing: -2px;
-      margin-bottom: 60px;
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.8; transform: scale(0.98); }
-    }
-
-    /* Spinner personalizado */
-    .spinner-container {
       margin-bottom: 40px;
+    }
+
+    .business-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 40px;
+      border: 2px solid #1a1a1a;
+      color: #1a1a1a;
+    }
+
+    .spinner-wrap {
+      margin-bottom: 32px;
       position: relative;
-      height: 120px;
+      height: 100px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
     .spinner {
-      width: 80px;
-      height: 80px;
+      width: 70px;
+      height: 70px;
       border: 3px solid #E5E7EB;
       border-top-color: #1a1a1a;
       border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+      animation: spin 0.9s linear infinite;
     }
 
     .spinner-inner {
       position: absolute;
-      width: 60px;
-      height: 60px;
+      width: 50px;
+      height: 50px;
       border: 3px solid #E5E7EB;
       border-bottom-color: #64748b;
       border-radius: 50%;
-      animation: spin 1.5s linear infinite reverse;
+      animation: spin 1.4s linear infinite reverse;
     }
 
-    /* Mensajes de carga */
+    @keyframes spin { to { transform: rotate(360deg); } }
+
     .loading-message {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
       color: #1a1a1a;
-      margin-bottom: 12px;
-      min-height: 32px;
-      animation: fadeIn 0.5s ease-out;
+      margin-bottom: 8px;
+      min-height: 30px;
     }
 
     .loading-submessage {
-      font-size: 15px;
+      font-size: 14px;
       color: #64748b;
-      min-height: 22px;
-      animation: fadeIn 0.5s ease-out;
+      margin-bottom: 32px;
+      min-height: 20px;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Barra de progreso */
-    .progress-container {
-      margin-top: 40px;
+    .progress-wrap {
       height: 6px;
       background: #E5E7EB;
       border-radius: 100px;
       overflow: hidden;
-      position: relative;
+      margin-bottom: 32px;
     }
 
     .progress-bar {
       height: 100%;
-      background: linear-gradient(90deg, #1a1a1a 0%, #475569 100%);
+      background: linear-gradient(90deg, #1a1a1a, #475569);
       border-radius: 100px;
       width: 0%;
-      transition: width 0.3s ease-out;
-      position: relative;
-      overflow: hidden;
+      transition: width 0.5s ease-out;
     }
 
-    .progress-bar::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.3),
-        transparent
-      );
-      animation: shimmer 2s infinite;
-    }
-
-    @keyframes shimmer {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-
-    /* Checkmarks de pasos completados */
-    .steps-completed {
-      margin-top: 50px;
+    .steps-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       align-items: flex-start;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
+      max-width: 360px;
+      margin: 0 auto;
     }
 
     .step-item {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       opacity: 0;
-      transform: translateX(-20px);
+      transform: translateX(-16px);
       transition: all 0.3s ease-out;
     }
 
@@ -175,292 +132,137 @@
     }
 
     .step-icon {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
       background: #10b981;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
-      font-size: 14px;
+      font-size: 13px;
+      font-weight: 700;
       flex-shrink: 0;
     }
 
     .step-text {
-      font-size: 14px;
+      font-size: 13px;
       color: #475569;
       font-weight: 500;
-    }
-
-    /* Badge del negocio */
-    .business-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      border-radius: 100px;
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 40px;
-      border: 2px solid currentColor;
-      opacity: 0;
-      animation: fadeIn 0.5s ease-out 0.3s forwards;
-    }
-
-    .business-badge .icon {
-      font-size: 20px;
     }
   </style>
 </head>
 
 <body>
   <div class="loading-container">
-    
-    <!-- Logo -->
+
     <div class="loading-logo">PYMAX</div>
 
-    <!-- Badge del negocio -->
     <div class="business-badge" id="businessBadge">
-      <span class="icon">🔧</span>
-      <span>Configurando...</span>
+      ⚙️ Configurando tu dashboard...
     </div>
 
-    <!-- Spinner -->
-    <div class="spinner-container">
+    <div class="spinner-wrap">
       <div class="spinner"></div>
       <div class="spinner-inner"></div>
     </div>
 
-    <!-- Mensajes dinámicos -->
-    <div class="loading-message" id="loadingMessage">
-      Inicializando...
-    </div>
-    <div class="loading-submessage" id="loadingSubmessage">
-      Preparando el sistema
-    </div>
+    <div class="loading-message" id="loadingMessage">Inicializando...</div>
+    <div class="loading-submessage" id="loadingSubmessage">Preparando el sistema</div>
 
-    <!-- Barra de progreso -->
-    <div class="progress-container">
+    <div class="progress-wrap">
       <div class="progress-bar" id="progressBar"></div>
     </div>
 
-    <!-- Pasos completados -->
-    <div class="steps-completed" id="stepsCompleted">
-      <!-- Se llenan dinámicamente -->
-    </div>
+    <div class="steps-list" id="stepsList"></div>
 
   </div>
 
   <script>
-    // Configuración de Supabase
-    const SUPABASE_URL = '{{ SUPABASE_URL }}' || 'https://haqjuyagyvxynmulanhe.supabase.co';
-    const SUPABASE_KEY = '{{ SUPABASE_KEY }}' || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // Datos de negocios inline
+    var businessData = {
+      'tecnico':     { icon: '🔧', label: 'Técnico & Talleres',      color: '#3b82f6' },
+      'gastronomia': { icon: '🍳', label: 'Gastronómico',            color: '#f59e0b' },
+      'profesional': { icon: '💼', label: 'Servicios Profesionales', color: '#8b5cf6' },
+      'bienestar':   { icon: '💪', label: 'Bienestar & Recurrencia', color: '#10b981' },
+      'retail':      { icon: '🛒', label: 'Retail & Almacenes',      color: '#ec4899' }
+    };
 
-    let currentStep = 0;
-    let businessConfig = null;
+    var config = null;
 
-    // Secuencia de mensajes de carga
-    const loadingSequence = [
-      {
-        message: 'Cargando algoritmos financieros',
-        submessage: 'Configurando motor de cálculos',
-        duration: 1200,
-        progress: 20,
-        step: 'Algoritmos cargados'
-      },
-      {
-        message: 'Sincronizando Semáforo Pymax',
-        submessage: 'Preparando indicadores de salud',
-        duration: 1000,
-        progress: 40,
-        step: 'Semáforo configurado'
-      },
-      {
-        message: 'Configurando widgets personalizados',
-        submessage: 'Adaptando dashboard a tu rubro',
-        duration: 1500,
-        progress: 60,
-        step: 'Widgets instalados'
-      },
-      {
-        message: 'Inicializando métricas relevantes',
-        submessage: 'Calibrando análisis de negocio',
-        duration: 1000,
-        progress: 80,
-        step: 'Métricas activadas'
-      },
-      {
-        message: '¡Tu CFO está listo! 🚀',
-        submessage: 'Redirigiendo al dashboard...',
-        duration: 1200,
-        progress: 100,
-        step: 'Sistema completo'
-      }
+    var sequence = [
+      { msg: 'Cargando tu dashboard',     sub: 'Configurando paneles',            pct: 25,  step: 'Dashboard listo'       },
+      { msg: 'Ajustando widgets',         sub: 'Adaptando a tu tipo de negocio',  pct: 55,  step: 'Widgets personalizados' },
+      { msg: 'Activando Semáforo Pymax',  sub: 'Preparando indicadores de salud', pct: 80,  step: 'Semáforo activo'        },
+      { msg: '¡Todo listo! 🚀',          sub: 'Ingresando al dashboard...',      pct: 100, step: null                    }
     ];
 
-    // Inicializar
-    document.addEventListener('DOMContentLoaded', async () => {
-      // Recuperar configuración
-      const configJSON = localStorage.getItem('pymax_onboarding_config');
-      
-      if (!configJSON) {
-        // Si no hay config, volver al inicio
+    function delay(ms) {
+      return new Promise(function(resolve) { setTimeout(resolve, ms); });
+    }
+
+    function goToDashboard() {
+      localStorage.setItem('pymax_onboarding_completed', 'true');
+      window.location.href = '/empresa/essential';
+    }
+
+    function setMsg(msg, sub) {
+      document.getElementById('loadingMessage').textContent = msg;
+      document.getElementById('loadingSubmessage').textContent = sub;
+    }
+
+    function setProgress(pct) {
+      document.getElementById('progressBar').style.width = pct + '%';
+    }
+
+    function addStep(text) {
+      var list = document.getElementById('stepsList');
+      var el = document.createElement('div');
+      el.className = 'step-item';
+      el.innerHTML = '<div class="step-icon">✓</div><div class="step-text">' + text + '</div>';
+      list.appendChild(el);
+      setTimeout(function() { el.classList.add('visible'); }, 30);
+    }
+
+    async function run() {
+      for (var i = 0; i < sequence.length; i++) {
+        var s = sequence[i];
+        setMsg(s.msg, s.sub);
+        setProgress(s.pct);
+        await delay(750);
+        if (s.step) addStep(s.step);
+      }
+      goToDashboard();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Safety redirect máximo en 6 segundos
+      setTimeout(goToDashboard, 6000);
+
+      var json = localStorage.getItem('pymax_onboarding_config');
+      if (!json) {
         window.location.href = '/empresa/onboarding';
         return;
       }
 
-      businessConfig = JSON.parse(configJSON);
-
-      // Mostrar badge del negocio
-      renderBusinessBadge();
-
-      // Iniciar secuencia de carga
-      await runLoadingSequence();
-    });
-
-    // Renderizar badge
-    function renderBusinessBadge() {
-      const config = getBusinessConfig(businessConfig.business_type);
-      if (!config) return;
-
-      const badge = document.getElementById('businessBadge');
-      badge.style.color = config.color;
-      badge.innerHTML = `
-        <span class="icon">${config.icon}</span>
-        <span>Configurando ${config.label}</span>
-      `;
-    }
-
-    // Ejecutar secuencia de carga
-    async function runLoadingSequence() {
-      for (let i = 0; i < loadingSequence.length; i++) {
-        const step = loadingSequence[i];
-        
-        // Actualizar mensaje
-        updateMessage(step.message, step.submessage);
-        
-        // Actualizar progreso
-        updateProgress(step.progress);
-        
-        // Agregar step completado (excepto el último)
-        if (i < loadingSequence.length - 1) {
-          await delay(step.duration * 0.7); // Mostrar checkmark antes de terminar
-          addCompletedStep(step.step);
-        }
-        
-        // Esperar
-        await delay(step.duration * 0.3);
-      }
-
-      // Guardar en Supabase y redirigir
-      await saveToDatabase();
-    }
-
-    // Actualizar mensaje
-    function updateMessage(message, submessage) {
-      const msgEl = document.getElementById('loadingMessage');
-      const subEl = document.getElementById('loadingSubmessage');
-      
-      msgEl.style.animation = 'none';
-      subEl.style.animation = 'none';
-      
-      setTimeout(() => {
-        msgEl.textContent = message;
-        subEl.textContent = submessage;
-        msgEl.style.animation = 'fadeIn 0.5s ease-out';
-        subEl.style.animation = 'fadeIn 0.5s ease-out';
-      }, 50);
-    }
-
-    // Actualizar barra de progreso
-    function updateProgress(percent) {
-      const bar = document.getElementById('progressBar');
-      bar.style.width = percent + '%';
-    }
-
-    // Agregar step completado
-    function addCompletedStep(text) {
-      const container = document.getElementById('stepsCompleted');
-      const stepEl = document.createElement('div');
-      stepEl.className = 'step-item';
-      stepEl.innerHTML = `
-        <div class="step-icon">
-          <i class="ph-fill ph-check"></i>
-        </div>
-        <div class="step-text">${text}</div>
-      `;
-      
-      container.appendChild(stepEl);
-      
-      // Trigger animation
-      setTimeout(() => {
-        stepEl.classList.add('visible');
-      }, 50);
-    }
-
-    // Helper: delay
-    function delay(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    // Guardar en Supabase
-    async function saveToDatabase() {
       try {
-        // Obtener usuario actual
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (!user) {
-          console.warn('No hay usuario autenticado, guardando solo en localStorage');
-          completeOnboarding();
-          return;
-        }
-
-        // Preparar datos para guardar
-        const profileData = {
-          user_id: user.id,
-          business_type: businessConfig.business_type,
-          business_name: businessConfig.business_name,
-          onboarding_completed: true,
-          dashboard_config: {
-            currency: businessConfig.currency,
-            contact_email: businessConfig.contact_email
-          },
-          updated_at: new Date().toISOString()
-        };
-
-        // Intentar guardar (INSERT o UPDATE)
-        const { data, error } = await supabase
-          .from('user_business_profiles')
-          .upsert(profileData, { onConflict: 'user_id' })
-          .select()
-          .single();
-
-        if (error) {
-          console.error('Error guardando perfil:', error);
-          // Continuar de todos modos
-        } else {
-          console.log('✅ Perfil guardado exitosamente:', data);
-        }
-
-      } catch (error) {
-        console.error('Error en saveToDatabase:', error);
-      } finally {
-        completeOnboarding();
+        config = JSON.parse(json);
+      } catch(e) {
+        window.location.href = '/empresa/onboarding';
+        return;
       }
-    }
 
-    // Completar onboarding y redirigir
-    function completeOnboarding() {
-      // Marcar como completado en localStorage
-      localStorage.setItem('pymax_onboarding_completed', 'true');
-      
-      // Esperar un momento y redirigir
-      setTimeout(() => {
-        window.location.href = '/empresa/essential';
-      }, 800);
-    }
+      // Actualizar badge
+      var badge = document.getElementById('businessBadge');
+      var bd = businessData[config.business_type];
+      if (bd && badge) {
+        badge.textContent = bd.icon + ' Configurando ' + bd.label;
+        badge.style.color = bd.color;
+        badge.style.borderColor = bd.color;
+      }
+
+      run();
+    });
   </script>
 </body>
 </html>
