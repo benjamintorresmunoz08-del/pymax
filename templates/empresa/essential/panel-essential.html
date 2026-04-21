@@ -635,6 +635,44 @@
     <!-- ALERTAS AUTOMÁTICAS - FASE 1.2 -->
     <div id="alertasContainer" style="margin-bottom: 24px;"></div>
 
+    <!-- ============================================
+         SECCIÓN DE WIDGETS POR MUNDO (ADAPTABLE)
+         Se llena automáticamente según el tipo de negocio
+         ============================================ -->
+    <section id="worldWidgetsSection" style="margin-bottom: 32px; display: none;">
+      <!-- Header de la sección -->
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span id="worldIcon" style="font-size: 28px;">🛒</span>
+          <div>
+            <h2 id="worldTitle" style="font-size: 18px; font-weight: 700; color: #111827; margin: 0;">
+              Panel Retail & Almacenes
+            </h2>
+            <p id="worldSubtitle" style="font-size: 13px; color: #6b7280; margin: 0; font-weight: 500;">
+              Herramientas específicas para tu tipo de negocio
+            </p>
+          </div>
+        </div>
+        <div id="worldBadge" style="
+          padding: 6px 14px;
+          border-radius: 100px;
+          font-size: 12px;
+          font-weight: 700;
+          background: #fce7f3;
+          color: #be185d;
+        ">RETAIL</div>
+      </div>
+
+      <!-- Grid de widgets del mundo -->
+      <div id="worldWidgetsGrid" style="
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      ">
+        <!-- Los widgets se renderizan por JavaScript -->
+      </div>
+    </section>
+
     <!-- PREDICCIONES IA - FASE 1.3 -->
     <section class="predictions-panel fade-in" style="margin-bottom: 24px;">
       <div style="
@@ -1528,6 +1566,261 @@ document.addEventListener('DOMContentLoaded', function() {
   setInterval(generarPredicciones, 90000);
 });
 
+// ============================================
+// WIDGETS POR MUNDO - SISTEMA ADAPTABLE
+// Lee localStorage (futuro: Supabase)
+// ============================================
+
+var WORLD_CONFIGS = {
+  retail: {
+    icon: '🛒', label: 'Retail & Almacenes', badge: 'RETAIL',
+    badgeBg: '#fce7f3', badgeColor: '#be185d', accentColor: '#ec4899',
+    subtitle: 'Control de inventario, márgenes y rotación de productos',
+    widgets: [
+      {
+        icon: '📦',
+        title: 'Inventario Maestro',
+        desc: 'Estado general del stock',
+        value: '124 productos',
+        sub: '18 bajo mínimo',
+        color: '#3b82f6',
+        bg: '#eff6ff',
+        semaforo: 'amarillo',
+        action: "window.location.href='/empresa/essential/inventario'",
+        actionLabel: 'Ver inventario'
+      },
+      {
+        icon: '🏆',
+        title: 'Top Productos Rentables',
+        desc: 'Mayor margen de ganancia',
+        value: '#1 Aceite Motor',
+        sub: '68% margen • $3.200 c/u',
+        color: '#f59e0b',
+        bg: '#fffbeb',
+        action: null,
+        actionLabel: null
+      },
+      {
+        icon: '🔔',
+        title: 'Alerta Reposición',
+        desc: 'Productos con stock crítico',
+        value: '18 alertas',
+        sub: '5 en stock 0 • 13 bajos',
+        color: '#ef4444',
+        bg: '#fef2f2',
+        semaforo: 'rojo',
+        action: "window.location.href='/empresa/essential/inventario'",
+        actionLabel: 'Reponer ahora'
+      },
+      {
+        icon: '💰',
+        title: 'Margen por Producto',
+        desc: 'Costo vs precio de venta',
+        value: '42% promedio',
+        sub: 'Meta: 45% • Diferencia: -3%',
+        color: '#10b981',
+        bg: '#ecfdf5',
+        action: null,
+        actionLabel: null
+      },
+      {
+        icon: '🔄',
+        title: 'Rotación de Inventario',
+        desc: 'Velocidad de venta por categoría',
+        value: '8.3 días',
+        sub: 'Promedio de salida del stock',
+        color: '#8b5cf6',
+        bg: '#f5f3ff',
+        action: null,
+        actionLabel: null
+      },
+      {
+        icon: '🧾',
+        title: 'Registro Rápido de Venta',
+        desc: 'Registra en menos de 30 seg',
+        value: 'Modo Express',
+        sub: '⚡ Toca para abrir',
+        color: '#0284c7',
+        bg: '#f0f9ff',
+        action: "window.location.href='/empresa/essential/orden-express'",
+        actionLabel: 'Abrir ahora'
+      }
+    ]
+  },
+  tecnico: {
+    icon: '🔧', label: 'Técnico & Talleres', badge: 'TALLER',
+    badgeBg: '#eff6ff', badgeColor: '#1d4ed8', accentColor: '#3b82f6',
+    subtitle: 'Órdenes de trabajo, servicios y piezas de repuesto',
+    widgets: [
+      { icon: '📋', title: 'Órdenes Activas', desc: 'Trabajos en curso', value: '0 órdenes', sub: 'Sin órdenes pendientes', color: '#3b82f6', bg: '#eff6ff', action: null, actionLabel: null },
+      { icon: '⏱️', title: 'Tiempo Promedio', desc: 'Por reparación', value: '2.4 hrs', sub: 'Meta: 2 hrs por servicio', color: '#f59e0b', bg: '#fffbeb', action: null, actionLabel: null },
+      { icon: '💰', title: 'Ingreso por Servicio', desc: 'Promedio este mes', value: '$0', sub: 'Sin servicios registrados', color: '#10b981', bg: '#ecfdf5', action: null, actionLabel: null },
+      { icon: '📦', title: 'Piezas en Stock', desc: 'Inventario de repuestos', value: '0 piezas', sub: 'Actualiza tu inventario', color: '#8b5cf6', bg: '#f5f3ff', action: null, actionLabel: null },
+      { icon: '⭐', title: 'Satisfacción', desc: 'Calificación de clientes', value: 'Sin datos', sub: 'Recibe tus primeras reseñas', color: '#f59e0b', bg: '#fffbeb', action: null, actionLabel: null },
+      { icon: '🧾', title: 'Orden de Trabajo Rápida', desc: 'Crea en 30 segundos', value: 'Nueva OT', sub: '⚡ Registro express', color: '#0284c7', bg: '#f0f9ff', action: "window.location.href='/empresa/essential/orden-express'", actionLabel: 'Crear OT' }
+    ]
+  },
+  gastronomia: {
+    icon: '🍳', label: 'Gastronómico', badge: 'RESTO',
+    badgeBg: '#fff7ed', badgeColor: '#c2410c', accentColor: '#f59e0b',
+    subtitle: 'Platos, costos de ingredientes y eficiencia de cocina',
+    widgets: [
+      { icon: '🍽️', title: 'Platos más Vendidos', desc: 'Top ventas del mes', value: 'Sin datos', sub: 'Registra tus primeras ventas', color: '#f59e0b', bg: '#fffbeb', action: null, actionLabel: null },
+      { icon: '🥗', title: 'Costo de Ingredientes', desc: '% sobre ventas', value: '0%', sub: 'Meta: máximo 30%', color: '#10b981', bg: '#ecfdf5', action: null, actionLabel: null },
+      { icon: '📉', title: 'Monitor de Mermas', desc: 'Pérdidas por desperdicio', value: '$0', sub: 'Sin mermas registradas', color: '#ef4444', bg: '#fef2f2', action: null, actionLabel: null },
+      { icon: '💹', title: 'Margen por Plato', desc: 'Costo vs precio de venta', value: '0%', sub: 'Ingresa tu menú y costos', color: '#8b5cf6', bg: '#f5f3ff', action: null, actionLabel: null },
+      { icon: '🕐', title: 'Horas Pico', desc: 'Mayor flujo de clientes', value: 'Sin datos', sub: 'Analiza tus ventas por hora', color: '#3b82f6', bg: '#eff6ff', action: null, actionLabel: null },
+      { icon: '🧾', title: 'Comanda Rápida', desc: 'Registra venta en segundos', value: 'Express', sub: '⚡ Hasta 30 seg', color: '#0284c7', bg: '#f0f9ff', action: "window.location.href='/empresa/essential/orden-express'", actionLabel: 'Abrir comanda' }
+    ]
+  },
+  profesional: {
+    icon: '💼', label: 'Servicios Profesionales', badge: 'PRO',
+    badgeBg: '#f5f3ff', badgeColor: '#6d28d9', accentColor: '#8b5cf6',
+    subtitle: 'Clientes, cobranza y rentabilidad por proyecto',
+    widgets: [
+      { icon: '👥', title: 'Clientes Activos', desc: 'Proyectos en curso', value: '0 clientes', sub: 'Comienza a registrar clientes', color: '#8b5cf6', bg: '#f5f3ff', action: null, actionLabel: null },
+      { icon: '💰', title: 'Cobranza Pendiente', desc: 'Facturas por cobrar', value: '$0', sub: 'Al día con cobranzas', color: '#ef4444', bg: '#fef2f2', action: null, actionLabel: null },
+      { icon: '⏱️', title: 'Horas Facturadas', desc: 'Este mes', value: '0 hrs', sub: 'Registra tus horas de trabajo', color: '#f59e0b', bg: '#fffbeb', action: null, actionLabel: null },
+      { icon: '📄', title: 'Documentos Vencidos', desc: 'Contratos y plazos', value: '0 vencidos', sub: 'Todo al día', color: '#10b981', bg: '#ecfdf5', action: null, actionLabel: null },
+      { icon: '🎯', title: 'Pipeline Proyectos', desc: 'Propuestas en curso', value: 'Sin datos', sub: 'Agrega tus propuestas', color: '#3b82f6', bg: '#eff6ff', action: null, actionLabel: null },
+      { icon: '🧾', title: 'Factura Rápida', desc: 'Crea cotización en segundos', value: 'Express', sub: '⚡ Hasta 30 seg', color: '#0284c7', bg: '#f0f9ff', action: "window.location.href='/empresa/essential/orden-express'", actionLabel: 'Nueva factura' }
+    ]
+  },
+  bienestar: {
+    icon: '💪', label: 'Bienestar & Recurrencia', badge: 'GYM',
+    badgeBg: '#ecfdf5', badgeColor: '#065f46', accentColor: '#10b981',
+    subtitle: 'Membresías, asistencia y retención de clientes',
+    widgets: [
+      { icon: '👥', title: 'Membresías Activas', desc: 'Socios vigentes', value: '0 socios', sub: 'Comienza a registrar socios', color: '#10b981', bg: '#ecfdf5', action: null, actionLabel: null },
+      { icon: '⚠️', title: 'Clientes en Mora', desc: 'Membresías vencidas', value: '0 en mora', sub: 'Todo al día con pagos', color: '#ef4444', bg: '#fef2f2', action: null, actionLabel: null },
+      { icon: '📅', title: 'Asistencia del Día', desc: 'Personas hoy en el local', value: '0 asistentes', sub: 'Registra las entradas', color: '#3b82f6', bg: '#eff6ff', action: null, actionLabel: null },
+      { icon: '💪', title: 'Capacidad del Local', desc: 'Ocupación actual', value: '0%', sub: 'Máximo: 0 personas', color: '#f59e0b', bg: '#fffbeb', action: null, actionLabel: null },
+      { icon: '🔄', title: 'Renovaciones Pendientes', desc: 'Membresías por vencer', value: '0 próximas', sub: 'Sin renovaciones urgentes', color: '#8b5cf6', bg: '#f5f3ff', action: null, actionLabel: null },
+      { icon: '🧾', title: 'Check-in Rápido', desc: 'Registra entrada en segundos', value: 'Express', sub: '⚡ Hasta 10 seg', color: '#0284c7', bg: '#f0f9ff', action: "window.location.href='/empresa/essential/orden-express'", actionLabel: 'Registrar entrada' }
+    ]
+  }
+};
+
+// Renderizar un widget individual
+function renderWorldWidget(widget) {
+  var semaforo = '';
+  if (widget.semaforo === 'rojo') {
+    semaforo = '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#ef4444;margin-right:6px;"></span>';
+  } else if (widget.semaforo === 'amarillo') {
+    semaforo = '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#f59e0b;margin-right:6px;"></span>';
+  } else if (widget.semaforo === 'verde') {
+    semaforo = '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#10b981;margin-right:6px;"></span>';
+  }
+
+  var actionBtn = '';
+  if (widget.action && widget.actionLabel) {
+    actionBtn = '<div style="margin-top:14px;">' +
+      '<button onclick="' + widget.action + '" style="' +
+        'padding:7px 14px;' +
+        'background:' + widget.color + ';' +
+        'color:white;' +
+        'border:none;' +
+        'border-radius:8px;' +
+        'font-size:12px;' +
+        'font-weight:700;' +
+        'cursor:pointer;' +
+        'transition:all 0.2s;' +
+        'width:100%;' +
+      '">' + widget.actionLabel + ' →</button>' +
+    '</div>';
+  }
+
+  return '<div style="' +
+    'background:white;' +
+    'border-radius:16px;' +
+    'padding:20px;' +
+    'box-shadow:0 1px 4px rgba(0,0,0,0.06);' +
+    'border-left:4px solid ' + widget.color + ';' +
+    'transition:all 0.2s ease;' +
+    'cursor:default;' +
+  '" onmouseover="this.style.transform=\'translateY(-3px)\';this.style.boxShadow=\'0 6px 20px rgba(0,0,0,0.1)\'" ' +
+  'onmouseout="this.style.transform=\'translateY(0)\';this.style.boxShadow=\'0 1px 4px rgba(0,0,0,0.06)\'">' +
+    '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;">' +
+      '<div>' +
+        '<div style="font-size:22px;margin-bottom:6px;">' + widget.icon + '</div>' +
+        '<div style="font-size:13px;font-weight:700;color:#111827;">' + widget.title + '</div>' +
+        '<div style="font-size:11px;color:#9ca3af;font-weight:500;">' + widget.desc + '</div>' +
+      '</div>' +
+      '<div style="width:36px;height:36px;background:' + widget.bg + ';border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">' +
+        widget.icon +
+      '</div>' +
+    '</div>' +
+    '<div style="font-size:20px;font-weight:800;color:' + widget.color + ';margin-bottom:4px;">' + widget.value + '</div>' +
+    '<div style="font-size:12px;color:#6b7280;font-weight:500;display:flex;align-items:center;">' + semaforo + widget.sub + '</div>' +
+    actionBtn +
+  '</div>';
+}
+
+// Renderizar sección completa del mundo
+function renderWorldWidgets() {
+  // AHORA: Lee de localStorage
+  // FUTURO: Leerá de Supabase user_business_profiles
+  var json = localStorage.getItem('pymax_onboarding_config');
+  if (!json) {
+    console.log('[Worlds] Sin onboarding completado, omitiendo widgets');
+    return;
+  }
+
+  var config;
+  try {
+    config = JSON.parse(json);
+  } catch(e) {
+    return;
+  }
+
+  var businessType = config.business_type;
+  var worldConfig = WORLD_CONFIGS[businessType];
+
+  if (!worldConfig) {
+    console.log('[Worlds] Tipo de negocio no reconocido:', businessType);
+    return;
+  }
+
+  // Mostrar la sección
+  var section = document.getElementById('worldWidgetsSection');
+  if (section) section.style.display = 'block';
+
+  // Actualizar header
+  var icon = document.getElementById('worldIcon');
+  var title = document.getElementById('worldTitle');
+  var subtitle = document.getElementById('worldSubtitle');
+  var badge = document.getElementById('worldBadge');
+
+  if (icon) icon.textContent = worldConfig.icon;
+  if (title) title.textContent = 'Panel ' + worldConfig.label;
+  if (subtitle) subtitle.textContent = worldConfig.subtitle;
+  if (badge) {
+    badge.textContent = worldConfig.badge;
+    badge.style.background = worldConfig.badgeBg;
+    badge.style.color = worldConfig.badgeColor;
+  }
+
+  // Renderizar widgets
+  var grid = document.getElementById('worldWidgetsGrid');
+  if (grid) {
+    var html = '';
+    worldConfig.widgets.forEach(function(w) {
+      html += renderWorldWidget(w);
+    });
+    grid.innerHTML = html;
+  }
+
+  console.log('[Worlds] Widgets renderizados para:', worldConfig.label);
+}
+
+// Ejecutar al cargar
+document.addEventListener('DOMContentLoaded', function() {
+  renderWorldWidgets();
+});
+
+// ============================================
+// DASHBOARD ADAPTER INITIALIZATION
+// ============================================
 // ============================================
 // DASHBOARD ADAPTER INITIALIZATION
 // ============================================
