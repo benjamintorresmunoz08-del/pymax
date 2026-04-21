@@ -70,21 +70,27 @@
     /* Grid de cards */
     .business-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
       margin-bottom: 40px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     /* Card de negocio */
     .business-card {
       background: #FFFFFF;
-      border: 2px solid #E5E7EB;
-      border-radius: 24px;
-      padding: 32px;
+      border: 3px solid #E5E7EB;
+      border-radius: 20px;
+      padding: 28px 24px;
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
     }
 
     .business-card::before {
@@ -101,9 +107,9 @@
     }
 
     .business-card:hover {
-      transform: translateY(-8px);
+      transform: translateY(-4px);
       border-color: currentColor;
-      box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);
+      box-shadow: 0 12px 30px -8px rgba(0,0,0,0.15);
     }
 
     .business-card:hover::before {
@@ -126,16 +132,18 @@
     }
 
     .business-icon {
-      font-size: 64px;
-      margin-bottom: 20px;
+      font-size: 56px;
+      margin-bottom: 16px;
       display: block;
+      line-height: 1;
     }
 
     .business-label {
-      font-size: 24px;
+      font-size: 20px;
       font-weight: 700;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       color: #1a1a1a;
+      line-height: 1.3;
     }
 
     .business-description {
@@ -299,7 +307,21 @@
     // Renderizar cards de negocios
     function renderBusinessCards() {
       const grid = document.getElementById('businessGrid');
+      
+      // Verificar que getAllBusinessTypes existe
+      if (typeof getAllBusinessTypes !== 'function') {
+        console.error('getAllBusinessTypes no está definida. Cargando datos manualmente...');
+        renderCardsManually();
+        return;
+      }
+      
       const businessTypes = getAllBusinessTypes();
+      
+      if (!businessTypes || businessTypes.length === 0) {
+        console.error('No se obtuvieron tipos de negocio');
+        renderCardsManually();
+        return;
+      }
 
       businessTypes.forEach(business => {
         const card = document.createElement('div');
@@ -364,15 +386,119 @@
       window.location.href = '/empresa/onboarding/config';
     });
 
+    // Renderizar manualmente si falla la carga del módulo
+    function renderCardsManually() {
+      const grid = document.getElementById('businessGrid');
+      
+      const businessesData = [
+        {
+          id: 'tecnico',
+          label: 'Técnico & Talleres',
+          description: 'Mecánicos, Maestros, Climatización, Reparación',
+          icon: '🔧',
+          color: '#3b82f6',
+          widgets: [
+            { title: 'Hoja de Ruta de Reparación' },
+            { title: 'Inventario de Repuestos' },
+            { title: 'Margen por Trabajo' }
+          ]
+        },
+        {
+          id: 'gastronomia',
+          label: 'Gastronómico',
+          description: 'Cafeterías, Pastelerías, Restaurantes, Food-trucks',
+          icon: '🍳',
+          color: '#f59e0b',
+          widgets: [
+            { title: 'Ingeniería de Menú' },
+            { title: 'Inventario de Insumos' },
+            { title: 'Monitor de Mermas' }
+          ]
+        },
+        {
+          id: 'profesional',
+          label: 'Servicios Profesionales',
+          description: 'Abogados, Consultores, Salud, Estética',
+          icon: '💼',
+          color: '#8b5cf6',
+          widgets: [
+            { title: 'Tablero de Cobranza' },
+            { title: 'Gastos Reembolsables' },
+            { title: 'Bóveda de Documentos' }
+          ]
+        },
+        {
+          id: 'bienestar',
+          label: 'Bienestar & Recurrencia',
+          description: 'Gimnasios, Jardines Infantiles, Academias',
+          icon: '💪',
+          color: '#10b981',
+          widgets: [
+            { title: 'Radar de Morosidad' },
+            { title: 'Calculadora de Capacidad' },
+            { title: 'Fichas Críticas' }
+          ]
+        },
+        {
+          id: 'retail',
+          label: 'Retail & Almacenes',
+          description: 'Minimarkets, Tiendas, Peluquerías con stock',
+          icon: '🛒',
+          color: '#ec4899',
+          widgets: [
+            { title: 'Inventario Maestro' },
+            { title: 'Ranking de Rentabilidad' },
+            { title: 'Alerta de Reposición' }
+          ]
+        }
+      ];
+      
+      businessesData.forEach(business => {
+        const card = document.createElement('div');
+        card.className = 'business-card';
+        card.style.color = business.color;
+        card.dataset.businessId = business.id;
+
+        card.innerHTML = `
+          <div class="selection-badge">
+            <i class="ph-fill ph-check"></i>
+          </div>
+          <div class="business-card-content">
+            <span class="business-icon">${business.icon}</span>
+            <h3 class="business-label">${business.label}</h3>
+            <p class="business-description">${business.description}</p>
+            <div class="business-features">
+              ${business.widgets.slice(0, 3).map(w => `
+                <div class="business-feature">
+                  <i class="ph ph-check-circle"></i>
+                  <span>${w.title}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+
+        card.addEventListener('click', () => selectBusiness(business.id));
+        grid.appendChild(card);
+      });
+      
+      console.log('✅ Cards renderizadas manualmente');
+    }
+
     // Inicializar
     document.addEventListener('DOMContentLoaded', () => {
-      renderBusinessCards();
+      console.log('🚀 Inicializando selector de negocios...');
+      
+      // Esperar un poco para asegurar que los scripts se carguen
+      setTimeout(() => {
+        renderBusinessCards();
 
-      // Recuperar selección si vuelve atrás
-      const savedSelection = localStorage.getItem('pymax_onboarding_business_type');
-      if (savedSelection) {
-        selectBusiness(savedSelection);
-      }
+        // Recuperar selección si vuelve atrás
+        const savedSelection = localStorage.getItem('pymax_onboarding_business_type');
+        if (savedSelection) {
+          setTimeout(() => selectBusiness(savedSelection), 100);
+        }
+      }, 100);
     });
   </script>
 </body>
