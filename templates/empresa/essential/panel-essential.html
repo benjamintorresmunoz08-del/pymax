@@ -584,7 +584,7 @@
             <span class="health-label">Balance Actual</span>
             <i class="ph-duotone ph-wallet health-icon"></i>
           </div>
-          <div class="health-value" id="currentBalance">$1.222</div>
+          <div class="health-value" id="currentBalance">--</div>
           <div class="health-trend">
             <i class="ph-bold ph-arrow-right"></i>
             <span>Este mes</span>
@@ -597,10 +597,10 @@
             <span class="health-label">Ingresos del Mes</span>
             <i class="ph-duotone ph-trend-up health-icon"></i>
           </div>
-          <div class="health-value" id="monthIncome" style="color: #38A169;">$0</div>
+          <div class="health-value" id="monthIncome" style="color: #38A169;">--</div>
           <div class="health-trend positive">
             <i class="ph-bold ph-arrow-up"></i>
-            <span>+0 transacciones</span>
+            <span>0 transacciones</span>
           </div>
         </div>
 
@@ -610,10 +610,10 @@
             <span class="health-label">Gastos del Mes</span>
             <i class="ph-duotone ph-trend-down health-icon"></i>
           </div>
-          <div class="health-value" id="monthExpenses" style="color: #E53E3E;">$1.222</div>
+          <div class="health-value" id="monthExpenses" style="color: #E53E3E;">--</div>
           <div class="health-trend negative">
             <i class="ph-bold ph-arrow-down"></i>
-            <span>% 1 transacciones</span>
+            <span>0 transacciones</span>
           </div>
         </div>
 
@@ -997,238 +997,250 @@
      SCRIPTS
      ============================================ -->
 <script>
-// Initialize dashboard
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('Pymax Dashboard Loaded - Bento Grid Layout');
-  
-  // Update date
-  const now = new Date();
-  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  const dateStr = now.toLocaleDateString('es-ES', options);
-  
-  // Load financial data
-  loadFinancialData();
-  
-  // Set up event listeners
-  setupEventListeners();
-  
-  // Hide AI Guide/Popup if already shown before
-  hideWelcomePopupIfShown();
+// ============================================
+// PYMAX DASHBOARD - 100% SUPABASE REAL
+// Sin números falsos. Sin localStorage.
+// ============================================
+
+var _supabase = null;
+var _currentUser = null;
+var _businessProfile = null;
+
+// Inicializar Supabase y cargar todo
+document.addEventListener('DOMContentLoaded', async function() {
+  console.log('🚀 Pymax Dashboard iniciando...');
+
+  // Crear cliente Supabase
+  const SURL = '{{ SUPABASE_URL }}';
+  const SKEY = '{{ SUPABASE_KEY }}';
+  _supabase = window.supabase.createClient(SURL, SKEY);
+
+  // Obtener usuario autenticado
+  const { data: { user }, error: authError } = await _supabase.auth.getUser();
+
+  if (!user) {
+    console.warn('⚠️ Sin sesión activa. Redirigiendo...');
+    window.location.href = '/';
+    return;
+  }
+
+  _currentUser = user;
+  console.log('✅ Usuario:', user.email);
+
+  // Actualizar saludo con nombre real
+  updateWelcomeMessage(user);
+
+  // Cargar perfil del negocio desde Supabase
+  await loadBusinessProfile();
+
+  // Cargar datos financieros reales
+  await loadFinancialData();
+
+  // Ocultar popups de bienvenida innecesarios
+  hideWelcomePopup();
+
+  // Verificar si mostrar tour (primera vez)
+  await checkAndShowTour();
 });
 
-// Hide welcome popup after first visit
-function hideWelcomePopupIfShown() {
-  const hasSeenWelcome = localStorage.getItem('pymaxWelcomeShown');
-  
-  if (hasSeenWelcome === 'true') {
-    // Hide all AI companion popups/modals
-    const holoGuide = document.querySelector('.pymax-holo-guide');
-    const aiCompanion = document.querySelector('.ai-companion-modal');
-    const welcomeModal = document.querySelector('[class*="welcome"]');
-    
-    if (holoGuide) holoGuide.style.display = 'none';
-    if (aiCompanion) aiCompanion.style.display = 'none';
-  } else {
-    // Mark as shown for next time
-    localStorage.setItem('pymaxWelcomeShown', 'true');
+// Actualizar saludo con nombre real del usuario
+function updateWelcomeMessage(user) {
+  const h1 = document.querySelector('.welcome-content h1');
+  if (h1) {
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? 'Buenos días' : hour < 20 ? 'Buenas tardes' : 'Buenas noches';
+    const name = user.user_metadata?.full_name?.split(' ')[0] ||
+                 user.user_metadata?.name?.split(' ')[0] ||
+                 user.email.split('@')[0];
+    h1.textContent = `${greeting}, ${name}`;
+  }
+
+  // Actualizar fecha real
+  const dateEl = document.querySelector('.welcome-date');
+  if (dateEl) {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('es-ES', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+    dateEl.innerHTML = `${dateStr.charAt(0).toUpperCase() + dateStr.slice(1)} • <span id="pendingTasksText">0 tareas pendientes</span>`;
   }
 }
 
-// Add new task function
-function addNewTask() {
-  const taskName = prompt('¿Qué tarea deseas agregar?');
-  if (taskName && taskName.trim()) {
-    alert(`Tarea "${taskName}" agregada correctamente`);
-    // Here you can add logic to save the task to database
-    console.log('Nueva tarea:', taskName);
+// Cargar perfil del negocio desde Supabase
+async function loadBusinessProfile() {
+  try {
+    const { data, error } = await _supabase
+      .from('user_business_profiles')
+      .select('*')
+      .eq('user_id', _currentUser.id)
+      .single();
+
+    if (error || !data) {
+      console.warn('⚠️ Sin perfil de negocio. Onboarding pendiente.');
+      _businessProfile = null;
+    } else {
+      _businessProfile = data;
+      console.log('✅ Perfil negocio:', data.business_type, '-', data.business_name);
+    }
+  } catch (e) {
+    console.error('Error cargando perfil:', e);
+    _businessProfile = null;
   }
+
+  // Renderizar widgets del mundo con datos de Supabase
+  renderWorldWidgets();
 }
 
-function loadFinancialData() {
-  // Simulated data loading - replace with actual API calls
-  setTimeout(() => {
-    // Update stats with animation
-    animateValue('currentBalance', 0, 1222, 1000, '$');
-    animateValue('monthIncome', 0, 0, 1000, '$');
-    animateValue('monthExpenses', 0, 1222, 1000, '$');
-    
-    const netMargin = document.getElementById('netMargin');
-    if (netMargin) {
-      netMargin.textContent = '0%';
-    }
-  }, 500);
+// Cargar datos financieros REALES del mes actual
+async function loadFinancialData() {
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999).toISOString();
+
+  try {
+    const { data, error } = await _supabase
+      .from('user_operations')
+      .select('type, amount')
+      .eq('user_id', _currentUser.id)
+      .gte('created_at', startOfMonth)
+      .lte('created_at', endOfMonth);
+
+    if (error) throw error;
+
+    const ops = data || [];
+    const ingresos = ops.filter(op => op.type === 'ingreso').reduce((s, op) => s + parseFloat(op.amount || 0), 0);
+    const gastos   = ops.filter(op => op.type === 'egreso').reduce((s, op) => s + parseFloat(op.amount || 0), 0);
+    const balance  = ingresos - gastos;
+    const margen   = ingresos > 0 ? Math.round((balance / ingresos) * 100) : 0;
+
+    console.log('📊 Datos reales:', { ingresos, gastos, balance, margen, total: ops.length });
+
+    // Actualizar UI con datos reales
+    setFinancialValue('currentBalance', balance);
+    setFinancialValue('monthIncome', ingresos, '#38A169');
+    setFinancialValue('monthExpenses', gastos, '#E53E3E');
+
+    const marginEl = document.getElementById('netMargin');
+    if (marginEl) marginEl.textContent = margen + '%';
+
+    // Actualizar trends
+    updateTrend('monthIncome',   ops.filter(op => op.type === 'ingreso').length, 'transacciones');
+    updateTrend('monthExpenses', ops.filter(op => op.type === 'egreso').length,  'transacciones');
+
+    // Guardar para predicciones
+    window._finData = { ingresos, gastos, balance, margen, ops };
+
+    // Re-generar alertas y predicciones con datos reales
+    setTimeout(analizarYGenerarAlertas, 200);
+    setTimeout(generarPredicciones, 300);
+
+  } catch (e) {
+    console.error('Error cargando datos financieros:', e);
+    // Sin datos → mostrar $0, nunca números falsos
+    ['currentBalance', 'monthIncome', 'monthExpenses'].forEach(id => setFinancialValue(id, 0));
+    const marginEl = document.getElementById('netMargin');
+    if (marginEl) marginEl.textContent = '0%';
+  }
+
+  // Cargar gráfico con datos reales de 6 meses
+  await loadChartData();
 }
 
-function animateValue(id, start, end, duration, prefix = '') {
-  const element = document.getElementById(id);
-  if (!element) return;
-  
-  const range = end - start;
-  const increment = range / (duration / 16);
-  let current = start;
-  
-  const timer = setInterval(() => {
-    current += increment;
-    if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
-      current = end;
-      clearInterval(timer);
-    }
-    element.textContent = prefix + Math.round(current).toLocaleString();
-  }, 16);
+// Formatear y mostrar un valor financiero
+function setFinancialValue(id, value, color) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const formatted = '$' + Math.abs(Math.round(value)).toLocaleString('es-CL');
+  el.textContent = formatted;
+  if (color) el.style.color = color;
+  else if (value < 0) el.style.color = '#E53E3E';
+  else el.style.color = '';
+}
+
+// Actualizar texto de tendencia
+function updateTrend(parentId, count, label) {
+  const parent = document.getElementById(parentId);
+  if (!parent) return;
+  const trendEl = parent.closest('.health-card')?.querySelector('.health-trend span');
+  if (trendEl) trendEl.textContent = `${count} ${label}`;
+}
+
+// Ocultar popups de onboarding
+function hideWelcomePopup() {
+  const els = ['.pymax-holo-guide', '.ai-companion-modal'];
+  els.forEach(sel => {
+    const el = document.querySelector(sel);
+    if (el) el.style.display = 'none';
+  });
 }
 
 function setupEventListeners() {
-  // Add any interactive functionality here
   console.log('Event listeners initialized');
 }
 
-// Update pending tasks
 function updatePendingTasks(count) {
   const tasksText = document.getElementById('pendingTasksText');
-  if (tasksText) {
-    tasksText.textContent = `${count} tareas pendientes`;
-  }
+  if (tasksText) tasksText.textContent = `${count} tareas pendientes`;
 }
 
-// Create Financial Chart
-function createFinancialChart() {
+// Cargar gráfico con datos REALES de los últimos 6 meses
+async function loadChartData() {
   const ctx = document.getElementById('financialChart');
   if (!ctx) return;
-  
-  // Get last 6 months
-  const months = [];
+
   const now = new Date();
+  const months = [];
+  const ingresosData = [];
+  const gastosData = [];
+
+  // Obtener datos mes por mes
   for (let i = 5; i >= 0; i--) {
-    const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    months.push(date.toLocaleDateString('es-ES', { month: 'short', year: '2-digit' }));
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const start = new Date(d.getFullYear(), d.getMonth(), 1).toISOString();
+    const end = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59).toISOString();
+    months.push(d.toLocaleDateString('es-ES', { month: 'short', year: '2-digit' }));
+
+    try {
+      const { data } = await _supabase
+        .from('user_operations')
+        .select('type, amount')
+        .eq('user_id', _currentUser.id)
+        .gte('created_at', start)
+        .lte('created_at', end);
+
+      const ops = data || [];
+      ingresosData.push(ops.filter(o => o.type === 'ingreso').reduce((s, o) => s + parseFloat(o.amount || 0), 0));
+      gastosData.push(ops.filter(o => o.type === 'egreso').reduce((s, o) => s + parseFloat(o.amount || 0), 0));
+    } catch (e) {
+      ingresosData.push(0);
+      gastosData.push(0);
+    }
   }
-  
-  // Simulated data - Replace with real data from API
-  const ingresos = [0, 0, 0, 0, 0, 0];  // Replace with actual income data
-  const gastos = [0, 0, 0, 0, 0, 1222]; // Replace with actual expenses data
-  const balance = ingresos.map((ing, idx) => ing - gastos[idx]);
-  
+
+  const balanceData = ingresosData.map((ing, i) => ing - gastosData[i]);
+
   new Chart(ctx, {
     type: 'line',
     data: {
       labels: months,
       datasets: [
-        {
-          label: 'Ingresos',
-          data: ingresos,
-          borderColor: '#38A169',
-          backgroundColor: 'rgba(56, 161, 105, 0.1)',
-          borderWidth: 3,
-          tension: 0.4,
-          fill: true,
-          pointRadius: 6,
-          pointHoverRadius: 8,
-          pointBackgroundColor: '#38A169',
-          pointBorderColor: '#fff',
-          pointBorderWidth: 2
-        },
-        {
-          label: 'Gastos',
-          data: gastos,
-          borderColor: '#E53E3E',
-          backgroundColor: 'rgba(229, 62, 62, 0.1)',
-          borderWidth: 3,
-          tension: 0.4,
-          fill: true,
-          pointRadius: 6,
-          pointHoverRadius: 8,
-          pointBackgroundColor: '#E53E3E',
-          pointBorderColor: '#fff',
-          pointBorderWidth: 2
-        },
-        {
-          label: 'Balance Neto',
-          data: balance,
-          borderColor: '#3b82f6',
-          backgroundColor: 'rgba(59, 130, 246, 0.1)',
-          borderWidth: 3,
-          tension: 0.4,
-          fill: true,
-          pointRadius: 6,
-          pointHoverRadius: 8,
-          pointBackgroundColor: '#3b82f6',
-          pointBorderColor: '#fff',
-          pointBorderWidth: 2,
-          borderDash: [5, 5]
-        }
+        { label: 'Ingresos', data: ingresosData, borderColor: '#38A169', backgroundColor: 'rgba(56,161,105,0.1)', borderWidth: 3, tension: 0.4, fill: true, pointRadius: 5, pointBackgroundColor: '#38A169', pointBorderColor: '#fff', pointBorderWidth: 2 },
+        { label: 'Gastos',   data: gastosData,   borderColor: '#E53E3E', backgroundColor: 'rgba(229,62,62,0.1)',  borderWidth: 3, tension: 0.4, fill: true, pointRadius: 5, pointBackgroundColor: '#E53E3E', pointBorderColor: '#fff', pointBorderWidth: 2 },
+        { label: 'Balance',  data: balanceData,  borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', borderWidth: 3, tension: 0.4, fill: true, pointRadius: 5, pointBackgroundColor: '#3b82f6', pointBorderColor: '#fff', pointBorderWidth: 2, borderDash: [5,5] }
       ]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false
-        },
-        tooltip: {
-          backgroundColor: 'rgba(17, 24, 39, 0.95)',
-          titleColor: '#fff',
-          bodyColor: '#fff',
-          borderColor: '#374151',
-          borderWidth: 1,
-          padding: 12,
-          displayColors: true,
-          callbacks: {
-            label: function(context) {
-              let label = context.dataset.label || '';
-              if (label) {
-                label += ': ';
-              }
-              label += '$' + Math.abs(context.parsed.y).toLocaleString();
-              return label;
-            }
-          }
-        }
-      },
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(17,24,39,0.95)', titleColor: '#fff', bodyColor: '#fff', padding: 12, callbacks: { label: ctx => ctx.dataset.label + ': $' + Math.abs(ctx.parsed.y).toLocaleString('es-CL') } } },
       scales: {
-        y: {
-          beginAtZero: true,
-          grid: {
-            color: '#f3f4f6',
-            drawBorder: false
-          },
-          ticks: {
-            color: '#6b7280',
-            font: {
-              size: 12,
-              weight: '500'
-            },
-            callback: function(value) {
-              return '$' + value.toLocaleString();
-            }
-          }
-        },
-        x: {
-          grid: {
-            display: false,
-            drawBorder: false
-          },
-          ticks: {
-            color: '#6b7280',
-            font: {
-              size: 12,
-              weight: '600'
-            }
-          }
-        }
+        y: { beginAtZero: true, grid: { color: '#f3f4f6' }, ticks: { color: '#6b7280', callback: v => '$' + v.toLocaleString('es-CL') } },
+        x: { grid: { display: false }, ticks: { color: '#6b7280', font: { weight: '600' } } }
       },
-      interaction: {
-        intersect: false,
-        mode: 'index'
-      }
+      interaction: { intersect: false, mode: 'index' }
     }
   });
+  console.log('📈 Gráfico cargado con datos reales');
 }
-
-// Initialize chart after DOM is loaded
-setTimeout(() => {
-  createFinancialChart();
-}, 500);
 
 // ============================================
 // AI INSIGHTS SYSTEM - FASE 1
@@ -1443,13 +1455,8 @@ function analizarYGenerarAlertas() {
   console.log('[Alertas] Sistema de alertas automáticas activado - ' + alertas.length + ' alertas generadas');
 }
 
-// Ejecutar análisis al cargar
-document.addEventListener('DOMContentLoaded', function() {
-  setTimeout(analizarYGenerarAlertas, 1500);
-  
-  // Re-analizar cada 60 segundos
-  setInterval(analizarYGenerarAlertas, 60000);
-});
+// Re-analizar cada 60 segundos (el primer análisis lo llama loadFinancialData)
+setInterval(analizarYGenerarAlertas, 60000);
 
 // Animación de slide
 const style = document.createElement('style');
@@ -1558,13 +1565,8 @@ function generarPredicciones() {
   console.log('[Predicciones IA] Proyecciones generadas correctamente');
 }
 
-// Ejecutar predicciones al cargar
-document.addEventListener('DOMContentLoaded', function() {
-  setTimeout(generarPredicciones, 2000);
-  
-  // Re-calcular cada 90 segundos
-  setInterval(generarPredicciones, 90000);
-});
+// Re-calcular cada 90 segundos (el primer cálculo lo llama loadFinancialData)
+setInterval(generarPredicciones, 90000);
 
 // ============================================
 // WIDGETS POR MUNDO - SISTEMA ADAPTABLE
@@ -1756,24 +1758,28 @@ function renderWorldWidget(widget) {
   '</div>';
 }
 
-// Renderizar sección completa del mundo
+// Renderizar sección completa del mundo - 100% SUPABASE
 function renderWorldWidgets() {
-  // AHORA: Lee de localStorage
-  // FUTURO: Leerá de Supabase user_business_profiles
-  var json = localStorage.getItem('pymax_onboarding_config');
-  if (!json) {
-    console.log('[Worlds] Sin onboarding completado, omitiendo widgets');
+  // Lee de _businessProfile (Supabase) o fallback localStorage para compatibilidad
+  var businessType = null;
+
+  if (_businessProfile && _businessProfile.business_type) {
+    businessType = _businessProfile.business_type;
+    console.log('[Worlds] Usando perfil de Supabase:', businessType);
+  } else {
+    // Fallback: localStorage (eliminar cuando todos tengan onboarding en Supabase)
+    try {
+      var local = JSON.parse(localStorage.getItem('pymax_onboarding_config') || '{}');
+      businessType = local.business_type || null;
+      if (businessType) console.log('[Worlds] Fallback localStorage:', businessType);
+    } catch(e) {}
+  }
+
+  if (!businessType) {
+    console.log('[Worlds] Sin tipo de negocio definido');
     return;
   }
 
-  var config;
-  try {
-    config = JSON.parse(json);
-  } catch(e) {
-    return;
-  }
-
-  var businessType = config.business_type;
   var worldConfig = WORLD_CONFIGS[businessType];
 
   if (!worldConfig) {
@@ -1813,47 +1819,214 @@ function renderWorldWidgets() {
   console.log('[Worlds] Widgets renderizados para:', worldConfig.label);
 }
 
-// Ejecutar al cargar
-document.addEventListener('DOMContentLoaded', function() {
-  renderWorldWidgets();
-});
+// ============================================
+// TOUR GUIADO FUTURISTA - PRIMERA VEZ
+// ============================================
 
-// ============================================
-// DASHBOARD ADAPTER INITIALIZATION
-// ============================================
-// ============================================
-// DASHBOARD ADAPTER INITIALIZATION
-// ============================================
-document.addEventListener('DOMContentLoaded', async function() {
-  console.log('🎯 Inicializando Dashboard Adapter...');
-  
-  // Crear cliente Supabase
-  const SUPABASE_URL = '{{ SUPABASE_URL }}' || 'https://haqjuyagyvxynmulanhe.supabase.co';
-  const SUPABASE_KEY = '{{ SUPABASE_KEY }}' || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g';
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-  
-  // Inicializar adapter
-  if (window.PymaxDashboardAdapter) {
-    const adapter = new window.PymaxDashboardAdapter();
-    const initialized = await adapter.init(supabase);
-    
-    if (initialized) {
-      console.log('✅ Dashboard adaptado correctamente');
-      
-      // Guardar referencia global
-      window.pymaxAdapter = adapter;
-      
-      // Mostrar información del perfil en consola
-      const profile = adapter.getProfile();
-      const config = adapter.getConfig();
-      console.log(`📊 Negocio: ${profile.business_name}`);
-      console.log(`🏢 Tipo: ${config.label}`);
-      console.log(`🎨 Color: ${config.color}`);
-    } else {
-      console.warn('⚠️ Dashboard adapter no inicializado (usuario sin onboarding)');
+var _tourStep = 0;
+var _tourSteps = [
+  {
+    target: '.health-section',
+    title: '📊 Tu Salud Financiera',
+    text: 'Aquí verás en tiempo real tu balance, ingresos, gastos y margen neto. Todos los datos vienen directamente de tu cuenta.',
+    position: 'bottom'
+  },
+  {
+    target: '#worldWidgetsSection',
+    title: '🛒 Tu Panel de Negocio',
+    text: 'Esta sección cambia según el tipo de negocio que elegiste. Te muestra métricas específicas de tu rubro.',
+    position: 'bottom'
+  },
+  {
+    target: '.tools-list',
+    title: '🔧 Herramientas Principales',
+    text: 'Aquí accedes a Ingresos & Gastos, Monitor de Obligaciones, Metas y tu Asistente IA disponible 24/7.',
+    position: 'right'
+  },
+  {
+    target: '.additional-tools',
+    title: '⚡ Herramientas Adicionales',
+    text: 'Flujo de caja, Semáforo Pymax, Calendario, Inventario y más. Todo tu negocio en un solo lugar.',
+    position: 'top'
+  }
+];
+
+async function checkAndShowTour() {
+  if (!_supabase || !_currentUser) return;
+
+  try {
+    // Verificar si ya vio el tour en Supabase (columna tour_completed en user_profiles)
+    const { data } = await _supabase
+      .from('user_profiles')
+      .select('tour_completed')
+      .eq('id', _currentUser.id)
+      .single();
+
+    if (data && data.tour_completed) {
+      console.log('✅ Tour ya completado');
+      return;
+    }
+  } catch(e) {
+    // Si no existe la columna, usar localStorage como fallback
+    if (localStorage.getItem('pymax_tour_done') === 'true') return;
+  }
+
+  // Mostrar tour después de 1.5 segundos
+  setTimeout(showTour, 1500);
+}
+
+function showTour() {
+  // Crear overlay del tour
+  const overlay = document.createElement('div');
+  overlay.id = 'pymaxTourOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;';
+  document.body.appendChild(overlay);
+
+  // Fondo oscuro con hueco (spotlight)
+  const backdrop = document.createElement('div');
+  backdrop.id = 'pymaxTourBackdrop';
+  backdrop.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:99998;transition:all 0.4s;';
+  backdrop.addEventListener('click', skipTour);
+  document.body.appendChild(backdrop);
+
+  showTourStep(0);
+}
+
+function showTourStep(stepIndex) {
+  _tourStep = stepIndex;
+
+  // Limpiar tooltip anterior
+  const prevTip = document.getElementById('pymaxTourTip');
+  if (prevTip) prevTip.remove();
+
+  if (stepIndex >= _tourSteps.length) {
+    finishTour();
+    return;
+  }
+
+  const step = _tourSteps[stepIndex];
+  const target = document.querySelector(step.target);
+
+  if (!target) {
+    showTourStep(stepIndex + 1);
+    return;
+  }
+
+  // Scroll al elemento
+  target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  setTimeout(() => {
+    const rect = target.getBoundingClientRect();
+
+    // Destacar elemento con borde brillante
+    target.style.position = 'relative';
+    target.style.zIndex = '100000';
+    target.style.borderRadius = '16px';
+    target.style.boxShadow = '0 0 0 4px #3b82f6, 0 0 40px rgba(59,130,246,0.6)';
+    target.style.transition = 'box-shadow 0.3s';
+
+    // Crear tooltip futurista
+    const tip = document.createElement('div');
+    tip.id = 'pymaxTourTip';
+    tip.style.cssText = `
+      position: fixed;
+      z-index: 100001;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      border: 1px solid rgba(59,130,246,0.4);
+      border-radius: 20px;
+      padding: 24px 28px;
+      max-width: 380px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(59,130,246,0.2);
+      font-family: 'Inter', sans-serif;
+      pointer-events: all;
+      animation: tourPop 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    `;
+
+    tip.innerHTML = `
+      <style>
+        @keyframes tourPop {
+          from { opacity:0; transform: scale(0.85) translateY(10px); }
+          to   { opacity:1; transform: scale(1)    translateY(0);    }
+        }
+        #pymaxTourTip h3 { font-size:17px; font-weight:800; margin:0 0 8px; letter-spacing:-0.02em; }
+        #pymaxTourTip p  { font-size:14px; color:#94a3b8; margin:0 0 20px; line-height:1.6; }
+        .tour-btns { display:flex; gap:10px; align-items:center; justify-content:space-between; }
+        .tour-btn-next { background:linear-gradient(135deg,#3b82f6,#2563eb); color:white; border:none; border-radius:10px; padding:10px 22px; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+        .tour-btn-next:hover { transform:translateY(-1px); box-shadow:0 4px 16px rgba(59,130,246,0.4); }
+        .tour-btn-skip { background:transparent; color:#64748b; border:none; font-size:12px; cursor:pointer; }
+        .tour-dots { display:flex; gap:6px; }
+        .tour-dot { width:8px; height:8px; border-radius:50%; background:#334155; transition:all 0.2s; }
+        .tour-dot.active { background:#3b82f6; transform:scale(1.2); }
+      </style>
+      <h3>${step.title}</h3>
+      <p>${step.text}</p>
+      <div class="tour-btns">
+        <div class="tour-dots">
+          ${_tourSteps.map((_, i) => `<div class="tour-dot ${i === stepIndex ? 'active' : ''}"></div>`).join('')}
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <button class="tour-btn-skip" onclick="skipTour()">Saltar</button>
+          <button class="tour-btn-next" onclick="nextTourStep()">
+            ${stepIndex === _tourSteps.length - 1 ? '¡Comenzar! 🚀' : 'Siguiente →'}
+          </button>
+        </div>
+      </div>
+    `;
+
+    // Posicionar el tooltip cerca del elemento
+    const tipLeft = Math.min(Math.max(rect.left, 20), window.innerWidth - 420);
+    const tipTop  = rect.bottom + 20 < window.innerHeight - 200
+                   ? rect.bottom + 20
+                   : rect.top - 250;
+    tip.style.left = tipLeft + 'px';
+    tip.style.top  = Math.max(tipTop, 20) + 'px';
+
+    document.body.appendChild(tip);
+  }, 400);
+}
+
+function nextTourStep() {
+  // Quitar highlight del elemento anterior
+  const prevStep = _tourSteps[_tourStep];
+  if (prevStep) {
+    const el = document.querySelector(prevStep.target);
+    if (el) { el.style.zIndex = ''; el.style.boxShadow = ''; }
+  }
+  showTourStep(_tourStep + 1);
+}
+
+function skipTour() {
+  finishTour();
+}
+
+async function finishTour() {
+  // Limpiar elementos del tour
+  ['pymaxTourOverlay', 'pymaxTourBackdrop', 'pymaxTourTip'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  });
+
+  // Quitar highlights
+  _tourSteps.forEach(step => {
+    const el = document.querySelector(step.target);
+    if (el) { el.style.zIndex = ''; el.style.boxShadow = ''; }
+  });
+
+  // Marcar como completado
+  localStorage.setItem('pymax_tour_done', 'true');
+
+  if (_supabase && _currentUser) {
+    try {
+      await _supabase.from('user_profiles').update({ tour_completed: true }).eq('id', _currentUser.id);
+      console.log('✅ Tour marcado en Supabase');
+    } catch(e) {
+      console.warn('Tour guardado solo en localStorage (tour_completed no existe en tabla)');
     }
   }
-});
+
+  console.log('🎉 Tour completado');
+}
 </script>
 
 </body>
