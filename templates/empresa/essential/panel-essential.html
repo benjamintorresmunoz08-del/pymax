@@ -6,985 +6,719 @@
   <title>Pymax | Dashboard</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  
-  <!-- PYMAX CORE SYSTEMS -->
-  <script src="/static/js/pymax-performance.js"></script>
-  <script src="/static/js/pymax-i18n.js"></script>
-  <script src="/static/js/pymax-data-manager.js"></script>
-  <script src="/static/js/pymax-notifications.js"></script>
-  <link rel="stylesheet" href="/static/css/pymax-notifications.css">
-  
-  <script src="/static/js/pymax-widgets.js"></script>
-  <link rel="stylesheet" href="/static/css/pymax-widgets.css">
-  
-  <script src="/static/js/pymax-calendar.js"></script>
-  <link rel="stylesheet" href="/static/css/pymax-calendar.css">
-  
-  <script src="/static/js/pymax-chat.js"></script>
-  <link rel="stylesheet" href="/static/css/pymax-chat.css">
-  
-  <script src="/static/js/pymax-theme.js"></script>
-  <link rel="stylesheet" href="/static/css/pymax-theme.css">
-  
-  <script src="/static/js/pymax-currency.js"></script>
-  <script src="/static/js/pymax-backup.js"></script>
-  <script src="/static/js/pymax-priority-engine.js"></script>
-  <script src="/static/js/pymax-orbital-system.js"></script>
-  <script src="/static/js/pymax-mode-manager.js"></script>
-  <script src="/static/js/pymax-temporal-memory.js"></script>
-  <script src="/static/js/pymax-ai-companion.js"></script>
-  <link rel="stylesheet" href="/static/css/pymax-ai-companion.css">
-  
-  <script src="/static/js/pymax-hologram.js"></script>
-  <link rel="stylesheet" href="/static/css/pymax-hologram.css">
-  
-  <script src="/static/js/pymax-jarvis.js"></script>
-  <script src="/static/js/pymax-holo-command.js"></script>
-  <link rel="stylesheet" href="/static/css/pymax-holo-command.css">
-  
-  <script src="/static/js/pymax-holo-guide.js"></script>
-  <link rel="stylesheet" href="/static/css/pymax-holo-guide.css">
-  
-  <!-- PYMAX ONBOARDING & ADAPTATION -->
-  <script src="/static/js/pymax-business-dna.js"></script>
-  <script src="/static/js/pymax-dashboard-adapter.js"></script>
-  
+
   <script src="/static/js/pymax-tasks.js"></script>
   <link rel="stylesheet" href="/static/css/pymax-tasks.css">
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Inter', sans-serif;
-      background: #FFFFFF;
-      color: #000000 !important;
-      overflow-x: hidden;
+      background: #F0F2F5;
+      color: #111;
+      min-height: 100vh;
     }
 
-    .dashboard-container {
-      min-height: 100vh;
-      background: #FFFFFF;
-    }
-
-    /* ============================================
-       MAIN CONTENT AREA
-       ============================================ */
-    .main-content {
-      flex: 1;
-      background: #F8F9FA;
-      padding: 32px;
-      min-height: 100vh;
+    .page-wrapper {
+      padding: 28px 36px;
       max-width: 1600px;
       margin: 0 auto;
     }
 
-    /* ============================================
-       TOP NAVIGATION BAR
-       ============================================ */
+    /* ── TOP NAV ── */
     .top-nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 32px;
-      padding-bottom: 24px;
-      border-bottom: 1px solid #e5e7eb;
+      margin-bottom: 22px;
     }
-
-    .nav-tabs {
-      display: flex;
-      gap: 32px;
+    .nav-logo {
+      font-size: 22px;
+      font-weight: 900;
+      color: #111;
+      letter-spacing: -0.05em;
     }
-
+    .nav-logo .accent { color: #3b82f6; }
+    .nav-tabs { display: flex; gap: 4px; }
     .nav-tab {
-      font-size: 14px;
-      font-weight: 500;
+      font-size: 13px;
+      font-weight: 600;
       color: #6b7280;
       text-decoration: none;
-      padding-bottom: 4px;
-      border-bottom: 2px solid transparent;
-      transition: all 0.2s ease;
+      padding: 7px 14px;
+      border-radius: 10px;
+      transition: all 0.2s;
     }
-
-    .nav-tab:hover {
-      color: #374151;
+    .nav-tab:hover, .nav-tab.active {
+      color: #111;
+      background: white;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     }
-
-    .nav-tab.active {
-      color: #1f2937;
-      font-weight: 600;
-      border-bottom-color: #1f2937;
-    }
-
-    .nav-actions {
+    .nav-btn {
+      padding: 9px 20px;
+      background: #111;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 7px;
+      transition: all 0.2s;
     }
+    .nav-btn:hover { background: #374151; transform: translateY(-1px); }
 
-    .nav-error {
+    /* ── WELCOME STRIP ── */
+    .welcome-strip {
+      background: white;
+      border-radius: 18px;
+      padding: 22px 30px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .welcome-strip h1 {
+      font-size: 24px;
+      font-weight: 800;
+      color: #111;
+      letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+    .welcome-strip .welcome-date {
+      font-size: 13px;
+      color: #9ca3af;
+      font-weight: 500;
+    }
+    .welcome-badge {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 16px;
-      background: #fef2f2;
-      border: 1px solid #fecaca;
-      border-radius: 8px;
-      font-size: 13px;
-      color: #dc2626;
-      font-weight: 500;
+      background: #f0fdf4;
+      border-radius: 100px;
+      padding: 8px 18px;
     }
-
-    .nav-btn {
-      padding: 8px 16px;
-      background: #1f2937;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .nav-btn:hover {
-      background: #374151;
-      transform: translateY(-1px);
-    }
-
-    /* ============================================
-       WELCOME CARD - BUENAS TARDES
-       ============================================ */
-    .welcome-card {
-      background: white;
-      border-radius: 16px;
-      padding: 32px;
-      margin-bottom: 24px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .welcome-content h1 {
-      font-size: 28px;
-      font-weight: 700;
-      color: #000000 !important;
-      margin-bottom: 8px;
-    }
-
-    .welcome-date {
-      font-size: 14px;
-      color: #000000 !important;
-      font-weight: 600;
-    }
-
-    .welcome-tasks {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .tasks-check {
-      width: 48px;
-      height: 48px;
-      background: #38A169;
+    .welcome-badge .dot {
+      width: 8px; height: 8px;
+      background: #10b981;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 24px;
     }
-
-    .tasks-info {
+    .welcome-badge span {
       font-size: 13px;
-      color: #6b7280;
-      font-weight: 500;
-    }
-
-    /* ============================================
-       SALUD FINANCIERA - 4 COLUMNAS
-       ============================================ */
-    .health-section {
-      margin-bottom: 32px;
-    }
-
-    .health-title {
-      font-size: 18px;
       font-weight: 700;
-      color: #000000 !important;
-      margin-bottom: 12px;
+      color: #065f46;
     }
 
-    .health-subtitle {
-      font-size: 14px;
-      color: #111827 !important;
-      margin-bottom: 20px;
-      font-weight: 600;
-    }
-
-    .health-grid {
+    /* ────────────────────────────────────────
+       BENTO GRID PRINCIPAL
+       ──────────────────────────────────────── */
+    .bento-main {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(12, 1fr);
+      grid-auto-rows: minmax(90px, auto);
       gap: 16px;
-      margin-bottom: 32px;
-    }
-
-    .health-card {
-      background: white;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      transition: all 0.2s ease;
-    }
-
-    .health-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    }
-
-    .health-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
       margin-bottom: 16px;
     }
 
-    .health-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: #000000 !important;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .health-icon {
-      font-size: 20px;
-      color: #d1d5db;
-    }
-
-    .health-value {
-      font-size: 32px;
-      font-weight: 800;
-      color: #000000 !important;
-      margin-bottom: 12px;
-      line-height: 1;
-    }
-
-    .health-trend {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #6b7280;
-    }
-
-    .health-trend.positive {
-      color: #38A169;
-    }
-
-    .health-trend.negative {
-      color: #E53E3E;
-    }
-
-    .health-trend i {
-      font-size: 14px;
-    }
-
-    /* ============================================
-       LAYOUT CON HERRAMIENTAS
-       ============================================ */
-    .tools-layout {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: 24px;
-      margin-bottom: 32px;
-    }
-
-    /* Herramientas Principales - Columna Izquierda */
-    .main-tools {
+    /* Card base */
+    .bc {
       background: white;
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      height: fit-content;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .bc:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.09);
     }
 
-    .tools-header {
-      font-size: 11px;
-      font-weight: 700;
+    /* BALANCE — col 5, row 2 */
+    .bc-balance {
+      grid-column: span 5;
+      grid-row: span 2;
+    }
+    .bc-balance::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 5px; height: 100%;
+      background: linear-gradient(180deg, #3b82f6, #8b5cf6);
+      border-radius: 20px 0 0 20px;
+    }
+    .bc-balance .lbl {
+      font-size: 10px;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: #9ca3af;
-      margin-bottom: 16px;
-      padding: 0 8px;
+      margin-bottom: 10px;
+    }
+    .bc-balance .amt {
+      font-size: 52px;
+      font-weight: 900;
+      color: #111;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+    .bc-balance .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 13px;
+      background: #eff6ff;
+      color: #3b82f6;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 22px;
+    }
+    .bc-balance .desc {
+      font-size: 13px;
+      color: #9ca3af;
+      font-weight: 500;
+      line-height: 1.6;
     }
 
-    .tool-item {
+    /* INGRESOS — col 3, row 1 */
+    .bc-ingresos {
+      grid-column: span 3;
+      border-top: 3px solid #10b981;
+    }
+    /* GASTOS — col 3, row 1 */
+    .bc-gastos {
+      grid-column: span 3;
+      border-top: 3px solid #ef4444;
+    }
+    .bc-ingresos .kpi-lbl,
+    .bc-gastos  .kpi-lbl {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+      margin-bottom: 10px;
+    }
+    .bc-ingresos .kpi-val { font-size: 32px; font-weight: 900; color: #10b981; letter-spacing: -0.03em; margin-bottom: 6px; }
+    .bc-gastos  .kpi-val  { font-size: 32px; font-weight: 900; color: #ef4444; letter-spacing: -0.03em; margin-bottom: 6px; }
+    .bc-ingresos .kpi-sub,
+    .bc-gastos  .kpi-sub  { font-size: 12px; color: #9ca3af; font-weight: 500; }
+
+    /* MARGEN DONUT — col 4, row 2 */
+    .bc-margen {
+      grid-column: span 4;
+      grid-row: span 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: linear-gradient(145deg, #f8faff, #fff);
+    }
+    .donut-wrap { position: relative; width: 156px; height: 156px; margin: 0 auto 18px; }
+    .donut-svg { transform: rotate(-90deg); overflow: visible; }
+    .donut-track { fill: none; stroke: #f1f5f9; stroke-width: 14; }
+    .donut-fill  { fill: none; stroke: url(#donutGrad); stroke-width: 14; stroke-linecap: round; transition: stroke-dasharray 1.2s ease; }
+    .donut-center {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .donut-pct { font-size: 34px; font-weight: 900; color: #111; letter-spacing: -0.04em; }
+    .donut-unit { font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+    .bc-margen h3 { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 4px; }
+    .bc-margen p  { font-size: 12px; color: #9ca3af; font-weight: 500; }
+
+    /* GRÁFICO — col 8, row 3 */
+    .bc-chart {
+      grid-column: span 8;
+      grid-row: span 3;
+      display: flex;
+      flex-direction: column;
+    }
+    .bc-chart h3   { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 3px; letter-spacing: -0.02em; }
+    .bc-chart .sub { font-size: 12px; color: #9ca3af; margin-bottom: 20px; font-weight: 500; }
+    .chart-canvas-wrap { flex: 1; position: relative; min-height: 240px; }
+    .chart-legend-row { display: flex; gap: 20px; justify-content: center; margin-top: 14px; }
+    .leg-item { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; color: #6b7280; }
+    .leg-dot  { width: 10px; height: 10px; border-radius: 3px; }
+
+    /* ALERTAS — col 4, row 3 */
+    .bc-alertas {
+      grid-column: span 4;
+      grid-row: span 3;
+      display: flex;
+      flex-direction: column;
+    }
+    .bc-alertas h3   { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 3px; }
+    .bc-alertas .sub { font-size: 12px; color: #9ca3af; font-weight: 500; margin-bottom: 18px; }
+    .alertas-scroll  { flex: 1; overflow-y: auto; }
+
+    /* ────────────────────────────────────────
+       FILA 2: HERRAMIENTAS CÍRCULOS + PREDICCIONES
+       ──────────────────────────────────────── */
+    .bento-row2 {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .bc-tools { grid-column: span 8; }
+    .bc-tools h3 { font-size: 14px; font-weight: 700; color: #111; margin-bottom: 20px; }
+    .tools-circles {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .tool-circle { display: flex; flex-direction: column; align-items: center; gap: 10px; text-decoration: none; }
+    .tool-icon-ring {
+      width: 68px; height: 68px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      transition: all 0.22s;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+    .tool-circle:hover .tool-icon-ring {
+      transform: translateY(-4px) scale(1.1);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.13);
+    }
+    .tool-circle > span {
+      font-size: 10px;
+      font-weight: 700;
+      color: #374151;
+      text-align: center;
+      max-width: 68px;
+      line-height: 1.3;
+    }
+
+    .bc-pred { grid-column: span 4; }
+    .bc-pred h3 { font-size: 14px; font-weight: 700; color: #111; margin-bottom: 16px; }
+    .pred-list { display: flex; flex-direction: column; gap: 10px; }
+    .pred-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      border-radius: 14px;
+    }
+    .pred-lbl { font-size: 12px; font-weight: 600; color: #374151; }
+    .pred-val { font-size: 16px; font-weight: 900; color: #111; letter-spacing: -0.02em; }
+    .pred-hint { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+
+    /* ────────────────────────────────────────
+       SECCIÓN MUNDO (bento cards)
+       ──────────────────────────────────────── */
+    .world-section {
+      background: white;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      margin-bottom: 16px;
+      display: none;
+    }
+    .world-hdr {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 14px 12px;
-      border-radius: 10px;
-      color: #374151;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 4px;
-      transition: all 0.2s ease;
-      cursor: pointer;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .world-left { display: flex; align-items: center; gap: 14px; }
+    .world-emoji { font-size: 34px; }
+    .world-title { font-size: 18px; font-weight: 800; color: #111; letter-spacing: -0.02em; margin: 0 0 3px; }
+    .world-sub   { font-size: 13px; color: #9ca3af; font-weight: 500; margin: 0; }
+    .world-badge {
+      padding: 5px 14px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 800;
     }
 
-    .tool-item:hover {
-      background: #f9fafb;
-    }
-
-    .tool-item i {
-      font-size: 20px;
-      color: #9ca3af;
-    }
-
-    .tool-item.ai i {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .tool-item.finance i {
-      color: #38A169;
-    }
-
-    .tool-item.monitor i {
-      color: #f59e0b;
-    }
-
-    .tool-item.goals i {
-      color: #3b82f6;
-    }
-
-    /* Área de Contenido Principal */
-    .content-area {
+    /* ────────────────────────────────────────
+       INSIGHTS IA
+       ──────────────────────────────────────── */
+    .insights-section {
       background: white;
-      border-radius: 16px;
-      padding: 32px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
-
-    /* ============================================
-       HERRAMIENTAS ADICIONALES - GRID 5 TARJETAS
-       ============================================ */
-    .additional-tools {
-      margin-top: 32px;
-    }
-
-    .additional-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: #1f2937;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
       margin-bottom: 16px;
     }
-
-    .additional-grid {
+    .insights-section h3   { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 3px; }
+    .insights-section .sub { font-size: 12px; color: #9ca3af; margin-bottom: 20px; font-weight: 500; }
+    .insights-grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 16px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
     }
-
-    .additional-card {
-      background: white;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      transition: all 0.2s ease;
+    .insight-card {
+      border-radius: 14px;
+      padding: 18px 20px;
+    }
+    .insight-card p {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1e293b;
+      line-height: 1.65;
+      margin: 0;
+    }
+    .insights-footer {
       text-align: center;
-      cursor: pointer;
+      margin-top: 18px;
+    }
+    .insights-footer a {
+      font-size: 13px;
+      font-weight: 700;
+      color: #3b82f6;
+      text-decoration: none;
+    }
+    .insights-footer a:hover { text-decoration: underline; }
+
+    /* ────────────────────────────────────────
+       HERRAMIENTAS ADICIONALES (7 cards)
+       ──────────────────────────────────────── */
+    .extra-section { margin-bottom: 16px; }
+    .extra-section h3 { font-size: 14px; font-weight: 700; color: #111; margin-bottom: 14px; }
+    .extra-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 12px;
+    }
+    .extra-card {
+      background: white;
+      border-radius: 18px;
+      padding: 22px 12px;
+      text-align: center;
       text-decoration: none;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+      transition: all 0.22s;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.04);
     }
-
-    .additional-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    .extra-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.09);
     }
-
-    .additional-icon {
-      width: 56px;
-      height: 56px;
-      background: #f3f4f6;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      color: #6b7280;
+    .extra-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
     }
-
-    .additional-label {
-      font-size: 14px;
-      font-weight: 600;
-      color: #374151;
-    }
-
-    /* ============================================
-       MINI WIDGETS INFORMATIVOS
-       ============================================ */
-    .mini-widgets-section {
-      margin-top: 32px;
-    }
-
-    .widget-title {
+    .extra-lbl {
       font-size: 11px;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #9ca3af;
-      margin-bottom: 16px;
+      color: #374151;
+      line-height: 1.3;
+      text-align: center;
     }
 
-    .widgets-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+    /* ── Footer ── */
+    .page-footer {
+      padding: 24px 0;
+      text-align: center;
+      border-top: 1px solid #e5e7eb;
+      margin-top: 8px;
+    }
+    .page-footer p { font-size: 12px; color: #9ca3af; font-weight: 500; }
+
+    /* ── Responsive ── */
+    @media (max-width: 1100px) {
+      .bc-balance { grid-column: span 7; }
+      .bc-ingresos, .bc-gastos { grid-column: span 6; }
+      .bc-margen { grid-column: span 5; }
+      .bc-chart, .bc-alertas { grid-column: span 12; grid-row: span 1; }
+      .bc-chart .chart-canvas-wrap { min-height: 280px; }
+      .bc-tools, .bc-pred { grid-column: span 12; }
+      .extra-grid { grid-template-columns: repeat(4,1fr); }
+      .insights-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 700px) {
+      .page-wrapper { padding: 14px; }
+      .bento-main, .bento-row2 { grid-template-columns: 1fr 1fr; }
+      .bc-balance, .bc-margen, .bc-chart, .bc-alertas, .bc-tools, .bc-pred { grid-column: span 2; }
+      .bc-ingresos, .bc-gastos { grid-column: span 1; }
+      .extra-grid { grid-template-columns: repeat(3,1fr); }
+      .tools-circles { gap: 12px; }
     }
 
-    .widget-card {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
-
-    .widget-header {
-      font-size: 12px;
-      font-weight: 600;
-      color: #6b7280;
-      margin-bottom: 12px;
-    }
-
-    .widget-value {
-      font-size: 24px;
-      font-weight: 700;
-      color: #1f2937;
-    }
-
-    /* ============================================
-       RESPONSIVE
-       ============================================ */
-    @media (max-width: 1280px) {
-      .health-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      
-      .additional-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    @media (max-width: 768px) {
-      .health-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .tools-layout {
-        grid-template-columns: 1fr;
-      }
-      
-      .additional-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    /* Animaciones */
-    .fade-in {
-      animation: fadeIn 0.5s ease-in;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+    /* Fade in */
+    .fade-in { animation: fadeIn 0.5s ease; }
+    @keyframes fadeIn { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
   </style>
 </head>
 
 <body>
+<div class="page-wrapper">
 
-<div class="dashboard-container">
-  
-  <!-- ============================================
-       MAIN CONTENT
-       ============================================ -->
-  <main class="main-content">
-    
-    <!-- Top Navigation -->
-    <nav class="top-nav fade-in">
-      <div class="nav-tabs">
-        <a href="#" class="nav-tab active">Dashboard</a>
-        <a href="{{ url_for('essential_ventas') }}" class="nav-tab">Finanzas</a>
-        <a href="#" class="nav-tab">Análisis</a>
-        <a href="#" class="nav-tab">Herramientas</a>
-        <a href="{{ url_for('empresa_home') }}" class="nav-tab">Configuración</a>
-      </div>
-      
-      <div class="nav-actions">
-        <button class="nav-btn" onclick="openTaskModal()">
-          <i class="ph-bold ph-plus"></i>
-          <span>Nueva Tarea</span>
-        </button>
-      </div>
-    </nav>
+  <!-- ── TOP NAV ── -->
+  <nav class="top-nav fade-in">
+    <div class="nav-logo"><span class="accent">Py</span>max</div>
+    <div class="nav-tabs">
+      <a href="#" class="nav-tab active">Dashboard</a>
+      <a href="{{ url_for('essential_ventas') }}" class="nav-tab">Finanzas</a>
+      <a href="{{ url_for('essential_calendario') }}" class="nav-tab">Calendario</a>
+      <a href="{{ url_for('essential_ia') }}" class="nav-tab">Asistente IA</a>
+    </div>
+    <button class="nav-btn" onclick="openTaskModal()">
+      <i class="ph-bold ph-plus"></i> Nueva Tarea
+    </button>
+  </nav>
 
-    <!-- Welcome Card -->
-    <div class="welcome-card fade-in">
-      <div class="welcome-content">
-        <h1>Buenas tardes, benja</h1>
-        <p class="welcome-date">Viernes, 10 de abril de 2026 • <span id="pendingTasksText">0 tareas pendientes</span></p>
+  <!-- ── WELCOME STRIP ── -->
+  <div class="welcome-strip fade-in">
+    <div>
+      <h1>Buenas tardes, —</h1>
+      <p class="welcome-date">Cargando información... • <span id="pendingTasksText">0 tareas pendientes</span></p>
+    </div>
+    <div class="welcome-badge">
+      <div class="dot"></div>
+      <span>Datos al día</span>
+    </div>
+  </div>
+
+  <!-- ── BENTO GRID PRINCIPAL ── -->
+  <div class="bento-main fade-in">
+
+    <!-- BALANCE GRANDE -->
+    <div class="bc bc-balance">
+      <div class="lbl">Balance Actual</div>
+      <div class="amt" id="currentBalance">--</div>
+      <div class="pill">
+        <i class="ph-bold ph-arrow-right" style="font-size:11px;"></i>
+        <span>Mes en curso</span>
       </div>
-      <div class="welcome-tasks">
-        <div class="tasks-check">
-          <i class="ph-bold ph-check"></i>
+      <div class="desc">
+        Tu posición financiera neta.<br>
+        Actualizado en tiempo real desde Supabase.
+      </div>
+    </div>
+
+    <!-- INGRESOS -->
+    <div class="bc bc-ingresos">
+      <div class="kpi-lbl">📈 Ingresos del Mes</div>
+      <div class="kpi-val" id="monthIncome">--</div>
+      <div class="kpi-sub" id="incomeCount">0 transacciones</div>
+    </div>
+
+    <!-- GASTOS -->
+    <div class="bc bc-gastos">
+      <div class="kpi-lbl">📉 Gastos del Mes</div>
+      <div class="kpi-val" id="monthExpenses">--</div>
+      <div class="kpi-sub" id="expensesCount">0 transacciones</div>
+    </div>
+
+    <!-- MARGEN DONUT -->
+    <div class="bc bc-margen">
+      <div class="donut-wrap">
+        <svg class="donut-svg" width="156" height="156" viewBox="0 0 156 156">
+          <defs>
+            <linearGradient id="donutGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#3b82f6"/>
+              <stop offset="100%" style="stop-color:#8b5cf6"/>
+            </linearGradient>
+          </defs>
+          <circle class="donut-track" cx="78" cy="78" r="64"/>
+          <circle class="donut-fill" id="donutFill" cx="78" cy="78" r="64" stroke-dasharray="0 402" stroke-dashoffset="0"/>
+        </svg>
+        <div class="donut-center">
+          <div class="donut-pct" id="netMargin">0%</div>
+          <div class="donut-unit">Margen</div>
         </div>
-        <div class="tasks-info">
-          <div style="font-weight: 600; color: #1f2937;">¡Todo listo! No tienes tareas pendientes</div>
+      </div>
+      <h3>Margen Neto</h3>
+      <p>Rentabilidad del período</p>
+    </div>
+
+    <!-- GRÁFICO 6 MESES -->
+    <div class="bc bc-chart">
+      <h3>Flujo Financiero</h3>
+      <p class="sub">Últimos 6 meses · Ingresos, Gastos y Balance Neto</p>
+      <div class="chart-canvas-wrap">
+        <canvas id="financialChart"></canvas>
+      </div>
+      <div class="chart-legend-row">
+        <div class="leg-item"><div class="leg-dot" style="background:#10b981;"></div>Ingresos</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#ef4444;"></div>Gastos</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#3b82f6;"></div>Balance</div>
+      </div>
+    </div>
+
+    <!-- ALERTAS INTELIGENTES -->
+    <div class="bc bc-alertas">
+      <h3>Alertas Inteligentes</h3>
+      <p class="sub">Análisis automático en tiempo real</p>
+      <div class="alertas-scroll" id="alertasContainer">
+        <div style="padding:20px 0; text-align:center; color:#9ca3af; font-size:13px;">
+          Cargando análisis...
         </div>
       </div>
     </div>
 
-    <!-- Salud Financiera Section -->
-    <section class="health-section fade-in">
-      <h2 class="health-title">Salud Financiera</h2>
-      <p class="health-subtitle">Visión en tiempo real de tu rendimiento financiero y métricas clave</p>
-      
-      <div class="health-grid">
-        <!-- Balance Actual -->
-        <div class="health-card">
-          <div class="health-header">
-            <span class="health-label">Balance Actual</span>
-            <i class="ph-duotone ph-wallet health-icon"></i>
-          </div>
-          <div class="health-value" id="currentBalance">--</div>
-          <div class="health-trend">
-            <i class="ph-bold ph-arrow-right"></i>
-            <span>Este mes</span>
-          </div>
-        </div>
+  </div><!-- /bento-main -->
 
-        <!-- Ingresos del Mes -->
-        <div class="health-card">
-          <div class="health-header">
-            <span class="health-label">Ingresos del Mes</span>
-            <i class="ph-duotone ph-trend-up health-icon"></i>
-          </div>
-          <div class="health-value" id="monthIncome" style="color: #38A169;">--</div>
-          <div class="health-trend positive">
-            <i class="ph-bold ph-arrow-up"></i>
-            <span>0 transacciones</span>
-          </div>
-        </div>
+  <!-- ── FILA 2: HERRAMIENTAS CÍRCULOS + PREDICCIONES ── -->
+  <div class="bento-row2 fade-in">
 
-        <!-- Gastos del Mes -->
-        <div class="health-card">
-          <div class="health-header">
-            <span class="health-label">Gastos del Mes</span>
-            <i class="ph-duotone ph-trend-down health-icon"></i>
-          </div>
-          <div class="health-value" id="monthExpenses" style="color: #E53E3E;">--</div>
-          <div class="health-trend negative">
-            <i class="ph-bold ph-arrow-down"></i>
-            <span>0 transacciones</span>
-          </div>
-        </div>
-
-        <!-- Margen Neto -->
-        <div class="health-card">
-          <div class="health-header">
-            <span class="health-label">Margen Neto</span>
-            <i class="ph-duotone ph-chart-line health-icon"></i>
-          </div>
-          <div class="health-value" id="netMargin">0%</div>
-          <div class="health-trend">
-            <i class="ph-bold ph-minus"></i>
-            <span>Current rate</span>
-          </div>
-        </div>
+    <!-- HERRAMIENTAS (8 cols) -->
+    <div class="bc bc-tools">
+      <h3>Herramientas Principales</h3>
+      <div class="tools-circles">
+        <a href="{{ url_for('essential_ia') }}" class="tool-circle">
+          <div class="tool-icon-ring" style="background:linear-gradient(135deg,#667eea,#764ba2);">🤖</div>
+          <span>Asistente IA</span>
+        </a>
+        <a href="{{ url_for('essential_ventas') }}" class="tool-circle">
+          <div class="tool-icon-ring" style="background:#d1fae5;">💰</div>
+          <span>Ingresos & Gastos</span>
+        </a>
+        <a href="{{ url_for('essential_deudas') }}" class="tool-circle">
+          <div class="tool-icon-ring" style="background:#fef3c7;">📋</div>
+          <span>Obligaciones</span>
+        </a>
+        <a href="{{ url_for('essential_metas') }}" class="tool-circle">
+          <div class="tool-icon-ring" style="background:#dbeafe;">🎯</div>
+          <span>Metas</span>
+        </a>
+        <a href="{{ url_for('essential_orden_express') }}" class="tool-circle">
+          <div class="tool-icon-ring" style="background:#f3e8ff;">⚡</div>
+          <span>Orden Express</span>
+        </a>
+        <a href="{{ url_for('essential_fuga_dinero') }}" class="tool-circle">
+          <div class="tool-icon-ring" style="background:#fee2e2;">🔍</div>
+          <span>Fuga de Dinero</span>
+        </a>
+        <a href="{{ url_for('essential_punto_equilibrio') }}" class="tool-circle">
+          <div class="tool-icon-ring" style="background:#ecfdf5;">📊</div>
+          <span>Punto de Equilibrio</span>
+        </a>
+        <a href="{{ url_for('essential_boveda') }}" class="tool-circle">
+          <div class="tool-icon-ring" style="background:#f0f9ff;">🔐</div>
+          <span>Bóveda Docs</span>
+        </a>
       </div>
-    </section>
+    </div>
 
-    <!-- ALERTAS AUTOMÁTICAS - FASE 1.2 -->
-    <div id="alertasContainer" style="margin-bottom: 24px;"></div>
-
-    <!-- ============================================
-         SECCIÓN DE WIDGETS POR MUNDO (ADAPTABLE)
-         Se llena automáticamente según el tipo de negocio
-         ============================================ -->
-    <section id="worldWidgetsSection" style="margin-bottom: 32px; display: none;">
-      <!-- Header de la sección -->
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <span id="worldIcon" style="font-size: 28px;">🛒</span>
-          <div>
-            <h2 id="worldTitle" style="font-size: 18px; font-weight: 700; color: #111827; margin: 0;">
-              Panel Retail & Almacenes
-            </h2>
-            <p id="worldSubtitle" style="font-size: 13px; color: #6b7280; margin: 0; font-weight: 500;">
-              Herramientas específicas para tu tipo de negocio
-            </p>
-          </div>
-        </div>
-        <div id="worldBadge" style="
-          padding: 6px 14px;
-          border-radius: 100px;
-          font-size: 12px;
-          font-weight: 700;
-          background: #fce7f3;
-          color: #be185d;
-        ">RETAIL</div>
-      </div>
-
-      <!-- Grid de widgets del mundo -->
-      <div id="worldWidgetsGrid" style="
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-      ">
-        <!-- Los widgets se renderizan por JavaScript -->
-      </div>
-    </section>
-
-    <!-- PREDICCIONES IA - FASE 1.3 -->
-    <section class="predictions-panel fade-in" style="margin-bottom: 24px;">
-      <div style="
-        background: white;
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      ">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
-          <div>
-            <h3 style="font-size: 16px; font-weight: 700; color: #1f2937; margin: 0 0 4px 0;">
-              Proyección Próximo Mes
-            </h3>
-            <p style="font-size: 12px; color: #6b7280; margin: 0;">
-              Estimaciones basadas en tu comportamiento financiero
-            </p>
-          </div>
-          <div style="
-            padding: 4px 10px;
-            background: rgba(59, 130, 246, 0.1);
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            color: #3b82f6;
-          ">
-            IA Predictiva
-          </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;" id="predictionsGrid">
-          <!-- Las predicciones se cargarán aquí -->
-        </div>
-      </div>
-    </section>
-
-    <!-- AI INSIGHTS PANEL - PROFESIONAL CON PRESENCIA -->
-    <section class="ai-insights-panel fade-in" style="margin-bottom: 32px;">
-      <div style="
-        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-        border-radius: 20px;
-        padding: 32px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e2e8f0;
-        position: relative;
-        overflow: hidden;
-      ">
-        <!-- Decorative element -->
-        <div style="position: absolute; top: 0; right: 0; width: 200px; height: 200px; background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, transparent 70%); pointer-events: none;"></div>
-        
-        <!-- Header -->
-        <div style="position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px;">
-          <div style="display: flex; align-items: center; gap: 16px;">
-            <div style="
-              width: 48px;
-              height: 48px;
-              background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-              border-radius: 12px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-            ">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/>
-              </svg>
-            </div>
-            <div>
-              <h3 style="font-size: 20px; font-weight: 800; color: #0f172a; margin: 0; letter-spacing: -0.02em;">
-                Insights IA
-              </h3>
-              <p style="font-size: 13px; color: #64748b; margin: 0; font-weight: 600;">
-                Análisis inteligente en tiempo real
-              </p>
-            </div>
-          </div>
-          <a href="{{ url_for('essential_ia') }}" style="
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 700;
-            transition: all 0.3s;
-            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
-          " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(59, 130, 246, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(59, 130, 246, 0.3)'">
-            Ver análisis completo →
-          </a>
-        </div>
-
-        <!-- Insights Grid -->
-        <div style="position: relative; z-index: 1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-          <!-- Insight 1 -->
-          <div style="
-            background: white;
-            border-left: 4px solid #3b82f6;
-            border-radius: 12px;
-            padding: 20px 22px;
-            transition: all 0.3s;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-          " onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(59, 130, 246, 0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.04)'">
-            <p id="aiInsight1" style="color: #1e293b; font-size: 14px; font-weight: 600; line-height: 1.7; margin: 0;">
-              Analizando tu comportamiento financiero...
-            </p>
-          </div>
-
-          <!-- Insight 2 -->
-          <div style="
-            background: white;
-            border-left: 4px solid #10b981;
-            border-radius: 12px;
-            padding: 20px 22px;
-            transition: all 0.3s;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-          " onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(16, 185, 129, 0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.04)'">
-            <p id="aiInsight2" style="color: #1e293b; font-size: 14px; font-weight: 600; line-height: 1.7; margin: 0;">
-              Procesando datos financieros en tiempo real...
-            </p>
-          </div>
-
-          <!-- Insight 3 -->
-          <div style="
-            background: white;
-            border-left: 4px solid #f59e0b;
-            border-radius: 12px;
-            padding: 20px 22px;
-            transition: all 0.3s;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-          " onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(245, 158, 11, 0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.04)'">
-            <p id="aiInsight3" style="color: #1e293b; font-size: 14px; font-weight: 600; line-height: 1.7; margin: 0;">
-              Generando recomendaciones personalizadas...
-            </p>
-          </div>
-
-          <!-- Insight 4 -->
-          <div style="
-            background: white;
-            border-left: 4px solid #8b5cf6;
-            border-radius: 12px;
-            padding: 20px 22px;
-            transition: all 0.3s;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-          " onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(139, 92, 246, 0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.04)'">
-            <p id="aiInsight4" style="color: #1e293b; font-weight: 600; line-height: 1.7; margin: 0;">
-              Preparando insights estratégicos...
-            </p>
-          </div>
-        </div>
-
-        <!-- Info footer -->
-        <div style="position: relative; z-index: 1; margin-top: 24px; text-align: center;">
-          <p style="font-size: 12px; color: #64748b; margin: 0; font-weight: 600;">
-            ⚡ Insights actualizados en tiempo real • Powered by PYMAX IA
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Tools Layout with Left Column -->
-    <div class="tools-layout fade-in">
-      <!-- Herramientas Principales - Left Column -->
-      <div class="main-tools">
-        <div class="tools-header">Herramientas Principales</div>
-        <div class="tools-list">
-          <a href="{{ url_for('essential_ia') }}" class="tool-item ai">
-            <i class="ph-duotone ph-robot"></i>
-            <span>Asistente IA</span>
-          </a>
-          <a href="{{ url_for('essential_ventas') }}" class="tool-item finance">
-            <i class="ph-duotone ph-currency-dollar"></i>
-            <span>Ingresos y Gastos</span>
-          </a>
-          <a href="{{ url_for('essential_deudas') }}" class="tool-item monitor">
-            <i class="ph-duotone ph-clipboard-text"></i>
-            <span>Monitor de Salud/Obligaciones</span>
-          </a>
-          <a href="{{ url_for('essential_metas') }}" class="tool-item goals">
-            <i class="ph-duotone ph-target"></i>
-            <span>Metas</span>
-          </a>
-        </div>
-
-        <!-- Flujo de Caja Widget -->
-        <div style="margin-top: 24px; padding: 16px; background: #f9fafb; border-radius: 12px;">
-          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #9ca3af; margin-bottom: 12px;">Flujo de Caja</div>
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-            <span style="font-size: 12px; color: #6b7280;">Ingresos y Gastos</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Content Area - Financial Chart -->
-      <div class="content-area">
-        <h3 style="font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 16px;">Flujo Financiero - Últimos 6 Meses</h3>
-        <p style="color: #374151; font-size: 14px; line-height: 1.6; margin-bottom: 24px;">
-          Visualización de tus ingresos y gastos mensuales para un mejor seguimiento de tu salud financiera.
-        </p>
-        
-        <!-- Chart Container -->
-        <div style="position: relative; height: 350px; background: white;">
-          <canvas id="financialChart"></canvas>
-        </div>
-        
-        <!-- Chart Legend -->
-        <div style="margin-top: 24px; display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <div style="width: 16px; height: 16px; background: #38A169; border-radius: 4px;"></div>
-            <span style="font-size: 13px; color: #374151; font-weight: 600;">Ingresos</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <div style="width: 16px; height: 16px; background: #E53E3E; border-radius: 4px;"></div>
-            <span style="font-size: 13px; color: #374151; font-weight: 600;">Gastos</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <div style="width: 16px; height: 16px; background: #3b82f6; border-radius: 4px;"></div>
-            <span style="font-size: 13px; color: #374151; font-weight: 600;">Balance Neto</span>
-          </div>
+    <!-- PREDICCIONES (4 cols) -->
+    <div class="bc bc-pred">
+      <h3>Proyección Próximo Mes</h3>
+      <div id="predictionsGrid" class="pred-list">
+        <div style="color:#9ca3af; font-size:13px; text-align:center; padding:20px;">
+          Calculando proyecciones...
         </div>
       </div>
     </div>
 
-    <!-- Herramientas Adicionales -->
-    <section class="additional-tools fade-in">
-      <h2 class="additional-title">Herramientas Adicionales</h2>
-      
-      <div class="additional-grid">
-        <!-- Flujo de Caja -->
-        <a href="{{ url_for('essential_flujo') }}" class="additional-card">
-          <div class="additional-icon" style="background: #e0f2fe; color: #0284c7;">
-            <i class="ph-duotone ph-chart-line-up"></i>
-          </div>
-          <span class="additional-label">Flujo de Caja</span>
-        </a>
+  </div><!-- /bento-row2 -->
 
-        <!-- Progreso -->
-        <a href="{{ url_for('essential_progreso') }}" class="additional-card">
-          <div class="additional-icon" style="background: #dbeafe; color: #1d4ed8;">
-            <i class="ph-duotone ph-gauge"></i>
-          </div>
-          <span class="additional-label">Progreso</span>
-        </a>
-
-        <!-- Calendario -->
-        <a href="{{ url_for('essential_calendario') }}" class="additional-card">
-          <div class="additional-icon" style="background: #f0fdf4; color: #16a34a;">
-            <i class="ph-duotone ph-calendar"></i>
-          </div>
-          <span class="additional-label">Calendario</span>
-        </a>
-
-        <!-- Semáforo -->
-        <a href="{{ url_for('essential_semaforo') }}" class="additional-card">
-          <div class="additional-icon" style="background: #fef3c7; color: #d97706;">
-            <i class="ph-duotone ph-traffic-sign"></i>
-          </div>
-          <span class="additional-label">Semáforo</span>
-        </a>
-
-        <!-- Auditoría -->
-        <a href="{{ url_for('essential_auditoria') }}" class="additional-card">
-          <div class="additional-icon" style="background: #ddd6fe; color: #7c3aed;">
-            <i class="ph-duotone ph-notebook"></i>
-          </div>
-          <span class="additional-label">Auditoría</span>
-        </a>
-
-        <!-- Inventario -->
-        <a href="{{ url_for('essential_inventario') }}" class="additional-card">
-          <div class="additional-icon" style="background: #fee2e2; color: #dc2626;">
-            <i class="ph-duotone ph-package"></i>
-          </div>
-          <span class="additional-label">Inventario</span>
-        </a>
-
-        <!-- Exportar Excel -->
-        <a href="{{ url_for('essential_export_excel') }}" class="additional-card">
-          <div class="additional-icon" style="background: #d1fae5; color: #059669;">
-            <i class="ph-duotone ph-file-xls"></i>
-          </div>
-          <span class="additional-label">Exportar</span>
-        </a>
+  <!-- ── SECCIÓN MUNDO (aparece según perfil Supabase) ── -->
+  <section id="worldWidgetsSection" class="world-section">
+    <div class="world-hdr">
+      <div class="world-left">
+        <span id="worldIcon" class="world-emoji">🛒</span>
+        <div>
+          <h2 id="worldTitle" class="world-title">Panel del Negocio</h2>
+          <p id="worldSubtitle" class="world-sub">Métricas específicas de tu rubro</p>
+        </div>
       </div>
-    </section>
-
-    <!-- Footer -->
-    <div style="margin-top: 48px; padding-top: 24px; border-top: 1px solid #e5e7eb; text-align: center;">
-      <p style="font-size: 13px; color: #9ca3af; font-weight: 500;">
-        Pymax Financial System • Secure Connection
-      </p>
+      <div id="worldBadge" class="world-badge" style="background:#fce7f3; color:#be185d;">RETAIL</div>
     </div>
+    <div id="worldWidgetsGrid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px;"></div>
+  </section>
 
-  </main>
+  <!-- ── INSIGHTS IA ── -->
+  <div class="insights-section fade-in">
+    <h3>Insights IA</h3>
+    <p class="sub">Análisis inteligente basado en tu comportamiento financiero · Actualizado en tiempo real</p>
+    <div class="insights-grid">
+      <div class="insight-card" style="background:#f8faff; border-left:4px solid #3b82f6;">
+        <p id="aiInsight1">Analizando tu comportamiento financiero...</p>
+      </div>
+      <div class="insight-card" style="background:#f0fdf4; border-left:4px solid #10b981;">
+        <p id="aiInsight2">Procesando datos en tiempo real...</p>
+      </div>
+      <div class="insight-card" style="background:#fffbeb; border-left:4px solid #f59e0b;">
+        <p id="aiInsight3">Generando recomendaciones personalizadas...</p>
+      </div>
+      <div class="insight-card" style="background:#faf5ff; border-left:4px solid #8b5cf6;">
+        <p id="aiInsight4">Preparando insights estratégicos...</p>
+      </div>
+    </div>
+    <div class="insights-footer">
+      <a href="{{ url_for('essential_ia') }}">Ver análisis completo →</a>
+    </div>
+  </div>
 
-</div>
+  <!-- ── HERRAMIENTAS ADICIONALES ── -->
+  <div class="extra-section fade-in">
+    <h3>Más Herramientas</h3>
+    <div class="extra-grid">
+      <a href="{{ url_for('essential_flujo') }}" class="extra-card">
+        <div class="extra-icon" style="background:#e0f2fe;">📈</div>
+        <span class="extra-lbl">Flujo de Caja</span>
+      </a>
+      <a href="{{ url_for('essential_progreso') }}" class="extra-card">
+        <div class="extra-icon" style="background:#dbeafe;">⚡</div>
+        <span class="extra-lbl">Progreso</span>
+      </a>
+      <a href="{{ url_for('essential_calendario') }}" class="extra-card">
+        <div class="extra-icon" style="background:#f0fdf4;">📅</div>
+        <span class="extra-lbl">Calendario</span>
+      </a>
+      <a href="{{ url_for('essential_semaforo') }}" class="extra-card">
+        <div class="extra-icon" style="background:#fef3c7;">🚦</div>
+        <span class="extra-lbl">Semáforo</span>
+      </a>
+      <a href="{{ url_for('essential_auditoria') }}" class="extra-card">
+        <div class="extra-icon" style="background:#ddd6fe;">📓</div>
+        <span class="extra-lbl">Auditoría</span>
+      </a>
+      <a href="{{ url_for('essential_inventario') }}" class="extra-card">
+        <div class="extra-icon" style="background:#fee2e2;">📦</div>
+        <span class="extra-lbl">Inventario</span>
+      </a>
+      <a href="{{ url_for('essential_export_excel') }}" class="extra-card">
+        <div class="extra-icon" style="background:#d1fae5;">📊</div>
+        <span class="extra-lbl">Exportar Excel</span>
+      </a>
+    </div>
+  </div>
 
-<!-- MODAL DE TAREAS -->
-<div class="task-modal-overlay" id="taskModal" onclick="if(event.target === this) closeTaskModal()">
+  <!-- ── FOOTER ── -->
+  <div class="page-footer">
+    <p>Pymax Financial System · Secure Connection · Datos en tiempo real</p>
+  </div>
+
+</div><!-- /page-wrapper -->
+
+<!-- ── MODAL TAREAS ── -->
+<div class="task-modal-overlay" id="taskModal" onclick="if(event.target===this) closeTaskModal()">
   <div class="task-modal">
     <div class="task-modal-header">
       <h2 class="task-modal-title">Nueva Tarea</h2>
-      <button class="task-modal-close" onclick="closeTaskModal()">
-        <i class="ph-bold ph-x"></i>
-      </button>
+      <button class="task-modal-close" onclick="closeTaskModal()"><i class="ph-bold ph-x"></i></button>
     </div>
     <div class="task-input-group">
       <label class="task-input-label" for="taskNameInput">Nombre de la tarea *</label>
-      <input type="text" id="taskNameInput" class="task-input" placeholder="Ej: Revisar facturas pendientes" />
+      <input type="text" id="taskNameInput" class="task-input" placeholder="Ej: Revisar facturas pendientes"/>
     </div>
     <div class="task-input-group">
       <label class="task-input-label" for="taskDescInput">Descripción (opcional)</label>
-      <textarea id="taskDescInput" class="task-input task-textarea" placeholder="Agrega más detalles sobre la tarea..."></textarea>
+      <textarea id="taskDescInput" class="task-input task-textarea" placeholder="Agrega más detalles..."></textarea>
     </div>
     <div class="task-modal-actions">
       <button class="task-btn task-btn-secondary" onclick="closeTaskModal()">Cancelar</button>
@@ -993,31 +727,26 @@
   </div>
 </div>
 
-<!-- ============================================
-     SCRIPTS
-     ============================================ -->
+<!-- ══════════════════════════════════════════
+     SCRIPTS — 100% SUPABASE, SIN DATOS FALSOS
+     ══════════════════════════════════════════ -->
 <script>
 // ============================================
 // PYMAX DASHBOARD - 100% SUPABASE REAL
-// Sin números falsos. Sin localStorage.
 // ============================================
 
 var _supabase = null;
 var _currentUser = null;
 var _businessProfile = null;
 
-// Inicializar Supabase y cargar todo
 document.addEventListener('DOMContentLoaded', async function() {
   console.log('🚀 Pymax Dashboard iniciando...');
 
-  // Crear cliente Supabase
   const SURL = '{{ SUPABASE_URL }}';
   const SKEY = '{{ SUPABASE_KEY }}';
   _supabase = window.supabase.createClient(SURL, SKEY);
 
-  // Obtener usuario autenticado
-  const { data: { user }, error: authError } = await _supabase.auth.getUser();
-
+  const { data: { user } } = await _supabase.auth.getUser();
   if (!user) {
     console.warn('⚠️ Sin sesión activa. Redirigiendo...');
     window.location.href = '/';
@@ -1027,46 +756,33 @@ document.addEventListener('DOMContentLoaded', async function() {
   _currentUser = user;
   console.log('✅ Usuario:', user.email);
 
-  // Actualizar saludo con nombre real
   updateWelcomeMessage(user);
-
-  // Cargar perfil del negocio desde Supabase
   await loadBusinessProfile();
-
-  // Cargar datos financieros reales
   await loadFinancialData();
-
-  // Ocultar popups de bienvenida innecesarios
-  hideWelcomePopup();
-
-  // Verificar si mostrar tour (primera vez)
+  setTimeout(loadAIInsights, 800);
   await checkAndShowTour();
 });
 
-// Actualizar saludo con nombre real del usuario
+// Saludo con nombre real
 function updateWelcomeMessage(user) {
-  const h1 = document.querySelector('.welcome-content h1');
+  const h1 = document.querySelector('.welcome-strip h1');
   if (h1) {
     const hour = new Date().getHours();
     const greeting = hour < 12 ? 'Buenos días' : hour < 20 ? 'Buenas tardes' : 'Buenas noches';
-    const name = user.user_metadata?.full_name?.split(' ')[0] ||
-                 user.user_metadata?.name?.split(' ')[0] ||
-                 user.email.split('@')[0];
+    const name = user.user_metadata?.full_name?.split(' ')[0]
+              || user.user_metadata?.name?.split(' ')[0]
+              || user.email.split('@')[0];
     h1.textContent = `${greeting}, ${name}`;
   }
-
-  // Actualizar fecha real
   const dateEl = document.querySelector('.welcome-date');
   if (dateEl) {
     const now = new Date();
-    const dateStr = now.toLocaleDateString('es-ES', {
-      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-    });
-    dateEl.innerHTML = `${dateStr.charAt(0).toUpperCase() + dateStr.slice(1)} • <span id="pendingTasksText">0 tareas pendientes</span>`;
+    const str = now.toLocaleDateString('es-ES', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    dateEl.innerHTML = `${str.charAt(0).toUpperCase()+str.slice(1)} · <span id="pendingTasksText">0 tareas pendientes</span>`;
   }
 }
 
-// Cargar perfil del negocio desde Supabase
+// Perfil de negocio desde Supabase
 async function loadBusinessProfile() {
   try {
     const { data, error } = await _supabase
@@ -1074,957 +790,492 @@ async function loadBusinessProfile() {
       .select('*')
       .eq('user_id', _currentUser.id)
       .single();
-
-    if (error || !data) {
-      console.warn('⚠️ Sin perfil de negocio. Onboarding pendiente.');
-      _businessProfile = null;
-    } else {
-      _businessProfile = data;
-      console.log('✅ Perfil negocio:', data.business_type, '-', data.business_name);
-    }
-  } catch (e) {
-    console.error('Error cargando perfil:', e);
-    _businessProfile = null;
-  }
-
-  // Renderizar widgets del mundo con datos de Supabase
+    _businessProfile = (error || !data) ? null : data;
+    if (_businessProfile) console.log('✅ Negocio:', _businessProfile.business_type);
+  } catch(e) { _businessProfile = null; }
   renderWorldWidgets();
 }
 
-// Cargar datos financieros REALES del mes actual
+// Datos financieros reales del mes
 async function loadFinancialData() {
   const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999).toISOString();
+  const start = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+  const end   = new Date(now.getFullYear(), now.getMonth()+1, 0, 23, 59, 59, 999).toISOString();
 
   try {
     const { data, error } = await _supabase
       .from('user_operations')
       .select('type, amount')
       .eq('user_id', _currentUser.id)
-      .gte('created_at', startOfMonth)
-      .lte('created_at', endOfMonth);
+      .gte('created_at', start)
+      .lte('created_at', end);
 
     if (error) throw error;
 
-    const ops = data || [];
-    const ingresos = ops.filter(op => op.type === 'ingreso').reduce((s, op) => s + parseFloat(op.amount || 0), 0);
-    const gastos   = ops.filter(op => op.type === 'egreso').reduce((s, op) => s + parseFloat(op.amount || 0), 0);
+    const ops      = data || [];
+    const ingresos = ops.filter(o => o.type==='ingreso').reduce((s,o) => s+parseFloat(o.amount||0), 0);
+    const gastos   = ops.filter(o => o.type==='egreso') .reduce((s,o) => s+parseFloat(o.amount||0), 0);
     const balance  = ingresos - gastos;
-    const margen   = ingresos > 0 ? Math.round((balance / ingresos) * 100) : 0;
+    const margen   = ingresos > 0 ? Math.round((balance/ingresos)*100) : 0;
 
-    console.log('📊 Datos reales:', { ingresos, gastos, balance, margen, total: ops.length });
+    console.log('📊', { ingresos, gastos, balance, margen });
 
-    // Actualizar UI con datos reales
-    setFinancialValue('currentBalance', balance);
-    setFinancialValue('monthIncome', ingresos, '#38A169');
-    setFinancialValue('monthExpenses', gastos, '#E53E3E');
+    setVal('currentBalance', balance);
+    setVal('monthIncome',    ingresos, '#10b981');
+    setVal('monthExpenses',  gastos,   '#ef4444');
 
-    const marginEl = document.getElementById('netMargin');
-    if (marginEl) marginEl.textContent = margen + '%';
+    const mi = document.getElementById('netMargin');
+    if (mi) mi.textContent = margen + '%';
 
-    // Actualizar trends
-    updateTrend('monthIncome',   ops.filter(op => op.type === 'ingreso').length, 'transacciones');
-    updateTrend('monthExpenses', ops.filter(op => op.type === 'egreso').length,  'transacciones');
+    // Donut animation
+    updateDonut(margen);
 
-    // Guardar para predicciones
+    // Contadores de transacciones
+    const ic = document.getElementById('incomeCount');
+    const ec = document.getElementById('expensesCount');
+    if (ic) ic.textContent = ops.filter(o=>o.type==='ingreso').length + ' transacciones';
+    if (ec) ec.textContent = ops.filter(o=>o.type==='egreso').length  + ' transacciones';
+
     window._finData = { ingresos, gastos, balance, margen, ops };
 
-    // Re-generar alertas y predicciones con datos reales
     setTimeout(analizarYGenerarAlertas, 200);
     setTimeout(generarPredicciones, 300);
 
-  } catch (e) {
-    console.error('Error cargando datos financieros:', e);
-    // Sin datos → mostrar $0, nunca números falsos
-    ['currentBalance', 'monthIncome', 'monthExpenses'].forEach(id => setFinancialValue(id, 0));
-    const marginEl = document.getElementById('netMargin');
-    if (marginEl) marginEl.textContent = '0%';
+  } catch(e) {
+    console.error('Error datos financieros:', e);
+    ['currentBalance','monthIncome','monthExpenses'].forEach(id => setVal(id, 0));
+    const mi = document.getElementById('netMargin');
+    if (mi) mi.textContent = '0%';
+    updateDonut(0);
+    setTimeout(analizarYGenerarAlertas, 200);
+    setTimeout(generarPredicciones, 300);
   }
 
-  // Cargar gráfico con datos reales de 6 meses
   await loadChartData();
 }
 
-// Formatear y mostrar un valor financiero
-function setFinancialValue(id, value, color) {
+// Mostrar valor $ en el DOM
+function setVal(id, value, color) {
   const el = document.getElementById(id);
   if (!el) return;
-  const formatted = '$' + Math.abs(Math.round(value)).toLocaleString('es-CL');
-  el.textContent = formatted;
-  if (color) el.style.color = color;
-  else if (value < 0) el.style.color = '#E53E3E';
-  else el.style.color = '';
+  el.textContent = '$' + Math.abs(Math.round(value)).toLocaleString('es-CL');
+  if (color)          el.style.color = color;
+  else if (value < 0) el.style.color = '#ef4444';
+  else                el.style.color = '';
 }
 
-// Actualizar texto de tendencia
-function updateTrend(parentId, count, label) {
-  const parent = document.getElementById(parentId);
-  if (!parent) return;
-  const trendEl = parent.closest('.health-card')?.querySelector('.health-trend span');
-  if (trendEl) trendEl.textContent = `${count} ${label}`;
+// Animar donut del margen
+function updateDonut(pct) {
+  const fill = document.getElementById('donutFill');
+  if (!fill) return;
+  const radius = 64;
+  const circ   = 2 * Math.PI * radius; // ≈ 402
+  const val    = Math.min(Math.max(pct, 0), 100);
+  const offset = circ * val / 100;
+  fill.style.strokeDasharray = `${offset} ${circ}`;
 }
 
-// Ocultar popups de onboarding
-function hideWelcomePopup() {
-  const els = ['.pymax-holo-guide', '.ai-companion-modal'];
-  els.forEach(sel => {
-    const el = document.querySelector(sel);
-    if (el) el.style.display = 'none';
-  });
-}
-
-function setupEventListeners() {
-  console.log('Event listeners initialized');
-}
-
+function setupEventListeners() { console.log('Event listeners initialized'); }
 function updatePendingTasks(count) {
-  const tasksText = document.getElementById('pendingTasksText');
-  if (tasksText) tasksText.textContent = `${count} tareas pendientes`;
+  const el = document.getElementById('pendingTasksText');
+  if (el) el.textContent = `${count} tareas pendientes`;
 }
 
-// Cargar gráfico con datos REALES de los últimos 6 meses
+// Gráfico 6 meses reales
 async function loadChartData() {
   const ctx = document.getElementById('financialChart');
   if (!ctx) return;
-
   const now = new Date();
-  const months = [];
-  const ingresosData = [];
-  const gastosData = [];
+  const months = [], ingArr = [], gasArr = [];
 
-  // Obtener datos mes por mes
-  for (let i = 5; i >= 0; i--) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const start = new Date(d.getFullYear(), d.getMonth(), 1).toISOString();
-    const end = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59).toISOString();
-    months.push(d.toLocaleDateString('es-ES', { month: 'short', year: '2-digit' }));
-
+  for (let i=5; i>=0; i--) {
+    const d  = new Date(now.getFullYear(), now.getMonth()-i, 1);
+    const s  = new Date(d.getFullYear(), d.getMonth(), 1).toISOString();
+    const e  = new Date(d.getFullYear(), d.getMonth()+1, 0, 23,59,59).toISOString();
+    months.push(d.toLocaleDateString('es-ES', { month:'short', year:'2-digit' }));
     try {
-      const { data } = await _supabase
-        .from('user_operations')
-        .select('type, amount')
-        .eq('user_id', _currentUser.id)
-        .gte('created_at', start)
-        .lte('created_at', end);
-
-      const ops = data || [];
-      ingresosData.push(ops.filter(o => o.type === 'ingreso').reduce((s, o) => s + parseFloat(o.amount || 0), 0));
-      gastosData.push(ops.filter(o => o.type === 'egreso').reduce((s, o) => s + parseFloat(o.amount || 0), 0));
-    } catch (e) {
-      ingresosData.push(0);
-      gastosData.push(0);
-    }
+      const { data } = await _supabase.from('user_operations')
+        .select('type,amount').eq('user_id',_currentUser.id)
+        .gte('created_at',s).lte('created_at',e);
+      const ops = data||[];
+      ingArr.push(ops.filter(o=>o.type==='ingreso').reduce((s,o)=>s+parseFloat(o.amount||0),0));
+      gasArr.push(ops.filter(o=>o.type==='egreso') .reduce((s,o)=>s+parseFloat(o.amount||0),0));
+    } catch(e) { ingArr.push(0); gasArr.push(0); }
   }
 
-  const balanceData = ingresosData.map((ing, i) => ing - gastosData[i]);
+  const balArr = ingArr.map((v,i) => v - gasArr[i]);
 
   new Chart(ctx, {
     type: 'line',
     data: {
       labels: months,
       datasets: [
-        { label: 'Ingresos', data: ingresosData, borderColor: '#38A169', backgroundColor: 'rgba(56,161,105,0.1)', borderWidth: 3, tension: 0.4, fill: true, pointRadius: 5, pointBackgroundColor: '#38A169', pointBorderColor: '#fff', pointBorderWidth: 2 },
-        { label: 'Gastos',   data: gastosData,   borderColor: '#E53E3E', backgroundColor: 'rgba(229,62,62,0.1)',  borderWidth: 3, tension: 0.4, fill: true, pointRadius: 5, pointBackgroundColor: '#E53E3E', pointBorderColor: '#fff', pointBorderWidth: 2 },
-        { label: 'Balance',  data: balanceData,  borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', borderWidth: 3, tension: 0.4, fill: true, pointRadius: 5, pointBackgroundColor: '#3b82f6', pointBorderColor: '#fff', pointBorderWidth: 2, borderDash: [5,5] }
+        { label:'Ingresos', data:ingArr, borderColor:'#10b981', backgroundColor:'rgba(16,185,129,0.08)', borderWidth:2.5, tension:0.4, fill:true, pointRadius:5, pointBackgroundColor:'#10b981', pointBorderColor:'#fff', pointBorderWidth:2 },
+        { label:'Gastos',   data:gasArr, borderColor:'#ef4444', backgroundColor:'rgba(239,68,68,0.08)',   borderWidth:2.5, tension:0.4, fill:true, pointRadius:5, pointBackgroundColor:'#ef4444', pointBorderColor:'#fff', pointBorderWidth:2 },
+        { label:'Balance',  data:balArr, borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.06)',  borderWidth:2.5, tension:0.4, fill:true, pointRadius:5, pointBackgroundColor:'#3b82f6', pointBorderColor:'#fff', pointBorderWidth:2, borderDash:[5,5] }
       ]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(17,24,39,0.95)', titleColor: '#fff', bodyColor: '#fff', padding: 12, callbacks: { label: ctx => ctx.dataset.label + ': $' + Math.abs(ctx.parsed.y).toLocaleString('es-CL') } } },
-      scales: {
-        y: { beginAtZero: true, grid: { color: '#f3f4f6' }, ticks: { color: '#6b7280', callback: v => '$' + v.toLocaleString('es-CL') } },
-        x: { grid: { display: false }, ticks: { color: '#6b7280', font: { weight: '600' } } }
+      responsive:true, maintainAspectRatio:false,
+      plugins: {
+        legend: { display:false },
+        tooltip: { backgroundColor:'rgba(17,24,39,0.95)', titleColor:'#fff', bodyColor:'#fff', padding:12,
+          callbacks: { label: c => c.dataset.label+': $'+Math.abs(c.parsed.y).toLocaleString('es-CL') } }
       },
-      interaction: { intersect: false, mode: 'index' }
+      scales: {
+        y: { beginAtZero:true, grid:{ color:'#f3f4f6' }, ticks:{ color:'#9ca3af', callback:v=>'$'+v.toLocaleString('es-CL') } },
+        x: { grid:{ display:false }, ticks:{ color:'#9ca3af', font:{ weight:'600' } } }
+      },
+      interaction: { intersect:false, mode:'index' }
     }
   });
-  console.log('📈 Gráfico cargado con datos reales');
+  console.log('📈 Gráfico real cargado');
 }
 
-// ============================================
-// AI INSIGHTS SYSTEM - FASE 1
-// ============================================
-
-// Pool de insights inteligentes (preparado para IA real)
-const aiInsightsPool = [
-  { emoji: '💡', text: 'Tu flujo de caja muestra estabilidad. Considera invertir el excedente para maximizar retornos.' },
-  { emoji: '📊', text: 'Analiza tus gastos recurrentes. Podrías optimizar hasta un 15% de costos operacionales.' },
-  { emoji: '🎯', text: 'Establece metas financieras trimestrales para mejor control y proyección de crecimiento.' },
-  { emoji: '⚡', text: 'Automatiza tus reportes mensuales. Ahorrarás 4-6 horas de trabajo administrativo.' },
-  { emoji: '📈', text: 'Tus números sugieren potencial de crecimiento del 15-20% en el próximo trimestre.' },
-  { emoji: '💰', text: 'Balance positivo detectado. Momento ideal para crear un fondo de emergencia empresarial.' },
-  { emoji: '🔍', text: 'Revisa tus categorías de gasto. La optimización podría liberar capital de trabajo.' },
-  { emoji: '📉', text: 'Tendencia de gastos estable. Mantén este patrón para proyecciones precisas.' },
-  { emoji: '🚀', text: 'Tu disciplina financiera es excelente. Continúa registrando diariamente para mejores insights.' },
-  { emoji: '💼', text: 'Considera diversificar tus fuentes de ingreso para mayor resiliencia financiera.' },
-  { emoji: '🎨', text: 'Diseña un presupuesto mensual basado en tus promedios históricos de 3-6 meses.' },
-  { emoji: '⏰', text: 'Los mejores empresarios revisan sus finanzas semanalmente. Programa una rutina.' },
-  { emoji: '🌟', text: 'Tu margen operativo puede mejorar. Analiza qué gastos no aportan valor directo.' },
-  { emoji: '📱', text: 'Aprovecha la categorización automática. La IA aprenderá tus patrones en 2-3 semanas.' },
-  { emoji: '🔮', text: 'Proyección: Con tu tendencia actual, alcanzarás estabilidad en 45-60 días.' }
+// ── AI INSIGHTS ──
+const aiPool = [
+  { text:'💡 Tu flujo de caja muestra estabilidad. Considera invertir el excedente para maximizar retornos.' },
+  { text:'📊 Analiza tus gastos recurrentes. Podrías optimizar hasta un 15% de costos operacionales.' },
+  { text:'🎯 Establece metas financieras trimestrales para mejor control y proyección de crecimiento.' },
+  { text:'⚡ Automatiza tus reportes mensuales. Ahorrarás 4-6 horas de trabajo administrativo.' },
+  { text:'📈 Tus números sugieren potencial de crecimiento del 15-20% en el próximo trimestre.' },
+  { text:'💰 Balance positivo detectado. Momento ideal para crear un fondo de emergencia empresarial.' },
+  { text:'🔍 Revisa tus categorías de gasto. La optimización podría liberar capital de trabajo.' },
+  { text:'🚀 Tu disciplina financiera es excelente. Continúa registrando diariamente para mejores insights.' },
+  { text:'💼 Considera diversificar tus fuentes de ingreso para mayor resiliencia financiera.' },
+  { text:'🌟 Tu margen operativo puede mejorar. Analiza qué gastos no aportan valor directo.' },
+  { text:'⏰ Los mejores empresarios revisan sus finanzas semanalmente. Programa una rutina de revisión.' },
+  { text:'🔮 Proyección: Con tu tendencia actual, alcanzarás estabilidad sólida en 45-60 días.' }
 ];
 
-// Función para obtener insights aleatorios únicos
-function getRandomInsights(count = 4) {
-  const shuffled = [...aiInsightsPool].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, count);
-}
-
-// Función para cargar insights (preparada para futura IA)
 function loadAIInsights() {
-  // AHORA: Usa frases aleatorias
-  // FUTURO: Cambia a const insights = await getAIInsights(financialData);
-  const insights = getRandomInsights(4);
-  
-  // Actualizar cada insight con animación
-  insights.forEach((insight, index) => {
-    const element = document.getElementById(`aiInsight${index + 1}`);
-    if (element) {
+  const shuffled = [...aiPool].sort(()=>0.5-Math.random()).slice(0,4);
+  shuffled.forEach((ins, i) => {
+    const el = document.getElementById(`aiInsight${i+1}`);
+    if (el) {
+      el.style.opacity = '0';
       setTimeout(() => {
-        element.style.opacity = '0';
-        setTimeout(() => {
-          element.textContent = insight.text;
-          element.style.opacity = '1';
-          element.style.transition = 'opacity 0.5s ease';
-        }, 200);
-      }, index * 100);
+        el.textContent = ins.text;
+        el.style.transition = 'opacity 0.5s ease';
+        el.style.opacity = '1';
+      }, 200 + i*80);
     }
   });
-  
-  console.log('[AI Insights] Insights cargados correctamente');
 }
+setInterval(loadAIInsights, 30000);
 
-// Cargar insights cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', function() {
-  setTimeout(loadAIInsights, 1000);
-  
-  // Rotar insights cada 30 segundos (opcional)
-  setInterval(loadAIInsights, 30000);
-});
-
-// ============================================
-// SISTEMA DE ALERTAS AUTOMÁTICAS - FASE 1.2
-// ============================================
-
-// Función para crear alerta visual - VERSIÓN PROFESIONAL Y SUTIL
-function createAlerta(tipo, titulo, mensaje, accion = null) {
-  const colores = {
-    critico: { 
-      bg: 'rgba(239, 68, 68, 0.05)', 
-      border: 'rgba(239, 68, 68, 0.15)', 
-      indicator: '#ef4444',
-      textColor: '#1f2937'
-    },
-    advertencia: { 
-      bg: 'rgba(245, 158, 11, 0.05)', 
-      border: 'rgba(245, 158, 11, 0.15)', 
-      indicator: '#f59e0b',
-      textColor: '#1f2937'
-    },
-    info: { 
-      bg: 'rgba(59, 130, 246, 0.05)', 
-      border: 'rgba(59, 130, 246, 0.15)', 
-      indicator: '#3b82f6',
-      textColor: '#1f2937'
-    },
-    exito: { 
-      bg: 'rgba(16, 185, 129, 0.05)', 
-      border: 'rgba(16, 185, 129, 0.15)', 
-      indicator: '#10b981',
-      textColor: '#1f2937'
-    }
-  };
-  
-  const style = colores[tipo] || colores.info;
-  
-  const alertaHTML = `
-    <div class="alerta-automatica fade-in" style="
-      background: ${style.bg};
-      border-left: 3px solid ${style.indicator};
-      border-radius: 8px;
-      padding: 16px 20px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      animation: slideIn 0.4s ease;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-    ">
-      <div style="
-        width: 8px;
-        height: 8px;
-        background: ${style.indicator};
-        border-radius: 50%;
-        flex-shrink: 0;
-      "></div>
-      <div style="flex: 1;">
-        <div style="font-size: 13px; font-weight: 600; color: ${style.textColor}; margin-bottom: 4px; letter-spacing: -0.01em;">
-          ${titulo}
-        </div>
-        <div style="font-size: 12px; color: #6b7280; font-weight: 500; line-height: 1.5;">
-          ${mensaje}
-        </div>
-      </div>
-      ${accion ? `
-        <button onclick="${accion.onClick}" style="
-          padding: 6px 14px;
-          background: white;
-          color: ${style.indicator};
-          border: 1px solid ${style.indicator};
-          border-radius: 6px;
-          font-size: 12px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.2s;
-          white-space: nowrap;
-        " onmouseover="this.style.background='${style.indicator}'; this.style.color='white'" onmouseout="this.style.background='white'; this.style.color='${style.indicator}'">
-          ${accion.label} →
-        </button>
-      ` : ''}
-    </div>
-  `;
-  
-  return alertaHTML;
-}
-
-// Analizar métricas financieras y generar alertas
+// ── ALERTAS AUTOMÁTICAS ──
 function analizarYGenerarAlertas() {
   const container = document.getElementById('alertasContainer');
   if (!container) return;
-  
-  // Obtener datos actuales (simulados - reemplazar con datos reales)
-  const ingresos = parseInt(document.getElementById('monthIncome')?.textContent?.replace(/[^0-9]/g, '') || 0);
-  const gastos = parseInt(document.getElementById('monthExpenses')?.textContent?.replace(/[^0-9]/g, '') || 0);
-  const balance = parseInt(document.getElementById('currentBalance')?.textContent?.replace(/[^0-9]/g, '') || 0);
-  
-  let alertas = [];
-  
-  // ALERTA 1: Gastos mayores a ingresos
-  if (gastos > ingresos && gastos > 0) {
-    alertas.push(createAlerta(
-      'critico',
-      'Gastos superan ingresos',
-      `Has gastado $${gastos.toLocaleString()} pero solo ingresaste $${ingresos.toLocaleString()} este mes. Revisa tus gastos urgentemente.`,
-      { label: 'Ver detalle', onClick: "window.location.href='{{ url_for('essential_ventas') }}'" }
-    ));
-  }
-  
-  // ALERTA 2: Balance bajo
-  if (balance > 0 && balance < 500) {
-    alertas.push(createAlerta(
-      'advertencia',
-      'Balance bajo detectado',
-      `Tu balance actual es de $${balance.toLocaleString()}. Considera ajustar gastos o aumentar ingresos para mantener estabilidad.`,
-      { label: 'Ver flujo', onClick: "window.location.href='{{ url_for('essential_flujo') }}'" }
-    ));
-  }
-  
-  // ALERTA 3: Sin ingresos este mes
-  if (ingresos === 0 && gastos > 0) {
-    alertas.push(createAlerta(
-      'advertencia',
-      'No hay ingresos registrados',
-      'No has registrado ingresos este mes. ¿Ya ingresaste todas tus transacciones?',
-      { label: 'Registrar ingreso', onClick: "window.location.href='{{ url_for('essential_ventas') }}'" }
-    ));
-  }
-  
-  // ALERTA 4: Todo bien (si no hay problemas)
-  if (alertas.length === 0 && (ingresos > 0 || gastos > 0)) {
-    alertas.push(createAlerta(
-      'exito',
-      '¡Todo en orden!',
-      'Tus finanzas están equilibradas. Continúa con tu excelente gestión financiera.'
-    ));
-  }
-  
-  // ALERTA 5: Sin actividad (ni ingresos ni gastos)
-  if (ingresos === 0 && gastos === 0) {
-    alertas.push(createAlerta(
-      'info',
-      'Comienza a registrar',
-      'Aún no tienes transacciones registradas este mes. Empieza a llevar control de tus finanzas ahora.',
-      { label: 'Empezar', onClick: "window.location.href='{{ url_for('essential_ventas') }}'" }
-    ));
-  }
-  
-  // Renderizar alertas
-  container.innerHTML = alertas.join('');
-  
-  console.log('[Alertas] Sistema de alertas automáticas activado - ' + alertas.length + ' alertas generadas');
-}
 
-// Re-analizar cada 60 segundos (el primer análisis lo llama loadFinancialData)
+  const fin = window._finData || {};
+  const ingresos = fin.ingresos || 0;
+  const gastos   = fin.gastos   || 0;
+  const balance  = fin.balance  || 0;
+
+  const alertas = [];
+
+  if (gastos > ingresos && gastos > 0) {
+    alertas.push(mkAlerta('critico', 'Gastos superan ingresos',
+      `Gastaste $${fmt(gastos)} pero ingresaste $${fmt(ingresos)}. Revisa urgente.`,
+      { label:'Ver detalle', href:"{{ url_for('essential_ventas') }}" }));
+  }
+  if (balance > 0 && balance < 50000 && ingresos > 0) {
+    alertas.push(mkAlerta('advertencia', 'Balance bajo detectado',
+      `Tu balance es $${fmt(balance)}. Ajusta gastos o incrementa ingresos.`,
+      { label:'Ver flujo', href:"{{ url_for('essential_flujo') }}" }));
+  }
+  if (ingresos === 0 && gastos > 0) {
+    alertas.push(mkAlerta('advertencia', 'Sin ingresos registrados',
+      '¿Ya ingresaste todas tus transacciones del mes?',
+      { label:'Registrar', href:"{{ url_for('essential_ventas') }}" }));
+  }
+  if (alertas.length === 0 && (ingresos > 0 || gastos > 0)) {
+    alertas.push(mkAlerta('exito', '¡Todo en orden!',
+      'Tus finanzas están equilibradas. Continúa así.'));
+  }
+  if (ingresos === 0 && gastos === 0) {
+    alertas.push(mkAlerta('info', 'Empieza a registrar',
+      'Aún no tienes transacciones este mes. Lleva control ahora.',
+      { label:'Empezar', href:"{{ url_for('essential_ventas') }}" }));
+  }
+
+  container.innerHTML = alertas.join('');
+}
 setInterval(analizarYGenerarAlertas, 60000);
 
-// Animación de slide
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-`;
-document.head.appendChild(style);
+function fmt(n) { return Math.round(n).toLocaleString('es-CL'); }
 
-// ============================================
-// SISTEMA DE PREDICCIONES IA - FASE 1.3
-// ============================================
+function mkAlerta(tipo, titulo, msg, accion) {
+  const conf = {
+    critico:     { dot:'#ef4444', bg:'rgba(239,68,68,0.04)',   border:'rgba(239,68,68,0.15)'   },
+    advertencia: { dot:'#f59e0b', bg:'rgba(245,158,11,0.04)',  border:'rgba(245,158,11,0.15)'  },
+    info:        { dot:'#3b82f6', bg:'rgba(59,130,246,0.04)',  border:'rgba(59,130,246,0.15)'  },
+    exito:       { dot:'#10b981', bg:'rgba(16,185,129,0.04)',  border:'rgba(16,185,129,0.15)'  }
+  }[tipo] || { dot:'#3b82f6', bg:'#f9fafb', border:'#e5e7eb' };
 
-// Generar predicciones basadas en comportamiento financiero
+  const btn = accion ? `<a href="${accion.href}" style="flex-shrink:0;padding:5px 12px;background:white;color:${conf.dot};border:1px solid ${conf.dot};border-radius:8px;font-size:11px;font-weight:700;text-decoration:none;">${accion.label} →</a>` : '';
+
+  return `<div style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;margin-bottom:8px;background:${conf.bg};border:1px solid ${conf.border};border-radius:12px;">
+    <div style="width:8px;height:8px;border-radius:50%;background:${conf.dot};flex-shrink:0;margin-top:4px;"></div>
+    <div style="flex:1;min-width:0;">
+      <div style="font-size:13px;font-weight:700;color:#111;margin-bottom:3px;">${titulo}</div>
+      <div style="font-size:12px;color:#6b7280;font-weight:500;line-height:1.5;">${msg}</div>
+    </div>
+    ${btn}
+  </div>`;
+}
+
+// ── PREDICCIONES ──
 function generarPredicciones() {
   const grid = document.getElementById('predictionsGrid');
   if (!grid) return;
-  
-  // Obtener datos actuales (simulados - reemplazar con datos reales)
-  const ingresosActual = parseInt(document.getElementById('monthIncome')?.textContent?.replace(/[^0-9]/g, '') || 0);
-  const gastosActual = parseInt(document.getElementById('monthExpenses')?.textContent?.replace(/[^0-9]/g, '') || 0);
-  const balanceActual = parseInt(document.getElementById('currentBalance')?.textContent?.replace(/[^0-9]/g, '') || 0);
-  
-  // AHORA: Cálculos simples basados en promedio
-  // FUTURO: const predictions = await openai.predict(historicalData);
-  
-  // Predicción 1: Ingresos próximo mes (basado en tendencia)
-  const ingresosPrediccion = ingresosActual > 0 ? ingresosActual : 0;
-  const tendenciaIngresos = ingresosPrediccion > ingresosActual ? 'up' : (ingresosPrediccion < ingresosActual ? 'down' : 'stable');
-  
-  // Predicción 2: Gastos próximo mes (basado en promedio)
-  const gastosPrediccion = gastosActual > 0 ? Math.round(gastosActual * 0.95) : 0;
-  const tendenciaGastos = gastosPrediccion > gastosActual ? 'up' : 'down';
-  
-  // Predicción 3: Balance proyectado
-  const balancePrediccion = balanceActual + (ingresosPrediccion - gastosPrediccion);
-  const tendenciaBalance = balancePrediccion > balanceActual ? 'up' : (balancePrediccion < balanceActual ? 'down' : 'stable');
-  
-  // Renderizar predicciones
-  const prediccionesHTML = `
-    <!-- Predicción Ingresos -->
-    <div style="
-      background: rgba(16, 185, 129, 0.05);
-      border: 1px solid rgba(16, 185, 129, 0.1);
-      border-radius: 12px;
-      padding: 16px;
-    ">
-      <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #10b981; margin-bottom: 8px;">
-        Ingresos Estimados
-      </div>
-      <div style="font-size: 24px; font-weight: 800; color: #1f2937; margin-bottom: 8px;">
-        $${ingresosPrediccion.toLocaleString()}
-      </div>
-      <div style="font-size: 11px; color: #6b7280; font-weight: 500;">
-        Basado en tu promedio histórico
-      </div>
-    </div>
 
-    <!-- Predicción Gastos -->
-    <div style="
-      background: rgba(239, 68, 68, 0.05);
-      border: 1px solid rgba(239, 68, 68, 0.1);
-      border-radius: 12px;
-      padding: 16px;
-    ">
-      <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #ef4444; margin-bottom: 8px;">
-        Gastos Estimados
-      </div>
-      <div style="font-size: 24px; font-weight: 800; color: #1f2937; margin-bottom: 8px;">
-        $${gastosPrediccion.toLocaleString()}
-      </div>
-      <div style="font-size: 11px; color: #6b7280; font-weight: 500;">
-        ${tendenciaGastos === 'down' ? 'Posible reducción del 5%' : 'Manteniendo nivel actual'}
-      </div>
-    </div>
+  const fin = window._finData || {};
+  const ing  = fin.ingresos || 0;
+  const gas  = fin.gastos   || 0;
+  const bal  = fin.balance  || 0;
+  const ingP = ing;
+  const gasP = gas > 0 ? Math.round(gas * 0.95) : 0;
+  const balP = ingP - gasP;
 
-    <!-- Predicción Balance -->
-    <div style="
-      background: rgba(59, 130, 246, 0.05);
-      border: 1px solid rgba(59, 130, 246, 0.1);
-      border-radius: 12px;
-      padding: 16px;
-    ">
-      <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #3b82f6; margin-bottom: 8px;">
-        Balance Proyectado
-      </div>
-      <div style="font-size: 24px; font-weight: 800; color: #1f2937; margin-bottom: 8px;">
-        $${balancePrediccion.toLocaleString()}
-      </div>
-      <div style="font-size: 11px; color: #6b7280; font-weight: 500;">
-        ${tendenciaBalance === 'up' ? '↗ Proyección positiva' : tendenciaBalance === 'down' ? '↘ Requiere atención' : '→ Estable'}
-      </div>
+  grid.innerHTML = `
+    <div class="pred-row" style="background:#f0fdf4;">
+      <div><div class="pred-lbl">📈 Ingresos estimados</div><div class="pred-hint">Basado en promedio histórico</div></div>
+      <div class="pred-val" style="color:#10b981;">$${fmt(ingP)}</div>
+    </div>
+    <div class="pred-row" style="background:#fef2f2;">
+      <div><div class="pred-lbl">📉 Gastos estimados</div><div class="pred-hint">${gasP < gas ? 'Posible reducción 5%':'Nivel actual'}</div></div>
+      <div class="pred-val" style="color:#ef4444;">$${fmt(gasP)}</div>
+    </div>
+    <div class="pred-row" style="background:#eff6ff;">
+      <div><div class="pred-lbl">💼 Balance proyectado</div><div class="pred-hint">${balP >= 0 ? '↗ Positivo':'↘ Requiere atención'}</div></div>
+      <div class="pred-val" style="color:#3b82f6;">$${fmt(balP)}</div>
     </div>
   `;
-  
-  grid.innerHTML = prediccionesHTML;
-  
-  console.log('[Predicciones IA] Proyecciones generadas correctamente');
 }
-
-// Re-calcular cada 90 segundos (el primer cálculo lo llama loadFinancialData)
 setInterval(generarPredicciones, 90000);
 
-// ============================================
-// WIDGETS POR MUNDO - SISTEMA ADAPTABLE
-// Lee localStorage (futuro: Supabase)
-// ============================================
-
+// ── WIDGETS POR MUNDO ──
 var WORLD_CONFIGS = {
   retail: {
-    icon: '🛒', label: 'Retail & Almacenes', badge: 'RETAIL',
-    badgeBg: '#fce7f3', badgeColor: '#be185d', accentColor: '#ec4899',
-    subtitle: 'Control de inventario, márgenes y rotación de productos',
-    widgets: [
-      {
-        icon: '📦',
-        title: 'Inventario Maestro',
-        desc: 'Estado general del stock',
-        value: '124 productos',
-        sub: '18 bajo mínimo',
-        color: '#3b82f6',
-        bg: '#eff6ff',
-        semaforo: 'amarillo',
-        action: "window.location.href='/empresa/essential/inventario'",
-        actionLabel: 'Ver inventario'
-      },
-      {
-        icon: '🏆',
-        title: 'Top Productos Rentables',
-        desc: 'Mayor margen de ganancia',
-        value: '#1 Aceite Motor',
-        sub: '68% margen • $3.200 c/u',
-        color: '#f59e0b',
-        bg: '#fffbeb',
-        action: null,
-        actionLabel: null
-      },
-      {
-        icon: '🔔',
-        title: 'Alerta Reposición',
-        desc: 'Productos con stock crítico',
-        value: '18 alertas',
-        sub: '5 en stock 0 • 13 bajos',
-        color: '#ef4444',
-        bg: '#fef2f2',
-        semaforo: 'rojo',
-        action: "window.location.href='/empresa/essential/inventario'",
-        actionLabel: 'Reponer ahora'
-      },
-      {
-        icon: '💰',
-        title: 'Margen por Producto',
-        desc: 'Costo vs precio de venta',
-        value: '42% promedio',
-        sub: 'Meta: 45% • Diferencia: -3%',
-        color: '#10b981',
-        bg: '#ecfdf5',
-        action: null,
-        actionLabel: null
-      },
-      {
-        icon: '🔄',
-        title: 'Rotación de Inventario',
-        desc: 'Velocidad de venta por categoría',
-        value: '8.3 días',
-        sub: 'Promedio de salida del stock',
-        color: '#8b5cf6',
-        bg: '#f5f3ff',
-        action: null,
-        actionLabel: null
-      },
-      {
-        icon: '🧾',
-        title: 'Registro Rápido de Venta',
-        desc: 'Registra en menos de 30 seg',
-        value: 'Modo Express',
-        sub: '⚡ Toca para abrir',
-        color: '#0284c7',
-        bg: '#f0f9ff',
-        action: "window.location.href='/empresa/essential/orden-express'",
-        actionLabel: 'Abrir ahora'
-      }
+    icon:'🛒', label:'Retail & Almacenes', badge:'RETAIL',
+    badgeBg:'#fce7f3', badgeColor:'#be185d',
+    subtitle:'Control de inventario, márgenes y rotación',
+    widgets:[
+      { icon:'📦', title:'Inventario Maestro',     desc:'Estado del stock',          value:'--',         sub:'Conecta inventario',   color:'#3b82f6', bg:'#eff6ff', action:"window.location.href='/empresa/essential/inventario'",  actionLabel:'Ver inventario' },
+      { icon:'🏆', title:'Top Productos',          desc:'Mayor margen de ganancia',  value:'--',         sub:'Sin datos aún',        color:'#f59e0b', bg:'#fffbeb' },
+      { icon:'🔔', title:'Alertas Reposición',     desc:'Stock crítico',             value:'--',         sub:'Sin alertas',          color:'#ef4444', bg:'#fef2f2', semaforo:'verde', action:"window.location.href='/empresa/essential/inventario'", actionLabel:'Ver stock' },
+      { icon:'💰', title:'Margen por Producto',    desc:'Costo vs precio de venta',  value:'--',         sub:'Ingresa tus productos', color:'#10b981', bg:'#ecfdf5' },
+      { icon:'🔄', title:'Rotación de Inventario', desc:'Velocidad de venta',        value:'--',         sub:'Sin movimiento aún',   color:'#8b5cf6', bg:'#f5f3ff' },
+      { icon:'🧾', title:'Registro Express',       desc:'Venta en menos de 30 seg',  value:'⚡ Abrir',   sub:'Modo rápido',          color:'#0284c7', bg:'#f0f9ff', action:"window.location.href='/empresa/essential/orden-express'", actionLabel:'Abrir ahora' }
     ]
   },
   tecnico: {
-    icon: '🔧', label: 'Técnico & Talleres', badge: 'TALLER',
-    badgeBg: '#eff6ff', badgeColor: '#1d4ed8', accentColor: '#3b82f6',
-    subtitle: 'Órdenes de trabajo, servicios y piezas de repuesto',
-    widgets: [
-      { icon: '📋', title: 'Órdenes Activas', desc: 'Trabajos en curso', value: '0 órdenes', sub: 'Sin órdenes pendientes', color: '#3b82f6', bg: '#eff6ff', action: null, actionLabel: null },
-      { icon: '⏱️', title: 'Tiempo Promedio', desc: 'Por reparación', value: '2.4 hrs', sub: 'Meta: 2 hrs por servicio', color: '#f59e0b', bg: '#fffbeb', action: null, actionLabel: null },
-      { icon: '💰', title: 'Ingreso por Servicio', desc: 'Promedio este mes', value: '$0', sub: 'Sin servicios registrados', color: '#10b981', bg: '#ecfdf5', action: null, actionLabel: null },
-      { icon: '📦', title: 'Piezas en Stock', desc: 'Inventario de repuestos', value: '0 piezas', sub: 'Actualiza tu inventario', color: '#8b5cf6', bg: '#f5f3ff', action: null, actionLabel: null },
-      { icon: '⭐', title: 'Satisfacción', desc: 'Calificación de clientes', value: 'Sin datos', sub: 'Recibe tus primeras reseñas', color: '#f59e0b', bg: '#fffbeb', action: null, actionLabel: null },
-      { icon: '🧾', title: 'Orden de Trabajo Rápida', desc: 'Crea en 30 segundos', value: 'Nueva OT', sub: '⚡ Registro express', color: '#0284c7', bg: '#f0f9ff', action: "window.location.href='/empresa/essential/orden-express'", actionLabel: 'Crear OT' }
+    icon:'🔧', label:'Técnico & Talleres', badge:'TALLER',
+    badgeBg:'#eff6ff', badgeColor:'#1d4ed8',
+    subtitle:'Órdenes de trabajo, servicios y repuestos',
+    widgets:[
+      { icon:'📋', title:'Órdenes Activas',    desc:'Trabajos en curso',        value:'0 órdenes', sub:'Sin órdenes aún',        color:'#3b82f6', bg:'#eff6ff' },
+      { icon:'⏱️', title:'Tiempo Promedio',    desc:'Por reparación',           value:'--',        sub:'Sin servicios',          color:'#f59e0b', bg:'#fffbeb' },
+      { icon:'💰', title:'Ingreso por Servicio',desc:'Promedio este mes',       value:'$0',        sub:'Sin servicios',          color:'#10b981', bg:'#ecfdf5' },
+      { icon:'📦', title:'Piezas en Stock',    desc:'Inventario de repuestos',  value:'0 piezas',  sub:'Actualiza inventario',   color:'#8b5cf6', bg:'#f5f3ff' },
+      { icon:'⭐', title:'Satisfacción',       desc:'Calificación clientes',    value:'--',        sub:'Sin reseñas aún',        color:'#f59e0b', bg:'#fffbeb' },
+      { icon:'🧾', title:'Orden Rápida',       desc:'Crea OT en 30 seg',        value:'⚡ Nueva OT',sub:'Modo express',          color:'#0284c7', bg:'#f0f9ff', action:"window.location.href='/empresa/essential/orden-express'", actionLabel:'Crear OT' }
     ]
   },
   gastronomia: {
-    icon: '🍳', label: 'Gastronómico', badge: 'RESTO',
-    badgeBg: '#fff7ed', badgeColor: '#c2410c', accentColor: '#f59e0b',
-    subtitle: 'Platos, costos de ingredientes y eficiencia de cocina',
-    widgets: [
-      { icon: '🍽️', title: 'Platos más Vendidos', desc: 'Top ventas del mes', value: 'Sin datos', sub: 'Registra tus primeras ventas', color: '#f59e0b', bg: '#fffbeb', action: null, actionLabel: null },
-      { icon: '🥗', title: 'Costo de Ingredientes', desc: '% sobre ventas', value: '0%', sub: 'Meta: máximo 30%', color: '#10b981', bg: '#ecfdf5', action: null, actionLabel: null },
-      { icon: '📉', title: 'Monitor de Mermas', desc: 'Pérdidas por desperdicio', value: '$0', sub: 'Sin mermas registradas', color: '#ef4444', bg: '#fef2f2', action: null, actionLabel: null },
-      { icon: '💹', title: 'Margen por Plato', desc: 'Costo vs precio de venta', value: '0%', sub: 'Ingresa tu menú y costos', color: '#8b5cf6', bg: '#f5f3ff', action: null, actionLabel: null },
-      { icon: '🕐', title: 'Horas Pico', desc: 'Mayor flujo de clientes', value: 'Sin datos', sub: 'Analiza tus ventas por hora', color: '#3b82f6', bg: '#eff6ff', action: null, actionLabel: null },
-      { icon: '🧾', title: 'Comanda Rápida', desc: 'Registra venta en segundos', value: 'Express', sub: '⚡ Hasta 30 seg', color: '#0284c7', bg: '#f0f9ff', action: "window.location.href='/empresa/essential/orden-express'", actionLabel: 'Abrir comanda' }
+    icon:'🍳', label:'Gastronómico', badge:'RESTO',
+    badgeBg:'#fff7ed', badgeColor:'#c2410c',
+    subtitle:'Platos, costos de ingredientes y cocina',
+    widgets:[
+      { icon:'🍽️', title:'Platos más Vendidos', desc:'Top ventas del mes',      value:'--',  sub:'Sin ventas registradas', color:'#f59e0b', bg:'#fffbeb' },
+      { icon:'🥗',  title:'Costo Ingredientes', desc:'% sobre ventas',          value:'0%',  sub:'Meta: máximo 30%',       color:'#10b981', bg:'#ecfdf5' },
+      { icon:'📉',  title:'Monitor de Mermas',  desc:'Pérdidas por desperdicio',value:'$0',  sub:'Sin mermas',             color:'#ef4444', bg:'#fef2f2' },
+      { icon:'💹',  title:'Margen por Plato',   desc:'Costo vs precio',         value:'0%',  sub:'Ingresa tu menú',        color:'#8b5cf6', bg:'#f5f3ff' },
+      { icon:'🕐',  title:'Horas Pico',         desc:'Mayor flujo de clientes', value:'--',  sub:'Analiza tus ventas',     color:'#3b82f6', bg:'#eff6ff' },
+      { icon:'🧾',  title:'Comanda Rápida',     desc:'Registra en segundos',    value:'⚡',  sub:'Modo express',           color:'#0284c7', bg:'#f0f9ff', action:"window.location.href='/empresa/essential/orden-express'", actionLabel:'Abrir comanda' }
     ]
   },
   profesional: {
-    icon: '💼', label: 'Servicios Profesionales', badge: 'PRO',
-    badgeBg: '#f5f3ff', badgeColor: '#6d28d9', accentColor: '#8b5cf6',
-    subtitle: 'Clientes, cobranza y rentabilidad por proyecto',
-    widgets: [
-      { icon: '👥', title: 'Clientes Activos', desc: 'Proyectos en curso', value: '0 clientes', sub: 'Comienza a registrar clientes', color: '#8b5cf6', bg: '#f5f3ff', action: null, actionLabel: null },
-      { icon: '💰', title: 'Cobranza Pendiente', desc: 'Facturas por cobrar', value: '$0', sub: 'Al día con cobranzas', color: '#ef4444', bg: '#fef2f2', action: null, actionLabel: null },
-      { icon: '⏱️', title: 'Horas Facturadas', desc: 'Este mes', value: '0 hrs', sub: 'Registra tus horas de trabajo', color: '#f59e0b', bg: '#fffbeb', action: null, actionLabel: null },
-      { icon: '📄', title: 'Documentos Vencidos', desc: 'Contratos y plazos', value: '0 vencidos', sub: 'Todo al día', color: '#10b981', bg: '#ecfdf5', action: null, actionLabel: null },
-      { icon: '🎯', title: 'Pipeline Proyectos', desc: 'Propuestas en curso', value: 'Sin datos', sub: 'Agrega tus propuestas', color: '#3b82f6', bg: '#eff6ff', action: null, actionLabel: null },
-      { icon: '🧾', title: 'Factura Rápida', desc: 'Crea cotización en segundos', value: 'Express', sub: '⚡ Hasta 30 seg', color: '#0284c7', bg: '#f0f9ff', action: "window.location.href='/empresa/essential/orden-express'", actionLabel: 'Nueva factura' }
+    icon:'💼', label:'Servicios Profesionales', badge:'PRO',
+    badgeBg:'#f5f3ff', badgeColor:'#6d28d9',
+    subtitle:'Clientes, cobranza y rentabilidad por proyecto',
+    widgets:[
+      { icon:'👥', title:'Clientes Activos',     desc:'Proyectos en curso',  value:'0', sub:'Sin clientes aún',   color:'#8b5cf6', bg:'#f5f3ff' },
+      { icon:'💰', title:'Cobranza Pendiente',   desc:'Facturas por cobrar', value:'$0',sub:'Al día',             color:'#ef4444', bg:'#fef2f2' },
+      { icon:'⏱️', title:'Horas Facturadas',     desc:'Este mes',            value:'0', sub:'Sin horas',          color:'#f59e0b', bg:'#fffbeb' },
+      { icon:'📄', title:'Documentos Vencidos',  desc:'Contratos y plazos',  value:'0', sub:'Todo al día',        color:'#10b981', bg:'#ecfdf5' },
+      { icon:'🎯', title:'Pipeline Proyectos',   desc:'Propuestas en curso', value:'--',sub:'Sin propuestas',     color:'#3b82f6', bg:'#eff6ff' },
+      { icon:'🧾', title:'Cotización Rápida',    desc:'Crea en 30 segundos', value:'⚡',sub:'Modo express',       color:'#0284c7', bg:'#f0f9ff', action:"window.location.href='/empresa/essential/orden-express'", actionLabel:'Nueva cotización' }
     ]
   },
   bienestar: {
-    icon: '💪', label: 'Bienestar & Recurrencia', badge: 'GYM',
-    badgeBg: '#ecfdf5', badgeColor: '#065f46', accentColor: '#10b981',
-    subtitle: 'Membresías, asistencia y retención de clientes',
-    widgets: [
-      { icon: '👥', title: 'Membresías Activas', desc: 'Socios vigentes', value: '0 socios', sub: 'Comienza a registrar socios', color: '#10b981', bg: '#ecfdf5', action: null, actionLabel: null },
-      { icon: '⚠️', title: 'Clientes en Mora', desc: 'Membresías vencidas', value: '0 en mora', sub: 'Todo al día con pagos', color: '#ef4444', bg: '#fef2f2', action: null, actionLabel: null },
-      { icon: '📅', title: 'Asistencia del Día', desc: 'Personas hoy en el local', value: '0 asistentes', sub: 'Registra las entradas', color: '#3b82f6', bg: '#eff6ff', action: null, actionLabel: null },
-      { icon: '💪', title: 'Capacidad del Local', desc: 'Ocupación actual', value: '0%', sub: 'Máximo: 0 personas', color: '#f59e0b', bg: '#fffbeb', action: null, actionLabel: null },
-      { icon: '🔄', title: 'Renovaciones Pendientes', desc: 'Membresías por vencer', value: '0 próximas', sub: 'Sin renovaciones urgentes', color: '#8b5cf6', bg: '#f5f3ff', action: null, actionLabel: null },
-      { icon: '🧾', title: 'Check-in Rápido', desc: 'Registra entrada en segundos', value: 'Express', sub: '⚡ Hasta 10 seg', color: '#0284c7', bg: '#f0f9ff', action: "window.location.href='/empresa/essential/orden-express'", actionLabel: 'Registrar entrada' }
+    icon:'💪', label:'Bienestar & Recurrencia', badge:'GYM',
+    badgeBg:'#ecfdf5', badgeColor:'#065f46',
+    subtitle:'Membresías, asistencia y retención de clientes',
+    widgets:[
+      { icon:'👥', title:'Membresías Activas',    desc:'Socios vigentes',        value:'0',  sub:'Sin socios aún',         color:'#10b981', bg:'#ecfdf5' },
+      { icon:'⚠️', title:'Clientes en Mora',      desc:'Membresías vencidas',    value:'0',  sub:'Al día',                 color:'#ef4444', bg:'#fef2f2' },
+      { icon:'📅', title:'Asistencia del Día',    desc:'Personas hoy',           value:'0',  sub:'Registra entradas',      color:'#3b82f6', bg:'#eff6ff' },
+      { icon:'💪', title:'Capacidad del Local',   desc:'Ocupación actual',       value:'0%', sub:'Sin datos',              color:'#f59e0b', bg:'#fffbeb' },
+      { icon:'🔄', title:'Renovaciones Próximas', desc:'Membresías por vencer',  value:'0',  sub:'Sin renovaciones',       color:'#8b5cf6', bg:'#f5f3ff' },
+      { icon:'🧾', title:'Check-in Rápido',       desc:'Registra entrada 10 seg',value:'⚡', sub:'Modo express',           color:'#0284c7', bg:'#f0f9ff', action:"window.location.href='/empresa/essential/orden-express'", actionLabel:'Registrar entrada' }
     ]
   }
 };
 
-// Renderizar un widget individual
-function renderWorldWidget(widget) {
-  var semaforo = '';
-  if (widget.semaforo === 'rojo') {
-    semaforo = '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#ef4444;margin-right:6px;"></span>';
-  } else if (widget.semaforo === 'amarillo') {
-    semaforo = '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#f59e0b;margin-right:6px;"></span>';
-  } else if (widget.semaforo === 'verde') {
-    semaforo = '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#10b981;margin-right:6px;"></span>';
-  }
-
-  var actionBtn = '';
-  if (widget.action && widget.actionLabel) {
-    actionBtn = '<div style="margin-top:14px;">' +
-      '<button onclick="' + widget.action + '" style="' +
-        'padding:7px 14px;' +
-        'background:' + widget.color + ';' +
-        'color:white;' +
-        'border:none;' +
-        'border-radius:8px;' +
-        'font-size:12px;' +
-        'font-weight:700;' +
-        'cursor:pointer;' +
-        'transition:all 0.2s;' +
-        'width:100%;' +
-      '">' + widget.actionLabel + ' →</button>' +
-    '</div>';
-  }
-
-  return '<div style="' +
-    'background:white;' +
-    'border-radius:16px;' +
-    'padding:20px;' +
-    'box-shadow:0 1px 4px rgba(0,0,0,0.06);' +
-    'border-left:4px solid ' + widget.color + ';' +
-    'transition:all 0.2s ease;' +
-    'cursor:default;' +
-  '" onmouseover="this.style.transform=\'translateY(-3px)\';this.style.boxShadow=\'0 6px 20px rgba(0,0,0,0.1)\'" ' +
-  'onmouseout="this.style.transform=\'translateY(0)\';this.style.boxShadow=\'0 1px 4px rgba(0,0,0,0.06)\'">' +
-    '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;">' +
-      '<div>' +
-        '<div style="font-size:22px;margin-bottom:6px;">' + widget.icon + '</div>' +
-        '<div style="font-size:13px;font-weight:700;color:#111827;">' + widget.title + '</div>' +
-        '<div style="font-size:11px;color:#9ca3af;font-weight:500;">' + widget.desc + '</div>' +
-      '</div>' +
-      '<div style="width:36px;height:36px;background:' + widget.bg + ';border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">' +
-        widget.icon +
-      '</div>' +
-    '</div>' +
-    '<div style="font-size:20px;font-weight:800;color:' + widget.color + ';margin-bottom:4px;">' + widget.value + '</div>' +
-    '<div style="font-size:12px;color:#6b7280;font-weight:500;display:flex;align-items:center;">' + semaforo + widget.sub + '</div>' +
-    actionBtn +
-  '</div>';
+function renderWorldWidget(w) {
+  const sem = w.semaforo === 'rojo'    ? '<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#ef4444;margin-right:5px;flex-shrink:0;"></span>'
+            : w.semaforo === 'amarillo'? '<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#f59e0b;margin-right:5px;flex-shrink:0;"></span>'
+            : w.semaforo === 'verde'   ? '<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#10b981;margin-right:5px;flex-shrink:0;"></span>'
+            : '';
+  const btn = (w.action && w.actionLabel)
+    ? `<div style="margin-top:14px;"><button onclick="${w.action}" style="width:100%;padding:8px;background:${w.color};color:white;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;">${w.actionLabel} →</button></div>`
+    : '';
+  return `<div style="background:white;border-radius:16px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,0.05);border-left:4px solid ${w.color};transition:all 0.2s;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 20px rgba(0,0,0,0.09)'" onmouseout="this.style.transform='';this.style.boxShadow='0 2px 10px rgba(0,0,0,0.05)'">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;">
+      <div>
+        <div style="font-size:20px;margin-bottom:5px;">${w.icon}</div>
+        <div style="font-size:13px;font-weight:700;color:#111;">${w.title}</div>
+        <div style="font-size:11px;color:#9ca3af;">${w.desc}</div>
+      </div>
+      <div style="width:36px;height:36px;background:${w.bg};border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">${w.icon}</div>
+    </div>
+    <div style="font-size:20px;font-weight:800;color:${w.color};margin-bottom:4px;">${w.value}</div>
+    <div style="font-size:11px;color:#9ca3af;display:flex;align-items:center;">${sem}${w.sub}</div>
+    ${btn}
+  </div>`;
 }
 
-// Renderizar sección completa del mundo - 100% SUPABASE
 function renderWorldWidgets() {
-  // Lee de _businessProfile (Supabase) o fallback localStorage para compatibilidad
-  var businessType = null;
+  var btype = _businessProfile?.business_type || null;
+  if (!btype) {
+    try { btype = JSON.parse(localStorage.getItem('pymax_onboarding_config')||'{}').business_type || null; } catch(e){}
+  }
+  if (!btype || !WORLD_CONFIGS[btype]) return;
 
-  if (_businessProfile && _businessProfile.business_type) {
-    businessType = _businessProfile.business_type;
-    console.log('[Worlds] Usando perfil de Supabase:', businessType);
-  } else {
-    // Fallback: localStorage (eliminar cuando todos tengan onboarding en Supabase)
-    try {
-      var local = JSON.parse(localStorage.getItem('pymax_onboarding_config') || '{}');
-      businessType = local.business_type || null;
-      if (businessType) console.log('[Worlds] Fallback localStorage:', businessType);
-    } catch(e) {}
+  const cfg  = WORLD_CONFIGS[btype];
+  const sect = document.getElementById('worldWidgetsSection');
+  if (sect) sect.style.display = 'block';
+
+  const el = (id) => document.getElementById(id);
+  if (el('worldIcon'))     el('worldIcon').textContent     = cfg.icon;
+  if (el('worldTitle'))    el('worldTitle').textContent    = 'Panel ' + cfg.label;
+  if (el('worldSubtitle')) el('worldSubtitle').textContent = cfg.subtitle;
+  if (el('worldBadge')) {
+    el('worldBadge').textContent   = cfg.badge;
+    el('worldBadge').style.background = cfg.badgeBg;
+    el('worldBadge').style.color      = cfg.badgeColor;
   }
 
-  if (!businessType) {
-    console.log('[Worlds] Sin tipo de negocio definido');
-    return;
-  }
-
-  var worldConfig = WORLD_CONFIGS[businessType];
-
-  if (!worldConfig) {
-    console.log('[Worlds] Tipo de negocio no reconocido:', businessType);
-    return;
-  }
-
-  // Mostrar la sección
-  var section = document.getElementById('worldWidgetsSection');
-  if (section) section.style.display = 'block';
-
-  // Actualizar header
-  var icon = document.getElementById('worldIcon');
-  var title = document.getElementById('worldTitle');
-  var subtitle = document.getElementById('worldSubtitle');
-  var badge = document.getElementById('worldBadge');
-
-  if (icon) icon.textContent = worldConfig.icon;
-  if (title) title.textContent = 'Panel ' + worldConfig.label;
-  if (subtitle) subtitle.textContent = worldConfig.subtitle;
-  if (badge) {
-    badge.textContent = worldConfig.badge;
-    badge.style.background = worldConfig.badgeBg;
-    badge.style.color = worldConfig.badgeColor;
-  }
-
-  // Renderizar widgets
-  var grid = document.getElementById('worldWidgetsGrid');
-  if (grid) {
-    var html = '';
-    worldConfig.widgets.forEach(function(w) {
-      html += renderWorldWidget(w);
-    });
-    grid.innerHTML = html;
-  }
-
-  console.log('[Worlds] Widgets renderizados para:', worldConfig.label);
+  const grid = el('worldWidgetsGrid');
+  if (grid) grid.innerHTML = cfg.widgets.map(renderWorldWidget).join('');
+  console.log('[Worlds] Widgets:', cfg.label);
 }
 
-// ============================================
-// TOUR GUIADO FUTURISTA - PRIMERA VEZ
-// ============================================
-
+// ── TOUR GUIADO FUTURISTA ──
 var _tourStep = 0;
 var _tourSteps = [
-  {
-    target: '.health-section',
-    title: '📊 Tu Salud Financiera',
-    text: 'Aquí verás en tiempo real tu balance, ingresos, gastos y margen neto. Todos los datos vienen directamente de tu cuenta.',
-    position: 'bottom'
-  },
-  {
-    target: '#worldWidgetsSection',
-    title: '🛒 Tu Panel de Negocio',
-    text: 'Esta sección cambia según el tipo de negocio que elegiste. Te muestra métricas específicas de tu rubro.',
-    position: 'bottom'
-  },
-  {
-    target: '.tools-list',
-    title: '🔧 Herramientas Principales',
-    text: 'Aquí accedes a Ingresos & Gastos, Monitor de Obligaciones, Metas y tu Asistente IA disponible 24/7.',
-    position: 'right'
-  },
-  {
-    target: '.additional-tools',
-    title: '⚡ Herramientas Adicionales',
-    text: 'Flujo de caja, Semáforo Pymax, Calendario, Inventario y más. Todo tu negocio en un solo lugar.',
-    position: 'top'
-  }
+  { target:'.bc-balance',     title:'💰 Tu Balance Real',        text:'Aquí ves tu posición financiera neta en tiempo real. Todos los datos vienen directo de Supabase, sin números inventados.' },
+  { target:'.bc-chart',       title:'📈 Flujo Financiero',       text:'Tu historial de 6 meses. Ingresos en verde, gastos en rojo, balance en azul. Todo calculado de tus transacciones reales.' },
+  { target:'.bc-tools',       title:'🔧 Herramientas Pymax',     text:'Acceso directo a todo: Asistente IA, Ingresos & Gastos, Obligaciones, Metas y más. Tu negocio en un solo lugar.' },
+  { target:'#worldWidgetsSection', title:'🏢 Tu Panel de Negocio', text:'Esta sección se adapta automáticamente al tipo de negocio que configuraste. Métricas específicas de tu rubro.' }
 ];
 
 async function checkAndShowTour() {
   if (!_supabase || !_currentUser) return;
-
   try {
-    // Verificar si ya vio el tour en Supabase (columna tour_completed en user_profiles)
-    const { data } = await _supabase
-      .from('user_profiles')
-      .select('tour_completed')
-      .eq('id', _currentUser.id)
-      .single();
-
-    if (data && data.tour_completed) {
-      console.log('✅ Tour ya completado');
-      return;
-    }
+    const { data } = await _supabase.from('user_profiles').select('tour_completed').eq('id',_currentUser.id).single();
+    if (data?.tour_completed) return;
   } catch(e) {
-    // Si no existe la columna, usar localStorage como fallback
     if (localStorage.getItem('pymax_tour_done') === 'true') return;
   }
-
-  // Mostrar tour después de 1.5 segundos
-  setTimeout(showTour, 1500);
+  setTimeout(showTour, 1800);
 }
 
 function showTour() {
-  // Crear overlay del tour
-  const overlay = document.createElement('div');
-  overlay.id = 'pymaxTourOverlay';
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;';
-  document.body.appendChild(overlay);
-
-  // Fondo oscuro con hueco (spotlight)
   const backdrop = document.createElement('div');
-  backdrop.id = 'pymaxTourBackdrop';
-  backdrop.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:99998;transition:all 0.4s;';
-  backdrop.addEventListener('click', skipTour);
+  backdrop.id = 'tourBackdrop';
+  backdrop.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:99998;';
+  backdrop.onclick = skipTour;
   document.body.appendChild(backdrop);
-
   showTourStep(0);
 }
 
-function showTourStep(stepIndex) {
-  _tourStep = stepIndex;
+function showTourStep(idx) {
+  _tourStep = idx;
+  const prev = document.getElementById('tourTip');
+  if (prev) prev.remove();
+  if (idx >= _tourSteps.length) { finishTour(); return; }
 
-  // Limpiar tooltip anterior
-  const prevTip = document.getElementById('pymaxTourTip');
-  if (prevTip) prevTip.remove();
-
-  if (stepIndex >= _tourSteps.length) {
-    finishTour();
-    return;
-  }
-
-  const step = _tourSteps[stepIndex];
+  const step = _tourSteps[idx];
   const target = document.querySelector(step.target);
+  if (!target) { showTourStep(idx+1); return; }
 
-  if (!target) {
-    showTourStep(stepIndex + 1);
-    return;
-  }
-
-  // Scroll al elemento
-  target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
+  target.scrollIntoView({ behavior:'smooth', block:'center' });
   setTimeout(() => {
+    target.style.position  = 'relative';
+    target.style.zIndex    = '100000';
+    target.style.boxShadow = '0 0 0 4px #3b82f6, 0 0 50px rgba(59,130,246,0.5)';
+    target.style.transition= 'box-shadow 0.3s';
+
     const rect = target.getBoundingClientRect();
-
-    // Destacar elemento con borde brillante
-    target.style.position = 'relative';
-    target.style.zIndex = '100000';
-    target.style.borderRadius = '16px';
-    target.style.boxShadow = '0 0 0 4px #3b82f6, 0 0 40px rgba(59,130,246,0.6)';
-    target.style.transition = 'box-shadow 0.3s';
-
-    // Crear tooltip futurista
-    const tip = document.createElement('div');
-    tip.id = 'pymaxTourTip';
+    const tip  = document.createElement('div');
+    tip.id     = 'tourTip';
     tip.style.cssText = `
-      position: fixed;
-      z-index: 100001;
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      color: white;
-      border: 1px solid rgba(59,130,246,0.4);
-      border-radius: 20px;
-      padding: 24px 28px;
-      max-width: 380px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(59,130,246,0.2);
-      font-family: 'Inter', sans-serif;
-      pointer-events: all;
-      animation: tourPop 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      position:fixed; z-index:100001;
+      background:linear-gradient(135deg,#0f172a,#1e293b);
+      color:white; border:1px solid rgba(59,130,246,0.35);
+      border-radius:20px; padding:24px 28px; max-width:380px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.5);
+      font-family:'Inter',sans-serif; pointer-events:all;
+      animation:tourPop 0.35s cubic-bezier(0.34,1.56,0.64,1);
     `;
-
     tip.innerHTML = `
       <style>
-        @keyframes tourPop {
-          from { opacity:0; transform: scale(0.85) translateY(10px); }
-          to   { opacity:1; transform: scale(1)    translateY(0);    }
-        }
-        #pymaxTourTip h3 { font-size:17px; font-weight:800; margin:0 0 8px; letter-spacing:-0.02em; }
-        #pymaxTourTip p  { font-size:14px; color:#94a3b8; margin:0 0 20px; line-height:1.6; }
-        .tour-btns { display:flex; gap:10px; align-items:center; justify-content:space-between; }
-        .tour-btn-next { background:linear-gradient(135deg,#3b82f6,#2563eb); color:white; border:none; border-radius:10px; padding:10px 22px; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; }
-        .tour-btn-next:hover { transform:translateY(-1px); box-shadow:0 4px 16px rgba(59,130,246,0.4); }
-        .tour-btn-skip { background:transparent; color:#64748b; border:none; font-size:12px; cursor:pointer; }
-        .tour-dots { display:flex; gap:6px; }
-        .tour-dot { width:8px; height:8px; border-radius:50%; background:#334155; transition:all 0.2s; }
-        .tour-dot.active { background:#3b82f6; transform:scale(1.2); }
+        @keyframes tourPop { from{opacity:0;transform:scale(0.85) translateY(10px)} to{opacity:1;transform:scale(1) translateY(0)} }
+        #tourTip h3{font-size:17px;font-weight:800;margin:0 0 8px;letter-spacing:-0.02em}
+        #tourTip p{font-size:14px;color:#94a3b8;margin:0 0 20px;line-height:1.6}
+        .t-dots{display:flex;gap:6px}
+        .t-dot{width:8px;height:8px;border-radius:50%;background:#334155;transition:all 0.2s}
+        .t-dot.on{background:#3b82f6;transform:scale(1.2)}
+        .t-next{background:linear-gradient(135deg,#3b82f6,#2563eb);color:white;border:none;border-radius:10px;padding:10px 22px;font-size:13px;font-weight:700;cursor:pointer}
+        .t-skip{background:transparent;color:#64748b;border:none;font-size:12px;cursor:pointer}
       </style>
       <h3>${step.title}</h3>
       <p>${step.text}</p>
-      <div class="tour-btns">
-        <div class="tour-dots">
-          ${_tourSteps.map((_, i) => `<div class="tour-dot ${i === stepIndex ? 'active' : ''}"></div>`).join('')}
-        </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div class="t-dots">${_tourSteps.map((_,i)=>`<div class="t-dot ${i===idx?'on':''}"></div>`).join('')}</div>
         <div style="display:flex;gap:10px;align-items:center;">
-          <button class="tour-btn-skip" onclick="skipTour()">Saltar</button>
-          <button class="tour-btn-next" onclick="nextTourStep()">
-            ${stepIndex === _tourSteps.length - 1 ? '¡Comenzar! 🚀' : 'Siguiente →'}
-          </button>
+          <button class="t-skip" onclick="skipTour()">Saltar</button>
+          <button class="t-next" onclick="nextTourStep()">${idx===_tourSteps.length-1?'¡Comenzar! 🚀':'Siguiente →'}</button>
         </div>
       </div>
     `;
-
-    // Posicionar el tooltip cerca del elemento
-    const tipLeft = Math.min(Math.max(rect.left, 20), window.innerWidth - 420);
-    const tipTop  = rect.bottom + 20 < window.innerHeight - 200
-                   ? rect.bottom + 20
-                   : rect.top - 250;
-    tip.style.left = tipLeft + 'px';
-    tip.style.top  = Math.max(tipTop, 20) + 'px';
-
+    const tl = Math.min(Math.max(rect.left, 20), window.innerWidth-420);
+    const tt = rect.bottom+20 < window.innerHeight-220 ? rect.bottom+20 : rect.top-250;
+    tip.style.left = tl+'px';
+    tip.style.top  = Math.max(tt, 16)+'px';
     document.body.appendChild(tip);
   }, 400);
 }
 
 function nextTourStep() {
-  // Quitar highlight del elemento anterior
-  const prevStep = _tourSteps[_tourStep];
-  if (prevStep) {
-    const el = document.querySelector(prevStep.target);
-    if (el) { el.style.zIndex = ''; el.style.boxShadow = ''; }
-  }
-  showTourStep(_tourStep + 1);
+  const prev = _tourSteps[_tourStep];
+  if (prev) { const el = document.querySelector(prev.target); if(el){el.style.zIndex='';el.style.boxShadow='';} }
+  showTourStep(_tourStep+1);
 }
-
-function skipTour() {
-  finishTour();
-}
+function skipTour() { finishTour(); }
 
 async function finishTour() {
-  // Limpiar elementos del tour
-  ['pymaxTourOverlay', 'pymaxTourBackdrop', 'pymaxTourTip'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.remove();
-  });
-
-  // Quitar highlights
-  _tourSteps.forEach(step => {
-    const el = document.querySelector(step.target);
-    if (el) { el.style.zIndex = ''; el.style.boxShadow = ''; }
-  });
-
-  // Marcar como completado
-  localStorage.setItem('pymax_tour_done', 'true');
-
+  ['tourBackdrop','tourTip'].forEach(id=>{ const el=document.getElementById(id); if(el)el.remove(); });
+  _tourSteps.forEach(s=>{ const el=document.querySelector(s.target); if(el){el.style.zIndex='';el.style.boxShadow='';} });
+  localStorage.setItem('pymax_tour_done','true');
   if (_supabase && _currentUser) {
-    try {
-      await _supabase.from('user_profiles').update({ tour_completed: true }).eq('id', _currentUser.id);
-      console.log('✅ Tour marcado en Supabase');
-    } catch(e) {
-      console.warn('Tour guardado solo en localStorage (tour_completed no existe en tabla)');
-    }
+    try { await _supabase.from('user_profiles').update({tour_completed:true}).eq('id',_currentUser.id); } catch(e){}
   }
-
   console.log('🎉 Tour completado');
 }
 </script>
