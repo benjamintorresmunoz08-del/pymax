@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pymax | Dashboard Essential</title>
-
+  <title>Pymax · Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -16,28 +15,33 @@
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
     :root {
-      --bg:        #F7F8FA;
-      --surface:   #FFFFFF;
-      --border:    #E9EAEC;
-      --text-1:    #0D0F12;
-      --text-2:    #4A5568;
-      --text-3:    #9AA3B2;
-      --blue:      #2563EB;
-      --blue-lt:   #EFF4FF;
-      --green:     #16A34A;
-      --green-lt:  #F0FDF4;
-      --red:       #DC2626;
-      --red-lt:    #FEF2F2;
-      --amber:     #D97706;
-      --amber-lt:  #FFFBEB;
-      --purple:    #7C3AED;
-      --purple-lt: #F5F3FF;
-      --radius:    12px;
-      --radius-lg: 18px;
-      --shadow:    0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.05);
-      --shadow-lg: 0 12px 32px rgba(0,0,0,0.10);
+      /* Dark color system */
+      --bg:          #0D1117;
+      --bg-2:        #161B22;
+      --bg-3:        #21262D;
+      --card:        rgba(255,255,255,0.03);
+      --card-border: rgba(255,255,255,0.07);
+      --card-hover:  rgba(255,255,255,0.055);
+      --text-1:      #F0F6FC;
+      --text-2:      #8B949E;
+      --text-3:      #484F58;
+      --blue:        #3B82F6;
+      --blue-glow:   rgba(59,130,246,0.15);
+      --blue-dim:    rgba(59,130,246,0.1);
+      --green:       #34D399;
+      --green-glow:  rgba(52,211,153,0.12);
+      --red:         #F87171;
+      --red-glow:    rgba(248,113,113,0.12);
+      --amber:       #FCD34D;
+      --amber-glow:  rgba(252,211,77,0.1);
+      --purple:      #A78BFA;
+      --purple-glow: rgba(167,139,250,0.12);
+      --radius:      14px;
+      --radius-sm:   9px;
+      --radius-lg:   18px;
     }
+
+    html { color-scheme: dark; }
 
     body {
       font-family: 'Inter', -apple-system, sans-serif;
@@ -45,465 +49,458 @@
       color: var(--text-1);
       min-height: 100vh;
       display: flex;
+      overflow-x: hidden;
     }
 
     /* ═══════════════════════════════════
        SIDEBAR
     ═══════════════════════════════════ */
     .sidebar {
-      width: 240px;
-      min-width: 240px;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
+      width: 220px;
+      min-width: 220px;
+      background: var(--bg-2);
+      border-right: 1px solid var(--card-border);
       display: flex;
       flex-direction: column;
-      padding: 0;
       position: fixed;
       top: 0; left: 0;
       height: 100vh;
       z-index: 100;
+      overflow-y: auto;
     }
+    .sidebar::-webkit-scrollbar { width: 0; }
 
     .sidebar-logo {
-      padding: 24px 20px 20px;
-      border-bottom: 1px solid var(--border);
+      padding: 20px 16px 16px;
+      border-bottom: 1px solid var(--card-border);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
+      flex-shrink: 0;
     }
     .logo-mark {
-      width: 32px; height: 32px;
+      width: 28px; height: 28px;
       background: var(--blue);
-      border-radius: 8px;
+      border-radius: 7px;
       display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
     }
-    .logo-mark svg { width: 18px; height: 18px; }
-    .logo-name {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--text-1);
-      letter-spacing: -0.04em;
-    }
-    .logo-plan {
-      font-size: 10px;
+    .logo-mark i { font-size: 16px; color: white; }
+    .logo-name  { font-size: 15px; font-weight: 800; color: var(--text-1); letter-spacing: -0.04em; }
+    .logo-badge {
+      font-size: 9px;
       font-weight: 700;
       color: var(--blue);
-      background: var(--blue-lt);
-      padding: 2px 8px;
+      background: var(--blue-dim);
+      padding: 2px 7px;
       border-radius: 100px;
-      letter-spacing: 0.04em;
+      border: 1px solid rgba(59,130,246,0.2);
+      letter-spacing: 0.05em;
+      margin-left: auto;
     }
 
-    .sidebar-section {
-      padding: 16px 12px 8px;
-    }
-    .sidebar-section-label {
-      font-size: 10px;
+    .sidebar-group { padding: 14px 10px 6px; }
+    .sidebar-group-label {
+      font-size: 9px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
       color: var(--text-3);
-      padding: 0 8px;
-      margin-bottom: 6px;
+      padding: 0 6px;
+      margin-bottom: 4px;
     }
-
-    .sidebar-item {
+    .s-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 9px 10px;
-      border-radius: 9px;
+      gap: 8px;
+      padding: 8px 8px;
+      border-radius: var(--radius-sm);
       text-decoration: none;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 500;
       color: var(--text-2);
       transition: all 0.15s;
       margin-bottom: 1px;
-      cursor: pointer;
     }
-    .sidebar-item i {
-      font-size: 17px;
-      width: 20px;
+    .s-item i { font-size: 16px; flex-shrink: 0; }
+    .s-item:hover { background: var(--card-hover); color: var(--text-1); }
+    .s-item.active { background: var(--blue-dim); color: var(--blue); font-weight: 600; }
+    .s-item.active i { color: var(--blue); }
+
+    .sidebar-foot {
+      margin-top: auto;
+      padding: 12px 10px;
+      border-top: 1px solid var(--card-border);
       flex-shrink: 0;
     }
-    .sidebar-item:hover {
-      background: var(--bg);
-      color: var(--text-1);
-    }
-    .sidebar-item.active {
-      background: var(--blue-lt);
-      color: var(--blue);
-      font-weight: 600;
-    }
-    .sidebar-item.active i { color: var(--blue); }
-
-    .sidebar-badge {
-      margin-left: auto;
-      background: var(--red);
-      color: white;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 1px 7px;
-      border-radius: 100px;
-    }
-
-    .sidebar-bottom {
-      margin-top: auto;
-      padding: 12px;
-      border-top: 1px solid var(--border);
-    }
-    .user-row {
+    .user-chip {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 8px 10px;
-      border-radius: 9px;
+      gap: 9px;
+      padding: 8px 8px;
+      border-radius: var(--radius-sm);
       cursor: pointer;
       transition: background 0.15s;
     }
-    .user-row:hover { background: var(--bg); }
-    .user-avatar {
-      width: 32px; height: 32px;
-      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    .user-chip:hover { background: var(--card-hover); }
+    .user-av {
+      width: 28px; height: 28px;
       border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
       display: flex; align-items: center; justify-content: center;
-      font-size: 13px;
-      font-weight: 700;
-      color: white;
+      font-size: 11px; font-weight: 800; color: white;
       flex-shrink: 0;
     }
-    .user-info .user-name  { font-size: 13px; font-weight: 600; color: var(--text-1); }
-    .user-info .user-email { font-size: 11px; color: var(--text-3); font-weight: 400; }
+    .user-name  { font-size: 12px; font-weight: 600; color: var(--text-1); }
+    .user-email { font-size: 10px; color: var(--text-3); }
 
     /* ═══════════════════════════════════
-       MAIN CONTENT
+       MAIN
     ═══════════════════════════════════ */
     .main {
-      margin-left: 240px;
+      margin-left: 220px;
       flex: 1;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
-    /* Top Bar */
+    /* TOPBAR */
     .topbar {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 0 32px;
-      height: 60px;
+      height: 56px;
+      background: var(--bg-2);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 90;
+      position: sticky; top: 0; z-index: 90;
     }
-    .topbar-left h1 {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text-1);
-    }
-    .topbar-left .topbar-sub {
-      font-size: 12px;
-      color: var(--text-3);
-      font-weight: 400;
-    }
-    .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .topbar-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 14px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s;
-      border: none;
+    .topbar-title { font-size: 14px; font-weight: 700; color: var(--text-1); }
+    .topbar-sub   { font-size: 12px; color: var(--text-3); margin-left: 8px; }
+    .topbar-right { display: flex; align-items: center; gap: 8px; }
+
+    .t-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 12px; font-weight: 600;
+      cursor: pointer; border: none;
       text-decoration: none;
+      transition: all 0.15s;
+      font-family: 'Inter', sans-serif;
     }
-    .topbar-btn.secondary {
-      background: var(--bg);
+    .t-btn i { font-size: 14px; }
+    .t-btn.ghost {
+      background: var(--card);
       color: var(--text-2);
-      border: 1px solid var(--border);
+      border: 1px solid var(--card-border);
     }
-    .topbar-btn.secondary:hover { background: #EDEEF1; }
-    .topbar-btn.primary {
+    .t-btn.ghost:hover { background: var(--card-hover); color: var(--text-1); }
+    .t-btn.primary {
       background: var(--blue);
       color: white;
     }
-    .topbar-btn.primary:hover { background: #1D4ED8; }
-    .topbar-btn i { font-size: 15px; }
+    .t-btn.primary:hover { background: #2563EB; }
 
-    /* Page Content */
-    .page-content {
-      padding: 28px 32px;
-      flex: 1;
-    }
+    /* PAGE */
+    .page { padding: 24px 28px; flex: 1; }
 
     /* ═══════════════════════════════════
-       SECTION HEADERS
-    ═══════════════════════════════════ */
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-    .section-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-1);
-      letter-spacing: -0.01em;
-    }
-    .section-sub {
-      font-size: 12px;
-      color: var(--text-3);
-      font-weight: 400;
-      margin-top: 1px;
-    }
-    .section-link {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--blue);
-      text-decoration: none;
-    }
-    .section-link:hover { text-decoration: underline; }
-
-    /* ═══════════════════════════════════
-       CARD BASE
+       GLASS CARD
     ═══════════════════════════════════ */
     .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--card);
+      border: 1px solid var(--card-border);
       border-radius: var(--radius-lg);
-      padding: 24px;
-      box-shadow: var(--shadow);
-      transition: box-shadow 0.2s;
+      transition: border-color 0.2s, background 0.2s;
     }
-    .card:hover { box-shadow: var(--shadow-md); }
+    .card:hover { background: var(--card-hover); border-color: rgba(255,255,255,0.1); }
 
     /* ═══════════════════════════════════
-       KPI ROW — 4 cards
+       KPI ROW
     ═══════════════════════════════════ */
     .kpi-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-bottom: 24px;
+      gap: 12px;
+      margin-bottom: 16px;
     }
-    .kpi-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+    .kpi {
+      background: var(--card);
+      border: 1px solid var(--card-border);
       border-radius: var(--radius-lg);
-      padding: 22px 24px;
-      box-shadow: var(--shadow);
-      transition: all 0.2s;
+      padding: 20px 22px;
       position: relative;
       overflow: hidden;
+      transition: all 0.2s;
     }
-    .kpi-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
-    .kpi-card::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0;
-      width: 100%; height: 3px;
-    }
-    .kpi-card.blue::after    { background: var(--blue); }
-    .kpi-card.green::after   { background: var(--green); }
-    .kpi-card.red::after     { background: var(--red); }
-    .kpi-card.purple::after  { background: var(--purple); }
-
-    .kpi-header {
+    .kpi:hover { background: var(--card-hover); border-color: rgba(255,255,255,0.1); }
+    .kpi-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
-    .kpi-label {
-      font-size: 11px;
+    .kpi-lbl {
+      font-size: 10px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.07em;
+      letter-spacing: 0.09em;
       color: var(--text-3);
     }
-    .kpi-icon {
-      width: 36px; height: 36px;
-      border-radius: 9px;
+    .kpi-ic {
+      width: 32px; height: 32px;
+      border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
     }
-    .kpi-icon.blue   { background: var(--blue-lt);   color: var(--blue);   }
-    .kpi-icon.green  { background: var(--green-lt);  color: var(--green);  }
-    .kpi-icon.red    { background: var(--red-lt);    color: var(--red);    }
-    .kpi-icon.purple { background: var(--purple-lt); color: var(--purple); }
-
-    .kpi-value {
-      font-size: 30px;
+    .kpi-ic i { font-size: 16px; }
+    .kpi-val {
+      font-size: 28px;
       font-weight: 900;
       letter-spacing: -0.04em;
       color: var(--text-1);
       margin-bottom: 8px;
       line-height: 1;
     }
-    .kpi-footer {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
+    .kpi-foot {
+      font-size: 11px;
       color: var(--text-3);
-      font-weight: 500;
+      display: flex; align-items: center; gap: 5px;
     }
-    .kpi-badge {
+    .kpi-pill {
       display: inline-flex;
       align-items: center;
       gap: 3px;
       padding: 2px 8px;
       border-radius: 100px;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
     }
-    .kpi-badge.up   { background: var(--green-lt); color: var(--green); }
-    .kpi-badge.flat { background: var(--bg);       color: var(--text-3); }
-
-    /* Donut inside KPI */
-    .kpi-donut-wrap {
-      position: relative;
-      width: 64px; height: 64px;
-      margin: 8px auto 12px;
+    /* accent bottom bar */
+    .kpi::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
     }
-    .kpi-donut-svg { transform: rotate(-90deg); }
-    .kpi-donut-track { fill: none; stroke: var(--border); stroke-width: 6; }
-    .kpi-donut-fill  { fill: none; stroke: var(--purple); stroke-width: 6; stroke-linecap: round; transition: stroke-dasharray 1s ease; }
-    .kpi-donut-center {
+    .kpi-blue::after   { background: var(--blue); }
+    .kpi-green::after  { background: var(--green); }
+    .kpi-red::after    { background: var(--red); }
+    .kpi-purple::after { background: var(--purple); }
+
+    /* Donut KPI */
+    .kpi-donut {
+      position: relative; width: 60px; height: 60px;
+      margin: 4px auto 10px;
+    }
+    .kpi-donut svg { transform: rotate(-90deg); }
+    .kpi-donut-track { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 6; }
+    .kpi-donut-fill  { fill: none; stroke: var(--purple); stroke-width: 6; stroke-linecap: round; transition: stroke-dasharray 1.2s ease; }
+    .kpi-donut-val {
       position: absolute; inset: 0;
       display: flex; align-items: center; justify-content: center;
-      font-size: 13px; font-weight: 800; color: var(--text-1);
+      font-size: 12px; font-weight: 800; color: var(--text-1);
     }
 
     /* ═══════════════════════════════════
-       MAIN GRID: chart + sidebar
+       MAIN GRID: chart + AI panel
     ═══════════════════════════════════ */
-    .main-grid {
+    .center-grid {
       display: grid;
-      grid-template-columns: 1fr 320px;
-      gap: 16px;
-      margin-bottom: 24px;
+      grid-template-columns: 1fr 340px;
+      gap: 12px;
+      margin-bottom: 16px;
     }
 
-    /* Chart Card */
+    /* CHART */
     .chart-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--card);
+      border: 1px solid var(--card-border);
       border-radius: var(--radius-lg);
-      padding: 24px;
-      box-shadow: var(--shadow);
+      padding: 22px;
     }
-    .chart-header {
+    .chart-head {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
-    .chart-title { font-size: 14px; font-weight: 700; color: var(--text-1); margin-bottom: 2px; }
-    .chart-sub   { font-size: 12px; color: var(--text-3); }
-    .chart-legend {
-      display: flex;
-      gap: 16px;
-    }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-3);
-    }
-    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
-    .chart-wrap { position: relative; height: 260px; }
+    .chart-ttl { font-size: 13px; font-weight: 700; color: var(--text-1); margin-bottom: 3px; }
+    .chart-sub { font-size: 11px; color: var(--text-3); }
+    .chart-leg { display: flex; gap: 14px; }
+    .leg-item  { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; color: var(--text-3); }
+    .leg-dot   { width: 6px; height: 6px; border-radius: 50%; }
+    .chart-wrap { position: relative; height: 240px; }
 
-    /* Alertas Card (sidebar) */
-    .alerts-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+    /* AI PANEL */
+    .ai-panel {
+      background: var(--card);
+      border: 1px solid var(--card-border);
       border-radius: var(--radius-lg);
-      padding: 22px;
-      box-shadow: var(--shadow);
       display: flex;
       flex-direction: column;
-      max-height: 380px;
+      overflow: hidden;
     }
-    .alerts-title { font-size: 13px; font-weight: 700; color: var(--text-1); margin-bottom: 4px; }
-    .alerts-sub   { font-size: 11px; color: var(--text-3); margin-bottom: 16px; }
-    .alerts-list  { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-
-    .alert-item {
+    .ai-head {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--card-border);
       display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid transparent;
+      align-items: center;
+      gap: 12px;
     }
-    .alert-dot {
-      width: 7px; height: 7px;
+    .ai-orb-wrap { position: relative; width: 36px; height: 36px; flex-shrink: 0; }
+    .ai-orb {
+      width: 36px; height: 36px;
       border-radius: 50%;
-      flex-shrink: 0;
-      margin-top: 4px;
+      background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+      display: flex; align-items: center; justify-content: center;
+      animation: orbPulse 3s ease-in-out infinite;
     }
-    .alert-body .alert-ttl { font-size: 12px; font-weight: 700; color: var(--text-1); margin-bottom: 2px; }
-    .alert-body .alert-msg { font-size: 11px; color: var(--text-2); line-height: 1.5; }
+    .ai-orb i { font-size: 17px; color: white; }
+    @keyframes orbPulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.35); }
+      50%      { box-shadow: 0 0 0 10px rgba(59,130,246,0); }
+    }
+    .ai-head-info .ai-title { font-size: 13px; font-weight: 700; color: var(--text-1); }
+    .ai-head-info .ai-sub   { font-size: 10px; color: var(--text-3); margin-top: 1px; }
+    .ai-status {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 5px;
+      font-size: 10px; font-weight: 600; color: var(--green);
+    }
+    .ai-status-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--green);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .ai-messages { flex: 1; overflow-y: auto; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; max-height: 240px; }
+    .ai-messages::-webkit-scrollbar { width: 3px; }
+    .ai-messages::-webkit-scrollbar-track { background: transparent; }
+    .ai-messages::-webkit-scrollbar-thumb { background: var(--bg-3); border-radius: 10px; }
+
+    .ai-msg {
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 12px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+    .ai-msg.ai  { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.12); color: var(--text-1); border-radius: 4px 12px 12px 12px; }
+    .ai-msg.usr { background: var(--bg-3); color: var(--text-2); border-radius: 12px 4px 12px 12px; align-self: flex-end; max-width: 85%; }
+
+    .ai-typing {
+      display: flex; align-items: center; gap: 4px; padding: 10px 14px;
+    }
+    .ai-typing span { width: 5px; height: 5px; border-radius: 50%; background: var(--text-3); animation: dot 1.4s ease-in-out infinite; }
+    .ai-typing span:nth-child(2) { animation-delay: 0.2s; }
+    .ai-typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dot { 0%,100%{opacity:0.2;transform:translateY(0)} 50%{opacity:1;transform:translateY(-3px)} }
+
+    .ai-chips {
+      padding: 10px 18px 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      border-top: 1px solid var(--card-border);
+    }
+    .ai-chip {
+      padding: 5px 11px;
+      border-radius: 100px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-2);
+      background: var(--bg-3);
+      border: 1px solid var(--card-border);
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex; align-items: center; gap: 4px;
+      font-family: 'Inter', sans-serif;
+    }
+    .ai-chip i { font-size: 11px; }
+    .ai-chip:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+
+    .ai-input-row {
+      padding: 10px 14px 14px;
+      display: flex;
+      gap: 7px;
+    }
+    .ai-input {
+      flex: 1;
+      background: var(--bg-3);
+      border: 1px solid var(--card-border);
+      border-radius: 9px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: var(--text-1);
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .ai-input::placeholder { color: var(--text-3); }
+    .ai-input:focus { border-color: rgba(59,130,246,0.4); }
+    .ai-send {
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      background: var(--blue);
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+    .ai-send:hover { background: #2563EB; }
+    .ai-send i { font-size: 15px; color: white; }
 
     /* ═══════════════════════════════════
-       TOOLS GRID — circular icons
+       TOOLS
     ═══════════════════════════════════ */
     .tools-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--card);
+      border: 1px solid var(--card-border);
       border-radius: var(--radius-lg);
-      padding: 22px 24px;
-      box-shadow: var(--shadow);
-      margin-bottom: 24px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
     }
+    .sec-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .sec-ttl { font-size: 12px; font-weight: 700; color: var(--text-1); }
+    .sec-sub { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+    .sec-link { font-size: 11px; font-weight: 600; color: var(--blue); text-decoration: none; }
+
     .tools-grid {
       display: grid;
       grid-template-columns: repeat(8, 1fr);
-      gap: 12px;
-      margin-top: 16px;
+      gap: 8px;
     }
-    .tool-item {
+    .tool {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
+      padding: 13px 6px 11px;
+      border-radius: var(--radius);
+      border: 1px solid var(--card-border);
+      background: var(--bg-2);
       text-decoration: none;
-      padding: 14px 8px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      transition: all 0.2s;
       cursor: pointer;
+      transition: all 0.15s;
     }
-    .tool-item:hover {
-      border-color: var(--blue);
-      background: var(--blue-lt);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-    .tool-item:hover .tool-name { color: var(--blue); }
-    .tool-icon {
-      width: 40px; height: 40px;
-      border-radius: 10px;
+    .tool:hover { border-color: var(--blue); background: var(--blue-dim); }
+    .tool:hover .tool-name { color: var(--blue); }
+    .tool-ic {
+      width: 36px; height: 36px;
+      border-radius: 9px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
     }
+    .tool-ic i { font-size: 17px; }
     .tool-name {
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 700;
       color: var(--text-2);
       text-align: center;
@@ -511,396 +508,308 @@
     }
 
     /* ═══════════════════════════════════
-       LOWER GRID: pred + insights + world
+       LOWER GRID
     ═══════════════════════════════════ */
     .lower-grid {
       display: grid;
-      grid-template-columns: 300px 1fr;
-      gap: 16px;
-      margin-bottom: 24px;
+      grid-template-columns: 280px 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
     }
 
-    /* Predicciones card */
     .pred-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--card);
+      border: 1px solid var(--card-border);
       border-radius: var(--radius-lg);
-      padding: 22px;
-      box-shadow: var(--shadow);
+      padding: 18px 20px;
     }
-    .pred-title { font-size: 13px; font-weight: 700; color: var(--text-1); margin-bottom: 4px; }
-    .pred-sub   { font-size: 11px; color: var(--text-3); margin-bottom: 16px; }
-    .pred-list  { display: flex; flex-direction: column; gap: 10px; }
+    .pred-list { display: flex; flex-direction: column; gap: 7px; margin-top: 12px; }
     .pred-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 13px 16px;
+      padding: 11px 14px;
       border-radius: 10px;
-      border: 1px solid var(--border);
+      background: var(--bg-2);
+      border: 1px solid var(--card-border);
     }
-    .pred-lbl  { font-size: 12px; font-weight: 600; color: var(--text-2); }
-    .pred-hint { font-size: 10px; color: var(--text-3); margin-top: 2px; }
-    .pred-val  { font-size: 15px; font-weight: 800; letter-spacing: -0.02em; }
+    .pred-lbl  { font-size: 11px; font-weight: 600; color: var(--text-2); }
+    .pred-hint { font-size: 9.5px; color: var(--text-3); margin-top: 1px; }
+    .pred-val  { font-size: 14px; font-weight: 800; letter-spacing: -0.02em; }
 
-    /* Insights card */
     .insights-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--card);
+      border: 1px solid var(--card-border);
       border-radius: var(--radius-lg);
-      padding: 22px;
-      box-shadow: var(--shadow);
+      padding: 18px 20px;
     }
-    .insights-title { font-size: 13px; font-weight: 700; color: var(--text-1); margin-bottom: 4px; }
-    .insights-sub   { font-size: 11px; color: var(--text-3); margin-bottom: 16px; }
-    .insights-grid  {
+    .insights-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 8px;
+      margin-top: 12px;
     }
-    .insight-item {
-      padding: 14px 16px;
+    .ins-item {
+      padding: 12px 14px;
       border-radius: 10px;
-      border-left: 3px solid;
+      border-left: 2px solid;
     }
-    .insight-item p { font-size: 12px; font-weight: 500; color: var(--text-2); line-height: 1.6; margin: 0; }
+    .ins-item p { font-size: 11.5px; font-weight: 500; color: var(--text-2); line-height: 1.6; margin: 0; }
+
+    /* ALERTS */
+    .alerts-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    .alert-item {
+      display: flex; align-items: flex-start; gap: 9px;
+      padding: 10px 12px;
+      border-radius: 9px;
+      border: 1px solid transparent;
+      margin-bottom: 6px;
+      font-size: 11.5px;
+    }
+    .alert-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+    .alert-ttl { font-size: 11.5px; font-weight: 700; color: var(--text-1); margin-bottom: 2px; }
+    .alert-msg { font-size: 11px; color: var(--text-2); line-height: 1.5; }
 
     /* ═══════════════════════════════════
        WORLD SECTION
     ═══════════════════════════════════ */
     .world-section {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--card);
+      border: 1px solid var(--card-border);
       border-radius: var(--radius-lg);
-      padding: 24px;
-      box-shadow: var(--shadow);
-      margin-bottom: 24px;
+      padding: 20px 22px;
+      margin-bottom: 16px;
       display: none;
     }
-    .world-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-    .world-info { display: flex; align-items: center; gap: 14px; }
-    .world-icon { font-size: 28px; }
-    .world-title { font-size: 15px; font-weight: 700; color: var(--text-1); margin: 0 0 3px; }
-    .world-sub   { font-size: 12px; color: var(--text-3); margin: 0; }
-    .world-badge {
-      padding: 4px 12px;
-      border-radius: 100px;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.05em;
-    }
-    .world-widgets-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-    }
+    .world-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .world-left { display: flex; align-items: center; gap: 12px; }
+    .world-icon-bg { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .world-ttl { font-size: 14px; font-weight: 700; color: var(--text-1); margin: 0 0 2px; }
+    .world-sub { font-size: 11px; color: var(--text-3); margin: 0; }
+    .world-badge { padding: 3px 10px; border-radius: 100px; font-size: 9.5px; font-weight: 800; letter-spacing: 0.06em; }
+    .world-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 
     /* ═══════════════════════════════════
-       EXTRA TOOLS (7 small cards)
+       EXTRA TOOLS
     ═══════════════════════════════════ */
-    .extra-section {
-      margin-bottom: 24px;
-    }
-    .extra-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 12px;
-      margin-top: 14px;
-    }
+    .extra-section { margin-bottom: 20px; }
+    .extra-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 12px; }
     .extra-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--card);
+      border: 1px solid var(--card-border);
       border-radius: var(--radius);
-      padding: 18px 10px;
+      padding: 16px 8px;
       text-align: center;
       text-decoration: none;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 9px;
-      transition: all 0.2s;
-      box-shadow: var(--shadow);
+      display: flex; flex-direction: column; align-items: center; gap: 7px;
+      transition: all 0.15s;
     }
-    .extra-card:hover {
-      border-color: var(--blue);
-      box-shadow: var(--shadow-md);
-      transform: translateY(-2px);
-    }
-    .extra-icon {
-      width: 44px; height: 44px;
-      border-radius: 11px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px;
-    }
-    .extra-lbl {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-2);
-      line-height: 1.3;
-    }
+    .extra-card:hover { border-color: rgba(255,255,255,0.12); background: var(--card-hover); }
+    .extra-ic { width: 38px; height: 38px; border-radius: 9px; display: flex; align-items: center; justify-content: center; }
+    .extra-ic i { font-size: 18px; }
+    .extra-lbl { font-size: 10px; font-weight: 700; color: var(--text-2); line-height: 1.3; }
 
-    /* Footer */
-    .page-footer {
-      padding: 20px 32px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    /* FOOTER */
+    .page-foot {
+      padding: 16px 28px;
+      border-top: 1px solid var(--card-border);
+      display: flex; align-items: center; justify-content: space-between;
     }
-    .page-footer p { font-size: 11px; color: var(--text-3); }
-    .footer-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--green);
-    }
+    .page-foot p { font-size: 10.5px; color: var(--text-3); }
+    .foot-live { display: flex; align-items: center; gap: 6px; }
+    .foot-live-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
 
     /* ═══════════════════════════════════
        RESPONSIVE
     ═══════════════════════════════════ */
     @media (max-width: 1200px) {
-      .kpi-row     { grid-template-columns: repeat(2,1fr); }
-      .main-grid   { grid-template-columns: 1fr; }
-      .tools-grid  { grid-template-columns: repeat(4,1fr); }
-      .lower-grid  { grid-template-columns: 1fr; }
-      .extra-grid  { grid-template-columns: repeat(4,1fr); }
-      .insights-grid { grid-template-columns: 1fr; }
+      .kpi-row    { grid-template-columns: repeat(2,1fr); }
+      .center-grid{ grid-template-columns: 1fr; }
+      .tools-grid { grid-template-columns: repeat(4,1fr); }
+      .lower-grid { grid-template-columns: 1fr; }
+      .extra-grid { grid-template-columns: repeat(4,1fr); }
     }
     @media (max-width: 768px) {
       .sidebar { display: none; }
       .main    { margin-left: 0; }
+      .page    { padding: 14px; }
       .kpi-row { grid-template-columns: 1fr 1fr; }
-      .tools-grid { grid-template-columns: repeat(4,1fr); }
-      .world-widgets-grid { grid-template-columns: 1fr 1fr; }
+      .world-grid { grid-template-columns: 1fr 1fr; }
       .extra-grid { grid-template-columns: repeat(3,1fr); }
-      .page-content { padding: 16px; }
     }
 
-    /* Animations */
-    .fade-up {
-      animation: fadeUp 0.4s ease both;
-    }
-    @keyframes fadeUp {
-      from { opacity:0; transform: translateY(16px); }
-      to   { opacity:1; transform: translateY(0); }
-    }
-    .delay-1 { animation-delay: 0.05s; }
-    .delay-2 { animation-delay: 0.10s; }
-    .delay-3 { animation-delay: 0.15s; }
-    .delay-4 { animation-delay: 0.20s; }
+    /* ANIMATIONS */
+    .fade-up { animation: fadeUp 0.4s ease both; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+    .d1 { animation-delay: 0.04s; }
+    .d2 { animation-delay: 0.08s; }
+    .d3 { animation-delay: 0.12s; }
+    .d4 { animation-delay: 0.16s; }
   </style>
 </head>
 
 <body>
 
-<!-- ═══════════════════════════════════
-     SIDEBAR
-═══════════════════════════════════ -->
+<!-- ═══════════════════════════════════ SIDEBAR ═══ -->
 <nav class="sidebar">
   <div class="sidebar-logo">
-    <div class="logo-mark">
-      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
-        <path d="M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h7v7h-7z"/>
-      </svg>
-    </div>
-    <div>
-      <div class="logo-name">Pymax</div>
-    </div>
-    <div class="logo-plan">Essential</div>
+    <div class="logo-mark"><i class="ph-bold ph-squares-four"></i></div>
+    <div class="logo-name">Pymax</div>
+    <div class="logo-badge">Essential</div>
   </div>
 
-  <div class="sidebar-section">
-    <div class="sidebar-section-label">Principal</div>
-    <a href="#" class="sidebar-item active">
-      <i class="ph-duotone ph-squares-four"></i>
-      <span>Dashboard</span>
-    </a>
-    <a href="{{ url_for('essential_ventas') }}" class="sidebar-item">
-      <i class="ph-duotone ph-currency-dollar"></i>
-      <span>Ingresos & Gastos</span>
-    </a>
-    <a href="{{ url_for('essential_flujo') }}" class="sidebar-item">
-      <i class="ph-duotone ph-chart-line-up"></i>
-      <span>Flujo de Caja</span>
-    </a>
-    <a href="{{ url_for('essential_deudas') }}" class="sidebar-item">
-      <i class="ph-duotone ph-clipboard-text"></i>
-      <span>Obligaciones</span>
-    </a>
-    <a href="{{ url_for('essential_metas') }}" class="sidebar-item">
-      <i class="ph-duotone ph-target"></i>
-      <span>Metas</span>
-    </a>
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">Principal</div>
+    <a href="#" class="s-item active"><i class="ph-duotone ph-house"></i><span>Dashboard</span></a>
+    <a href="{{ url_for('essential_ventas') }}" class="s-item"><i class="ph-duotone ph-currency-dollar"></i><span>Ingresos & Gastos</span></a>
+    <a href="{{ url_for('essential_flujo') }}" class="s-item"><i class="ph-duotone ph-chart-line-up"></i><span>Flujo de Caja</span></a>
+    <a href="{{ url_for('essential_deudas') }}" class="s-item"><i class="ph-duotone ph-clipboard-text"></i><span>Obligaciones</span></a>
+    <a href="{{ url_for('essential_metas') }}" class="s-item"><i class="ph-duotone ph-target"></i><span>Metas</span></a>
   </div>
 
-  <div class="sidebar-section">
-    <div class="sidebar-section-label">Herramientas</div>
-    <a href="{{ url_for('essential_ia') }}" class="sidebar-item">
-      <i class="ph-duotone ph-robot"></i>
-      <span>Asistente IA</span>
-    </a>
-    <a href="{{ url_for('essential_inventario') }}" class="sidebar-item">
-      <i class="ph-duotone ph-package"></i>
-      <span>Inventario</span>
-    </a>
-    <a href="{{ url_for('essential_fuga_dinero') }}" class="sidebar-item">
-      <i class="ph-duotone ph-magnifying-glass"></i>
-      <span>Fuga de Dinero</span>
-    </a>
-    <a href="{{ url_for('essential_punto_equilibrio') }}" class="sidebar-item">
-      <i class="ph-duotone ph-scales"></i>
-      <span>Punto de Equilibrio</span>
-    </a>
-    <a href="{{ url_for('essential_boveda') }}" class="sidebar-item">
-      <i class="ph-duotone ph-vault"></i>
-      <span>Bóveda Docs</span>
-    </a>
-    <a href="{{ url_for('essential_orden_express') }}" class="sidebar-item">
-      <i class="ph-duotone ph-lightning"></i>
-      <span>Orden Express</span>
-    </a>
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">Herramientas</div>
+    <a href="{{ url_for('essential_ia') }}" class="s-item"><i class="ph-duotone ph-brain"></i><span>Asistente IA</span></a>
+    <a href="{{ url_for('essential_inventario') }}" class="s-item"><i class="ph-duotone ph-package"></i><span>Inventario</span></a>
+    <a href="{{ url_for('essential_fuga_dinero') }}" class="s-item"><i class="ph-duotone ph-magnifying-glass"></i><span>Fuga de Dinero</span></a>
+    <a href="{{ url_for('essential_punto_equilibrio') }}" class="s-item"><i class="ph-duotone ph-scales"></i><span>Punto de Equilibrio</span></a>
+    <a href="{{ url_for('essential_boveda') }}" class="s-item"><i class="ph-duotone ph-vault"></i><span>Bóveda Docs</span></a>
+    <a href="{{ url_for('essential_orden_express') }}" class="s-item"><i class="ph-duotone ph-lightning"></i><span>Orden Express</span></a>
   </div>
 
-  <div class="sidebar-section">
-    <div class="sidebar-section-label">Sistema</div>
-    <a href="{{ url_for('essential_semaforo') }}" class="sidebar-item">
-      <i class="ph-duotone ph-traffic-signal"></i>
-      <span>Semáforo Pymax</span>
-    </a>
-    <a href="{{ url_for('essential_calendario') }}" class="sidebar-item">
-      <i class="ph-duotone ph-calendar"></i>
-      <span>Calendario</span>
-    </a>
-    <a href="{{ url_for('essential_auditoria') }}" class="sidebar-item">
-      <i class="ph-duotone ph-notebook"></i>
-      <span>Auditoría</span>
-    </a>
-    <a href="{{ url_for('essential_export_excel') }}" class="sidebar-item">
-      <i class="ph-duotone ph-file-xls"></i>
-      <span>Exportar Excel</span>
-    </a>
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">Sistema</div>
+    <a href="{{ url_for('essential_semaforo') }}" class="s-item"><i class="ph-duotone ph-traffic-signal"></i><span>Semáforo</span></a>
+    <a href="{{ url_for('essential_calendario') }}" class="s-item"><i class="ph-duotone ph-calendar-dots"></i><span>Calendario</span></a>
+    <a href="{{ url_for('essential_auditoria') }}" class="s-item"><i class="ph-duotone ph-notebook"></i><span>Auditoría</span></a>
+    <a href="{{ url_for('essential_export_excel') }}" class="s-item"><i class="ph-duotone ph-file-xls"></i><span>Exportar Excel</span></a>
   </div>
 
-  <div class="sidebar-bottom">
-    <div class="user-row">
-      <div class="user-avatar" id="userAvatarInitial">—</div>
-      <div class="user-info">
-        <div class="user-name" id="sidebarUserName">Cargando...</div>
+  <div class="sidebar-foot">
+    <div class="user-chip">
+      <div class="user-av" id="sidebarInitial">—</div>
+      <div>
+        <div class="user-name" id="sidebarUserName">Cargando…</div>
         <div class="user-email" id="sidebarUserEmail">—</div>
       </div>
     </div>
   </div>
 </nav>
 
-<!-- ═══════════════════════════════════
-     MAIN
-═══════════════════════════════════ -->
+<!-- ═══════════════════════════════════ MAIN ═══ -->
 <div class="main">
 
-  <!-- TOPBAR -->
   <header class="topbar">
-    <div class="topbar-left">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <h1>Dashboard</h1>
-        <span style="font-size:12px;color:var(--text-3);">·</span>
-        <span class="topbar-sub" id="topbarDate">Cargando...</span>
-      </div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span class="topbar-title" id="topGreeting">Dashboard</span>
+      <span style="color:var(--text-3);font-size:12px;">·</span>
+      <span class="topbar-sub" id="topDate">—</span>
     </div>
     <div class="topbar-right">
-      <a href="{{ url_for('essential_progreso') }}" class="topbar-btn secondary">
-        <i class="ph-duotone ph-gauge"></i>
-        Progreso
+      <a href="{{ url_for('essential_progreso') }}" class="t-btn ghost">
+        <i class="ph-duotone ph-gauge"></i> Progreso
       </a>
-      <button class="topbar-btn primary" onclick="openTaskModal()">
-        <i class="ph-bold ph-plus"></i>
-        Nueva Tarea
+      <button class="t-btn primary" onclick="openTaskModal()">
+        <i class="ph-bold ph-plus"></i> Nueva Tarea
       </button>
     </div>
   </header>
 
-  <!-- PAGE CONTENT -->
-  <div class="page-content">
+  <div class="page">
 
-    <!-- KPI ROW -->
+    <!-- KPIs -->
     <div class="kpi-row">
-      <!-- Balance -->
-      <div class="kpi-card blue fade-up">
-        <div class="kpi-header">
-          <span class="kpi-label">Balance Actual</span>
-          <div class="kpi-icon blue"><i class="ph-duotone ph-wallet"></i></div>
+      <div class="kpi kpi-blue fade-up">
+        <div class="kpi-top">
+          <span class="kpi-lbl">Balance Actual</span>
+          <div class="kpi-ic" style="background:var(--blue-glow);">
+            <i class="ph-duotone ph-wallet" style="color:var(--blue);"></i>
+          </div>
         </div>
-        <div class="kpi-value" id="currentBalance">--</div>
-        <div class="kpi-footer">
-          <span class="kpi-badge flat"><i class="ph-bold ph-arrow-right" style="font-size:10px;"></i>&nbsp;Mes en curso</span>
-          <span id="balanceHint"></span>
-        </div>
-      </div>
-
-      <!-- Ingresos -->
-      <div class="kpi-card green fade-up delay-1">
-        <div class="kpi-header">
-          <span class="kpi-label">Ingresos del Mes</span>
-          <div class="kpi-icon green"><i class="ph-duotone ph-trend-up"></i></div>
-        </div>
-        <div class="kpi-value" style="color:var(--green)" id="monthIncome">--</div>
-        <div class="kpi-footer">
-          <span class="kpi-badge up"><i class="ph-bold ph-arrow-up" style="font-size:10px;"></i>&nbsp;<span id="incomeCount">0</span> trans.</span>
+        <div class="kpi-val" id="currentBalance">--</div>
+        <div class="kpi-foot">
+          <span class="kpi-pill" style="background:var(--bg-3);color:var(--text-3);">
+            <i class="ph-bold ph-arrow-right" style="font-size:9px;"></i> Mes en curso
+          </span>
         </div>
       </div>
 
-      <!-- Gastos -->
-      <div class="kpi-card red fade-up delay-2">
-        <div class="kpi-header">
-          <span class="kpi-label">Gastos del Mes</span>
-          <div class="kpi-icon red"><i class="ph-duotone ph-trend-down"></i></div>
+      <div class="kpi kpi-green fade-up d1">
+        <div class="kpi-top">
+          <span class="kpi-lbl">Ingresos del Mes</span>
+          <div class="kpi-ic" style="background:var(--green-glow);">
+            <i class="ph-duotone ph-trend-up" style="color:var(--green);"></i>
+          </div>
         </div>
-        <div class="kpi-value" style="color:var(--red)" id="monthExpenses">--</div>
-        <div class="kpi-footer">
-          <span class="kpi-badge flat"><i class="ph-bold ph-arrow-down" style="font-size:10px;"></i>&nbsp;<span id="expensesCount">0</span> trans.</span>
+        <div class="kpi-val" style="color:var(--green);" id="monthIncome">--</div>
+        <div class="kpi-foot">
+          <span class="kpi-pill" style="background:var(--green-glow);color:var(--green);">
+            <i class="ph-bold ph-arrow-up" style="font-size:9px;"></i>
+            <span id="incomeCount">0</span> trans.
+          </span>
         </div>
       </div>
 
-      <!-- Margen con donut -->
-      <div class="kpi-card purple fade-up delay-3" style="text-align:center;">
-        <div class="kpi-header" style="margin-bottom:10px;">
-          <span class="kpi-label">Margen Neto</span>
-          <div class="kpi-icon purple"><i class="ph-duotone ph-chart-pie-slice"></i></div>
+      <div class="kpi kpi-red fade-up d2">
+        <div class="kpi-top">
+          <span class="kpi-lbl">Gastos del Mes</span>
+          <div class="kpi-ic" style="background:var(--red-glow);">
+            <i class="ph-duotone ph-trend-down" style="color:var(--red);"></i>
+          </div>
         </div>
-        <div class="kpi-donut-wrap">
-          <svg class="kpi-donut-svg" width="64" height="64" viewBox="0 0 64 64">
+        <div class="kpi-val" style="color:var(--red);" id="monthExpenses">--</div>
+        <div class="kpi-foot">
+          <span class="kpi-pill" style="background:var(--red-glow);color:var(--red);">
+            <i class="ph-bold ph-arrow-down" style="font-size:9px;"></i>
+            <span id="expensesCount">0</span> trans.
+          </span>
+        </div>
+      </div>
+
+      <div class="kpi kpi-purple fade-up d3" style="text-align:center;">
+        <div class="kpi-top" style="margin-bottom:6px;">
+          <span class="kpi-lbl">Margen Neto</span>
+          <div class="kpi-ic" style="background:var(--purple-glow);">
+            <i class="ph-duotone ph-chart-pie-slice" style="color:var(--purple);"></i>
+          </div>
+        </div>
+        <div class="kpi-donut">
+          <svg width="60" height="60" viewBox="0 0 60 60">
             <defs>
-              <linearGradient id="donutGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#7C3AED"/>
-                <stop offset="100%" style="stop-color:#2563EB"/>
+              <linearGradient id="dg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#A78BFA"/>
+                <stop offset="100%" style="stop-color:#3B82F6"/>
               </linearGradient>
             </defs>
-            <circle class="kpi-donut-track" cx="32" cy="32" r="27"/>
-            <circle class="kpi-donut-fill" id="donutFill" cx="32" cy="32" r="27" stroke="url(#donutGrad)" stroke-dasharray="0 170"/>
+            <circle class="kpi-donut-track" cx="30" cy="30" r="24"/>
+            <circle class="kpi-donut-fill" id="donutFill" cx="30" cy="30" r="24" stroke="url(#dg)" stroke-dasharray="0 151"/>
           </svg>
-          <div class="kpi-donut-center" id="netMargin">0%</div>
+          <div class="kpi-donut-val" id="netMargin">0%</div>
         </div>
-        <div style="font-size:11px;font-weight:600;color:var(--text-3);">Rentabilidad del período</div>
+        <div style="font-size:10px;font-weight:600;color:var(--text-3);">Rentabilidad del período</div>
       </div>
     </div>
 
-    <!-- MAIN GRID: Chart + Alertas -->
-    <div class="main-grid fade-up delay-2">
+    <!-- CENTER: gráfico + AI -->
+    <div class="center-grid fade-up d2">
 
       <!-- Chart -->
       <div class="chart-card">
-        <div class="chart-header">
+        <div class="chart-head">
           <div>
-            <div class="chart-title">Flujo Financiero · Últimos 6 Meses</div>
-            <div class="chart-sub">Ingresos, gastos y balance neto en tiempo real desde Supabase</div>
+            <div class="chart-ttl">Flujo Financiero — Últimos 6 Meses</div>
+            <div class="chart-sub">Datos en tiempo real desde Supabase</div>
           </div>
-          <div class="chart-legend">
-            <div class="legend-item"><div class="legend-dot" style="background:var(--green);"></div>Ingresos</div>
-            <div class="legend-item"><div class="legend-dot" style="background:var(--red);"></div>Gastos</div>
-            <div class="legend-item"><div class="legend-dot" style="background:var(--blue);"></div>Balance</div>
+          <div class="chart-leg">
+            <div class="leg-item"><div class="leg-dot" style="background:var(--green);"></div>Ingresos</div>
+            <div class="leg-item"><div class="leg-dot" style="background:var(--red);"></div>Gastos</div>
+            <div class="leg-item"><div class="leg-dot" style="background:var(--blue);"></div>Balance</div>
           </div>
         </div>
         <div class="chart-wrap">
@@ -908,167 +817,241 @@
         </div>
       </div>
 
-      <!-- Alertas -->
-      <div class="alerts-card">
-        <div class="alerts-title">Alertas Inteligentes</div>
-        <div class="alerts-sub">Análisis automático · Actualizado en tiempo real</div>
-        <div class="alerts-list" id="alertasContainer">
-          <div style="text-align:center;padding:24px 0;color:var(--text-3);font-size:12px;">
-            Analizando datos...
+      <!-- AI Panel -->
+      <div class="ai-panel">
+        <div class="ai-head">
+          <div class="ai-orb-wrap">
+            <div class="ai-orb"><i class="ph-bold ph-brain"></i></div>
           </div>
+          <div class="ai-head-info">
+            <div class="ai-title">Pymax AI</div>
+            <div class="ai-sub">Asesor financiero inteligente</div>
+          </div>
+          <div class="ai-status">
+            <div class="ai-status-dot"></div>
+            En línea
+          </div>
+        </div>
+
+        <div class="ai-messages" id="aiMessages">
+          <div class="ai-msg ai" id="aiWelcomeMsg">
+            Analizando tus datos financieros...
+          </div>
+        </div>
+
+        <div class="ai-chips">
+          <button class="ai-chip" onclick="sendAIChip('¿Dónde se va mi dinero este mes?')">
+            <i class="ph-bold ph-magnifying-glass"></i> ¿Dónde va mi dinero?
+          </button>
+          <button class="ai-chip" onclick="sendAIChip('¿Cuánto necesito vender hoy para ser rentable?')">
+            <i class="ph-bold ph-scales"></i> Punto de equilibrio
+          </button>
+          <button class="ai-chip" onclick="sendAIChip('¿Cómo mejorar mi margen?')">
+            <i class="ph-bold ph-trend-up"></i> Mejorar margen
+          </button>
+          <button class="ai-chip" onclick="sendAIChip('¿Hay fugas de dinero en mis gastos?')">
+            <i class="ph-bold ph-warning"></i> Fugas de dinero
+          </button>
+        </div>
+
+        <div class="ai-input-row">
+          <input type="text" class="ai-input" id="aiInput" placeholder="Pregúntale algo a tu IA..."
+            onkeydown="if(event.key==='Enter') sendAIMessage()"/>
+          <button class="ai-send" onclick="sendAIMessage()">
+            <i class="ph-bold ph-paper-plane-right"></i>
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- TOOLS -->
-    <div class="tools-card fade-up delay-3">
-      <div class="section-header">
+    <!-- ALERTS -->
+    <div class="alerts-card fade-up d3">
+      <div class="sec-header">
         <div>
-          <div class="section-title">Accesos Rápidos</div>
-          <div class="section-sub">Todas las herramientas del Plan Essential</div>
+          <div class="sec-ttl">Alertas del Sistema</div>
+          <div class="sec-sub">Análisis automático de tus finanzas</div>
+        </div>
+      </div>
+      <div id="alertasContainer">
+        <div style="text-align:center;padding:16px 0;color:var(--text-3);font-size:12px;">Analizando datos…</div>
+      </div>
+    </div>
+
+    <!-- TOOLS -->
+    <div class="tools-card fade-up d3">
+      <div class="sec-header">
+        <div>
+          <div class="sec-ttl">Accesos Rápidos</div>
+          <div class="sec-sub">Todas las herramientas del Plan Essential</div>
         </div>
       </div>
       <div class="tools-grid">
-        <a href="{{ url_for('essential_ia') }}" class="tool-item">
-          <div class="tool-icon" style="background:var(--purple-lt);">🤖</div>
+        <a href="{{ url_for('essential_ia') }}" class="tool">
+          <div class="tool-ic" style="background:rgba(167,139,250,0.12);">
+            <i class="ph-duotone ph-brain" style="color:var(--purple);"></i>
+          </div>
           <span class="tool-name">Asistente IA</span>
         </a>
-        <a href="{{ url_for('essential_ventas') }}" class="tool-item">
-          <div class="tool-icon" style="background:var(--green-lt);">💰</div>
+        <a href="{{ url_for('essential_ventas') }}" class="tool">
+          <div class="tool-ic" style="background:rgba(52,211,153,0.12);">
+            <i class="ph-duotone ph-currency-dollar" style="color:var(--green);"></i>
+          </div>
           <span class="tool-name">Ingresos & Gastos</span>
         </a>
-        <a href="{{ url_for('essential_deudas') }}" class="tool-item">
-          <div class="tool-icon" style="background:var(--amber-lt);">📋</div>
+        <a href="{{ url_for('essential_deudas') }}" class="tool">
+          <div class="tool-ic" style="background:rgba(252,211,77,0.12);">
+            <i class="ph-duotone ph-clipboard-text" style="color:var(--amber);"></i>
+          </div>
           <span class="tool-name">Obligaciones</span>
         </a>
-        <a href="{{ url_for('essential_metas') }}" class="tool-item">
-          <div class="tool-icon" style="background:var(--blue-lt);">🎯</div>
+        <a href="{{ url_for('essential_metas') }}" class="tool">
+          <div class="tool-ic" style="background:rgba(59,130,246,0.12);">
+            <i class="ph-duotone ph-target" style="color:var(--blue);"></i>
+          </div>
           <span class="tool-name">Metas</span>
         </a>
-        <a href="{{ url_for('essential_orden_express') }}" class="tool-item">
-          <div class="tool-icon" style="background:var(--purple-lt);">⚡</div>
+        <a href="{{ url_for('essential_orden_express') }}" class="tool">
+          <div class="tool-ic" style="background:rgba(167,139,250,0.12);">
+            <i class="ph-duotone ph-lightning" style="color:var(--purple);"></i>
+          </div>
           <span class="tool-name">Orden Express</span>
         </a>
-        <a href="{{ url_for('essential_fuga_dinero') }}" class="tool-item">
-          <div class="tool-icon" style="background:var(--red-lt);">🔍</div>
+        <a href="{{ url_for('essential_fuga_dinero') }}" class="tool">
+          <div class="tool-ic" style="background:rgba(248,113,113,0.12);">
+            <i class="ph-duotone ph-magnifying-glass" style="color:var(--red);"></i>
+          </div>
           <span class="tool-name">Fuga de Dinero</span>
         </a>
-        <a href="{{ url_for('essential_punto_equilibrio') }}" class="tool-item">
-          <div class="tool-icon" style="background:var(--green-lt);">⚖️</div>
-          <span class="tool-name">Punto de Equilibrio</span>
+        <a href="{{ url_for('essential_punto_equilibrio') }}" class="tool">
+          <div class="tool-ic" style="background:rgba(52,211,153,0.12);">
+            <i class="ph-duotone ph-scales" style="color:var(--green);"></i>
+          </div>
+          <span class="tool-name">Punto Equilibrio</span>
         </a>
-        <a href="{{ url_for('essential_boveda') }}" class="tool-item">
-          <div class="tool-icon" style="background:var(--blue-lt);">🔐</div>
+        <a href="{{ url_for('essential_boveda') }}" class="tool">
+          <div class="tool-ic" style="background:rgba(59,130,246,0.12);">
+            <i class="ph-duotone ph-vault" style="color:var(--blue);"></i>
+          </div>
           <span class="tool-name">Bóveda Docs</span>
         </a>
       </div>
     </div>
 
-    <!-- LOWER GRID: Predicciones + Insights -->
-    <div class="lower-grid fade-up delay-4">
-
-      <!-- Predicciones -->
+    <!-- LOWER GRID -->
+    <div class="lower-grid fade-up d4">
       <div class="pred-card">
-        <div class="pred-title">Proyección · Próximo Mes</div>
-        <div class="pred-sub">Basado en tu historial financiero</div>
+        <div class="sec-ttl">Proyección · Próximo Mes</div>
+        <div class="sec-sub" style="margin-top:2px;">Basado en historial financiero</div>
         <div id="predictionsGrid" class="pred-list">
-          <div style="text-align:center;padding:20px;color:var(--text-3);font-size:12px;">
-            Calculando proyecciones...
-          </div>
+          <div style="text-align:center;padding:16px;color:var(--text-3);font-size:11px;">Calculando…</div>
         </div>
       </div>
-
-      <!-- Insights IA -->
       <div class="insights-card">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-          <div class="insights-title">Insights IA</div>
-          <a href="{{ url_for('essential_ia') }}" class="section-link">Ver análisis completo →</a>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div class="sec-ttl">Insights IA</div>
+            <div class="sec-sub" style="margin-top:2px;">Análisis de comportamiento financiero</div>
+          </div>
+          <a href="{{ url_for('essential_ia') }}" class="sec-link">Ver más →</a>
         </div>
-        <div class="insights-sub">Análisis inteligente basado en tu comportamiento financiero</div>
         <div class="insights-grid">
-          <div class="insight-item" style="background:#F8FAFF;border-left-color:var(--blue);">
-            <p id="aiInsight1">Analizando tu comportamiento financiero...</p>
+          <div class="ins-item" style="background:rgba(59,130,246,0.05);border-left-color:var(--blue);">
+            <p id="aiInsight1">Analizando…</p>
           </div>
-          <div class="insight-item" style="background:#F0FDF4;border-left-color:var(--green);">
-            <p id="aiInsight2">Procesando datos en tiempo real...</p>
+          <div class="ins-item" style="background:rgba(52,211,153,0.05);border-left-color:var(--green);">
+            <p id="aiInsight2">Procesando…</p>
           </div>
-          <div class="insight-item" style="background:#FFFBEB;border-left-color:var(--amber);">
-            <p id="aiInsight3">Generando recomendaciones...</p>
+          <div class="ins-item" style="background:rgba(252,211,77,0.05);border-left-color:var(--amber);">
+            <p id="aiInsight3">Generando…</p>
           </div>
-          <div class="insight-item" style="background:#F5F3FF;border-left-color:var(--purple);">
-            <p id="aiInsight4">Preparando insights estratégicos...</p>
+          <div class="ins-item" style="background:rgba(167,139,250,0.05);border-left-color:var(--purple);">
+            <p id="aiInsight4">Preparando…</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- MUNDO SECTION -->
+    <!-- WORLD SECTION -->
     <section id="worldWidgetsSection" class="world-section fade-up">
-      <div class="world-header">
-        <div class="world-info">
-          <span id="worldIcon" class="world-icon">🛒</span>
+      <div class="world-hdr">
+        <div class="world-left">
+          <div class="world-icon-bg" id="worldIconBg" style="background:rgba(59,130,246,0.12);">
+            <span id="worldIcon">🛒</span>
+          </div>
           <div>
-            <h2 id="worldTitle" class="world-title">Panel del Negocio</h2>
-            <p id="worldSubtitle" class="world-sub">Métricas específicas de tu tipo de negocio</p>
+            <h2 id="worldTitle" class="world-ttl">Panel del Negocio</h2>
+            <p id="worldSubtitle" class="world-sub">Métricas específicas de tu rubro</p>
           </div>
         </div>
-        <div id="worldBadge" class="world-badge" style="background:#FCE7F3;color:#BE185D;">RETAIL</div>
+        <div id="worldBadge" class="world-badge" style="background:rgba(59,130,246,0.1);color:var(--blue);">RETAIL</div>
       </div>
-      <div id="worldWidgetsGrid" class="world-widgets-grid"></div>
+      <div id="worldWidgetsGrid" class="world-grid"></div>
     </section>
 
-    <!-- MÁS HERRAMIENTAS -->
+    <!-- EXTRA TOOLS -->
     <div class="extra-section fade-up">
-      <div class="section-header">
+      <div class="sec-header">
         <div>
-          <div class="section-title">Más Herramientas</div>
-          <div class="section-sub">Acceso completo a todas las funciones del plan</div>
+          <div class="sec-ttl">Más Herramientas</div>
+          <div class="sec-sub">Acceso completo al Plan Essential</div>
         </div>
       </div>
       <div class="extra-grid">
         <a href="{{ url_for('essential_flujo') }}" class="extra-card">
-          <div class="extra-icon" style="background:#E0F2FE;">📈</div>
+          <div class="extra-ic" style="background:rgba(59,130,246,0.1);">
+            <i class="ph-duotone ph-chart-line-up" style="color:var(--blue);"></i>
+          </div>
           <span class="extra-lbl">Flujo de Caja</span>
         </a>
         <a href="{{ url_for('essential_progreso') }}" class="extra-card">
-          <div class="extra-icon" style="background:#DBEAFE;">⚡</div>
+          <div class="extra-ic" style="background:rgba(167,139,250,0.1);">
+            <i class="ph-duotone ph-gauge" style="color:var(--purple);"></i>
+          </div>
           <span class="extra-lbl">Progreso</span>
         </a>
         <a href="{{ url_for('essential_calendario') }}" class="extra-card">
-          <div class="extra-icon" style="background:#F0FDF4;">📅</div>
+          <div class="extra-ic" style="background:rgba(52,211,153,0.1);">
+            <i class="ph-duotone ph-calendar-dots" style="color:var(--green);"></i>
+          </div>
           <span class="extra-lbl">Calendario</span>
         </a>
         <a href="{{ url_for('essential_semaforo') }}" class="extra-card">
-          <div class="extra-icon" style="background:#FEF3C7;">🚦</div>
+          <div class="extra-ic" style="background:rgba(252,211,77,0.1);">
+            <i class="ph-duotone ph-traffic-signal" style="color:var(--amber);"></i>
+          </div>
           <span class="extra-lbl">Semáforo</span>
         </a>
         <a href="{{ url_for('essential_auditoria') }}" class="extra-card">
-          <div class="extra-icon" style="background:#DDD6FE;">📓</div>
+          <div class="extra-ic" style="background:rgba(167,139,250,0.1);">
+            <i class="ph-duotone ph-notebook" style="color:var(--purple);"></i>
+          </div>
           <span class="extra-lbl">Auditoría</span>
         </a>
         <a href="{{ url_for('essential_inventario') }}" class="extra-card">
-          <div class="extra-icon" style="background:#FEE2E2;">📦</div>
+          <div class="extra-ic" style="background:rgba(248,113,113,0.1);">
+            <i class="ph-duotone ph-package" style="color:var(--red);"></i>
+          </div>
           <span class="extra-lbl">Inventario</span>
         </a>
         <a href="{{ url_for('essential_export_excel') }}" class="extra-card">
-          <div class="extra-icon" style="background:#D1FAE5;">📊</div>
+          <div class="extra-ic" style="background:rgba(52,211,153,0.1);">
+            <i class="ph-duotone ph-file-xls" style="color:var(--green);"></i>
+          </div>
           <span class="extra-lbl">Exportar Excel</span>
         </a>
       </div>
     </div>
 
-  </div><!-- /page-content -->
+  </div><!-- /page -->
 
-  <!-- FOOTER -->
-  <footer class="page-footer">
-    <div style="display:flex;align-items:center;gap:8px;">
-      <div class="footer-dot"></div>
-      <p>Conectado · Datos en tiempo real desde Supabase</p>
+  <footer class="page-foot">
+    <div class="foot-live">
+      <div class="foot-live-dot"></div>
+      <p>Conectado · Datos en tiempo real</p>
     </div>
     <p>Pymax Essential · <span id="pendingTasksText">0 tareas pendientes</span></p>
   </footer>
-
-</div><!-- /main -->
+</div>
 
 <!-- MODAL TAREAS -->
 <div class="task-modal-overlay" id="taskModal" onclick="if(event.target===this) closeTaskModal()">
@@ -1078,458 +1061,515 @@
       <button class="task-modal-close" onclick="closeTaskModal()"><i class="ph-bold ph-x"></i></button>
     </div>
     <div class="task-input-group">
-      <label class="task-input-label" for="taskNameInput">Nombre de la tarea *</label>
+      <label class="task-input-label" for="taskNameInput">Nombre *</label>
       <input type="text" id="taskNameInput" class="task-input" placeholder="Ej: Revisar facturas pendientes"/>
     </div>
     <div class="task-input-group">
       <label class="task-input-label" for="taskDescInput">Descripción (opcional)</label>
-      <textarea id="taskDescInput" class="task-input task-textarea" placeholder="Agrega más detalles..."></textarea>
+      <textarea id="taskDescInput" class="task-input task-textarea" placeholder="Más detalles…"></textarea>
     </div>
     <div class="task-modal-actions">
       <button class="task-btn task-btn-secondary" onclick="closeTaskModal()">Cancelar</button>
-      <button class="task-btn task-btn-primary" onclick="addTaskFromModal()">Agregar Tarea</button>
+      <button class="task-btn task-btn-primary" onclick="addTaskFromModal()">Agregar</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
+<!-- ═══════════════════════════════════════════════════════
      SCRIPTS — 100% SUPABASE REAL
-══════════════════════════════════════════ -->
+═══════════════════════════════════════════════════════ -->
 <script>
-var _supabase = null, _currentUser = null, _businessProfile = null;
+var _sb = null, _user = null, _biz = null, _finData = {};
 
-document.addEventListener('DOMContentLoaded', async function() {
-  console.log('🚀 Pymax Dashboard iniciando...');
-  _supabase = window.supabase.createClient('{{ SUPABASE_URL }}', '{{ SUPABASE_KEY }}');
-
-  const { data:{ user } } = await _supabase.auth.getUser();
+document.addEventListener('DOMContentLoaded', async () => {
+  _sb = window.supabase.createClient('{{ SUPABASE_URL }}', '{{ SUPABASE_KEY }}');
+  const { data:{ user } } = await _sb.auth.getUser();
   if (!user) { window.location.href = '/'; return; }
-  _currentUser = user;
-  console.log('✅ Usuario:', user.email);
+  _user = user;
 
-  updateWelcomeMessage(user);
-  await loadBusinessProfile();
-  await loadFinancialData();
-  setTimeout(loadAIInsights, 800);
-  await checkAndShowTour();
+  setTopbar(user);
+  await loadBiz();
+  await loadFinancials();
+  setTimeout(rotateInsights, 800);
+  await checkTour();
 });
 
-function updateWelcomeMessage(user) {
-  const hour = new Date().getHours();
-  const greeting = hour < 12 ? 'Buenos días' : hour < 20 ? 'Buenas tardes' : 'Buenas noches';
-  const name = user.user_metadata?.full_name?.split(' ')[0]
-             || user.user_metadata?.name?.split(' ')[0]
-             || user.email.split('@')[0];
-  const nameCapital = name.charAt(0).toUpperCase() + name.slice(1);
+/* ── TOPBAR / SIDEBAR ── */
+function setTopbar(u) {
+  const h = new Date().getHours();
+  const g = h < 12 ? 'Buenos días' : h < 20 ? 'Buenas tardes' : 'Buenas noches';
+  const n = (u.user_metadata?.full_name || u.user_metadata?.name || u.email.split('@')[0]).split(' ')[0];
+  const nc = n.charAt(0).toUpperCase() + n.slice(1);
 
-  // Sidebar user info
-  const initEl = document.getElementById('userAvatarInitial');
-  if (initEl) initEl.textContent = nameCapital.charAt(0);
-  const nameEl = document.getElementById('sidebarUserName');
-  if (nameEl) nameEl.textContent = nameCapital;
-  const emailEl = document.getElementById('sidebarUserEmail');
-  if (emailEl) emailEl.textContent = user.email;
+  const tg = document.getElementById('topGreeting');
+  if (tg) tg.textContent = `${g}, ${nc}`;
 
-  // Topbar
-  const topH1 = document.querySelector('.topbar-left h1');
-  if (topH1) topH1.textContent = `${greeting}, ${nameCapital}`;
+  const td = document.getElementById('topDate');
+  if (td) {
+    const s = new Date().toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long' });
+    td.textContent = s.charAt(0).toUpperCase() + s.slice(1);
+  }
 
-  const dateEl = document.getElementById('topbarDate');
-  if (dateEl) {
-    const now = new Date();
-    const str = now.toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-    dateEl.textContent = str.charAt(0).toUpperCase() + str.slice(1);
+  const si = document.getElementById('sidebarInitial');  if (si) si.textContent = nc.charAt(0);
+  const sn = document.getElementById('sidebarUserName'); if (sn) sn.textContent = nc;
+  const se = document.getElementById('sidebarUserEmail');if (se) se.textContent = u.email;
+
+  // Mensaje bienvenida en AI
+  setTimeout(() => setAIWelcome(nc), 600);
+}
+
+function setAIWelcome(name) {
+  const el = document.getElementById('aiWelcomeMsg');
+  if (!el) return;
+  const fin = _finData;
+  let msg = `Hola ${name}, soy tu asesor financiero Pymax.`;
+  if (fin.ing > 0 || fin.gas > 0) {
+    msg += ` Este mes llevas $${fmt(fin.ing)} en ingresos y $${fmt(fin.gas)} en gastos.`;
+    if (fin.bal >= 0) msg += ` Tu balance es positivo (+$${fmt(fin.bal)}). `;
+    else msg += ` Ojo: tus gastos superan ingresos (-$${fmt(Math.abs(fin.bal))}). `;
+    msg += `¿En qué puedo ayudarte?`;
+  } else {
+    msg += ` Aún no tienes transacciones este mes. Comienza a registrar para que pueda darte análisis personalizados.`;
+  }
+  typeWriter(el, msg);
+}
+
+function typeWriter(el, text, i=0) {
+  if (i === 0) el.textContent = '';
+  if (i < text.length) {
+    el.textContent += text.charAt(i);
+    setTimeout(() => typeWriter(el, text, i+1), 18);
   }
 }
 
-async function loadBusinessProfile() {
+/* ── FINANCIALS ── */
+async function loadFinancials() {
+  const now = new Date();
+  const s = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+  const e = new Date(now.getFullYear(), now.getMonth()+1, 0, 23,59,59).toISOString();
   try {
-    const { data, error } = await _supabase.from('user_business_profiles').select('*').eq('user_id', _currentUser.id).single();
-    _businessProfile = (error || !data) ? null : data;
-  } catch(e) { _businessProfile = null; }
-  renderWorldWidgets();
-}
+    const { data } = await _sb.from('user_operations').select('type,amount')
+      .eq('user_id',_user.id).gte('created_at',s).lte('created_at',e);
+    const ops = data || [];
+    const ing = ops.filter(o=>o.type==='ingreso').reduce((a,o)=>a+parseFloat(o.amount||0),0);
+    const gas = ops.filter(o=>o.type==='egreso') .reduce((a,o)=>a+parseFloat(o.amount||0),0);
+    const bal = ing - gas;
+    const mar = ing > 0 ? Math.round((bal/ing)*100) : 0;
+    _finData = { ing, gas, bal, mar, ops };
 
-async function loadFinancialData() {
-  const now   = new Date();
-  const start = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-  const end   = new Date(now.getFullYear(), now.getMonth()+1, 0, 23,59,59,999).toISOString();
+    setVal('currentBalance', bal);
+    setVal('monthIncome',   ing, 'var(--green)');
+    setVal('monthExpenses', gas, 'var(--red)');
 
-  try {
-    const { data, error } = await _supabase.from('user_operations').select('type,amount')
-      .eq('user_id', _currentUser.id).gte('created_at', start).lte('created_at', end);
-    if (error) throw error;
-
-    const ops  = data || [];
-    const ing  = ops.filter(o=>o.type==='ingreso').reduce((s,o)=>s+parseFloat(o.amount||0),0);
-    const gas  = ops.filter(o=>o.type==='egreso') .reduce((s,o)=>s+parseFloat(o.amount||0),0);
-    const bal  = ing - gas;
-    const mar  = ing > 0 ? Math.round((bal/ing)*100) : 0;
-
-    setKPI('currentBalance', bal);
-    setKPI('monthIncome',   ing, 'var(--green)');
-    setKPI('monthExpenses', gas, 'var(--red)');
-
-    const mi = document.getElementById('netMargin');
-    if (mi) mi.textContent = mar + '%';
-    updateDonut(mar);
+    const nm = document.getElementById('netMargin');
+    if (nm) nm.textContent = mar + '%';
+    animDonut(mar);
 
     const ic = document.getElementById('incomeCount');
     const ec = document.getElementById('expensesCount');
     if (ic) ic.textContent = ops.filter(o=>o.type==='ingreso').length;
     if (ec) ec.textContent = ops.filter(o=>o.type==='egreso').length;
 
-    window._finData = { ing, gas, bal, mar, ops };
-    setTimeout(analizarYGenerarAlertas, 200);
-    setTimeout(generarPredicciones, 300);
-
-  } catch(e) {
-    console.error('Error datos financieros:', e);
-    ['currentBalance','monthIncome','monthExpenses'].forEach(id => setKPI(id, 0));
-    document.getElementById('netMargin').textContent = '0%';
-    updateDonut(0);
-    setTimeout(analizarYGenerarAlertas, 200);
-    setTimeout(generarPredicciones, 300);
+    renderAlerts();
+    renderPredictions();
+  } catch(err) {
+    console.error(err);
+    ['currentBalance','monthIncome','monthExpenses'].forEach(id=>setVal(id,0));
+    renderAlerts(); renderPredictions();
   }
-  await loadChartData();
+  await loadChart();
 }
 
-function setKPI(id, value, color) {
+function setVal(id, v, color) {
   const el = document.getElementById(id);
   if (!el) return;
-  el.textContent = '$' + Math.abs(Math.round(value)).toLocaleString('es-CL');
+  el.textContent = '$' + Math.abs(Math.round(v)).toLocaleString('es-CL');
   if (color) el.style.color = color;
-  else if (value < 0) el.style.color = 'var(--red)';
+  else if (v < 0) el.style.color = 'var(--red)';
   else el.style.color = '';
 }
 
-function updateDonut(pct) {
-  const fill = document.getElementById('donutFill');
-  if (!fill) return;
-  const r = 27, c = 2 * Math.PI * r; // ≈170
-  const v = Math.min(Math.max(pct, 0), 100);
-  fill.style.strokeDasharray = `${c * v/100} ${c}`;
+function animDonut(pct) {
+  const f = document.getElementById('donutFill');
+  if (!f) return;
+  const c = 2 * Math.PI * 24;
+  f.style.strokeDasharray = `${c * Math.min(Math.max(pct,0),100)/100} ${c}`;
 }
 
-async function loadChartData() {
+function fmt(n) { return Math.round(n).toLocaleString('es-CL'); }
+
+/* ── CHART ── */
+async function loadChart() {
   const ctx = document.getElementById('financialChart');
   if (!ctx) return;
   const now = new Date();
-  const months=[], ingArr=[], gasArr=[];
-
+  const labels=[], ing=[], gas=[];
   for (let i=5; i>=0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
-    const s = new Date(d.getFullYear(), d.getMonth(), 1).toISOString();
-    const e = new Date(d.getFullYear(), d.getMonth()+1, 0, 23,59,59).toISOString();
-    months.push(d.toLocaleDateString('es-ES', { month:'short', year:'2-digit' }));
+    const s = new Date(d.getFullYear(),d.getMonth(),1).toISOString();
+    const e = new Date(d.getFullYear(),d.getMonth()+1,0,23,59,59).toISOString();
+    labels.push(d.toLocaleDateString('es-ES',{month:'short',year:'2-digit'}));
     try {
-      const { data } = await _supabase.from('user_operations').select('type,amount')
-        .eq('user_id',_currentUser.id).gte('created_at',s).lte('created_at',e);
+      const { data } = await _sb.from('user_operations').select('type,amount')
+        .eq('user_id',_user.id).gte('created_at',s).lte('created_at',e);
       const ops = data||[];
-      ingArr.push(ops.filter(o=>o.type==='ingreso').reduce((s,o)=>s+parseFloat(o.amount||0),0));
-      gasArr.push(ops.filter(o=>o.type==='egreso') .reduce((s,o)=>s+parseFloat(o.amount||0),0));
-    } catch(e) { ingArr.push(0); gasArr.push(0); }
+      ing.push(ops.filter(o=>o.type==='ingreso').reduce((a,o)=>a+parseFloat(o.amount||0),0));
+      gas.push(ops.filter(o=>o.type==='egreso') .reduce((a,o)=>a+parseFloat(o.amount||0),0));
+    } catch { ing.push(0); gas.push(0); }
   }
-  const balArr = ingArr.map((v,i) => v - gasArr[i]);
+  const bal = ing.map((v,i)=>v-gas[i]);
 
   new Chart(ctx, {
     type:'line',
     data:{
-      labels: months,
+      labels,
       datasets:[
-        { label:'Ingresos', data:ingArr, borderColor:'#16A34A', backgroundColor:'rgba(22,163,74,0.07)', borderWidth:2, tension:0.4, fill:true, pointRadius:4, pointBackgroundColor:'#16A34A', pointBorderColor:'#fff', pointBorderWidth:2 },
-        { label:'Gastos',   data:gasArr, borderColor:'#DC2626', backgroundColor:'rgba(220,38,38,0.07)',  borderWidth:2, tension:0.4, fill:true, pointRadius:4, pointBackgroundColor:'#DC2626', pointBorderColor:'#fff', pointBorderWidth:2 },
-        { label:'Balance',  data:balArr, borderColor:'#2563EB', backgroundColor:'rgba(37,99,235,0.05)',  borderWidth:2, tension:0.4, fill:true, pointRadius:4, pointBackgroundColor:'#2563EB', pointBorderColor:'#fff', pointBorderWidth:2, borderDash:[5,5] }
+        { label:'Ingresos', data:ing, borderColor:'#34D399', backgroundColor:'rgba(52,211,153,0.06)', borderWidth:1.5, tension:0.4, fill:true, pointRadius:3, pointBackgroundColor:'#34D399', pointBorderColor:'#0D1117', pointBorderWidth:2 },
+        { label:'Gastos',   data:gas, borderColor:'#F87171', backgroundColor:'rgba(248,113,113,0.06)', borderWidth:1.5, tension:0.4, fill:true, pointRadius:3, pointBackgroundColor:'#F87171', pointBorderColor:'#0D1117', pointBorderWidth:2 },
+        { label:'Balance',  data:bal, borderColor:'#3B82F6', backgroundColor:'rgba(59,130,246,0.04)',  borderWidth:1.5, tension:0.4, fill:true, pointRadius:3, pointBackgroundColor:'#3B82F6', pointBorderColor:'#0D1117', pointBorderWidth:2, borderDash:[5,4] }
       ]
     },
     options:{
       responsive:true, maintainAspectRatio:false,
       plugins:{
         legend:{ display:false },
-        tooltip:{ backgroundColor:'#0D0F12', titleColor:'#fff', bodyColor:'#9AA3B2', padding:12, cornerRadius:8,
-          callbacks:{ label:c => c.dataset.label+': $'+Math.abs(c.parsed.y).toLocaleString('es-CL') } }
+        tooltip:{
+          backgroundColor:'#161B22', titleColor:'#F0F6FC', bodyColor:'#8B949E',
+          borderColor:'rgba(255,255,255,0.07)', borderWidth:1, padding:12, cornerRadius:10,
+          callbacks:{ label:c=>c.dataset.label+': $'+Math.abs(c.parsed.y).toLocaleString('es-CL') }
+        }
       },
       scales:{
-        y:{ beginAtZero:true, grid:{ color:'#F0F1F3', drawBorder:false }, border:{ display:false },
-          ticks:{ color:'#9AA3B2', font:{ size:11 }, callback:v=>'$'+v.toLocaleString('es-CL') } },
-        x:{ grid:{ display:false }, border:{ display:false }, ticks:{ color:'#9AA3B2', font:{ size:11, weight:'600' } } }
+        y:{ beginAtZero:true, grid:{ color:'rgba(255,255,255,0.04)' }, border:{ display:false },
+          ticks:{ color:'#484F58', font:{size:10}, callback:v=>'$'+v.toLocaleString('es-CL') } },
+        x:{ grid:{ display:false }, border:{ display:false },
+          ticks:{ color:'#484F58', font:{size:10,weight:'600'} } }
       },
       interaction:{ intersect:false, mode:'index' }
     }
   });
-  console.log('📈 Gráfico cargado con datos reales');
 }
 
-function updatePendingTasks(count) {
-  const el = document.getElementById('pendingTasksText');
-  if (el) el.textContent = `${count} tareas pendientes`;
+/* ── AI CHAT (con OpenAI real) ── */
+var _aiHistory = [];
+
+async function sendAIMessage() {
+  const inp = document.getElementById('aiInput');
+  const msg = inp ? inp.value.trim() : '';
+  if (!msg) return;
+  if (inp) inp.value = '';
+  appendMsg(msg, 'usr');
+  await callAI(msg);
 }
 
-// ── AI INSIGHTS ──
-const aiPool = [
-  '💡 Tu flujo de caja muestra estabilidad. Considera invertir el excedente para maximizar retornos.',
-  '📊 Analiza tus gastos recurrentes. Podrías optimizar hasta un 15% de costos operacionales.',
-  '🎯 Establece metas financieras trimestrales para mejor control y proyección de crecimiento.',
-  '⚡ Automatiza tus reportes mensuales. Ahorrarás 4-6 horas de trabajo administrativo.',
-  '📈 Tus números sugieren potencial de crecimiento del 15-20% en el próximo trimestre.',
-  '💰 Balance positivo detectado. Momento ideal para crear un fondo de emergencia empresarial.',
-  '🔍 Revisa tus categorías de gasto. La optimización podría liberar capital de trabajo.',
-  '🚀 Tu disciplina financiera es excelente. Continúa registrando diariamente.',
-  '💼 Considera diversificar tus fuentes de ingreso para mayor resiliencia financiera.',
-  '🌟 Tu margen operativo puede mejorar. Analiza qué gastos no aportan valor directo.',
-  '⏰ Revisa tus finanzas semanalmente. Los mejores empresarios tienen esta rutina.',
-  '🔮 Con tu tendencia actual, alcanzarás estabilidad sólida en 45-60 días.'
-];
+async function sendAIChip(text) { appendMsg(text, 'usr'); await callAI(text); }
 
-function loadAIInsights() {
-  const pool = [...aiPool].sort(()=>0.5-Math.random()).slice(0,4);
-  pool.forEach((txt, i) => {
-    const el = document.getElementById(`aiInsight${i+1}`);
-    if (!el) return;
-    el.style.opacity='0';
-    setTimeout(()=>{ el.textContent=txt; el.style.transition='opacity 0.5s'; el.style.opacity='1'; }, 200+i*80);
-  });
+function appendMsg(text, role) {
+  const box = document.getElementById('aiMessages');
+  if (!box) return;
+  const d = document.createElement('div');
+  d.className = `ai-msg ${role}`;
+  d.textContent = text;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+  if (role === 'usr') _aiHistory.push({ role:'user', content:text });
 }
-setInterval(loadAIInsights, 30000);
 
-// ── ALERTAS ──
-function analizarYGenerarAlertas() {
-  const container = document.getElementById('alertasContainer');
-  if (!container) return;
-  const { ing=0, gas=0, bal=0 } = window._finData || {};
-  const alertas = [];
+function showTyping() {
+  const box = document.getElementById('aiMessages');
+  if (!box) return null;
+  const d = document.createElement('div');
+  d.className = 'ai-typing'; d.id = 'aiTyping';
+  d.innerHTML = '<span></span><span></span><span></span>';
+  box.appendChild(d); box.scrollTop = box.scrollHeight;
+  return d;
+}
+
+async function callAI(userMsg) {
+  const typing = showTyping();
+  try {
+    const fin = _finData;
+    const context = {
+      balance: fin.bal || 0,
+      ingresos: fin.ing || 0,
+      gastos: fin.gas || 0,
+      margen: fin.mar || 0,
+      transacciones: (fin.ops||[]).length
+    };
+
+    const resp = await fetch('/api/ai/chat', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify({
+        message: userMsg,
+        context,
+        history: _aiHistory.slice(-6),
+        plan: 'essential'
+      })
+    });
+
+    const data = await resp.json();
+    if (typing) typing.remove();
+
+    const aiText = data.response || 'Lo siento, no pude generar una respuesta. Intenta de nuevo.';
+    _aiHistory.push({ role:'assistant', content:aiText });
+
+    const box = document.getElementById('aiMessages');
+    if (box) {
+      const d = document.createElement('div');
+      d.className = 'ai-msg ai';
+      box.appendChild(d);
+      box.scrollTop = box.scrollHeight;
+      typeWriter(d, aiText);
+    }
+  } catch(err) {
+    if (typing) typing.remove();
+    appendMsg('Error de conexión. Intenta nuevamente.', 'ai');
+  }
+}
+
+/* ── ALERTS ── */
+function renderAlerts() {
+  const c = document.getElementById('alertasContainer');
+  if (!c) return;
+  const { ing=0, gas=0, bal=0 } = _finData;
+  const items = [];
 
   if (gas > ing && gas > 0)
-    alertas.push(mkAlert('red', 'Gastos superan ingresos', `Gastaste $${fmt(gas)} pero ingresaste $${fmt(ing)} este mes.`,
-      { label:'Revisar', href:"{{ url_for('essential_ventas') }}" }));
-
+    items.push(mkAlert('red','Gastos superan ingresos',`Este mes ingresaste $${fmt(ing)} y gastaste $${fmt(gas)}.`, "{{ url_for('essential_ventas') }}", 'Revisar'));
   if (bal > 0 && bal < 50000 && ing > 0)
-    alertas.push(mkAlert('amber', 'Balance bajo', `Tu balance es $${fmt(bal)}. Considera ajustar gastos.`,
-      { label:'Ver flujo', href:"{{ url_for('essential_flujo') }}" }));
-
+    items.push(mkAlert('amber','Balance bajo detectado',`Tu balance neto es $${fmt(bal)}. Considera ajustar gastos.`, "{{ url_for('essential_flujo') }}", 'Ver flujo'));
   if (ing === 0 && gas > 0)
-    alertas.push(mkAlert('amber', 'Sin ingresos registrados', '¿Ya ingresaste todas tus transacciones del mes?',
-      { label:'Registrar', href:"{{ url_for('essential_ventas') }}" }));
-
-  if (alertas.length === 0 && (ing > 0 || gas > 0))
-    alertas.push(mkAlert('green', 'Finanzas saludables', 'Tus indicadores están en orden. Sigue así.'));
-
+    items.push(mkAlert('amber','Sin ingresos este mes','¿Ya registraste todas tus ventas?', "{{ url_for('essential_ventas') }}", 'Registrar'));
+  if (items.length === 0 && (ing > 0 || gas > 0))
+    items.push(mkAlert('green','Finanzas en orden','Tus indicadores están equilibrados este mes.', null, null));
   if (ing === 0 && gas === 0)
-    alertas.push(mkAlert('blue', 'Comienza a registrar', 'Aún no tienes transacciones este mes.',
-      { label:'Empezar', href:"{{ url_for('essential_ventas') }}" }));
+    items.push(mkAlert('blue','Sin registros este mes','Comienza a registrar tus transacciones.', "{{ url_for('essential_ventas') }}", 'Empezar'));
 
-  container.innerHTML = alertas.join('');
+  c.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:6px;">${items.join('')}</div>`;
 }
-setInterval(analizarYGenerarAlertas, 60000);
+setInterval(renderAlerts, 60000);
 
-function fmt(n) { return Math.round(n).toLocaleString('es-CL'); }
-
-function mkAlert(color, title, msg, action) {
-  const colors = {
-    red:   { dot:'#DC2626', bg:'rgba(220,38,38,0.04)',   border:'rgba(220,38,38,0.12)'  },
-    amber: { dot:'#D97706', bg:'rgba(217,119,6,0.04)',   border:'rgba(217,119,6,0.12)'  },
-    green: { dot:'#16A34A', bg:'rgba(22,163,74,0.04)',   border:'rgba(22,163,74,0.12)'  },
-    blue:  { dot:'#2563EB', bg:'rgba(37,99,235,0.04)',   border:'rgba(37,99,235,0.12)'  }
-  }[color] || { dot:'#9AA3B2', bg:'#F7F8FA', border:'#E9EAEC' };
-
-  const btn = action
-    ? `<a href="${action.href}" style="flex-shrink:0;padding:4px 11px;color:${colors.dot};border:1px solid ${colors.dot};border-radius:7px;font-size:11px;font-weight:700;text-decoration:none;">${action.label} →</a>` : '';
-
-  return `<div class="alert-item" style="background:${colors.bg};border-color:${colors.border};">
-    <div class="alert-dot" style="background:${colors.dot};"></div>
-    <div class="alert-body" style="flex:1;">
-      <div class="alert-ttl">${title}</div>
+function mkAlert(type, ttl, msg, href, lbl) {
+  const cl = {
+    red:  { dot:'#F87171', bg:'rgba(248,113,113,0.06)',  border:'rgba(248,113,113,0.14)' },
+    amber:{ dot:'#FCD34D', bg:'rgba(252,211,77,0.06)',   border:'rgba(252,211,77,0.14)'  },
+    green:{ dot:'#34D399', bg:'rgba(52,211,153,0.06)',   border:'rgba(52,211,153,0.14)'  },
+    blue: { dot:'#3B82F6', bg:'rgba(59,130,246,0.06)',   border:'rgba(59,130,246,0.14)'  }
+  }[type] || {};
+  const btn = href ? `<a href="${href}" style="flex-shrink:0;padding:3px 10px;color:${cl.dot};border:1px solid ${cl.dot};border-radius:6px;font-size:10px;font-weight:700;text-decoration:none;">${lbl} →</a>` : '';
+  return `<div class="alert-item" style="background:${cl.bg};border-color:${cl.border};flex:1;min-width:200px;">
+    <div class="alert-dot" style="background:${cl.dot};"></div>
+    <div style="flex:1;">
+      <div class="alert-ttl">${ttl}</div>
       <div class="alert-msg">${msg}</div>
     </div>
     ${btn}
   </div>`;
 }
 
-// ── PREDICCIONES ──
-function generarPredicciones() {
-  const grid = document.getElementById('predictionsGrid');
-  if (!grid) return;
-  const { ing=0, gas=0 } = window._finData || {};
-  const ingP = ing;
-  const gasP = gas > 0 ? Math.round(gas*0.95) : 0;
-  const balP = ingP - gasP;
-
-  grid.innerHTML = `
+/* ── PREDICTIONS ── */
+function renderPredictions() {
+  const g = document.getElementById('predictionsGrid');
+  if (!g) return;
+  const { ing=0, gas=0 } = _finData;
+  const gp = gas > 0 ? Math.round(gas*0.95) : 0;
+  const bp = ing - gp;
+  g.innerHTML = `
     <div class="pred-row">
-      <div><div class="pred-lbl">📈 Ingresos estimados</div><div class="pred-hint">Basado en historial</div></div>
-      <div class="pred-val" style="color:var(--green);">$${fmt(ingP)}</div>
+      <div><div class="pred-lbl">Ingresos estimados</div><div class="pred-hint">Promedio histórico</div></div>
+      <div class="pred-val" style="color:var(--green);">$${fmt(ing)}</div>
     </div>
     <div class="pred-row">
-      <div><div class="pred-lbl">📉 Gastos estimados</div><div class="pred-hint">${gasP<gas?'Posible reducción 5%':'Nivel actual'}</div></div>
-      <div class="pred-val" style="color:var(--red);">$${fmt(gasP)}</div>
+      <div><div class="pred-lbl">Gastos estimados</div><div class="pred-hint">${gp<gas?'Reducción est. 5%':'Nivel actual'}</div></div>
+      <div class="pred-val" style="color:var(--red);">$${fmt(gp)}</div>
     </div>
     <div class="pred-row">
-      <div><div class="pred-lbl">💼 Balance proyectado</div><div class="pred-hint">${balP>=0?'↗ Positivo':'↘ Requiere atención'}</div></div>
-      <div class="pred-val" style="color:var(--blue);">$${fmt(balP)}</div>
-    </div>
-  `;
+      <div><div class="pred-lbl">Balance proyectado</div><div class="pred-hint">${bp>=0?'Positivo':'Requiere atención'}</div></div>
+      <div class="pred-val" style="color:var(--blue);">$${fmt(bp)}</div>
+    </div>`;
 }
-setInterval(generarPredicciones, 90000);
+setInterval(renderPredictions, 90000);
 
-// ── WIDGETS POR MUNDO ──
-const WORLD_CONFIGS = {
-  retail:      { icon:'🛒', label:'Retail & Almacenes',        badge:'RETAIL', badgeBg:'#FCE7F3', badgeColor:'#BE185D', subtitle:'Inventario, márgenes y rotación', widgets: [
-    { icon:'📦', title:'Inventario Maestro',    desc:'Estado del stock',         value:'--', sub:'Conecta inventario',   color:'#2563EB', bg:'#EFF4FF', action:"window.location.href='/empresa/essential/inventario'",   actionLabel:'Ver inventario' },
-    { icon:'🏆', title:'Top Productos',         desc:'Mayor margen de ganancia', value:'--', sub:'Sin datos aún',        color:'#D97706', bg:'#FFFBEB' },
-    { icon:'🔔', title:'Alertas de Reposición', desc:'Stock crítico',            value:'--', sub:'Sin alertas',          color:'#DC2626', bg:'#FEF2F2', sem:'verde', action:"window.location.href='/empresa/essential/inventario'", actionLabel:'Ver stock' },
-    { icon:'💰', title:'Margen por Producto',   desc:'Costo vs venta',           value:'--', sub:'Ingresa productos',    color:'#16A34A', bg:'#F0FDF4' },
-    { icon:'🔄', title:'Rotación',              desc:'Velocidad de venta',       value:'--', sub:'Sin datos',            color:'#7C3AED', bg:'#F5F3FF' },
-    { icon:'⚡', title:'Registro Express',       desc:'Venta en 30 seg',          value:'Abrir', sub:'Modo rápido',      color:'#0284C7', bg:'#F0F9FF', action:"window.location.href='/empresa/essential/orden-express'", actionLabel:'Abrir' }
-  ]},
-  tecnico:     { icon:'🔧', label:'Técnico & Talleres',        badge:'TALLER', badgeBg:'#EFF4FF', badgeColor:'#1D4ED8', subtitle:'Órdenes de trabajo, servicios y repuestos', widgets: [
-    { icon:'📋', title:'Órdenes Activas',   desc:'En curso',         value:'0', sub:'Sin órdenes',       color:'#2563EB', bg:'#EFF4FF' },
-    { icon:'⏱️', title:'Tiempo Promedio', desc:'Por reparación',    value:'--',sub:'Sin servicios',     color:'#D97706', bg:'#FFFBEB' },
-    { icon:'💰', title:'Ingreso Servicio', desc:'Este mes',          value:'$0',sub:'Sin servicios',     color:'#16A34A', bg:'#F0FDF4' },
-    { icon:'📦', title:'Piezas Stock',    desc:'Repuestos',         value:'0', sub:'Actualiza inv.',    color:'#7C3AED', bg:'#F5F3FF' },
-    { icon:'⭐', title:'Satisfacción',    desc:'Calificación',      value:'--',sub:'Sin reseñas',       color:'#D97706', bg:'#FFFBEB' },
-    { icon:'⚡', title:'OT Rápida',        desc:'Crea en 30 seg',   value:'Nueva OT', sub:'Express', color:'#0284C7', bg:'#F0F9FF', action:"window.location.href='/empresa/essential/orden-express'", actionLabel:'Crear OT' }
-  ]},
-  gastronomia: { icon:'🍳', label:'Gastronómico',              badge:'RESTO',  badgeBg:'#FFF7ED', badgeColor:'#C2410C', subtitle:'Platos, costos e ingredientes', widgets: [
-    { icon:'🍽️', title:'Platos Vendidos',  desc:'Top del mes',   value:'--', sub:'Sin ventas',     color:'#D97706', bg:'#FFFBEB' },
-    { icon:'🥗',  title:'Costo Ingredientes',desc:'% ventas',    value:'0%', sub:'Meta: 30%',      color:'#16A34A', bg:'#F0FDF4' },
-    { icon:'📉',  title:'Mermas',           desc:'Desperdicio',  value:'$0', sub:'Sin mermas',     color:'#DC2626', bg:'#FEF2F2' },
-    { icon:'💹',  title:'Margen Plato',     desc:'Costo vs venta',value:'0%',sub:'Ingresa menú',   color:'#7C3AED', bg:'#F5F3FF' },
-    { icon:'🕐',  title:'Horas Pico',       desc:'Flujo clientes',value:'--',sub:'Sin datos',      color:'#2563EB', bg:'#EFF4FF' },
-    { icon:'⚡',  title:'Comanda Rápida',   desc:'En segundos',  value:'Abrir',sub:'Express',      color:'#0284C7', bg:'#F0F9FF', action:"window.location.href='/empresa/essential/orden-express'", actionLabel:'Abrir' }
-  ]},
-  profesional: { icon:'💼', label:'Servicios Profesionales',  badge:'PRO',    badgeBg:'#F5F3FF', badgeColor:'#6D28D9', subtitle:'Clientes, cobranza y proyectos', widgets: [
-    { icon:'👥', title:'Clientes Activos', desc:'Proyectos',    value:'0', sub:'Sin clientes',    color:'#7C3AED', bg:'#F5F3FF' },
-    { icon:'💰', title:'Cobranza',        desc:'Por cobrar',   value:'$0',sub:'Al día',           color:'#DC2626', bg:'#FEF2F2' },
-    { icon:'⏱️', title:'Horas Fact.',    desc:'Este mes',     value:'0', sub:'Sin horas',        color:'#D97706', bg:'#FFFBEB' },
-    { icon:'📄', title:'Docs. Vencidos', desc:'Contratos',    value:'0', sub:'Al día',           color:'#16A34A', bg:'#F0FDF4' },
-    { icon:'🎯', title:'Pipeline',       desc:'Propuestas',   value:'--',sub:'Sin propuestas',   color:'#2563EB', bg:'#EFF4FF' },
-    { icon:'⚡', title:'Cotización',      desc:'30 segundos',  value:'Nueva',sub:'Express',       color:'#0284C7', bg:'#F0F9FF', action:"window.location.href='/empresa/essential/orden-express'", actionLabel:'Crear' }
-  ]},
-  bienestar:   { icon:'💪', label:'Bienestar & Recurrencia',  badge:'GYM',    badgeBg:'#ECFDF5', badgeColor:'#065F46', subtitle:'Membresías, asistencia y retención', widgets: [
-    { icon:'👥', title:'Membresías Activas',  desc:'Socios',        value:'0',  sub:'Sin socios',      color:'#16A34A', bg:'#F0FDF4' },
-    { icon:'⚠️', title:'En Mora',            desc:'Vencidas',      value:'0',  sub:'Al día',          color:'#DC2626', bg:'#FEF2F2' },
-    { icon:'📅', title:'Asistencia Hoy',     desc:'Personas',      value:'0',  sub:'Sin registros',   color:'#2563EB', bg:'#EFF4FF' },
-    { icon:'💪', title:'Capacidad Local',    desc:'Ocupación',     value:'0%', sub:'Sin datos',       color:'#D97706', bg:'#FFFBEB' },
-    { icon:'🔄', title:'Renovaciones',       desc:'Próximas',      value:'0',  sub:'Sin próximas',    color:'#7C3AED', bg:'#F5F3FF' },
-    { icon:'⚡', title:'Check-in Rápido',    desc:'10 seg',        value:'Abrir',sub:'Express',       color:'#0284C7', bg:'#F0F9FF', action:"window.location.href='/empresa/essential/orden-express'", actionLabel:'Check-in' }
-  ]}
+/* ── AI INSIGHTS POOL ── */
+const insPool = [
+  'Tu flujo de caja muestra estabilidad. Considera invertir el excedente para maximizar retornos.',
+  'Analiza tus gastos recurrentes. Podrías optimizar hasta un 15% de costos operacionales.',
+  'Establece metas financieras trimestrales para mejor control y proyección de crecimiento.',
+  'Automatiza tus reportes mensuales. Ahorrarás 4-6 horas de trabajo administrativo.',
+  'Tus números sugieren potencial de crecimiento del 15-20% en el próximo trimestre.',
+  'Balance positivo detectado. Momento ideal para crear un fondo de emergencia empresarial.',
+  'Revisa tus categorías de gasto. La optimización podría liberar capital de trabajo.',
+  'Considera diversificar tus fuentes de ingreso para mayor resiliencia financiera.',
+  'Tu margen operativo puede mejorar. Analiza qué gastos no aportan valor directo.',
+  'Con tu tendencia actual, alcanzarás estabilidad sólida en los próximos 45 días.'
+];
+
+function rotateInsights() {
+  const pool = [...insPool].sort(()=>0.5-Math.random()).slice(0,4);
+  pool.forEach((t,i) => {
+    const el = document.getElementById(`aiInsight${i+1}`);
+    if (!el) return;
+    el.style.opacity='0';
+    setTimeout(()=>{ el.textContent=t; el.style.transition='opacity 0.4s'; el.style.opacity='1'; }, 200+i*60);
+  });
+}
+setInterval(rotateInsights, 30000);
+
+/* ── BUSINESS PROFILE ── */
+async function loadBiz() {
+  try {
+    const { data } = await _sb.from('user_business_profiles').select('*').eq('user_id',_user.id).single();
+    _biz = data || null;
+  } catch { _biz = null; }
+  renderWorld();
+}
+
+const WORLDS = {
+  retail:      { icon:'◈', label:'Retail & Almacenes', badge:'RETAIL', subtitle:'Inventario, márgenes y rotación' },
+  tecnico:     { icon:'◉', label:'Técnico & Talleres',  badge:'TALLER', subtitle:'Órdenes, servicios y repuestos' },
+  gastronomia: { icon:'◎', label:'Gastronómico',         badge:'RESTO',  subtitle:'Platos, costos e ingredientes' },
+  profesional: { icon:'◆', label:'Servicios Profesionales', badge:'PRO', subtitle:'Clientes, cobranza y proyectos' },
+  bienestar:   { icon:'◈', label:'Bienestar & Recurrencia', badge:'GYM', subtitle:'Membresías y retención' }
+};
+const WORLD_WIDGETS = {
+  retail:[
+    { icon:'ph-package',         title:'Inventario Maestro',   desc:'Estado del stock',         val:'--', color:'#3B82F6', href:'/empresa/essential/inventario', lbl:'Ver inventario' },
+    { icon:'ph-trophy',          title:'Top Productos',         desc:'Mayor margen',             val:'--', color:'#FCD34D' },
+    { icon:'ph-bell',            title:'Alertas Reposición',    desc:'Stock crítico',            val:'--', color:'#F87171', href:'/empresa/essential/inventario', lbl:'Ver stock' },
+    { icon:'ph-currency-dollar', title:'Margen Producto',       desc:'Costo vs venta',           val:'--', color:'#34D399' },
+    { icon:'ph-arrows-clockwise',title:'Rotación',              desc:'Velocidad de venta',       val:'--', color:'#A78BFA' },
+    { icon:'ph-lightning',       title:'Registro Express',      desc:'Venta en 30 seg',          val:'Abrir', color:'#3B82F6', href:'/empresa/essential/orden-express', lbl:'Abrir' }
+  ],
+  tecnico:[
+    { icon:'ph-clipboard-text',  title:'Órdenes Activas',  desc:'En curso',        val:'0',   color:'#3B82F6' },
+    { icon:'ph-timer',           title:'Tiempo Promedio',  desc:'Por reparación',  val:'--',  color:'#FCD34D' },
+    { icon:'ph-currency-dollar', title:'Ingreso Servicio', desc:'Este mes',        val:'$0',  color:'#34D399' },
+    { icon:'ph-package',         title:'Piezas Stock',     desc:'Repuestos',       val:'0',   color:'#A78BFA' },
+    { icon:'ph-star',            title:'Satisfacción',     desc:'Calificación',    val:'--',  color:'#FCD34D' },
+    { icon:'ph-lightning',       title:'OT Rápida',        desc:'30 seg',          val:'Nueva', color:'#3B82F6', href:'/empresa/essential/orden-express', lbl:'Crear' }
+  ],
+  gastronomia:[
+    { icon:'ph-fork-knife',      title:'Platos Top',       desc:'Más vendidos',    val:'--',  color:'#FCD34D' },
+    { icon:'ph-leaf',            title:'Costo Ingredientes',desc:'% sobre ventas', val:'0%',  color:'#34D399' },
+    { icon:'ph-trend-down',      title:'Mermas',           desc:'Desperdicio',     val:'$0',  color:'#F87171' },
+    { icon:'ph-chart-bar',       title:'Margen Plato',     desc:'Costo vs precio', val:'0%',  color:'#A78BFA' },
+    { icon:'ph-clock',           title:'Horas Pico',       desc:'Mayor flujo',     val:'--',  color:'#3B82F6' },
+    { icon:'ph-lightning',       title:'Comanda Rápida',   desc:'En segundos',     val:'Abrir', color:'#3B82F6', href:'/empresa/essential/orden-express', lbl:'Abrir' }
+  ],
+  profesional:[
+    { icon:'ph-users',           title:'Clientes Activos', desc:'Proyectos',       val:'0',   color:'#A78BFA' },
+    { icon:'ph-money',           title:'Cobranza',         desc:'Por cobrar',      val:'$0',  color:'#F87171' },
+    { icon:'ph-timer',           title:'Horas Facturadas', desc:'Este mes',        val:'0',   color:'#FCD34D' },
+    { icon:'ph-file-text',       title:'Docs. Vencidos',   desc:'Contratos',       val:'0',   color:'#34D399' },
+    { icon:'ph-funnel',          title:'Pipeline',         desc:'Propuestas',      val:'--',  color:'#3B82F6' },
+    { icon:'ph-lightning',       title:'Cotización',       desc:'30 segundos',     val:'Nueva', color:'#3B82F6', href:'/empresa/essential/orden-express', lbl:'Crear' }
+  ],
+  bienestar:[
+    { icon:'ph-users',           title:'Membresías Activas',desc:'Socios vigentes',val:'0',   color:'#34D399' },
+    { icon:'ph-warning',         title:'En Mora',           desc:'Vencidas',       val:'0',   color:'#F87171' },
+    { icon:'ph-calendar-check',  title:'Asistencia Hoy',   desc:'Personas',       val:'0',   color:'#3B82F6' },
+    { icon:'ph-chart-bar',       title:'Capacidad',         desc:'Ocupación',      val:'0%',  color:'#FCD34D' },
+    { icon:'ph-arrows-clockwise',title:'Renovaciones',      desc:'Próximas',       val:'0',   color:'#A78BFA' },
+    { icon:'ph-lightning',       title:'Check-in Rápido',   desc:'10 seg',         val:'Abrir', color:'#3B82F6', href:'/empresa/essential/orden-express', lbl:'Check-in' }
+  ]
 };
 
 function renderWorldWidget(w) {
-  const sem = w.sem==='rojo'    ? '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#DC2626;margin-right:5px;"></span>'
-            : w.sem==='amarillo'? '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#D97706;margin-right:5px;"></span>'
-            : w.sem==='verde'   ? '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#16A34A;margin-right:5px;"></span>'
-            : '';
-  const btn = (w.action && w.actionLabel)
-    ? `<div style="margin-top:12px;"><button onclick="${w.action}" style="width:100%;padding:8px;background:${w.color};color:#fff;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;">${w.actionLabel} →</button></div>`
-    : '';
-  return `
-    <div style="background:#fff;border:1px solid #E9EAEC;border-radius:12px;padding:18px;transition:all 0.2s;border-left:3px solid ${w.color};"
-         onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.08)';this.style.transform='translateY(-2px)'"
-         onmouseout="this.style.boxShadow='';this.style.transform=''">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
-        <div>
-          <div style="font-size:18px;margin-bottom:4px;">${w.icon}</div>
-          <div style="font-size:12px;font-weight:700;color:#0D0F12;">${w.title}</div>
-          <div style="font-size:10px;color:#9AA3B2;">${w.desc}</div>
-        </div>
-        <div style="width:32px;height:32px;background:${w.bg};border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;">${w.icon}</div>
-      </div>
-      <div style="font-size:18px;font-weight:800;color:${w.color};letter-spacing:-0.02em;margin-bottom:4px;">${w.value}</div>
-      <div style="font-size:11px;color:#9AA3B2;display:flex;align-items:center;">${sem}${w.sub}</div>
-      ${btn}
-    </div>`;
+  const btn = (w.href && w.lbl) ? `<div style="margin-top:10px;"><a href="${w.href}" style="display:block;padding:7px;background:${w.color};color:#fff;border:none;border-radius:8px;font-size:10px;font-weight:700;text-decoration:none;text-align:center;">${w.lbl} →</a></div>` : '';
+  return `<div style="background:var(--bg-2);border:1px solid var(--card-border);border-radius:12px;padding:16px;border-left:2px solid ${w.color};transition:all 0.15s;" onmouseover="this.style.borderColor='${w.color}'" onmouseout="this.style.borderLeft='2px solid ${w.color}'">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;">
+      <div><div style="font-size:11px;font-weight:700;color:var(--text-1);">${w.title}</div><div style="font-size:10px;color:var(--text-3);">${w.desc}</div></div>
+      <div style="width:28px;height:28px;background:var(--bg);border-radius:7px;display:flex;align-items:center;justify-content:center;"><i class="ph-duotone ${w.icon}" style="font-size:14px;color:${w.color};"></i></div>
+    </div>
+    <div style="font-size:16px;font-weight:800;color:${w.color};letter-spacing:-0.02em;">${w.val}</div>
+    ${btn}
+  </div>`;
 }
 
-function renderWorldWidgets() {
-  let btype = _businessProfile?.business_type || null;
-  if (!btype) {
-    try { btype = JSON.parse(localStorage.getItem('pymax_onboarding_config')||'{}').business_type || null; } catch(e){}
-  }
-  if (!btype || !WORLD_CONFIGS[btype]) return;
-  const cfg  = WORLD_CONFIGS[btype];
-  const sect = document.getElementById('worldWidgetsSection');
-  if (sect) sect.style.display = 'block';
+function renderWorld() {
+  let bt = _biz?.business_type || null;
+  if (!bt) try { bt = JSON.parse(localStorage.getItem('pymax_onboarding_config')||'{}').business_type||null; } catch{}
+  if (!bt || !WORLDS[bt]) return;
+  const cfg = WORLDS[bt];
+  const wws = WORLD_WIDGETS[bt] || [];
+  const sec = document.getElementById('worldWidgetsSection');
+  if (sec) sec.style.display = 'block';
   const g = id => document.getElementById(id);
   if (g('worldIcon'))     g('worldIcon').textContent     = cfg.icon;
   if (g('worldTitle'))    g('worldTitle').textContent    = cfg.label;
   if (g('worldSubtitle')) g('worldSubtitle').textContent = cfg.subtitle;
-  if (g('worldBadge'))    { g('worldBadge').textContent=cfg.badge; g('worldBadge').style.background=cfg.badgeBg; g('worldBadge').style.color=cfg.badgeColor; }
+  if (g('worldBadge'))    g('worldBadge').textContent    = cfg.badge;
   const grid = g('worldWidgetsGrid');
-  if (grid) grid.innerHTML = cfg.widgets.map(renderWorldWidget).join('');
+  if (grid) grid.innerHTML = wws.map(renderWorldWidget).join('');
 }
 
-// ── TOUR GUIADO ──
-var _tourStep = 0;
+/* ── TOUR ── */
+var _ts = 0;
 const _tourSteps = [
-  { target:'.kpi-row',         title:'💰 Tu Salud Financiera',  text:'Balance, ingresos, gastos y margen en tiempo real. Sin números inventados — todo desde tu cuenta en Supabase.' },
-  { target:'.chart-card',      title:'📈 Flujo de los Últimos 6 Meses', text:'Historial real de ingresos, gastos y balance. Cada punto es una transacción que tú registraste.' },
-  { target:'.tools-card',      title:'🔧 Tus Herramientas',     text:'Acceso rápido a todas las funciones: IA, Ingresos, Metas, Bóveda y más. Todo el Plan Essential en un clic.' },
-  { target:'#worldWidgetsSection', title:'🏢 Panel de tu Negocio', text:'Esta sección se adapta a tu tipo de negocio. Métricas específicas de tu rubro, actualizadas en tiempo real.' }
+  { q:'.kpi-row',    ttl:'Tu Salud Financiera',    txt:'Balance, ingresos, gastos y margen neto en tiempo real desde Supabase. Sin números inventados.' },
+  { q:'.chart-card', ttl:'Flujo Financiero Real',  txt:'Historial de 6 meses basado en tus transacciones reales. Cada punto = datos de Supabase.' },
+  { q:'.ai-panel',   ttl:'Tu Asesor IA',           txt:'Pymax AI analiza tus finanzas y responde tus preguntas en tiempo real. Única en el mercado.' },
+  { q:'.tools-card', ttl:'Herramientas del Plan',  txt:'Acceso a todas las funciones Essential: Fuga de Dinero, Punto de Equilibrio, Bóveda Docs y más.' }
 ];
 
-async function checkAndShowTour() {
-  if (!_supabase || !_currentUser) return;
+async function checkTour() {
   try {
-    const { data } = await _supabase.from('user_profiles').select('tour_completed').eq('id',_currentUser.id).single();
+    const { data } = await _sb.from('user_profiles').select('tour_completed').eq('id',_user.id).single();
     if (data?.tour_completed) return;
-  } catch(e) { if (localStorage.getItem('pymax_tour_done')==='true') return; }
-  setTimeout(showTour, 1800);
+  } catch { if (localStorage.getItem('pymax_tour_done')==='true') return; }
+  setTimeout(startTour, 1800);
 }
-
-function showTour() {
+function startTour() {
   const bd = document.createElement('div');
-  bd.id='tourBd'; bd.style.cssText='position:fixed;inset:0;background:rgba(13,15,18,0.72);z-index:99998;';
-  bd.onclick=skipTour; document.body.appendChild(bd);
-  showTourStep(0);
+  bd.id='tourBd'; bd.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:99998;';
+  bd.onclick=endTour; document.body.appendChild(bd);
+  showStep(0);
 }
-
-function showTourStep(idx) {
-  _tourStep = idx;
+function showStep(i) {
+  _ts = i;
   const prev = document.getElementById('tourTip'); if (prev) prev.remove();
-  if (idx >= _tourSteps.length) { finishTour(); return; }
-  const step = _tourSteps[idx];
-  const target = document.querySelector(step.target);
-  if (!target) { showTourStep(idx+1); return; }
-  target.scrollIntoView({ behavior:'smooth', block:'center' });
+  if (i >= _tourSteps.length) { endTour(); return; }
+  const step = _tourSteps[i];
+  const el = document.querySelector(step.q);
+  if (!el) { showStep(i+1); return; }
+  el.scrollIntoView({behavior:'smooth',block:'center'});
   setTimeout(()=>{
-    target.style.position='relative'; target.style.zIndex='100000';
-    target.style.outline='2px solid #2563EB'; target.style.outlineOffset='4px';
-    target.style.borderRadius='var(--radius-lg)';
-    const rect = target.getBoundingClientRect();
-    const tip  = document.createElement('div');
+    el.style.position='relative'; el.style.zIndex='100000';
+    el.style.outline='1.5px solid rgba(59,130,246,0.6)'; el.style.outlineOffset='4px';
+    const r = el.getBoundingClientRect();
+    const tip = document.createElement('div');
     tip.id='tourTip';
-    tip.style.cssText=`position:fixed;z-index:100001;background:#FFFFFF;border:1px solid #E9EAEC;border-radius:16px;padding:22px 24px;max-width:360px;box-shadow:0 20px 60px rgba(0,0,0,0.15);font-family:'Inter',sans-serif;pointer-events:all;animation:tipIn 0.3s ease;`;
-    tip.innerHTML=`
-      <style>@keyframes tipIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}</style>
-      <div style="font-size:15px;font-weight:800;color:#0D0F12;margin-bottom:8px;letter-spacing:-0.02em;">${step.title}</div>
-      <p style="font-size:13px;color:#4A5568;line-height:1.6;margin:0 0 18px;">${step.text}</p>
-      <div style="display:flex;align-items:center;justify-content:space-between;">
-        <div style="display:flex;gap:5px;">${_tourSteps.map((_,i)=>`<div style="width:7px;height:7px;border-radius:50%;background:${i===idx?'#2563EB':'#E9EAEC'};transition:all 0.2s;"></div>`).join('')}</div>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <button onclick="skipTour()" style="background:none;border:none;font-size:12px;color:#9AA3B2;cursor:pointer;font-family:inherit;">Saltar</button>
-          <button onclick="nextTourStep()" style="padding:8px 18px;background:#2563EB;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">${idx===_tourSteps.length-1?'¡Comenzar! →':'Siguiente →'}</button>
-        </div>
-      </div>
-    `;
-    const tl = Math.min(Math.max(rect.left, 16), window.innerWidth-380);
-    const tt = rect.bottom+16 < window.innerHeight-200 ? rect.bottom+16 : rect.top-230;
-    tip.style.left=tl+'px'; tip.style.top=Math.max(tt,16)+'px';
+    tip.style.cssText='position:fixed;z-index:100001;background:#161B22;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px 22px;max-width:340px;box-shadow:0 20px 50px rgba(0,0,0,0.5);font-family:Inter,sans-serif;pointer-events:all;animation:fadeUp 0.3s ease;';
+    tip.innerHTML=`<div style="font-size:14px;font-weight:800;color:#F0F6FC;margin-bottom:7px;letter-spacing:-0.02em;">${step.ttl}</div>
+<p style="font-size:12px;color:#8B949E;line-height:1.6;margin:0 0 16px;">${step.txt}</p>
+<div style="display:flex;align-items:center;justify-content:space-between;">
+  <div style="display:flex;gap:4px;">${_tourSteps.map((_,j)=>`<div style="width:6px;height:6px;border-radius:50%;background:${j===i?'#3B82F6':'#21262D'};"></div>`).join('')}</div>
+  <div style="display:flex;gap:7px;align-items:center;">
+    <button onclick="endTour()" style="background:none;border:none;font-size:11px;color:#484F58;cursor:pointer;font-family:inherit;">Saltar</button>
+    <button onclick="nextStep()" style="padding:7px 16px;background:#3B82F6;color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">${i===_tourSteps.length-1?'Comenzar →':'Siguiente →'}</button>
+  </div>
+</div>`;
+    const tl = Math.min(Math.max(r.left,12), window.innerWidth-355);
+    const tt = r.bottom+12 < window.innerHeight-180 ? r.bottom+12 : r.top-220;
+    tip.style.left=tl+'px'; tip.style.top=Math.max(tt,12)+'px';
     document.body.appendChild(tip);
-  }, 400);
+  }, 350);
+}
+function nextStep() {
+  const p = _tourSteps[_ts];
+  if (p) { const e=document.querySelector(p.q); if(e){e.style.zIndex='';e.style.outline='';} }
+  showStep(_ts+1);
+}
+async function endTour() {
+  ['tourBd','tourTip'].forEach(id=>{const e=document.getElementById(id);if(e)e.remove();});
+  _tourSteps.forEach(s=>{const e=document.querySelector(s.q);if(e){e.style.zIndex='';e.style.outline='';}});
+  localStorage.setItem('pymax_tour_done','true');
+  if (_sb&&_user) try{await _sb.from('user_profiles').update({tour_completed:true}).eq('id',_user.id);}catch{}
 }
 
-function nextTourStep() {
-  const prev = _tourSteps[_tourStep];
-  if (prev) { const el=document.querySelector(prev.target); if(el){el.style.zIndex='';el.style.outline='';} }
-  showTourStep(_tourStep+1);
-}
-function skipTour() { finishTour(); }
-async function finishTour() {
-  ['tourBd','tourTip'].forEach(id=>{ const el=document.getElementById(id); if(el)el.remove(); });
-  _tourSteps.forEach(s=>{ const el=document.querySelector(s.target); if(el){el.style.zIndex='';el.style.outline='';} });
-  localStorage.setItem('pymax_tour_done','true');
-  if (_supabase&&_currentUser) try { await _supabase.from('user_profiles').update({tour_completed:true}).eq('id',_currentUser.id); } catch(e){}
+function updatePendingTasks(c) {
+  const e=document.getElementById('pendingTasksText'); if(e) e.textContent=`${c} tareas pendientes`;
 }
 </script>
 

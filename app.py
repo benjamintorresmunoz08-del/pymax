@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from datetime import timedelta
 import os
+import json
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -166,6 +167,105 @@ def tiburon():
 @app.route('/empresa/hambre')
 def hambre():
     return render_template('empresa/hambre/hambre.html')
+
+# ==============================================================================
+# API IA — OPENAI INTEGRADO CON CONTEXTO FINANCIERO REAL
+# ==============================================================================
+
+PLAN_LIMITS = {
+    'essential': { 'daily_messages': 20, 'max_tokens': 500,  'model': 'gpt-4o-mini', 'months_history': 3  },
+    'tiburon':   { 'daily_messages': 100,'max_tokens': 1000, 'model': 'gpt-4o',      'months_history': 12 },
+    'hambre':    { 'daily_messages': 200,'max_tokens': 2000, 'model': 'gpt-4o',      'months_history': 24 },
+}
+
+@app.route('/api/ai/chat', methods=['POST'])
+def ai_chat():
+    """
+    Endpoint principal de IA — Lee contexto financiero real y consulta OpenAI.
+    Recibe: { message, context, history, plan }
+    Devuelve: { response, tokens_used }
+    """
+    try:
+        from openai import OpenAI
+
+        data       = request.get_json(silent=True) or {}
+        user_msg   = (data.get('message') or '').strip()
+        context    = data.get('context') or {}
+        history    = data.get('history') or []
+        plan       = data.get('plan', 'essential')
+
+        if not user_msg:
+            return jsonify({'error': 'Mensaje vacío'}), 400
+
+        limits = PLAN_LIMITS.get(plan, PLAN_LIMITS['essential'])
+
+        # ── Construir el system prompt con contexto financiero real ──
+        ctx_lines = []
+        if context.get('ingresos') is not None:
+            ctx_lines.append(f"- Ingresos del mes actual: ${int(context['ingresos']):,}".replace(',', '.'))
+        if context.get('gastos') is not None:
+            ctx_lines.append(f"- Gastos del mes actual: ${int(context['gastos']):,}".replace(',', '.'))
+        if context.get('balance') is not None:
+            ctx_lines.append(f"- Balance neto: ${int(context['balance']):,}".replace(',', '.'))
+        if context.get('margen') is not None:
+            ctx_lines.append(f"- Margen de rentabilidad: {context['margen']}%")
+        if context.get('transacciones') is not None:
+            ctx_lines.append(f"- Transacciones registradas: {context['transacciones']}")
+
+        financial_ctx = "\n".join(ctx_lines) if ctx_lines else "El usuario aún no tiene transacciones registradas este mes."
+
+        system_prompt = f"""Eres Pymax AI, el asesor financiero inteligente de la plataforma Pymax.
+Tu misión es ayudar a emprendedores y pequeños empresarios a entender y mejorar sus finanzas.
+
+DATOS FINANCIEROS REALES DEL USUARIO (del mes actual):
+{financial_ctx}
+
+INSTRUCCIONES:
+- Responde SIEMPRE en español, de forma directa, clara y accionable
+- Usa los datos financieros reales del usuario para personalizar cada respuesta
+- Sé conciso pero útil. Máximo 3-4 párrafos cortos
+- Si el usuario pregunta algo fuera de finanzas, redirige amablemente al tema financiero
+- Nunca inventes datos que no estén en el contexto
+- Usa un tono profesional pero cercano, como un asesor de confianza
+- Plan del usuario: {plan.upper()} (considera las limitaciones del plan al dar recomendaciones)
+
+Recuerda: el usuario confía en ti para tomar decisiones reales de su negocio."""
+
+        # ── Construir historial de mensajes ──
+        messages = [{'role': 'system', 'content': system_prompt}]
+
+        for h in history[-6:]:  # últimos 6 mensajes
+            if h.get('role') in ('user', 'assistant') and h.get('content'):
+                messages.append({'role': h['role'], 'content': str(h['content'])[:500]})
+
+        messages.append({'role': 'user', 'content': user_msg})
+
+        # ── Llamar a OpenAI ──
+        client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+
+        completion = client.chat.completions.create(
+            model=limits['model'],
+            messages=messages,
+            max_tokens=limits['max_tokens'],
+            temperature=0.7,
+        )
+
+        ai_response = completion.choices[0].message.content
+        tokens_used = completion.usage.total_tokens if completion.usage else 0
+
+        return jsonify({
+            'response':    ai_response,
+            'tokens_used': tokens_used,
+            'model':       limits['model'],
+            'plan':        plan
+        })
+
+    except Exception as e:
+        print(f'[AI ERROR] {e}')
+        return jsonify({
+            'response': 'En este momento no puedo procesar tu consulta. Por favor intenta nuevamente en unos segundos.',
+            'error': str(e)
+        }), 200  # 200 para que el frontend lo maneje normalmente
 
 # ==============================================================================
 # ERROR HANDLERS
