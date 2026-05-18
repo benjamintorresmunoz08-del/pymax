@@ -134,26 +134,44 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 .df{fill:none;stroke:var(--purple);stroke-width:5;stroke-linecap:round;transition:stroke-dasharray 1.2s ease}
 .dv{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
 
-/* CHART */
-.chart-area{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;min-height:0}
-.ch-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-shrink:0}
-.ch-ttl{font-size:12px;font-weight:700}
-.ch-sub{font-size:10px;color:var(--t3)}
-.ch-leg{display:flex;gap:12px}
-.leg{display:flex;align-items:center;gap:4px;font-size:9.5px;font-weight:600;color:var(--t3)}
-.ld{width:5px;height:5px;border-radius:50%}
-.chart-wrap{flex:1;position:relative;min-height:0}
+/* RESUMEN DEL MES */
+.resumen-card{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);display:grid;grid-template-columns:1fr 1fr;min-height:0;overflow:hidden}
+.res-left{padding:14px 16px;border-right:1px solid var(--b);display:flex;flex-direction:column}
+.res-right{padding:14px 16px;display:flex;flex-direction:column}
+.r-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-shrink:0}
+.r-ttl{font-size:12px;font-weight:700}
+.r-sub{font-size:10px;color:var(--t3)}
+.r-badge{padding:2px 8px;border-radius:100px;font-size:9px;font-weight:700;background:var(--s2);color:var(--t3);border:1px solid var(--b)}
+/* semana comparación */
+.week-compare{display:flex;flex-direction:column;gap:9px;flex:1}
+.wc-row{display:flex;flex-direction:column;gap:4px}
+.wc-lbl{display:flex;justify-content:space-between;font-size:10px;font-weight:600}
+.wc-lbl span:first-child{color:var(--t2)}
+.wc-bar-track{height:8px;background:rgba(255,255,255,.05);border-radius:100px;overflow:hidden}
+.wc-bar-fill{height:100%;border-radius:100px;transition:width 1s cubic-bezier(.22,1,.36,1)}
+.wc-compare-hint{font-size:9px;color:var(--t3);display:flex;align-items:center;gap:3px;margin-top:2px}
+/* transactions list */
+.tx-list{display:flex;flex-direction:column;gap:5px;flex:1;overflow-y:auto}
+.tx-list::-webkit-scrollbar{width:0}
+.tx-item{display:flex;align-items:center;gap:9px;padding:8px 9px;border-radius:8px;background:var(--s2);border:1px solid var(--b)}
+.tx-ic{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tx-ic i{font-size:12px}
+.tx-info{flex:1;min-width:0}
+.tx-name{font-size:11px;font-weight:600;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tx-date{font-size:9.5px;color:var(--t3)}
+.tx-amt{font-size:12px;font-weight:700;flex-shrink:0}
+.tx-empty{text-align:center;padding:18px;color:var(--t3);font-size:11px}
 
 /* TOOLS */
-.tools-strip{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:12px 14px;flex-shrink:0}
-.ts-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:9px}
-.ts-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
-.tool{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 4px 8px;border-radius:var(--rg);border:1px solid var(--b);background:var(--bg);text-decoration:none;transition:all .15s}
+.tools-strip{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:11px 14px;flex-shrink:0}
+.ts-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:8px}
+.ts-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:5px}
+.tool{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 3px 7px;border-radius:var(--rg);border:1px solid var(--b);background:var(--bg);text-decoration:none;transition:all .15s}
 .tool:hover{border-color:var(--blue);background:rgba(59,130,246,.07)}
 .tool:hover .tn{color:var(--blue)}
-.t-ic{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center}
-.t-ic i{font-size:15px}
-.tn{font-size:9px;font-weight:700;color:var(--t3);text-align:center;line-height:1.3}
+.t-ic{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center}
+.t-ic i{font-size:13px}
+.tn{font-size:8.5px;font-weight:700;color:var(--t3);text-align:center;line-height:1.3}
 
 /* ── GUIDED TOUR ── */
 #tourBackdrop{
@@ -355,29 +373,48 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
       </div>
     </div>
 
-    <div class="chart-area fa d1" id="tourStep3">
-      <div class="ch-hdr">
-        <div><div class="ch-ttl">Flujo Financiero — 6 Meses</div><div class="ch-sub">Tiempo real · Supabase</div></div>
-        <div class="ch-leg">
-          <div class="leg"><div class="ld" style="background:var(--green)"></div>Ingresos</div>
-          <div class="leg"><div class="ld" style="background:var(--red)"></div>Gastos</div>
-          <div class="leg"><div class="ld" style="background:var(--blue)"></div>Balance</div>
+    <!-- RESUMEN DEL MES: barras semana + últimas transacciones -->
+    <div class="resumen-card fa d1" id="tourStep3">
+      <div class="res-left">
+        <div class="r-hdr">
+          <div><div class="r-ttl">Esta Semana vs Semana Pasada</div><div class="r-sub">Comparación de actividad financiera</div></div>
+          <div class="r-badge" id="semBadge">Calculando…</div>
+        </div>
+        <div class="week-compare" id="weekCompare">
+          <div style="text-align:center;padding:20px;color:var(--t3);font-size:11px">Cargando datos…</div>
         </div>
       </div>
-      <div class="chart-wrap"><canvas id="mainChart"></canvas></div>
+      <div class="res-right">
+        <div class="r-hdr">
+          <div><div class="r-ttl">Últimas Transacciones</div><div class="r-sub">Actividad reciente del mes</div></div>
+          <a href="{{ url_for('essential_ventas') }}" style="font-size:10px;font-weight:600;color:var(--blue);text-decoration:none">Ver todas →</a>
+        </div>
+        <div class="tx-list" id="txList">
+          <div class="tx-empty">Cargando transacciones…</div>
+        </div>
+      </div>
     </div>
 
+    <!-- TOOLS — TODOS los accesos del Plan Essential -->
     <div class="tools-strip fa d2" id="tourStep4">
-      <div class="ts-lbl">Accesos Rápidos — Plan Essential</div>
+      <div class="ts-lbl">Accesos Rápidos — Todas las herramientas del Plan Essential</div>
       <div class="ts-grid">
         <a href="{{ url_for('essential_ia') }}" class="tool"><div class="t-ic" style="background:rgba(167,139,250,.1)"><i class="ph-duotone ph-brain" style="color:var(--purple)"></i></div><span class="tn">IA Apoyo</span></a>
         <a href="{{ url_for('essential_ventas') }}" class="tool"><div class="t-ic" style="background:rgba(52,211,153,.1)"><i class="ph-duotone ph-currency-dollar" style="color:var(--green)"></i></div><span class="tn">Ingresos</span></a>
+        <a href="{{ url_for('essential_flujo') }}" class="tool"><div class="t-ic" style="background:rgba(59,130,246,.1)"><i class="ph-duotone ph-chart-line-up" style="color:var(--blue)"></i></div><span class="tn">Flujo Caja</span></a>
+        <a href="{{ url_for('essential_deudas') }}" class="tool"><div class="t-ic" style="background:rgba(252,211,77,.1)"><i class="ph-duotone ph-clipboard-text" style="color:var(--amber)"></i></div><span class="tn">Obligaciones</span></a>
+        <a href="{{ url_for('essential_metas') }}" class="tool"><div class="t-ic" style="background:rgba(59,130,246,.1)"><i class="ph-duotone ph-target" style="color:var(--blue)"></i></div><span class="tn">Metas</span></a>
+        <a href="{{ url_for('essential_inventario') }}" class="tool"><div class="t-ic" style="background:rgba(248,113,113,.1)"><i class="ph-duotone ph-package" style="color:var(--red)"></i></div><span class="tn">Inventario</span></a>
         <a href="{{ url_for('essential_orden_express') }}" class="tool"><div class="t-ic" style="background:rgba(167,139,250,.1)"><i class="ph-duotone ph-lightning" style="color:var(--purple)"></i></div><span class="tn">Express</span></a>
         <a href="{{ url_for('essential_fuga_dinero') }}" class="tool"><div class="t-ic" style="background:rgba(248,113,113,.1)"><i class="ph-duotone ph-magnifying-glass" style="color:var(--red)"></i></div><span class="tn">Fugas</span></a>
         <a href="{{ url_for('essential_punto_equilibrio') }}" class="tool"><div class="t-ic" style="background:rgba(52,211,153,.1)"><i class="ph-duotone ph-scales" style="color:var(--green)"></i></div><span class="tn">Equilibrio</span></a>
         <a href="{{ url_for('essential_boveda') }}" class="tool"><div class="t-ic" style="background:rgba(59,130,246,.1)"><i class="ph-duotone ph-vault" style="color:var(--blue)"></i></div><span class="tn">Bóveda</span></a>
+        <a href="{{ url_for('essential_semaforo') }}" class="tool"><div class="t-ic" style="background:rgba(252,211,77,.1)"><i class="ph-duotone ph-traffic-signal" style="color:var(--amber)"></i></div><span class="tn">Semáforo</span></a>
+        <a href="{{ url_for('essential_calendario') }}" class="tool"><div class="t-ic" style="background:rgba(52,211,153,.1)"><i class="ph-duotone ph-calendar-dots" style="color:var(--green)"></i></div><span class="tn">Calendario</span></a>
+        <a href="{{ url_for('essential_auditoria') }}" class="tool"><div class="t-ic" style="background:rgba(167,139,250,.1)"><i class="ph-duotone ph-notebook" style="color:var(--purple)"></i></div><span class="tn">Auditoría</span></a>
         <a href="{{ url_for('essential_export_excel') }}" class="tool"><div class="t-ic" style="background:rgba(52,211,153,.1)"><i class="ph-duotone ph-file-xls" style="color:var(--green)"></i></div><span class="tn">Excel</span></a>
         <a href="{{ url_for('essential_comunidad') }}" class="tool"><div class="t-ic" style="background:rgba(252,211,77,.1)"><i class="ph-duotone ph-users-three" style="color:var(--amber)"></i></div><span class="tn">Comunidad</span></a>
+        <a href="{{ url_for('essential_progreso') }}" class="tool"><div class="t-ic" style="background:rgba(59,130,246,.1)"><i class="ph-duotone ph-gauge" style="color:var(--blue)"></i></div><span class="tn">Progreso</span></a>
       </div>
     </div>
 
@@ -476,41 +513,102 @@ async function loadFinancials(){
 function setV(id,v,color){const el=document.getElementById(id);if(!el)return;el.textContent='$'+Math.abs(Math.round(v)).toLocaleString('es-CL');if(color)el.style.color=color;else if(v<0)el.style.color='var(--red)';else el.style.color='';}
 function fmt(n){return Math.round(n).toLocaleString('es-CL');}
 
-/* ── CHART ── */
+/* ── RESUMEN DEL MES: semana actual vs semana pasada + últimas transacciones ── */
 async function loadChart(){
-  const ctx=document.getElementById('mainChart');if(!ctx)return;
-  const now=new Date();const labels=[],ingA=[],gasA=[];
-  for(let i=5;i>=0;i--){
-    const d=new Date(now.getFullYear(),now.getMonth()-i,1);
-    const s=new Date(d.getFullYear(),d.getMonth(),1).toISOString();
-    const e=new Date(d.getFullYear(),d.getMonth()+1,0,23,59,59).toISOString();
-    labels.push(d.toLocaleDateString('es-ES',{month:'short',year:'2-digit'}));
-    try{
-      const{data}=await _sb.from('user_operations').select('type,amount').eq('user_id',_u.id).gte('created_at',s).lte('created_at',e);
-      const ops=data||[];
-      ingA.push(ops.filter(o=>o.type==='ingreso').reduce((a,o)=>a+parseFloat(o.amount||0),0));
-      gasA.push(ops.filter(o=>o.type==='egreso').reduce((a,o)=>a+parseFloat(o.amount||0),0));
-    }catch{ingA.push(0);gasA.push(0);}
+  await loadResumen();
+  await loadTxList();
+}
+
+function weekRange(offset=0){
+  const now=new Date();
+  const day=now.getDay()||7;
+  const mon=new Date(now);mon.setDate(now.getDate()-day+1+offset*7);mon.setHours(0,0,0,0);
+  const sun=new Date(mon);sun.setDate(mon.getDate()+6);sun.setHours(23,59,59,999);
+  return{s:mon.toISOString(),e:sun.toISOString()};
+}
+
+async function getWeekData(offset){
+  const{s,e}=weekRange(offset);
+  try{
+    const{data}=await _sb.from('user_operations').select('type,amount').eq('user_id',_u.id).gte('created_at',s).lte('created_at',e);
+    const ops=data||[];
+    const ing=ops.filter(o=>o.type==='ingreso').reduce((a,o)=>a+parseFloat(o.amount||0),0);
+    const gas=ops.filter(o=>o.type==='egreso').reduce((a,o)=>a+parseFloat(o.amount||0),0);
+    return{ing,gas};
+  }catch{return{ing:0,gas:0};}
+}
+
+async function loadResumen(){
+  const[curr,prev]=await Promise.all([getWeekData(0),getWeekData(-1)]);
+  const maxVal=Math.max(curr.ing,curr.gas,prev.ing,prev.gas,1);
+  const pct=v=>Math.round((v/maxVal)*100);
+  const diff=curr.ing-prev.ing;
+  const badge=document.getElementById('semBadge');
+  if(badge){
+    if(diff>0){badge.textContent=`▲ +$${fmt(diff)} vs semana pasada`;badge.style.color='var(--green)';badge.style.borderColor='rgba(52,211,153,.2)';badge.style.background='rgba(52,211,153,.07)';}
+    else if(diff<0){badge.textContent=`▼ -$${fmt(Math.abs(diff))} vs semana pasada`;badge.style.color='var(--red)';badge.style.borderColor='rgba(248,113,113,.2)';badge.style.background='rgba(248,113,113,.07)';}
+    else{badge.textContent='Sin cambios';badge.style.color='var(--t3)';}
   }
-  const balA=ingA.map((v,i)=>v-gasA[i]);
-  new Chart(ctx,{type:'line',data:{labels,datasets:[
-    {label:'Ingresos',data:ingA,borderColor:'#34D399',backgroundColor:'rgba(52,211,153,.06)',borderWidth:1.5,tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#34D399',pointBorderColor:'#0D1117',pointBorderWidth:2},
-    {label:'Gastos',data:gasA,borderColor:'#F87171',backgroundColor:'rgba(248,113,113,.06)',borderWidth:1.5,tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#F87171',pointBorderColor:'#0D1117',pointBorderWidth:2},
-    {label:'Balance',data:balA,borderColor:'#3B82F6',backgroundColor:'rgba(59,130,246,.04)',borderWidth:1.5,tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#3B82F6',pointBorderColor:'#0D1117',pointBorderWidth:2,borderDash:[5,4]}
-  ]},options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false},tooltip:{backgroundColor:'#161B22',titleColor:'#F0F6FC',bodyColor:'#8B949E',borderColor:'rgba(255,255,255,.07)',borderWidth:1,padding:10,cornerRadius:8,callbacks:{label:c=>c.dataset.label+': $'+Math.abs(c.parsed.y).toLocaleString('es-CL')}}},
-    scales:{y:{beginAtZero:true,grid:{color:'rgba(255,255,255,.04)'},border:{display:false},ticks:{color:'#484F58',font:{size:10},callback:v=>'$'+v.toLocaleString('es-CL')}},x:{grid:{display:false},border:{display:false},ticks:{color:'#484F58',font:{size:10,weight:'600'}}}},
-    interaction:{intersect:false,mode:'index'}
-  }});
+  const g=document.getElementById('weekCompare');
+  if(!g)return;
+  g.innerHTML=`
+    <div class="wc-row">
+      <div class="wc-lbl"><span>Ingresos esta semana</span><span style="color:var(--green);font-weight:800">$${fmt(curr.ing)}</span></div>
+      <div class="wc-bar-track"><div class="wc-bar-fill" style="width:0%;background:var(--green)" data-w="${pct(curr.ing)}"></div></div>
+    </div>
+    <div class="wc-row">
+      <div class="wc-lbl"><span>Gastos esta semana</span><span style="color:var(--red);font-weight:800">$${fmt(curr.gas)}</span></div>
+      <div class="wc-bar-track"><div class="wc-bar-fill" style="width:0%;background:var(--red)" data-w="${pct(curr.gas)}"></div></div>
+    </div>
+    <div style="height:1px;background:var(--b);margin:4px 0"></div>
+    <div class="wc-row">
+      <div class="wc-lbl"><span style="color:var(--t3)">Ingresos semana pasada</span><span style="color:var(--t2);font-weight:700">$${fmt(prev.ing)}</span></div>
+      <div class="wc-bar-track"><div class="wc-bar-fill" style="width:0%;background:rgba(52,211,153,.4)" data-w="${pct(prev.ing)}"></div></div>
+    </div>
+    <div class="wc-row">
+      <div class="wc-lbl"><span style="color:var(--t3)">Gastos semana pasada</span><span style="color:var(--t2);font-weight:700">$${fmt(prev.gas)}</span></div>
+      <div class="wc-bar-track"><div class="wc-bar-fill" style="width:0%;background:rgba(248,113,113,.4)" data-w="${pct(prev.gas)}"></div></div>
+    </div>
+    <div class="wc-row" style="margin-top:4px">
+      <div class="wc-lbl"><span style="font-weight:700;color:var(--t1)">Balance esta semana</span><span style="color:${curr.ing-curr.gas>=0?'var(--green)':'var(--red)'};font-weight:800">$${fmt(curr.ing-curr.gas)}</span></div>
+      <div class="wc-bar-track"><div class="wc-bar-fill" style="width:0%;background:var(--blue)" data-w="${pct(Math.max(curr.ing-curr.gas,0))}"></div></div>
+    </div>`;
+  setTimeout(()=>{g.querySelectorAll('.wc-bar-fill').forEach(b=>b.style.width=b.dataset.w+'%');},100);
+}
+
+async function loadTxList(){
+  const tl=document.getElementById('txList');if(!tl)return;
+  const now=new Date();
+  const s=new Date(now.getFullYear(),now.getMonth(),1).toISOString();
+  try{
+    const{data}=await _sb.from('user_operations').select('type,amount,description,created_at').eq('user_id',_u.id).gte('created_at',s).order('created_at',{ascending:false}).limit(8);
+    const ops=data||[];
+    if(ops.length===0){tl.innerHTML='<div class="tx-empty"><i class="ph-duotone ph-receipt" style="font-size:22px;display:block;margin:0 auto 6px"></i>Sin transacciones este mes</div>';return;}
+    tl.innerHTML=ops.map(o=>{
+      const isIng=o.type==='ingreso';
+      const d=new Date(o.created_at).toLocaleDateString('es-ES',{day:'numeric',month:'short'});
+      const desc=o.description||( isIng?'Ingreso registrado':'Gasto registrado');
+      return`<div class="tx-item">
+        <div class="tx-ic" style="background:${isIng?'rgba(52,211,153,.1)':'rgba(248,113,113,.1)'}">
+          <i class="ph-duotone ${isIng?'ph-arrow-up':'ph-arrow-down'}" style="color:${isIng?'var(--green)':'var(--red)'}"></i>
+        </div>
+        <div class="tx-info">
+          <div class="tx-name">${desc}</div>
+          <div class="tx-date">${d}</div>
+        </div>
+        <div class="tx-amt" style="color:${isIng?'var(--green)':'var(--red)'}">${isIng?'+':'-'}$${fmt(parseFloat(o.amount||0))}</div>
+      </div>`;
+    }).join('');
+  }catch(err){tl.innerHTML='<div class="tx-empty">Error cargando transacciones</div>';}
 }
 
 /* ── BUSINESS ICON ── */
 const BIZ_ICONS={
-  retail:   {icon:'ph-storefront',  color:'#3B82F6', label:'Mi Negocio · Retail',         href:"{{ url_for('essential_inventario') }}"},
-  tecnico:  {icon:'ph-wrench',      color:'#FCD34D', label:'Mi Negocio · Taller',          href:"{{ url_for('essential_orden_express') }}"},
-  gastronomia:{icon:'ph-fork-knife',color:'#F87171', label:'Mi Negocio · Gastronomía',    href:"{{ url_for('essential_inventario') }}"},
-  profesional:{icon:'ph-briefcase', color:'#A78BFA', label:'Mi Negocio · Servicios',       href:"{{ url_for('essential_deudas') }}"},
-  bienestar:{icon:'ph-heartbeat',   color:'#34D399', label:'Mi Negocio · Bienestar',       href:"{{ url_for('essential_inventario') }}"}
+  retail:     {icon:'ph-storefront',  color:'#3B82F6', label:'Mi Negocio · Retail',          href:"{{ url_for('essential_negocio') }}"},
+  tecnico:    {icon:'ph-wrench',      color:'#FCD34D', label:'Mi Negocio · Taller',           href:"{{ url_for('essential_negocio') }}"},
+  gastronomia:{icon:'ph-fork-knife',  color:'#F87171', label:'Mi Negocio · Gastronomía',      href:"{{ url_for('essential_negocio') }}"},
+  profesional:{icon:'ph-briefcase',   color:'#A78BFA', label:'Mi Negocio · Servicios',        href:"{{ url_for('essential_negocio') }}"},
+  bienestar:  {icon:'ph-heartbeat',   color:'#34D399', label:'Mi Negocio · Bienestar',        href:"{{ url_for('essential_negocio') }}"}
 };
 
 async function loadBiz(){

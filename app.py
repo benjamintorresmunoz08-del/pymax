@@ -121,6 +121,11 @@ def essential_boveda():
 def essential_orden_express():
     return render_template('empresa/essential/orden-express.html')
 
+@app.route('/empresa/essential/mi-negocio')
+def essential_negocio():
+    return render_template('empresa/essential/panel-negocio.html',
+                           SUPABASE_URL=SUPABASE_URL, SUPABASE_KEY=SUPABASE_KEY)
+
 @app.route('/empresa/essential/comunidad-starter')
 def essential_comunidad():
     return render_template('empresa/essential/comunidad-starter.html')

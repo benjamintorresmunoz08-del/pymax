@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Pymax · Mi Negocio</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0D1117;--s1:#161B22;--s2:#21262D;
+  --b:rgba(255,255,255,.07);--bh:rgba(255,255,255,.11);
+  --t1:#F0F6FC;--t2:#8B949E;--t3:#484F58;
+  --blue:#3B82F6;--green:#34D399;--red:#F87171;--amber:#FCD34D;--purple:#A78BFA;
+  --r:12px;--rg:8px;
+}
+html{color-scheme:dark}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;display:grid;grid-template-rows:52px 1fr;overflow-x:hidden}
+
+/* TOPBAR */
+.topbar{background:var(--s1);border-bottom:1px solid var(--b);display:flex;align-items:center;padding:0 20px;gap:14px;z-index:50;position:sticky;top:0}
+.tb-logo{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.tb-lm{width:26px;height:26px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.tb-lm i{font-size:14px;color:#fff}
+.tb-name{font-size:14px;font-weight:800;letter-spacing:-.04em}
+.tb-plan{font-size:9px;font-weight:700;color:var(--blue);background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);padding:2px 8px;border-radius:100px;letter-spacing:.05em}
+.tb-sep{width:1px;height:22px;background:var(--b);flex-shrink:0}
+.tb-sect{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700}
+.tb-sect i{font-size:16px}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:7px}
+.tbb{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:var(--rg);font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:inherit;text-decoration:none;transition:all .15s}
+.tbb i{font-size:13px}
+.tbb.g{background:var(--s2);color:var(--t2);border:1px solid var(--b)}
+.tbb.g:hover{color:var(--t1);border-color:var(--bh)}
+
+/* MAIN */
+.main{padding:20px 24px;overflow-y:auto}
+
+/* HERO */
+.hero{display:flex;align-items:center;gap:16px;padding:20px 24px;background:var(--s1);border:1px solid var(--b);border-radius:16px;margin-bottom:18px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-30px;right:-30px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,.08),transparent 70%)}
+.h-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.h-icon i{font-size:26px}
+.h-ttl{font-size:20px;font-weight:900;letter-spacing:-.04em}
+.h-sub{font-size:12px;color:var(--t2);margin-top:3px}
+.h-badge{margin-left:auto;padding:5px 14px;border-radius:100px;font-size:10px;font-weight:800;letter-spacing:.07em}
+
+/* KPI ROW */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:18px}
+.kpi{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:14px 16px;position:relative;overflow:hidden;transition:border-color .2s;cursor:default}
+.kpi:hover{border-color:var(--bh)}
+.kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.kpi-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--t3);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.kpi-val{font-size:22px;font-weight:900;letter-spacing:-.04em;line-height:1;margin-bottom:4px}
+.kpi-ft{font-size:9.5px;color:var(--t3)}
+
+/* PRODUCT TABLE */
+.section{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.sec-ttl{font-size:13px;font-weight:700}
+.sec-sub{font-size:10px;color:var(--t3);margin-top:1px}
+.btn-add{display:flex;align-items:center;gap:5px;padding:6px 14px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s}
+.btn-add:hover{background:#2563EB}
+.btn-add i{font-size:13px}
+
+/* GRID */
+.prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.prod-card{background:var(--bg);border:1px solid var(--b);border-radius:10px;padding:13px;transition:all .15s;cursor:pointer;position:relative}
+.prod-card:hover{border-color:var(--bh);transform:translateY(-1px)}
+.prod-name{font-size:12px;font-weight:700;margin-bottom:3px}
+.prod-desc{font-size:10.5px;color:var(--t3);margin-bottom:9px;line-height:1.4}
+.prod-foot{display:flex;align-items:center;justify-content:space-between}
+.prod-price{font-size:14px;font-weight:800;color:var(--green)}
+.prod-stock{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:100px}
+.prod-del{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:5px;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.12);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity .15s}
+.prod-card:hover .prod-del{opacity:1}
+.prod-del i{font-size:10px;color:var(--red)}
+.prod-empty{text-align:center;padding:28px;color:var(--t3);font-size:12px}
+.prod-empty i{font-size:28px;display:block;margin:0 auto 8px;color:var(--t3)}
+
+/* 2-col layout */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:900px){.two-col{grid-template-columns:1fr}}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(3px);z-index:999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-ov.show{opacity:1;pointer-events:all}
+.modal{background:var(--s1);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:28px;width:380px;box-shadow:0 30px 60px rgba(0,0,0,.5);transform:scale(.95) translateY(10px);transition:transform .3s cubic-bezier(.22,1,.36,1)}
+.modal-ov.show .modal{transform:scale(1) translateY(0)}
+.modal h3{font-size:15px;font-weight:800;margin-bottom:18px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;background:var(--s2);border:1px solid var(--b);border-radius:8px;padding:8px 11px;font-size:12px;color:var(--t1);font-family:inherit;outline:none;transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(59,130,246,.4)}
+.field textarea{resize:vertical;min-height:60px}
+.field select option{background:var(--s2)}
+.m-row{display:flex;gap:8px;margin-top:18px}
+.m-btn{flex:1;padding:9px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;border:none;transition:all .15s}
+.m-btn.cancel{background:var(--s2);color:var(--t2);border:1px solid var(--b)}
+.m-btn.cancel:hover{color:var(--t1)}
+.m-btn.save{background:var(--blue);color:#fff}
+.m-btn.save:hover{background:#2563EB}
+
+/* animations */
+.fa{animation:fadeUp .3s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="tb-logo">
+    <div class="tb-lm"><i class="ph-bold ph-squares-four"></i></div>
+    <span class="tb-name">Pymax</span>
+    <span class="tb-plan">Essential</span>
+  </div>
+  <div class="tb-sep"></div>
+  <div class="tb-sect" id="tbSect" style="color:var(--t2)">
+    <i class="ph-duotone ph-storefront" id="tbIcon"></i>
+    <span id="tbTitle">Mi Negocio</span>
+  </div>
+  <div class="tb-right">
+    <a href="{{ url_for('essential_dashboard') }}" class="tbb g"><i class="ph-duotone ph-arrow-left"></i>Dashboard</a>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- HERO -->
+  <div class="hero fa" id="bizHero">
+    <div class="h-icon" id="bizHIcon" style="background:rgba(59,130,246,.1)">
+      <i class="ph-duotone ph-storefront" style="color:var(--blue)" id="bizHIconI"></i>
+    </div>
+    <div>
+      <div class="h-ttl" id="bizHTitle">Panel de Negocio</div>
+      <div class="h-sub" id="bizHSub">Métricas y gestión específica de tu rubro</div>
+    </div>
+    <div class="h-badge" id="bizHBadge" style="background:rgba(59,130,246,.1);color:var(--blue)">NEGOCIO</div>
+  </div>
+
+  <!-- KPIs del negocio -->
+  <div class="kpi-row fa" id="bizKpis">
+    <div class="kpi" style="border-bottom-color:var(--green)"><div class="kpi::after"></div>
+      <div class="kpi-lbl">Total Productos/Servicios <i class="ph-duotone ph-package" style="font-size:13px;color:var(--t3)"></i></div>
+      <div class="kpi-val" id="kpProd">0</div>
+      <div class="kpi-ft" id="kpProdFt">Registrados</div>
+    </div>
+    <div class="kpi" style="border-bottom-color:var(--blue)">
+      <div class="kpi-lbl">Precio Promedio <i class="ph-duotone ph-currency-dollar" style="font-size:13px;color:var(--t3)"></i></div>
+      <div class="kpi-val" id="kpPrecio">--</div>
+      <div class="kpi-ft">Por unidad/servicio</div>
+    </div>
+    <div class="kpi" style="border-bottom-color:var(--amber)">
+      <div class="kpi-lbl">Stock Total <i class="ph-duotone ph-stack" style="font-size:13px;color:var(--t3)"></i></div>
+      <div class="kpi-val" id="kpStock">--</div>
+      <div class="kpi-ft" id="kpStockFt">Unidades disponibles</div>
+    </div>
+    <div class="kpi" style="border-bottom-color:var(--purple)">
+      <div class="kpi-lbl">Valor Inventario <i class="ph-duotone ph-bank" style="font-size:13px;color:var(--t3)"></i></div>
+      <div class="kpi-val" id="kpValor">--</div>
+      <div class="kpi-ft">Stock × precio</div>
+    </div>
+  </div>
+
+  <!-- PRODUCTOS / SERVICIOS -->
+  <div class="section fa">
+    <div class="sec-hdr">
+      <div>
+        <div class="sec-ttl" id="prodSecTtl">Mis Productos</div>
+        <div class="sec-sub" id="prodSecSub">Gestiona tu catálogo y stock</div>
+      </div>
+      <button class="btn-add" onclick="openModal()"><i class="ph-bold ph-plus"></i><span id="btnAddTxt">Agregar Producto</span></button>
+    </div>
+    <div class="prod-grid" id="prodGrid">
+      <div class="prod-empty"><i class="ph-duotone ph-package"></i>Sin productos registrados aún.<br>Agrega tu primero con el botón de arriba.</div>
+    </div>
+  </div>
+
+  <!-- 2 COL: Alertas + Acciones rápidas -->
+  <div class="two-col">
+    <div class="section fa">
+      <div class="sec-hdr"><div><div class="sec-ttl">Alertas del Negocio</div><div class="sec-sub">Situaciones que requieren atención</div></div></div>
+      <div id="bizAlerts"><div style="text-align:center;padding:14px;color:var(--t3);font-size:11px">Sin alertas activas.</div></div>
+    </div>
+    <div class="section fa">
+      <div class="sec-hdr"><div><div class="sec-ttl" id="accionTtl">Acciones Rápidas</div><div class="sec-sub">Para tu tipo de negocio</div></div></div>
+      <div id="bizAcciones" style="display:flex;flex-direction:column;gap:6px"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL AGREGAR -->
+<div class="modal-ov" id="addModal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h3 id="modalTtl">Agregar Producto</h3>
+    <div class="field"><label id="fNomLbl">Nombre *</label><input type="text" id="fNom" placeholder="Ej: Camisa azul talla M"/></div>
+    <div class="field"><label>Descripción</label><textarea id="fDesc" placeholder="Descripción opcional…"></textarea></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="field"><label id="fPrecLbl">Precio ($)</label><input type="number" id="fPrec" placeholder="0" min="0"/></div>
+      <div class="field"><label id="fStockLbl">Stock</label><input type="number" id="fStk" placeholder="0" min="0"/></div>
+    </div>
+    <div class="field"><label>Categoría / Tipo</label><input type="text" id="fCat" placeholder="Ej: Ropa, Bebidas, Servicio…"/></div>
+    <div class="m-row">
+      <button class="m-btn cancel" onclick="closeModal()">Cancelar</button>
+      <button class="m-btn save" onclick="saveProduct()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var _sb=null,_u=null,_biz=null,_bt=null,_prods=[];
+
+document.addEventListener('DOMContentLoaded',async()=>{
+  _sb=window.supabase.createClient('{{ SUPABASE_URL }}','{{ SUPABASE_KEY }}');
+  const{data:{user}}=await _sb.auth.getUser();
+  if(!user){window.location.href='/';return;}
+  _u=user;
+  await loadBiz();
+  applyBizTheme();
+  await loadProducts();
+  renderKpis();
+  renderAlerts();
+  renderAcciones();
+});
+
+const BIZCFG={
+  retail:     {icon:'ph-storefront',  color:'#3B82F6', label:'Retail & Almacenes',   badge:'RETAIL',   prodTtl:'Mis Productos',       prodSub:'Gestiona tu catálogo y stock',          btnTxt:'Agregar Producto',  nomLbl:'Nombre del producto', precLbl:'Precio de venta ($)',stLbl:'Stock',   acTtl:'Acciones Retail'},
+  tecnico:    {icon:'ph-wrench',      color:'#FCD34D', label:'Técnico & Taller',      badge:'TALLER',   prodTtl:'Mis Servicios / OT',  prodSub:'Órdenes de trabajo y servicios',        btnTxt:'Nueva OT',          nomLbl:'Tipo de servicio',    precLbl:'Costo servicio ($)', stLbl:'Tiempo (hrs)',acTtl:'Acciones Taller'},
+  gastronomia:{icon:'ph-fork-knife',  color:'#F87171', label:'Gastronómico',          badge:'GASTRONO', prodTtl:'Mis Platos / Menú',   prodSub:'Gestiona tu menú y costos de receta',   btnTxt:'Agregar Plato',     nomLbl:'Nombre del plato',    precLbl:'Precio de venta ($)', stLbl:'Porciones',acTtl:'Acciones Resto'},
+  profesional:{icon:'ph-briefcase',   color:'#A78BFA', label:'Servicios Profesionales',badge:'PRO',    prodTtl:'Mis Servicios',       prodSub:'Catálogo de servicios y tarifas',        btnTxt:'Agregar Servicio',  nomLbl:'Nombre del servicio', precLbl:'Tarifa ($)',         stLbl:'Disponibilidad',acTtl:'Acciones Pro'},
+  bienestar:  {icon:'ph-heartbeat',   color:'#34D399', label:'Bienestar & Recurrencia',badge:'GYM',    prodTtl:'Mis Planes / Membresías',prodSub:'Gestiona planes y precios',           btnTxt:'Agregar Plan',      nomLbl:'Nombre del plan',     precLbl:'Precio mensual ($)', stLbl:'Cupos máx.',acTtl:'Acciones Gym'}
+};
+
+async function loadBiz(){
+  try{const{data}=await _sb.from('user_business_profiles').select('*').eq('user_id',_u.id).single();_biz=data||null;}catch{_biz=null;}
+  _bt=_biz?.business_type||null;
+  if(!_bt)try{_bt=JSON.parse(localStorage.getItem('pymax_onboarding_config')||'{}').business_type||null;}catch{}
+}
+
+function applyBizTheme(){
+  const c=_bt?BIZCFG[_bt]:null;if(!c)return;
+  setT('tbTitle',c.label);setT('bizHTitle',`Panel · ${c.label}`);setT('bizHSub','Métricas y gestión específica de tu rubro');
+  setT('bizHBadge',c.badge);document.getElementById('bizHBadge').style.color=c.color;document.getElementById('bizHBadge').style.background=`rgba(${hexRgb(c.color)},.1)`;
+  document.getElementById('bizHIcon').style.background=`rgba(${hexRgb(c.color)},.1)`;
+  document.getElementById('bizHIconI').style.color=c.color;document.getElementById('bizHIconI').className=`ph-duotone ${c.icon}`;
+  document.getElementById('tbIcon').className=`ph-duotone ${c.icon}`;document.getElementById('tbIcon').style.color=c.color;
+  setT('prodSecTtl',c.prodTtl);setT('prodSecSub',c.prodSub);setT('btnAddTxt',c.btnTxt);
+  setT('modalTtl',c.btnTxt);setT('fNomLbl',c.nomLbl);setT('fPrecLbl',c.precLbl);setT('fStockLbl',c.stLbl);
+  setT('accionTtl',c.acTtl);
+  // kpi labels
+  setT('kpProdFt',`Registrados en ${c.label}`);
+  setT('kpStockFt',c.stLbl==='Tiempo (hrs)'?'Horas de capacidad':'Unidades disponibles');
+}
+
+async function loadProducts(){
+  try{
+    const{data}=await _sb.from('user_products').select('*').eq('user_id',_u.id).order('created_at',{ascending:false});
+    _prods=data||[];
+  }catch{_prods=[];}
+  renderGrid();
+}
+
+function renderGrid(){
+  const g=document.getElementById('prodGrid');if(!g)return;
+  if(_prods.length===0){const c=_bt?BIZCFG[_bt]:null;g.innerHTML=`<div class="prod-empty"><i class="ph-duotone ph-package"></i>Sin ${c?c.btnTxt.replace('Agregar ','').replace('Nueva ','').toLowerCase()+'s':' registros'} aún.<br>Agrega tu primero con el botón de arriba.</div>`;return;}
+  g.innerHTML=_prods.map(p=>{
+    const stk=parseInt(p.stock||0);
+    const stColor=stk<=0?'var(--red)':stk<=5?'var(--amber)':'var(--green)';
+    const stBg=stk<=0?'rgba(248,113,113,.1)':stk<=5?'rgba(252,211,77,.1)':'rgba(52,211,153,.1)';
+    const stLbl=stk<=0?'Sin stock':stk<=5?'Stock bajo':`${stk} disponibles`;
+    return`<div class="prod-card">
+      <div onclick="delProduct('${p.id}')" class="prod-del"><i class="ph-bold ph-x"></i></div>
+      <div class="prod-name">${p.name||'Sin nombre'}</div>
+      <div class="prod-desc">${p.description||p.category||'—'}</div>
+      <div class="prod-foot">
+        <div class="prod-price">$${fmt(parseFloat(p.price||0))}</div>
+        <div class="prod-stock" style="background:${stBg};color:${stColor}">${stLbl}</div>
+      </div>
+    </div>`;
+  }).join('');
+  renderKpis();
+}
+
+function renderKpis(){
+  setT('kpProd',_prods.length);
+  const prices=_prods.map(p=>parseFloat(p.price||0)).filter(v=>v>0);
+  const avg=prices.length?Math.round(prices.reduce((a,b)=>a+b,0)/prices.length):0;
+  setT('kpPrecio',avg>0?`$${fmt(avg)}`:'--');
+  const totalStock=_prods.reduce((a,p)=>a+parseInt(p.stock||0),0);
+  setT('kpStock',totalStock>0?totalStock:'--');
+  const valor=_prods.reduce((a,p)=>a+parseInt(p.stock||0)*parseFloat(p.price||0),0);
+  setT('kpValor',valor>0?`$${fmt(valor)}`:'--');
+}
+
+function renderAlerts(){
+  const box=document.getElementById('bizAlerts');if(!box)return;
+  const alerts=[];
+  const sinStock=_prods.filter(p=>parseInt(p.stock||0)<=0);
+  const bajStock=_prods.filter(p=>parseInt(p.stock||0)>0&&parseInt(p.stock||0)<=5);
+  if(sinStock.length>0)alerts.push(mkAlert('red',`${sinStock.length} producto${sinStock.length>1?'s':''} sin stock`,`Reponer: ${sinStock.slice(0,2).map(p=>p.name||'?').join(', ')}${sinStock.length>2?'…':''}`));
+  if(bajStock.length>0)alerts.push(mkAlert('amber',`${bajStock.length} con stock bajo`,`Revisar: ${bajStock.slice(0,2).map(p=>p.name||'?').join(', ')}`));
+  if(_prods.length===0)alerts.push(mkAlert('blue','Sin productos registrados','Agrega tu catálogo para activar el seguimiento'));
+  if(alerts.length===0)alerts.push(mkAlert('green','Todo en orden','Sin alertas activas en tu negocio'));
+  box.innerHTML=alerts.join('');
+}
+
+function mkAlert(type,ttl,msg){
+  const cl={red:{dot:'#F87171',bg:'rgba(248,113,113,.06)',border:'rgba(248,113,113,.14)'},amber:{dot:'#FCD34D',bg:'rgba(252,211,77,.06)',border:'rgba(252,211,77,.14)'},green:{dot:'#34D399',bg:'rgba(52,211,153,.06)',border:'rgba(52,211,153,.14)'},blue:{dot:'#3B82F6',bg:'rgba(59,130,246,.06)',border:'rgba(59,130,246,.14)'}}[type]||{};
+  return`<div style="display:flex;align-items:flex-start;gap:8px;padding:9px 11px;border-radius:8px;background:${cl.bg};border:1px solid ${cl.border};margin-bottom:5px"><div style="width:5px;height:5px;border-radius:50%;background:${cl.dot};flex-shrink:0;margin-top:3px"></div><div><div style="font-size:11px;font-weight:700">${ttl}</div><div style="font-size:10.5px;color:var(--t2);margin-top:2px">${msg}</div></div></div>`;
+}
+
+function renderAcciones(){
+  const box=document.getElementById('bizAcciones');if(!box)return;
+  const base=[
+    {icon:'ph-currency-dollar',color:'var(--green)',txt:'Registrar venta',href:"{{ url_for('essential_ventas') }}"},
+    {icon:'ph-lightning',color:'var(--purple)',txt:'Orden Express',href:"{{ url_for('essential_orden_express') }}"},
+    {icon:'ph-magnifying-glass',color:'var(--red)',txt:'Detectar fugas',href:"{{ url_for('essential_fuga_dinero') }}"},
+    {icon:'ph-scales',color:'var(--blue)',txt:'Punto de equilibrio',href:"{{ url_for('essential_punto_equilibrio') }}"},
+  ];
+  box.innerHTML=base.map(a=>`<a href="${a.href}" style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:9px;background:var(--s2);border:1px solid var(--b);text-decoration:none;transition:all .15s;font-size:11px;font-weight:600;color:var(--t1);" onmouseover="this.style.borderColor='rgba(59,130,246,.25)'" onmouseout="this.style.borderColor='rgba(255,255,255,.07)'"><i class="ph-duotone ${a.icon}" style="font-size:15px;color:${a.color};flex-shrink:0"></i>${a.txt}<i class="ph-bold ph-arrow-right" style="font-size:10px;color:var(--t3);margin-left:auto"></i></a>`).join('');
+}
+
+// MODAL
+function openModal(){document.getElementById('addModal').classList.add('show');}
+function closeModal(){document.getElementById('addModal').classList.remove('show');['fNom','fDesc','fPrec','fStk','fCat'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});}
+
+async function saveProduct(){
+  const nom=document.getElementById('fNom')?.value.trim();
+  if(!nom){alert('El nombre es obligatorio');return;}
+  const prod={user_id:_u.id,name:nom,description:document.getElementById('fDesc')?.value.trim()||null,price:parseFloat(document.getElementById('fPrec')?.value||0),stock:parseInt(document.getElementById('fStk')?.value||0),category:document.getElementById('fCat')?.value.trim()||null,business_type:_bt||'retail'};
+  try{
+    const{data,error}=await _sb.from('user_products').insert([prod]).select().single();
+    if(error)throw error;
+    _prods.unshift(data);renderGrid();renderAlerts();
+    closeModal();
+  }catch(e){
+    // Tabla puede no existir — guardar en localStorage temporalmente
+    const lp={...prod,id:'local_'+Date.now()};_prods.unshift(lp);renderGrid();renderAlerts();closeModal();
+    console.warn('Supabase product insert failed, stored locally:',e.message);
+  }
+}
+
+async function delProduct(id){
+  if(!confirm('¿Eliminar este elemento?'))return;
+  _prods=_prods.filter(p=>p.id!==id);
+  if(!id.startsWith('local_'))try{await _sb.from('user_products').delete().eq('id',id);}catch{}
+  renderGrid();renderAlerts();
+}
+
+function setT(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function fmt(n){return Math.round(n).toLocaleString('es-CL');}
+function hexRgb(hex){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`${r},${g},${b}`;}
+</script>
+</body>
+</html>
