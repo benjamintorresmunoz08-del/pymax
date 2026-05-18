@@ -13,7 +13,7 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
   --bg:#0D1117;--s1:#161B22;--s2:#21262D;
-  --b:rgba(255,255,255,.07);--bh:rgba(255,255,255,.12);
+  --b:rgba(255,255,255,.07);--bh:rgba(255,255,255,.11);
   --t1:#F0F6FC;--t2:#8B949E;--t3:#484F58;
   --blue:#3B82F6;--green:#34D399;--red:#F87171;--amber:#FCD34D;--purple:#A78BFA;
   --r:12px;--rg:8px;
@@ -21,8 +21,8 @@
 html{color-scheme:dark}
 body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--t1);height:100vh;display:grid;grid-template-rows:52px 1fr;overflow:hidden}
 
-/* TOPBAR */
-.topbar{background:var(--s1);border-bottom:1px solid var(--b);display:flex;align-items:center;padding:0 20px;gap:12px;z-index:50}
+/* ── TOPBAR ── */
+.topbar{background:var(--s1);border-bottom:1px solid var(--b);display:flex;align-items:center;padding:0 20px;gap:14px;z-index:50}
 .tb-logo{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .tb-lm{width:26px;height:26px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center}
 .tb-lm i{font-size:14px;color:#fff}
@@ -39,24 +39,43 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 .tbb.p{background:var(--blue);color:#fff}
 .tbb.p:hover{background:#2563EB}
 
-/* BODY: icon-rail | ai-col | data-col */
-.body{display:grid;grid-template-columns:60px 360px 1fr;overflow:hidden;height:100%}
+/* ── BODY: icon-rail | ai-col | data-col ── */
+.body{display:grid;grid-template-columns:60px 380px 1fr;overflow:hidden;height:100%}
 
-/* ICON RAIL */
+/* ── ICON RAIL ── */
 .rail{background:var(--s1);border-right:1px solid var(--b);display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:1px;overflow-y:auto}
 .rail::-webkit-scrollbar{width:0}
 .rg{width:100%;display:flex;flex-direction:column;align-items:center;padding:6px 0;border-bottom:1px solid var(--b);gap:1px}
 .rg:last-of-type{border:none;margin-top:auto}
-.ri{width:40px;height:40px;border-radius:var(--rg);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;text-decoration:none;position:relative}
-.ri i{font-size:19px;color:var(--t3)}
+.ri{width:40px;height:40px;border-radius:var(--rg);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .18s;text-decoration:none;position:relative}
+.ri i{font-size:19px;color:var(--t3);transition:color .18s}
 .ri:hover{background:rgba(255,255,255,.05)}
 .ri:hover i{color:var(--t2)}
 .ri.active{background:rgba(59,130,246,.12)}
 .ri.active i{color:var(--blue)}
-.ri[data-tip]:hover::after{content:attr(data-tip);position:absolute;left:50px;white-space:nowrap;background:#1C2128;border:1px solid var(--b);color:var(--t1);font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px;z-index:999;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.5)}
-.r-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;cursor:pointer}
+/* tooltip */
+.ri[data-tip]:hover::after{
+  content:attr(data-tip);
+  position:absolute;left:50px;
+  white-space:nowrap;
+  background:#1C2128;
+  border:1px solid var(--b);
+  color:var(--t1);
+  font-size:11px;font-weight:600;
+  padding:5px 11px;border-radius:6px;
+  z-index:999;pointer-events:none;
+  box-shadow:0 4px 20px rgba(0,0,0,.5);
+  animation:tipIn .12s ease;
+}
+@keyframes tipIn{from{opacity:0;transform:translateX(-4px)}to{opacity:1;transform:translateX(0)}}
+/* business icon (dynamic) */
+.ri-biz{width:40px;height:40px;border-radius:var(--rg);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .18s;text-decoration:none;position:relative;display:none}
+.ri-biz i{font-size:19px;transition:color .18s}
+.ri-biz:hover{background:rgba(255,255,255,.05)}
+.ri-biz[data-tip]:hover::after{content:attr(data-tip);position:absolute;left:50px;white-space:nowrap;background:#1C2128;border:1px solid var(--b);color:var(--t1);font-size:11px;font-weight:600;padding:5px 11px;border-radius:6px;z-index:999;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.5);animation:tipIn .12s ease;}
+.r-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;cursor:pointer}
 
-/* AI COLUMN */
+/* ── AI COLUMN ── */
 .ai-col{background:var(--s1);border-right:1px solid var(--b);display:flex;flex-direction:column;overflow:hidden}
 .ai-hdr{padding:14px 16px 12px;border-bottom:1px solid var(--b);flex-shrink:0}
 .ai-hrow{display:flex;align-items:center;gap:9px}
@@ -71,7 +90,6 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 .ai-ctx{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}
 .ctx-p{padding:3px 9px;border-radius:100px;font-size:9.5px;font-weight:700;background:var(--s2);border:1px solid var(--b);color:var(--t3)}
 .ctx-p span{color:var(--t1)}
-
 .ai-body{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:7px}
 .ai-body::-webkit-scrollbar{width:3px}
 .ai-body::-webkit-scrollbar-thumb{background:var(--s2);border-radius:10px}
@@ -82,12 +100,10 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 .typing span{width:4px;height:4px;border-radius:50%;background:var(--t3);animation:dot 1.4s ease-in-out infinite}
 .typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
 @keyframes dot{0%,100%{opacity:.2;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
-
 .ai-chips{padding:8px 14px 6px;display:flex;flex-wrap:wrap;gap:5px;border-top:1px solid var(--b);flex-shrink:0}
 .chip{padding:4px 9px;border-radius:100px;font-size:10px;font-weight:600;color:var(--t3);background:var(--s2);border:1px solid var(--b);cursor:pointer;transition:all .15s;font-family:inherit;display:flex;align-items:center;gap:3px}
 .chip i{font-size:10px}
 .chip:hover{border-color:var(--blue);color:var(--blue);background:rgba(59,130,246,.08)}
-
 .ai-inp{padding:7px 12px 10px;display:flex;gap:6px;flex-shrink:0}
 .ai-in{flex:1;background:var(--s2);border:1px solid var(--b);border-radius:var(--rg);padding:8px 11px;font-size:12px;color:var(--t1);font-family:inherit;outline:none;transition:border-color .15s}
 .ai-in::placeholder{color:var(--t3)}
@@ -96,18 +112,12 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 .ai-snd:hover{background:#2563EB}
 .ai-snd i{font-size:14px;color:#fff}
 
-/* DATA COLUMN — scrollable internally */
-.data-col{overflow-y:auto;overflow-x:hidden;padding:14px;display:flex;flex-direction:column;gap:10px}
-.data-col::-webkit-scrollbar{width:4px}
-.data-col::-webkit-scrollbar-thumb{background:var(--s2);border-radius:10px}
+/* ── DATA COLUMN ── */
+.data-col{display:grid;grid-template-rows:auto 1fr auto;overflow:hidden;padding:16px;gap:12px;background:var(--bg)}
 
-/* CARDS */
-.card{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);transition:border-color .2s}
-.card:hover{border-color:var(--bh)}
-
-/* KPI STRIP */
-.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.kpi{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:14px 16px;position:relative;overflow:hidden;transition:border-color .2s;flex-shrink:0}
+/* KPI */
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpi{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:14px 16px;position:relative;overflow:hidden;transition:border-color .2s}
 .kpi:hover{border-color:var(--bh)}
 .kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
 .kb::after{background:var(--blue)}.kg::after{background:var(--green)}.kr::after{background:var(--red)}.kp::after{background:var(--purple)}
@@ -125,84 +135,122 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 .dv{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
 
 /* CHART */
-.chart-card{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:14px;height:220px;flex-shrink:0}
-.ch-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.chart-area{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;min-height:0}
+.ch-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-shrink:0}
 .ch-ttl{font-size:12px;font-weight:700}
 .ch-sub{font-size:10px;color:var(--t3)}
-.ch-leg{display:flex;gap:10px}
+.ch-leg{display:flex;gap:12px}
 .leg{display:flex;align-items:center;gap:4px;font-size:9.5px;font-weight:600;color:var(--t3)}
 .ld{width:5px;height:5px;border-radius:50%}
-.chart-wrap{position:relative;height:160px}
+.chart-wrap{flex:1;position:relative;min-height:0}
 
-/* ALERTS */
-.alerts-card{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:14px}
-.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
-.sec-ttl{font-size:12px;font-weight:700}
-.sec-sub{font-size:10px;color:var(--t3)}
-.sec-link{font-size:11px;font-weight:600;color:var(--blue);text-decoration:none}
-.alert-item{display:flex;align-items:flex-start;gap:8px;padding:9px 11px;border-radius:9px;border:1px solid transparent;margin-bottom:5px;font-size:11px}
-.a-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:3px}
-.a-ttl{font-size:11px;font-weight:700;margin-bottom:2px}
-.a-msg{font-size:10.5px;color:var(--t2);line-height:1.5}
-
-/* WORLD WIDGETS */
-.world-card{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:14px;display:none}
-.w-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.w-left{display:flex;align-items:center;gap:10px}
-.w-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px}
-.w-ttl{font-size:13px;font-weight:700}
-.w-sub{font-size:10px;color:var(--t3)}
-.w-badge{padding:2px 9px;border-radius:100px;font-size:9px;font-weight:800;letter-spacing:.06em}
-.w-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.ww{background:var(--s2);border:1px solid var(--b);border-radius:10px;padding:13px;border-left:2px solid;transition:all .15s}
-.ww:hover{border-color:var(--blue)}
-.ww-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:7px}
-.ww-ttl{font-size:11px;font-weight:700}
-.ww-desc{font-size:9.5px;color:var(--t3);margin-top:1px}
-.ww-ic{width:26px;height:26px;background:var(--bg);border-radius:7px;display:flex;align-items:center;justify-content:center}
-.ww-ic i{font-size:13px}
-.ww-val{font-size:15px;font-weight:800;letter-spacing:-.02em}
-
-/* LOWER GRID: predictions + insights */
-.lower-grid{display:grid;grid-template-columns:260px 1fr;gap:8px}
-.pred-card{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:14px}
-.pred-list{display:flex;flex-direction:column;gap:6px;margin-top:10px}
-.pred-row{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-radius:9px;background:var(--s2);border:1px solid var(--b)}
-.pr-lbl{font-size:11px;font-weight:600;color:var(--t2)}
-.pr-hint{font-size:9.5px;color:var(--t3);margin-top:1px}
-.pr-val{font-size:14px;font-weight:800;letter-spacing:-.02em}
-.ins-card{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:14px}
-.ins-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
-.ins-item{padding:11px 13px;border-radius:9px;border-left:2px solid}
-.ins-item p{font-size:11px;font-weight:500;color:var(--t2);line-height:1.6;margin:0}
-
-/* TOOLS STRIP */
-.tools-strip{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:12px}
+/* TOOLS */
+.tools-strip{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:12px 14px;flex-shrink:0}
 .ts-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:9px}
-.ts-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
-.tool{display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 4px 7px;border-radius:var(--rg);border:1px solid var(--b);background:var(--bg);text-decoration:none;transition:all .15s}
+.ts-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
+.tool{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 4px 8px;border-radius:var(--rg);border:1px solid var(--b);background:var(--bg);text-decoration:none;transition:all .15s}
 .tool:hover{border-color:var(--blue);background:rgba(59,130,246,.07)}
 .tool:hover .tn{color:var(--blue)}
-.t-ic{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center}
-.t-ic i{font-size:14px}
+.t-ic{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center}
+.t-ic i{font-size:15px}
 .tn{font-size:9px;font-weight:700;color:var(--t3);text-align:center;line-height:1.3}
 
-/* SEMAFORO */
-.sem-card{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:14px}
-.sem-row{display:flex;align-items:center;gap:10px;margin-top:10px}
-.sem-light{width:18px;height:18px;border-radius:50%;flex-shrink:0}
-.sem-lbl{font-size:12px;font-weight:700}
-.sem-desc{font-size:10.5px;color:var(--t2);margin-top:2px}
+/* ── GUIDED TOUR ── */
+#tourBackdrop{
+  position:fixed;inset:0;z-index:9000;
+  background:rgba(0,0,0,0);
+  transition:background .5s ease;
+  pointer-events:none;
+}
+#tourBackdrop.visible{
+  background:rgba(0,0,0,.75);
+  pointer-events:all;
+}
+/* spotlight ring around target */
+.tour-highlight{
+  position:relative;
+  z-index:9100 !important;
+  border-radius:var(--r);
+  transition:box-shadow .4s ease,outline .4s ease;
+}
+.tour-highlight.ring{
+  box-shadow:0 0 0 4px rgba(59,130,246,.6),0 0 0 8px rgba(59,130,246,.15),0 0 40px rgba(59,130,246,.3);
+  outline:2px solid var(--blue);
+  outline-offset:4px;
+}
+/* tour card */
+#tourCard{
+  position:fixed;
+  background:#161B22;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:16px;
+  padding:24px 26px;
+  max-width:340px;
+  z-index:9200;
+  box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 0 1px rgba(59,130,246,.08);
+  opacity:0;
+  transform:translateY(12px) scale(.96);
+  transition:opacity .35s cubic-bezier(.22,1,.36,1),transform .35s cubic-bezier(.22,1,.36,1);
+  pointer-events:all;
+  font-family:'Inter',sans-serif;
+}
+#tourCard.show{opacity:1;transform:translateY(0) scale(1)}
+.tc-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.tc-icon i{font-size:20px}
+.tc-step{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);margin-bottom:7px}
+.tc-ttl{font-size:15px;font-weight:800;color:var(--t1);letter-spacing:-.03em;margin-bottom:8px;line-height:1.25}
+.tc-txt{font-size:12.5px;color:var(--t2);line-height:1.65;margin-bottom:20px}
+.tc-foot{display:flex;align-items:center;justify-content:space-between}
+.tc-dots{display:flex;gap:5px}
+.tc-dot{width:6px;height:6px;border-radius:50%;background:var(--s2);transition:all .3s ease}
+.tc-dot.on{background:var(--blue);width:18px;border-radius:100px}
+.tc-btns{display:flex;gap:7px;align-items:center}
+.tc-skip{background:none;border:none;font-size:11px;color:var(--t3);cursor:pointer;font-family:inherit;transition:color .15s;padding:0}
+.tc-skip:hover{color:var(--t2)}
+.tc-next{padding:8px 20px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:6px}
+.tc-next:hover{background:#2563EB;transform:translateX(2px)}
+.tc-next i{font-size:13px}
+/* welcome screen */
+#tourWelcome{
+  position:fixed;inset:0;z-index:9300;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.85);
+  backdrop-filter:blur(4px);
+  opacity:0;transition:opacity .4s ease;
+  pointer-events:none;
+}
+#tourWelcome.show{opacity:1;pointer-events:all}
+.tw-card{
+  background:#161B22;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;
+  padding:40px 44px;
+  max-width:440px;
+  text-align:center;
+  box-shadow:0 40px 80px rgba(0,0,0,.6);
+  transform:scale(.94) translateY(16px);
+  transition:transform .45s cubic-bezier(.22,1,.36,1);
+}
+#tourWelcome.show .tw-card{transform:scale(1) translateY(0)}
+.tw-orb{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#3B82F6,#8B5CF6);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;animation:orb 3s ease-in-out infinite}
+.tw-orb i{font-size:26px;color:#fff}
+.tw-h{font-size:20px;font-weight:900;color:var(--t1);letter-spacing:-.04em;margin-bottom:10px;line-height:1.2}
+.tw-p{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:28px}
+.tw-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s}
+.tw-btn:hover{background:#2563EB;gap:12px}
+.tw-btn i{font-size:15px}
+.tw-skip{display:block;margin-top:12px;font-size:11px;color:var(--t3);cursor:pointer;background:none;border:none;font-family:inherit;transition:color .15s}
+.tw-skip:hover{color:var(--t2)}
 
-/* ANIMATIONS */
+/* Animations */
 .fa{animation:fadeUp .35s ease both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.d1{animation-delay:.04s}.d2{animation-delay:.08s}.d3{animation-delay:.12s}.d4{animation-delay:.16s}
+.d1{animation-delay:.04s}.d2{animation-delay:.08s}.d3{animation-delay:.12s}
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
+<!-- ── TOPBAR ── -->
 <header class="topbar">
   <div class="tb-logo">
     <div class="tb-lm"><i class="ph-bold ph-squares-four"></i></div>
@@ -213,19 +261,18 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
   <span class="tb-greet" id="topGreeting">Dashboard</span>
   <span class="tb-date" id="topDate"></span>
   <div class="tb-right">
-    <a href="{{ url_for('essential_semaforo') }}" class="tbb g"><i class="ph-duotone ph-traffic-signal"></i>Semáforo</a>
     <a href="{{ url_for('essential_progreso') }}" class="tbb g"><i class="ph-duotone ph-gauge"></i>Progreso</a>
     <button class="tbb p" onclick="openTaskModal()"><i class="ph-bold ph-plus"></i>Nueva Tarea</button>
   </div>
 </header>
 
-<!-- BODY -->
+<!-- ── BODY ── -->
 <div class="body">
 
   <!-- ICON RAIL -->
-  <nav class="rail">
+  <nav class="rail" id="navRail">
     <div class="rg">
-      <a href="#" class="ri active" data-tip="Dashboard"><i class="ph-duotone ph-house"></i></a>
+      <a href="#" class="ri active" data-tip="Dashboard" id="tourStep0"><i class="ph-duotone ph-house"></i></a>
       <a href="{{ url_for('essential_ventas') }}" class="ri" data-tip="Ingresos & Gastos"><i class="ph-duotone ph-currency-dollar"></i></a>
       <a href="{{ url_for('essential_flujo') }}" class="ri" data-tip="Flujo de Caja"><i class="ph-duotone ph-chart-line-up"></i></a>
       <a href="{{ url_for('essential_deudas') }}" class="ri" data-tip="Obligaciones"><i class="ph-duotone ph-clipboard-text"></i></a>
@@ -235,7 +282,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
       <a href="{{ url_for('essential_ia') }}" class="ri" data-tip="Asistente IA"><i class="ph-duotone ph-brain"></i></a>
       <a href="{{ url_for('essential_fuga_dinero') }}" class="ri" data-tip="Fuga de Dinero"><i class="ph-duotone ph-magnifying-glass"></i></a>
       <a href="{{ url_for('essential_punto_equilibrio') }}" class="ri" data-tip="Punto de Equilibrio"><i class="ph-duotone ph-scales"></i></a>
-      <a href="{{ url_for('essential_boveda') }}" class="ri" data-tip="Bóveda Docs"><i class="ph-duotone ph-vault"></i></a>
+      <a href="{{ url_for('essential_boveda') }}" class="ri" data-tip="Bóveda de Docs"><i class="ph-duotone ph-vault"></i></a>
       <a href="{{ url_for('essential_orden_express') }}" class="ri" data-tip="Orden Express"><i class="ph-duotone ph-lightning"></i></a>
       <a href="{{ url_for('essential_inventario') }}" class="ri" data-tip="Inventario"><i class="ph-duotone ph-package"></i></a>
     </div>
@@ -245,6 +292,8 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
       <a href="{{ url_for('essential_auditoria') }}" class="ri" data-tip="Auditoría"><i class="ph-duotone ph-notebook"></i></a>
       <a href="{{ url_for('essential_export_excel') }}" class="ri" data-tip="Exportar Excel"><i class="ph-duotone ph-file-xls"></i></a>
       <a href="{{ url_for('essential_comunidad') }}" class="ri" data-tip="Comunidad Starter"><i class="ph-duotone ph-users-three"></i></a>
+      <!-- Ícono dinámico según tipo de negocio -->
+      <a id="bizIcon" class="ri-biz" href="#" data-tip="Mi Negocio"><i class="ph-duotone ph-storefront"></i></a>
     </div>
     <div class="rg">
       <div class="r-av" id="railAvatar">—</div>
@@ -252,56 +301,52 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
   </nav>
 
   <!-- AI COLUMN -->
-  <div class="ai-col fa">
+  <div class="ai-col fa" id="tourStep1">
     <div class="ai-hdr">
       <div class="ai-hrow">
         <div class="ai-orb"><i class="ph-bold ph-brain"></i></div>
         <div>
           <div class="ai-ttl">Pymax AI</div>
-          <div class="ai-sub">Asesor financiero inteligente 24/7</div>
+          <div class="ai-sub">Asesor financiero 24/7</div>
         </div>
         <div class="ai-live"><div class="ai-dot"></div>En línea</div>
       </div>
       <div class="ai-ctx" id="aiCtx"></div>
     </div>
-
     <div class="ai-body" id="aiMsgs">
-      <div class="am ai" id="aiWelcome">Analizando tus datos financieros…</div>
+      <div class="am ai" id="aiWelcome">Analizando tus datos…</div>
     </div>
-
     <div class="ai-chips">
       <button class="chip" onclick="chip('¿Dónde se va mi dinero este mes?')"><i class="ph-bold ph-magnifying-glass"></i>¿Dónde va mi dinero?</button>
-      <button class="chip" onclick="chip('¿Cuánto necesito vender hoy para ser rentable?')"><i class="ph-bold ph-scales"></i>Punto equilibrio hoy</button>
+      <button class="chip" onclick="chip('¿Cuánto necesito vender hoy para ser rentable?')"><i class="ph-bold ph-scales"></i>Punto equilibrio</button>
       <button class="chip" onclick="chip('¿Cómo mejorar mi margen este mes?')"><i class="ph-bold ph-trend-up"></i>Mejorar margen</button>
       <button class="chip" onclick="chip('¿Hay fugas de dinero en mis gastos?')"><i class="ph-bold ph-warning"></i>Fugas de dinero</button>
       <button class="chip" onclick="chip('¿Qué debo priorizar financieramente esta semana?')"><i class="ph-bold ph-list-checks"></i>Prioridades</button>
     </div>
-
     <div class="ai-inp">
       <input type="text" class="ai-in" id="aiInput" placeholder="Pregúntale algo a Pymax AI…" onkeydown="if(event.key==='Enter')sendMsg()"/>
       <button class="ai-snd" onclick="sendMsg()"><i class="ph-bold ph-paper-plane-right"></i></button>
     </div>
   </div>
 
-  <!-- DATA COLUMN (todo scrollable, nada eliminado) -->
+  <!-- DATA COLUMN -->
   <div class="data-col">
 
-    <!-- KPIs -->
-    <div class="kpi-strip fa">
+    <div class="kpi-strip fa" id="tourStep2">
       <div class="kpi kb">
         <div class="kpi-top"><span class="kpi-lbl">Balance</span><div class="kpi-ic" style="background:rgba(59,130,246,.1)"><i class="ph-duotone ph-wallet" style="color:var(--blue)"></i></div></div>
         <div class="kpi-val" id="kBal">--</div>
-        <div class="kpi-ft"><span class="kpill" style="background:var(--s2);color:var(--t3)"><i class="ph-bold ph-arrow-right" style="font-size:8px"></i>Mes actual</span></div>
+        <div class="kpi-ft"><span class="kpill" style="background:var(--s2);color:var(--t3)">Mes actual</span></div>
       </div>
       <div class="kpi kg">
         <div class="kpi-top"><span class="kpi-lbl">Ingresos</span><div class="kpi-ic" style="background:rgba(52,211,153,.1)"><i class="ph-duotone ph-trend-up" style="color:var(--green)"></i></div></div>
         <div class="kpi-val" style="color:var(--green)" id="kIng">--</div>
-        <div class="kpi-ft"><span class="kpill" style="background:rgba(52,211,153,.1);color:var(--green)"><i class="ph-bold ph-arrow-up" style="font-size:8px"></i><span id="kIncN">0</span> trans.</span></div>
+        <div class="kpi-ft"><span class="kpill" style="background:rgba(52,211,153,.1);color:var(--green)"><span id="kIncN">0</span> trans.</span></div>
       </div>
       <div class="kpi kr">
         <div class="kpi-top"><span class="kpi-lbl">Gastos</span><div class="kpi-ic" style="background:rgba(248,113,113,.1)"><i class="ph-duotone ph-trend-down" style="color:var(--red)"></i></div></div>
         <div class="kpi-val" style="color:var(--red)" id="kGas">--</div>
-        <div class="kpi-ft"><span class="kpill" style="background:rgba(248,113,113,.1);color:var(--red)"><i class="ph-bold ph-arrow-down" style="font-size:8px"></i><span id="kGasN">0</span> trans.</span></div>
+        <div class="kpi-ft"><span class="kpill" style="background:rgba(248,113,113,.1);color:var(--red)"><span id="kGasN">0</span> trans.</span></div>
       </div>
       <div class="kpi kp" style="text-align:center">
         <div class="kpi-top" style="margin-bottom:2px"><span class="kpi-lbl">Margen</span><div class="kpi-ic" style="background:rgba(167,139,250,.1)"><i class="ph-duotone ph-chart-pie-slice" style="color:var(--purple)"></i></div></div>
@@ -310,10 +355,9 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
       </div>
     </div>
 
-    <!-- CHART -->
-    <div class="chart-card card fa d1">
+    <div class="chart-area fa d1" id="tourStep3">
       <div class="ch-hdr">
-        <div><div class="ch-ttl">Flujo Financiero — 6 Meses</div><div class="ch-sub">Datos en tiempo real · Supabase</div></div>
+        <div><div class="ch-ttl">Flujo Financiero — 6 Meses</div><div class="ch-sub">Tiempo real · Supabase</div></div>
         <div class="ch-leg">
           <div class="leg"><div class="ld" style="background:var(--green)"></div>Ingresos</div>
           <div class="leg"><div class="ld" style="background:var(--red)"></div>Gastos</div>
@@ -323,50 +367,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
       <div class="chart-wrap"><canvas id="mainChart"></canvas></div>
     </div>
 
-    <!-- ALERTAS -->
-    <div class="alerts-card fa d2">
-      <div class="sec-hdr">
-        <div><div class="sec-ttl">Alertas del Sistema</div><div class="sec-sub">Análisis automático de finanzas</div></div>
-        <a href="{{ url_for('essential_semaforo') }}" class="sec-link">Ver semáforo →</a>
-      </div>
-      <div id="alertasBox"><div style="text-align:center;padding:14px;color:var(--t3);font-size:11px">Analizando…</div></div>
-    </div>
-
-    <!-- WORLD WIDGETS (negocio específico) -->
-    <div class="world-card fa d2" id="worldSection">
-      <div class="w-hdr">
-        <div class="w-left">
-          <div class="w-icon" id="wIcon" style="background:rgba(59,130,246,.1)">◈</div>
-          <div><div class="w-ttl" id="wTitle">Panel del Negocio</div><div class="w-sub" id="wSub">Métricas específicas de tu rubro</div></div>
-        </div>
-        <div class="w-badge" id="wBadge" style="background:rgba(59,130,246,.1);color:var(--blue)">NEGOCIO</div>
-      </div>
-      <div class="w-grid" id="wGrid"></div>
-    </div>
-
-    <!-- LOWER: predicciones + insights IA -->
-    <div class="lower-grid fa d3">
-      <div class="pred-card">
-        <div class="sec-ttl">Proyección · Próximo Mes</div>
-        <div class="sec-sub" style="margin-top:2px;font-size:10px;color:var(--t3)">Basado en historial financiero</div>
-        <div id="predGrid" class="pred-list"><div style="text-align:center;padding:14px;color:var(--t3);font-size:11px">Calculando…</div></div>
-      </div>
-      <div class="ins-card">
-        <div class="sec-hdr">
-          <div><div class="sec-ttl">Insights IA</div><div class="sec-sub">Análisis de comportamiento financiero</div></div>
-          <a href="{{ url_for('essential_ia') }}" class="sec-link">Ver más →</a>
-        </div>
-        <div class="ins-grid">
-          <div class="ins-item" style="background:rgba(59,130,246,.05);border-left-color:var(--blue)"><p id="ins1">Analizando…</p></div>
-          <div class="ins-item" style="background:rgba(52,211,153,.05);border-left-color:var(--green)"><p id="ins2">Procesando…</p></div>
-          <div class="ins-item" style="background:rgba(252,211,77,.05);border-left-color:var(--amber)"><p id="ins3">Generando…</p></div>
-          <div class="ins-item" style="background:rgba(167,139,250,.05);border-left-color:var(--purple)"><p id="ins4">Preparando…</p></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TOOLS -->
-    <div class="tools-strip fa d4">
+    <div class="tools-strip fa d2" id="tourStep4">
       <div class="ts-lbl">Accesos Rápidos — Plan Essential</div>
       <div class="ts-grid">
         <a href="{{ url_for('essential_ia') }}" class="tool"><div class="t-ic" style="background:rgba(167,139,250,.1)"><i class="ph-duotone ph-brain" style="color:var(--purple)"></i></div><span class="tn">IA Apoyo</span></a>
@@ -376,11 +377,41 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
         <a href="{{ url_for('essential_punto_equilibrio') }}" class="tool"><div class="t-ic" style="background:rgba(52,211,153,.1)"><i class="ph-duotone ph-scales" style="color:var(--green)"></i></div><span class="tn">Equilibrio</span></a>
         <a href="{{ url_for('essential_boveda') }}" class="tool"><div class="t-ic" style="background:rgba(59,130,246,.1)"><i class="ph-duotone ph-vault" style="color:var(--blue)"></i></div><span class="tn">Bóveda</span></a>
         <a href="{{ url_for('essential_export_excel') }}" class="tool"><div class="t-ic" style="background:rgba(52,211,153,.1)"><i class="ph-duotone ph-file-xls" style="color:var(--green)"></i></div><span class="tn">Excel</span></a>
+        <a href="{{ url_for('essential_comunidad') }}" class="tool"><div class="t-ic" style="background:rgba(252,211,77,.1)"><i class="ph-duotone ph-users-three" style="color:var(--amber)"></i></div><span class="tn">Comunidad</span></a>
       </div>
     </div>
 
-  </div><!-- /data-col -->
+  </div>
 </div><!-- /body -->
+
+<!-- ── TOUR WELCOME ── -->
+<div id="tourWelcome">
+  <div class="tw-card">
+    <div class="tw-orb"><i class="ph-bold ph-rocket-launch"></i></div>
+    <div class="tw-h">Bienvenido a Pymax Essential</div>
+    <div class="tw-p">Te haremos un recorrido rápido por tu plataforma financiera.<br>Solo te tomará <strong style="color:var(--t1)">30 segundos</strong> y te ayudará a entender todo.</div>
+    <button class="tw-btn" onclick="startTour()"><i class="ph-bold ph-map-trifold"></i>OK, mostrarme el recorrido</button>
+    <button class="tw-skip" onclick="skipTour()">No gracias, explorar solo</button>
+  </div>
+</div>
+
+<!-- ── TOUR BACKDROP + CARD ── -->
+<div id="tourBackdrop"></div>
+<div id="tourCard">
+  <div class="tc-icon" id="tcIcon" style="background:rgba(59,130,246,.1)"><i class="ph-duotone ph-house" style="color:var(--blue)"></i></div>
+  <div class="tc-step" id="tcStep">Paso 1 de 5</div>
+  <div class="tc-ttl" id="tcTtl">—</div>
+  <div class="tc-txt" id="tcTxt">—</div>
+  <div class="tc-foot">
+    <div class="tc-dots" id="tcDots"></div>
+    <div class="tc-btns">
+      <button class="tc-skip" onclick="skipTour()">Saltar tour</button>
+      <button class="tc-next" id="tcNextBtn" onclick="nextTStep()">
+        OK, siguiente <i class="ph-bold ph-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- TASK MODAL -->
 <div class="task-modal-overlay" id="taskModal" onclick="if(event.target===this)closeTaskModal()">
@@ -393,7 +424,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 </div>
 
 <script>
-var _sb=null,_u=null,_fin={},_biz=null,_ts=0;
+var _sb=null,_u=null,_fin={},_biz=null,_tStep=0,_prevEl=null;
 
 document.addEventListener('DOMContentLoaded',async()=>{
   _sb=window.supabase.createClient('{{ SUPABASE_URL }}','{{ SUPABASE_KEY }}');
@@ -405,8 +436,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
   await loadBiz();
   setTimeout(aiWelcome,700);
   await loadChart();
-  setTimeout(rotateInsights,1000);
-  await checkTour();
+  checkFirstVisit();
 });
 
 /* ── UI ── */
@@ -441,12 +471,10 @@ async function loadFinancials(){
     document.getElementById('kGasN').textContent=ops.filter(o=>o.type==='egreso').length;
     const cp=document.getElementById('aiCtx');
     if(cp)cp.innerHTML=`<div class="ctx-p">Balance <span>$${fmt(bal)}</span></div><div class="ctx-p">Margen <span>${mar}%</span></div><div class="ctx-p">Trans. <span>${ops.length}</span></div>`;
-    renderAlerts();renderPredictions();
-  }catch(err){console.error(err);renderAlerts();renderPredictions();}
+  }catch(err){console.error(err);}
 }
 function setV(id,v,color){const el=document.getElementById(id);if(!el)return;el.textContent='$'+Math.abs(Math.round(v)).toLocaleString('es-CL');if(color)el.style.color=color;else if(v<0)el.style.color='var(--red)';else el.style.color='';}
 function fmt(n){return Math.round(n).toLocaleString('es-CL');}
-setInterval(()=>{loadFinancials();},60000);
 
 /* ── CHART ── */
 async function loadChart(){
@@ -476,116 +504,30 @@ async function loadChart(){
   }});
 }
 
-/* ── ALERTAS ── */
-function renderAlerts(){
-  const c=document.getElementById('alertasBox');if(!c)return;
-  const{ing=0,gas=0,bal=0}=_fin;const items=[];
-  if(gas>ing&&gas>0)items.push(mkAlert('red','Gastos superan ingresos',`Ingresaste $${fmt(ing)} y gastaste $${fmt(gas)}.`,"{{ url_for('essential_ventas') }}",'Revisar'));
-  if(bal>0&&bal<50000&&ing>0)items.push(mkAlert('amber','Balance bajo',`Tu saldo neto es $${fmt(bal)}. Ajusta gastos.`,"{{ url_for('essential_flujo') }}",'Ver flujo'));
-  if(ing===0&&gas>0)items.push(mkAlert('amber','Sin ingresos registrados','¿Ya registraste todas tus ventas?',"{{ url_for('essential_ventas') }}",'Registrar'));
-  if(items.length===0&&(ing>0||gas>0))items.push(mkAlert('green','Finanzas en orden','Tus indicadores están equilibrados.',null,null));
-  if(ing===0&&gas===0)items.push(mkAlert('blue','Sin registros aún','Comienza a registrar transacciones.',"{{ url_for('essential_ventas') }}",'Empezar'));
-  c.innerHTML=`<div style="display:flex;flex-wrap:wrap;gap:5px;">${items.join('')}</div>`;
-}
-setInterval(renderAlerts,60000);
-function mkAlert(type,ttl,msg,href,lbl){
-  const cl={red:{dot:'#F87171',bg:'rgba(248,113,113,.06)',border:'rgba(248,113,113,.14)'},amber:{dot:'#FCD34D',bg:'rgba(252,211,77,.06)',border:'rgba(252,211,77,.14)'},green:{dot:'#34D399',bg:'rgba(52,211,153,.06)',border:'rgba(52,211,153,.14)'},blue:{dot:'#3B82F6',bg:'rgba(59,130,246,.06)',border:'rgba(59,130,246,.14)'}}[type]||{};
-  const btn=href?`<a href="${href}" style="flex-shrink:0;padding:3px 9px;color:${cl.dot};border:1px solid ${cl.dot};border-radius:6px;font-size:10px;font-weight:700;text-decoration:none;">${lbl} →</a>`:'';
-  return `<div class="alert-item" style="background:${cl.bg};border-color:${cl.border};flex:1;min-width:200px;"><div class="a-dot" style="background:${cl.dot}"></div><div style="flex:1"><div class="a-ttl">${ttl}</div><div class="a-msg">${msg}</div></div>${btn}</div>`;
-}
+/* ── BUSINESS ICON ── */
+const BIZ_ICONS={
+  retail:   {icon:'ph-storefront',  color:'#3B82F6', label:'Mi Negocio · Retail',         href:"{{ url_for('essential_inventario') }}"},
+  tecnico:  {icon:'ph-wrench',      color:'#FCD34D', label:'Mi Negocio · Taller',          href:"{{ url_for('essential_orden_express') }}"},
+  gastronomia:{icon:'ph-fork-knife',color:'#F87171', label:'Mi Negocio · Gastronomía',    href:"{{ url_for('essential_inventario') }}"},
+  profesional:{icon:'ph-briefcase', color:'#A78BFA', label:'Mi Negocio · Servicios',       href:"{{ url_for('essential_deudas') }}"},
+  bienestar:{icon:'ph-heartbeat',   color:'#34D399', label:'Mi Negocio · Bienestar',       href:"{{ url_for('essential_inventario') }}"}
+};
 
-/* ── PREDICTIONS ── */
-function renderPredictions(){
-  const g=document.getElementById('predGrid');if(!g)return;
-  const{ing=0,gas=0}=_fin;const gp=gas>0?Math.round(gas*.95):0;const bp=ing-gp;
-  g.innerHTML=`
-    <div class="pred-row"><div><div class="pr-lbl">Ingresos estimados</div><div class="pr-hint">Promedio histórico</div></div><div class="pr-val" style="color:var(--green)">$${fmt(ing)}</div></div>
-    <div class="pred-row"><div><div class="pr-lbl">Gastos estimados</div><div class="pr-hint">${gp<gas?'Reducción est. 5%':'Nivel actual'}</div></div><div class="pr-val" style="color:var(--red)">$${fmt(gp)}</div></div>
-    <div class="pred-row"><div><div class="pr-lbl">Balance proyectado</div><div class="pr-hint">${bp>=0?'Positivo':'Requiere atención'}</div></div><div class="pr-val" style="color:var(--blue)">$${fmt(bp)}</div></div>`;
-}
-setInterval(renderPredictions,90000);
-
-/* ── INSIGHTS POOL (IA) ── */
-const insPool=['Tu flujo de caja muestra estabilidad. Considera invertir el excedente.','Analiza tus gastos recurrentes. Podrías optimizar hasta un 15%.','Establece metas financieras trimestrales para mejor control.','Automatiza tus reportes: ahorrarás 4-6 horas mensuales.','Tus números sugieren potencial de crecimiento del 15-20%.','Balance positivo. Ideal para crear fondo de emergencia.','Revisa categorías de gasto. La optimización libera capital.','Diversifica tus fuentes de ingreso para más resiliencia.','Tu margen puede mejorar. Analiza gastos sin valor directo.','Con tu tendencia, alcanzarás estabilidad en 45 días.'];
-function rotateInsights(){
-  const pool=[...insPool].sort(()=>.5-Math.random()).slice(0,4);
-  pool.forEach((t,i)=>{const el=document.getElementById(`ins${i+1}`);if(!el)return;el.style.opacity='0';setTimeout(()=>{el.textContent=t;el.style.transition='opacity .4s';el.style.opacity='1';},200+i*60);});
-}
-setInterval(rotateInsights,30000);
-
-/* ── WORLD WIDGETS (negocio específico) ── */
 async function loadBiz(){
   try{const{data}=await _sb.from('user_business_profiles').select('*').eq('user_id',_u.id).single();_biz=data||null;}catch{_biz=null;}
-  renderWorld();
-}
-const WORLDS={
-  retail:{icon:'◈',label:'Retail & Almacenes',badge:'RETAIL',sub:'Inventario, márgenes y rotación'},
-  tecnico:{icon:'◉',label:'Técnico & Talleres',badge:'TALLER',sub:'Órdenes, servicios y repuestos'},
-  gastronomia:{icon:'◎',label:'Gastronómico',badge:'RESTO',sub:'Platos, costos e ingredientes'},
-  profesional:{icon:'◆',label:'Servicios Profesionales',badge:'PRO',sub:'Clientes, cobranza y proyectos'},
-  bienestar:{icon:'◈',label:'Bienestar & Recurrencia',badge:'GYM',sub:'Membresías y retención'}
-};
-const WW={
-  retail:[
-    {icon:'ph-package',ttl:'Inventario',desc:'Estado del stock',val:'--',color:'#3B82F6',href:"{{ url_for('essential_inventario') }}",lbl:'Ver'},
-    {icon:'ph-trophy',ttl:'Top Productos',desc:'Mayor margen',val:'--',color:'#FCD34D'},
-    {icon:'ph-bell',ttl:'Reposición',desc:'Stock crítico',val:'--',color:'#F87171',href:"{{ url_for('essential_inventario') }}",lbl:'Ver stock'},
-    {icon:'ph-currency-dollar',ttl:'Margen Producto',desc:'Costo vs venta',val:'--',color:'#34D399'},
-    {icon:'ph-arrows-clockwise',ttl:'Rotación',desc:'Velocidad venta',val:'--',color:'#A78BFA'},
-    {icon:'ph-lightning',ttl:'Registro Express',desc:'En 30 seg',val:'Abrir',color:'#3B82F6',href:"{{ url_for('essential_orden_express') }}",lbl:'Abrir'}
-  ],
-  tecnico:[
-    {icon:'ph-clipboard-text',ttl:'Órdenes Activas',desc:'En curso',val:'0',color:'#3B82F6'},
-    {icon:'ph-timer',ttl:'Tiempo Promedio',desc:'Por reparación',val:'--',color:'#FCD34D'},
-    {icon:'ph-currency-dollar',ttl:'Ingreso Servicio',desc:'Este mes',val:'$0',color:'#34D399'},
-    {icon:'ph-package',ttl:'Piezas Stock',desc:'Repuestos',val:'0',color:'#A78BFA'},
-    {icon:'ph-star',ttl:'Satisfacción',desc:'Calificación',val:'--',color:'#FCD34D'},
-    {icon:'ph-lightning',ttl:'OT Rápida',desc:'30 seg',val:'Nueva',color:'#3B82F6',href:"{{ url_for('essential_orden_express') }}",lbl:'Crear'}
-  ],
-  gastronomia:[
-    {icon:'ph-fork-knife',ttl:'Platos Top',desc:'Más vendidos',val:'--',color:'#FCD34D'},
-    {icon:'ph-leaf',ttl:'Costo Ingredientes',desc:'% sobre ventas',val:'0%',color:'#34D399'},
-    {icon:'ph-trend-down',ttl:'Mermas',desc:'Desperdicio',val:'$0',color:'#F87171'},
-    {icon:'ph-chart-bar',ttl:'Margen Plato',desc:'Costo vs precio',val:'0%',color:'#A78BFA'},
-    {icon:'ph-clock',ttl:'Horas Pico',desc:'Mayor flujo',val:'--',color:'#3B82F6'},
-    {icon:'ph-lightning',ttl:'Comanda Rápida',desc:'Segundos',val:'Abrir',color:'#3B82F6',href:"{{ url_for('essential_orden_express') }}",lbl:'Abrir'}
-  ],
-  profesional:[
-    {icon:'ph-users',ttl:'Clientes Activos',desc:'Proyectos',val:'0',color:'#A78BFA'},
-    {icon:'ph-money',ttl:'Cobranza',desc:'Por cobrar',val:'$0',color:'#F87171'},
-    {icon:'ph-timer',ttl:'Horas Facturadas',desc:'Este mes',val:'0',color:'#FCD34D'},
-    {icon:'ph-file-text',ttl:'Docs. Vencidos',desc:'Contratos',val:'0',color:'#34D399'},
-    {icon:'ph-funnel',ttl:'Pipeline',desc:'Propuestas',val:'--',color:'#3B82F6'},
-    {icon:'ph-lightning',ttl:'Cotización',desc:'30 segundos',val:'Nueva',color:'#3B82F6',href:"{{ url_for('essential_orden_express') }}",lbl:'Crear'}
-  ],
-  bienestar:[
-    {icon:'ph-users',ttl:'Membresías Activas',desc:'Socios vigentes',val:'0',color:'#34D399'},
-    {icon:'ph-warning',ttl:'En Mora',desc:'Vencidas',val:'0',color:'#F87171'},
-    {icon:'ph-calendar-check',ttl:'Asistencia Hoy',desc:'Personas',val:'0',color:'#3B82F6'},
-    {icon:'ph-chart-bar',ttl:'Capacidad',desc:'Ocupación',val:'0%',color:'#FCD34D'},
-    {icon:'ph-arrows-clockwise',ttl:'Renovaciones',desc:'Próximas',val:'0',color:'#A78BFA'},
-    {icon:'ph-lightning',ttl:'Check-in Rápido',desc:'10 seg',val:'Abrir',color:'#3B82F6',href:"{{ url_for('essential_orden_express') }}",lbl:'Check-in'}
-  ]
-};
-
-function mkWW(w){
-  const btn=(w.href&&w.lbl)?`<div style="margin-top:8px"><a href="${w.href}" style="display:block;padding:6px;background:${w.color};color:#fff;border:none;border-radius:7px;font-size:10px;font-weight:700;text-decoration:none;text-align:center">${w.lbl} →</a></div>`:'';
-  return `<div class="ww" style="border-left-color:${w.color}"><div class="ww-top"><div><div class="ww-ttl">${w.ttl}</div><div class="ww-desc">${w.desc}</div></div><div class="ww-ic"><i class="ph-duotone ${w.icon}" style="color:${w.color}"></i></div></div><div class="ww-val" style="color:${w.color}">${w.val}</div>${btn}</div>`;
-}
-
-function renderWorld(){
   let bt=_biz?.business_type||null;
   if(!bt)try{bt=JSON.parse(localStorage.getItem('pymax_onboarding_config')||'{}').business_type||null;}catch{}
-  if(!bt||!WORLDS[bt])return;
-  const cfg=WORLDS[bt];const wws=WW[bt]||[];
-  const sec=document.getElementById('worldSection');if(sec)sec.style.display='block';
-  const g=id=>document.getElementById(id);
-  if(g('wIcon'))g('wIcon').textContent=cfg.icon;
-  if(g('wTitle'))g('wTitle').textContent=cfg.label;
-  if(g('wSub'))g('wSub').textContent=cfg.sub;
-  if(g('wBadge'))g('wBadge').textContent=cfg.badge;
-  const grid=g('wGrid');if(grid)grid.innerHTML=wws.map(mkWW).join('');
+  if(!bt)return;
+  const cfg=BIZ_ICONS[bt];if(!cfg)return;
+  const el=document.getElementById('bizIcon');
+  if(!el)return;
+  el.style.display='flex';
+  el.setAttribute('data-tip',cfg.label);
+  el.setAttribute('href',cfg.href);
+  el.style.background=`rgba(${hexToRgb(cfg.color)},.08)`;
+  el.innerHTML=`<i class="ph-duotone ${cfg.icon}" style="color:${cfg.color}"></i>`;
 }
+function hexToRgb(hex){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`${r},${g},${b}`;}
 
 /* ── AI WELCOME ── */
 function aiWelcome(){
@@ -593,11 +535,11 @@ function aiWelcome(){
   const{ing=0,gas=0,bal=0}=_fin;
   let m='Hola, soy Pymax AI — tu asesor financiero.';
   if(ing>0||gas>0){m+=` Este mes llevas $${fmt(ing)} en ingresos y $${fmt(gas)} en gastos. `;m+=bal>=0?`Balance positivo: +$${fmt(bal)}.`:`Atención: gastos superan ingresos en $${fmt(Math.abs(bal))}.`;}
-  else m+=' Aún no tienes transacciones este mes. Empieza a registrar para recibir análisis personalizados.';
+  else m+=' Aún no tienes transacciones este mes. Empieza a registrar para recibir análisis.';
   m+=' ¿En qué puedo ayudarte?';
   tw(el,m);
 }
-function tw(el,text,i=0){if(i===0)el.textContent='';if(i<text.length){el.textContent+=text.charAt(i);setTimeout(()=>tw(el,text,i+1),16);}}
+function tw(el,text,i=0){if(i===0)el.textContent='';if(i<text.length){el.textContent+=text.charAt(i);setTimeout(()=>tw(el,text,i+1),15);}}
 
 /* ── AI CHAT ── */
 var _hist=[];
@@ -616,39 +558,154 @@ async function callAI(msg){
   }catch(e){if(t)t.remove();addMsg('Error de conexión. Intenta nuevamente.','ai');}
 }
 
-/* ── TOUR ── */
-const tourSteps=[
-  {q:'.kpi-strip',ttl:'Tu Salud Financiera',txt:'Balance, ingresos, gastos y margen neto en tiempo real desde Supabase.'},
-  {q:'.chart-card',ttl:'Flujo Financiero Real',txt:'Historial de 6 meses basado en tus transacciones. Cada punto = datos reales.'},
-  {q:'.ai-col',ttl:'Pymax AI — Siempre Visible',txt:'Tu asesor financiero siempre disponible. Analiza tus números y responde en segundos.'},
-  {q:'.tools-strip',ttl:'Herramientas Essential',txt:'Fuga de Dinero, Punto de Equilibrio, Bóveda de Docs y más. Todo en un click.'}
+/* ═══════════════════════════════════════════
+   GUIDED TOUR — Primera visita únicamente
+═══════════════════════════════════════════ */
+const TOUR=[
+  {
+    target:'#tourStep1',
+    icon:'ph-brain',iconColor:'#3B82F6',iconBg:'rgba(59,130,246,.1)',
+    ttl:'Pymax AI — Tu asesor siempre activo',
+    txt:'Esta columna siempre está visible. Pymax AI conoce tus finanzas en tiempo real y responde cualquier pregunta sobre tu negocio. Usa los chips rápidos o escríbele libremente.'
+  },
+  {
+    target:'#tourStep2',
+    icon:'ph-chart-line-up',iconColor:'#34D399',iconBg:'rgba(52,211,153,.1)',
+    ttl:'KPIs — Tu salud financiera',
+    txt:'Balance, ingresos, gastos y margen neto del mes actual. Los datos vienen directo de Supabase en tiempo real. El donut de margen se actualiza automáticamente.'
+  },
+  {
+    target:'#tourStep3',
+    icon:'ph-chart-bar',iconColor:'#A78BFA',iconBg:'rgba(167,139,250,.1)',
+    ttl:'Flujo de 6 meses',
+    txt:'Visualiza la evolución de tus ingresos, gastos y balance en los últimos 6 meses. Pasa el cursor sobre los puntos para ver los valores exactos.'
+  },
+  {
+    target:'#tourStep4',
+    icon:'ph-lightning',iconColor:'#FCD34D',iconBg:'rgba(252,211,77,.1)',
+    ttl:'Accesos Rápidos — Plan Essential',
+    txt:'Desde aquí llegas en 1 click a todas las herramientas: Fuga de Dinero, Punto de Equilibrio, Bóveda de Docs, Orden Express y más. Todo lo que incluye tu plan.'
+  },
+  {
+    target:'#navRail',
+    icon:'ph-squares-four',iconColor:'#3B82F6',iconBg:'rgba(59,130,246,.1)',
+    ttl:'Navegación — Íconos inteligentes',
+    txt:'La barra lateral tiene todos los módulos disponibles. Pasa el cursor sobre cada ícono para ver su nombre. Si configuraste tu tipo de negocio, verás un ícono personalizado con el acceso directo.'
+  }
 ];
-async function checkTour(){
-  try{const{data}=await _sb.from('user_profiles').select('tour_completed').eq('id',_u.id).single();if(data?.tour_completed)return;}
-  catch{if(localStorage.getItem('pymax_tour_done')==='true')return;}
-  setTimeout(startTour,2000);
+
+async function checkFirstVisit(){
+  // Verificar si ya hizo el tour
+  try{
+    const{data}=await _sb.from('user_profiles').select('tour_completed').eq('id',_u.id).single();
+    if(data?.tour_completed)return;
+  }catch{}
+  if(localStorage.getItem('pymax_tour_done')==='true')return;
+  // Primera visita → mostrar welcome después de 1.2s
+  setTimeout(showWelcome,1200);
 }
+
+function showWelcome(){
+  const w=document.getElementById('tourWelcome');if(!w)return;
+  w.classList.add('show');
+}
+
 function startTour(){
-  const bd=document.createElement('div');bd.id='tBd';bd.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:99998;';bd.onclick=endTour;document.body.appendChild(bd);showTStep(0);
-}
-function showTStep(i){
-  _ts=i;const prev=document.getElementById('tTip');if(prev)prev.remove();
-  if(i>=tourSteps.length){endTour();return;}
-  const step=tourSteps[i];const el=document.querySelector(step.q);if(!el){showTStep(i+1);return;}
-  el.scrollIntoView({behavior:'smooth',block:'center'});
+  // Ocultar welcome
+  const w=document.getElementById('tourWelcome');if(w){w.classList.remove('show');}
+  // Mostrar backdrop
   setTimeout(()=>{
-    el.style.position='relative';el.style.zIndex='100000';el.style.outline='1.5px solid rgba(59,130,246,.6)';el.style.outlineOffset='4px';
-    const r=el.getBoundingClientRect();const tip=document.createElement('div');tip.id='tTip';
-    tip.style.cssText='position:fixed;z-index:100001;background:#161B22;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:18px 20px;max-width:320px;box-shadow:0 20px 50px rgba(0,0,0,.5);font-family:Inter,sans-serif;pointer-events:all;animation:fadeUp .3s ease;';
-    tip.innerHTML=`<div style="font-size:13px;font-weight:800;color:#F0F6FC;margin-bottom:6px">${step.ttl}</div><p style="font-size:11.5px;color:#8B949E;line-height:1.6;margin:0 0 14px">${step.txt}</p><div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;gap:4px">${tourSteps.map((_,j)=>`<div style="width:5px;height:5px;border-radius:50%;background:${j===i?'#3B82F6':'#21262D'}"></div>`).join('')}</div><div style="display:flex;gap:6px;align-items:center"><button onclick="endTour()" style="background:none;border:none;font-size:10px;color:#484F58;cursor:pointer;font-family:inherit">Saltar</button><button onclick="nextTStep()" style="padding:6px 14px;background:#3B82F6;color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">${i===tourSteps.length-1?'Comenzar →':'Siguiente →'}</button></div></div>`;
-    const tl=Math.min(Math.max(r.left,12),window.innerWidth-335);const tt=r.bottom+12<window.innerHeight-180?r.bottom+12:r.top-200;
-    tip.style.left=tl+'px';tip.style.top=Math.max(tt,12)+'px';document.body.appendChild(tip);
+    const bd=document.getElementById('tourBackdrop');
+    if(bd)bd.classList.add('visible');
+    _tStep=0;
+    showTourStep(0);
   },350);
 }
-function nextTStep(){const p=tourSteps[_ts];if(p){const e=document.querySelector(p.q);if(e){e.style.zIndex='';e.style.outline='';}}showTStep(_ts+1);}
-async function endTour(){
-  ['tBd','tTip'].forEach(id=>{const e=document.getElementById(id);if(e)e.remove();});
-  tourSteps.forEach(s=>{const e=document.querySelector(s.q);if(e){e.style.zIndex='';e.style.outline='';}});
+
+async function skipTour(){
+  const w=document.getElementById('tourWelcome');if(w)w.classList.remove('show');
+  cleanTour();
+  await saveTourDone();
+}
+
+function showTourStep(i){
+  _tStep=i;
+  const card=document.getElementById('tourCard');if(!card)return;
+  const step=TOUR[i];if(!step)return;
+
+  // Quitar highlight anterior
+  if(_prevEl){_prevEl.classList.remove('tour-highlight','ring');_prevEl=null;}
+
+  // Highlight nuevo elemento
+  const el=document.querySelector(step.target);
+  if(el){
+    _prevEl=el;
+    el.classList.add('tour-highlight');
+    setTimeout(()=>el.classList.add('ring'),50);
+    el.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+
+  // Animar salida del card
+  card.classList.remove('show');
+  setTimeout(()=>{
+    // Actualizar contenido
+    document.getElementById('tcIcon').style.background=step.iconBg;
+    document.getElementById('tcIcon').innerHTML=`<i class="ph-duotone ${step.icon}" style="color:${step.iconColor}"></i>`;
+    document.getElementById('tcStep').textContent=`Paso ${i+1} de ${TOUR.length}`;
+    document.getElementById('tcTtl').textContent=step.ttl;
+    document.getElementById('tcTxt').textContent=step.txt;
+
+    // Dots
+    const dots=document.getElementById('tcDots');
+    if(dots)dots.innerHTML=TOUR.map((_,j)=>`<div class="tc-dot${j===i?' on':''}"></div>`).join('');
+
+    // Botón último paso
+    const nb=document.getElementById('tcNextBtn');
+    if(nb){
+      if(i===TOUR.length-1){
+        nb.innerHTML='<i class="ph-bold ph-check"></i> ¡Listo, comenzar!';
+      } else {
+        nb.innerHTML='OK, siguiente <i class="ph-bold ph-arrow-right"></i>';
+      }
+    }
+
+    // Posicionar card junto al elemento
+    if(el){
+      const r=el.getBoundingClientRect();
+      const cardW=340;
+      let left=r.right+16;
+      let top=r.top;
+      if(left+cardW>window.innerWidth-12)left=r.left-cardW-16;
+      if(left<12)left=12;
+      if(top+300>window.innerHeight)top=window.innerHeight-310;
+      if(top<12)top=12;
+      card.style.left=left+'px';
+      card.style.top=top+'px';
+    } else {
+      card.style.left='50%';card.style.top='50%';
+      card.style.transform='translate(-50%,-50%)';
+    }
+
+    card.classList.add('show');
+  },200);
+}
+
+async function nextTStep(){
+  if(_tStep<TOUR.length-1){
+    showTourStep(_tStep+1);
+  } else {
+    cleanTour();
+    await saveTourDone();
+  }
+}
+
+function cleanTour(){
+  const bd=document.getElementById('tourBackdrop');if(bd)bd.classList.remove('visible');
+  const card=document.getElementById('tourCard');if(card)card.classList.remove('show');
+  if(_prevEl){_prevEl.classList.remove('tour-highlight','ring');_prevEl=null;}
+}
+
+async function saveTourDone(){
   localStorage.setItem('pymax_tour_done','true');
   if(_sb&&_u)try{await _sb.from('user_profiles').update({tour_completed:true}).eq('id',_u.id);}catch{}
 }
