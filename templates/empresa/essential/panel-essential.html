@@ -378,10 +378,10 @@ body::before{
 .qa-sub{font-size:10px;opacity:.65}
 .qa-glow{position:absolute;inset:-1px;border-radius:calc(var(--r) + 1px);border:1px solid;animation:qglow 3s ease-in-out infinite}
 @keyframes qglow{0%,100%{opacity:.3}50%{opacity:.75}}
-.qa-blue{background:linear-gradient(135deg,var(--blue),#2563eb);box-shadow:0 4px 24px rgba(59,130,246,.45)}
-.qa-blue:hover{box-shadow:0 8px 36px rgba(59,130,246,.6)}
-.qa-red{background:linear-gradient(135deg,var(--red),#be123c);box-shadow:0 4px 24px rgba(244,63,94,.4)}
-.qa-red:hover{box-shadow:0 8px 36px rgba(244,63,94,.55)}
+.qa-blue{background:linear-gradient(135deg,#3B82F6,#2563EB);box-shadow:0 4px 24px rgba(59,130,246,.5),0 0 40px rgba(59,130,246,.15)}
+.qa-blue:hover{box-shadow:0 8px 36px rgba(59,130,246,.65),0 0 56px rgba(59,130,246,.22);transform:translateY(-3px) scale(1.01)}
+.qa-red{background:linear-gradient(135deg,#F43F5E,#E11D48);box-shadow:0 4px 24px rgba(244,63,94,.5),0 0 40px rgba(244,63,94,.15)}
+.qa-red:hover{box-shadow:0 8px 36px rgba(244,63,94,.65),0 0 56px rgba(244,63,94,.22);transform:translateY(-3px) scale(1.01)}
 /* Mini actions */
 .mini-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
 .mini{border-radius:var(--rg);padding:12px 10px;background:rgba(255,255,255,.027);
