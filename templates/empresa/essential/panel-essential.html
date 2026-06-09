@@ -489,9 +489,64 @@ body::before{
 .pe-trk{height:6px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden}
 .pe-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--amber),var(--green2));transition:width 1.3s cubic-bezier(.22,1,.36,1)}
 
-/* ══ INSIGHTS ════════════════════════════════════════ */
-.ins-item{font-size:11px;color:var(--t2);line-height:1.6;padding:5px 0;border-bottom:1px solid var(--bx)}
-.ins-item:last-child{border:none}
+/* ══ INSIGHTS — PREMIUM ══════════════════════════════ */
+#cardIns{
+  position:relative;overflow:visible;
+  border-color:rgba(59,130,246,.15);
+  box-shadow:0 0 28px rgba(59,130,246,.06)
+}
+#cardIns::before{
+  content:'';position:absolute;inset:-1px;border-radius:calc(var(--r) + 1px);z-index:-1;pointer-events:none;
+  background:linear-gradient(135deg,rgba(59,130,246,.12),rgba(139,92,246,.08),rgba(16,185,129,.06));
+  animation:insGlow 6s ease-in-out infinite
+}
+@keyframes insGlow{0%,100%{opacity:.5}50%{opacity:1}}
+/* AI badge on header */
+.ins-ai-badge{
+  display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:100px;
+  font-size:8px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(139,92,246,.12));
+  border:1px solid rgba(59,130,246,.2);color:var(--blue2)
+}
+.ins-ai-badge i{font-size:9px;animation:insBadgePls 2s ease-in-out infinite}
+@keyframes insBadgePls{0%,100%{opacity:.6}50%{opacity:1}}
+/* Insight cards */
+.ins-item{
+  display:flex;gap:9px;padding:10px 12px;border-radius:9px;margin-bottom:7px;
+  border:1px solid;position:relative;overflow:hidden;cursor:default;
+  transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s
+}
+.ins-item:last-child{margin-bottom:0}
+.ins-item:hover{transform:translateX(4px);box-shadow:0 4px 16px rgba(0,0,0,.3)}
+/* Shimmer on hover */
+.ins-item::before{
+  content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);
+  transition:left .5s
+}
+.ins-item:hover::before{left:150%}
+/* Left accent bar */
+.ins-item::after{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;border-radius:2px 0 0 2px}
+/* Color variants */
+.ins-g{background:rgba(16,185,129,.06);border-color:rgba(52,211,153,.18)}
+.ins-g::after{background:linear-gradient(180deg,var(--green2),#059669)}
+.ins-a{background:rgba(245,158,11,.06);border-color:rgba(252,211,77,.18)}
+.ins-a::after{background:linear-gradient(180deg,var(--amber2),#D97706)}
+.ins-r{background:rgba(244,63,94,.06);border-color:rgba(251,113,133,.18)}
+.ins-r::after{background:linear-gradient(180deg,var(--red2),#E11D48)}
+.ins-b{background:rgba(59,130,246,.06);border-color:rgba(96,165,250,.18)}
+.ins-b::after{background:linear-gradient(180deg,var(--blue2),#2563EB)}
+.ins-p{background:rgba(139,92,246,.06);border-color:rgba(167,139,250,.18)}
+.ins-p::after{background:linear-gradient(180deg,var(--purple2),#6D28D9)}
+.ins-ic{
+  width:30px;height:30px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;flex-shrink:0;margin-top:1px
+}
+.ins-ic i{font-size:15px}
+.ins-body{flex:1;min-width:0}
+.ins-ttl{font-size:11.5px;font-weight:700;margin-bottom:3px;line-height:1.3;color:var(--t1)}
+.ins-sub{font-size:10px;color:var(--t2);line-height:1.5}
+.ins-val{font-size:13px;font-weight:800;margin-left:auto;flex-shrink:0;align-self:flex-start;margin-top:1px;font-variant-numeric:tabular-nums}
 
 /* ══ TOOLS CASCADE ═══════════════════════════════════ */
 .tools-scroll{display:flex;gap:9px;overflow-x:auto;padding-bottom:10px;align-items:flex-start}
@@ -877,12 +932,15 @@ body::before{
             <!-- Insights -->
             <div class="card" id="cardIns">
               <div class="card-hdr">
-                <div class="card-ttl"><i class="ph-duotone ph-lightbulb" style="color:var(--amber2)"></i>Insights de hoy</div>
+                <div>
+                  <div class="card-ttl"><i class="ph-duotone ph-lightbulb" style="color:var(--amber2)"></i>Insights IA</div>
+                  <div class="card-sub">Análisis en tiempo real de tus números</div>
+                </div>
+                <div class="ins-ai-badge"><i class="ph-bold ph-brain"></i>Live</div>
               </div>
               <div class="card-body" id="insBody">
-                <div class="sk" style="height:9px;margin-bottom:7px;border-radius:3px"></div>
-                <div class="sk" style="height:9px;margin-bottom:7px;border-radius:3px;width:82%"></div>
-                <div class="sk" style="height:9px;border-radius:3px;width:65%"></div>
+                <div class="sk" style="height:48px;margin-bottom:7px;border-radius:9px"></div>
+                <div class="sk" style="height:48px;border-radius:9px;width:100%"></div>
               </div>
             </div>
           </div>
@@ -1310,23 +1368,63 @@ function updateSem(){
 }
 
 /* INSIGHTS */
+function insCard(cls,icCls,icColor,icBg,ttl,sub,val){
+  return '<div class="ins-item '+cls+'">'+
+    '<div class="ins-ic" style="background:'+icBg+'"><i class="ph-bold '+icCls+'" style="color:'+icColor+'"></i></div>'+
+    '<div class="ins-body"><div class="ins-ttl">'+ttl+'</div><div class="ins-sub">'+sub+'</div></div>'+
+    (val?'<div class="ins-val" style="color:'+icColor+'">'+val+'</div>':'')+
+  '</div>';
+}
 function updateInsights(){
   var f=_fin,ib=document.getElementById('insBody');if(!ib)return;
-  var tips=[];
-  if(!f.ops.length){tips.push('🎯 Empieza registrando tus primeras transacciones del período.');}
-  else{
-    if(f.mar>25)tips.push('💚 Margen del '+f.mar+'% — Rentabilidad excelente, sigue así.');
-    else if(f.mar>10)tips.push('🟡 Margen del '+f.mar+'% — Hay espacio para crecer.');
-    else if(f.mar>=0)tips.push('🔴 Margen del '+f.mar+'% — Revisa urgente tu estructura de costos.');
-    else tips.push('🚨 Margen negativo — Gastas más de lo que ingresas.');
-    var ratio=f.ing>0?Math.round((f.gas/f.ing)*100):0;
-    if(ratio>80)tips.push('⚠️ Gastos representan el '+ratio+'% de tus ingresos.');
-    else if(f.ing>0)tips.push('✅ Relación gasto/ingreso del '+ratio+'% — Controlada.');
-    var catG={};f.ops.filter(function(o){return o.type==='egreso'&&o.category;}).forEach(function(o){catG[o.category]=(catG[o.category]||0)+parseFloat(o.amount||0);});
-    var top=Object.keys(catG).sort(function(a,b){return catG[b]-catG[a];})[0];
-    if(top)tips.push('📊 Mayor categoría de gasto: '+top+' ($'+fmt(catG[top])+')');
+  var html='';
+  if(!f.ops.length){
+    html+=insCard('ins-b','ph-rocket-launch','#60A5FA','rgba(59,130,246,.12)',
+      'Empieza ahora','Registra tu primera transacción para ver el análisis IA.','');
+    html+=insCard('ins-p','ph-brain','#A78BFA','rgba(139,92,246,.1)',
+      'Pymax IA lista','Haz una pregunta a tu asesor financiero 24/7.','▶');
+    ib.innerHTML=html;
+    gsap.from('#cardIns .ins-item',{opacity:0,x:-12,duration:.55,stagger:.1,ease:'power3.out'});
+    return;
   }
-  ib.innerHTML=tips.map(function(t){return '<div class="ins-item">'+t+'</div>';}).join('');
+  // Margen
+  if(f.mar>25)
+    html+=insCard('ins-g','ph-trend-up','#34D399','rgba(52,211,153,.12)',
+      'Margen excelente','Rentabilidad sólida, por encima del 25%.',''+f.mar+'%');
+  else if(f.mar>10)
+    html+=insCard('ins-a','ph-warning','#FCD34D','rgba(252,211,77,.1)',
+      'Margen en zona media','Hay espacio para crecer. Revisa costos variables.',''+f.mar+'%');
+  else if(f.mar>=0)
+    html+=insCard('ins-r','ph-warning-octagon','#FB7185','rgba(244,63,94,.1)',
+      'Margen crítico','Revisa urgente tu estructura de costos.',''+f.mar+'%');
+  else
+    html+=insCard('ins-r','ph-skull','#FB7185','rgba(244,63,94,.12)',
+      'Balance negativo','Gastas más de lo que ingresas. Actúa hoy.',''+f.mar+'%');
+  // Ratio gasto/ingreso
+  if(f.ing>0){
+    var ratio=Math.round((f.gas/f.ing)*100);
+    if(ratio>85)
+      html+=insCard('ins-r','ph-fire','#FB7185','rgba(244,63,94,.09)',
+        'Gastos muy altos','El '+ratio+'% de tus ingresos se va en gastos.',''+ratio+'%');
+    else if(ratio>60)
+      html+=insCard('ins-a','ph-scales','#FCD34D','rgba(252,211,77,.09)',
+        'Ratio bajo control','Los gastos son el '+ratio+'% de ingresos.',''+ratio+'%');
+    else
+      html+=insCard('ins-g','ph-check-circle','#34D399','rgba(52,211,153,.1)',
+        'Ratio saludable','Solo el '+ratio+'% de tus ingresos en gastos.',''+ratio+'%');
+  }
+  // Top categoría gasto
+  var catG={};f.ops.filter(function(o){return o.type==='egreso'&&o.category;})
+    .forEach(function(o){catG[o.category]=(catG[o.category]||0)+parseFloat(o.amount||0);});
+  var top=Object.keys(catG).sort(function(a,b){return catG[b]-catG[a];})[0];
+  if(top)html+=insCard('ins-p','ph-chart-pie-slice','#A78BFA','rgba(139,92,246,.1)',
+    'Mayor gasto: '+top,'Representa $'+fmt(catG[top])+' del período.','$'+fmt(catG[top]));
+  // Balance insight
+  if(f.bal>0)
+    html+=insCard('ins-b','ph-piggy-bank','#60A5FA','rgba(59,130,246,.1)',
+      'Flujo positivo','Tienes $'+fmt(f.bal)+' de excedente disponible.','$'+fmt(f.bal));
+  ib.innerHTML=html;
+  gsap.from('#cardIns .ins-item',{opacity:0,x:-16,scale:.98,duration:.55,stagger:.08,ease:'power3.out'});
 }
 
 /* BIZ */
