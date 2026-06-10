@@ -114,10 +114,13 @@ body::before{
 .ri i{font-size:17px;color:var(--t3);transition:color .15s}
 .ri:hover{background:rgba(59,130,246,.1);transform:scale(1.1)}.ri:hover i{color:var(--blue2)}
 .ri.on{background:rgba(59,130,246,.18);box-shadow:0 0 14px rgba(59,130,246,.3)}.ri.on i{color:var(--blue2)}
-.ri[data-tip]:hover::after{content:attr(data-tip);position:absolute;left:46px;white-space:nowrap;
-  background:rgba(6,10,20,.98);backdrop-filter:blur(12px);border:1px solid var(--b);
-  color:var(--t1);font-size:11px;font-weight:600;padding:4px 10px;border-radius:7px;
+.ri[data-tip]:hover::after{content:attr(data-tip) "\A" attr(data-desc);position:absolute;left:50px;top:50%;transform:translateY(-50%);white-space:pre-line;
+  background:rgba(6,10,20,.98);backdrop-filter:blur(14px);border:1px solid var(--bh);
+  color:var(--t1);font-size:11px;font-weight:600;line-height:1.55;padding:9px 13px;border-radius:10px;
+  width:max-content;max-width:215px;text-align:left;
   z-index:999;box-shadow:var(--shd);pointer-events:none}
+.ri[data-tip]:hover::after::first-line{font-weight:800;font-size:12px}
+
 .r-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));
   display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;
   cursor:pointer;box-shadow:0 0 0 2px rgba(59,130,246,.25)}
@@ -720,26 +723,26 @@ body::before{
   <!-- RAIL -->
   <nav class="rail">
     <div class="rg">
-      <a class="ri on" href="#" data-tip="Dashboard"><i class="ph-duotone ph-house"></i></a>
-      <a class="ri" href="{{ url_for('essential_ventas') }}" data-tip="Ingresos &amp; Gastos"><i class="ph-duotone ph-currency-dollar"></i></a>
-      <a class="ri" href="{{ url_for('essential_flujo') }}" data-tip="Flujo de Caja"><i class="ph-duotone ph-chart-line-up"></i></a>
-      <a class="ri" href="{{ url_for('essential_deudas') }}" data-tip="Deudas"><i class="ph-duotone ph-clipboard-text"></i></a>
-      <a class="ri" href="{{ url_for('essential_metas') }}" data-tip="Metas"><i class="ph-duotone ph-target"></i></a>
+      <a class="ri on" href="#" data-tip="Dashboard" data-desc="Vista general: balance, KPIs y resumen del dia."><i class="ph-duotone ph-house"></i></a>
+      <a class="ri" href="{{ url_for('essential_ventas') }}" data-tip="Ingresos y Gastos" data-desc="Registra y revisa tus ventas y gastos diarios."><i class="ph-duotone ph-currency-dollar"></i></a>
+      <a class="ri" href="{{ url_for('essential_flujo') }}" data-tip="Flujo de Caja" data-desc="Mira cuanto dinero entra y sale para conocer tu liquidez."><i class="ph-duotone ph-chart-line-up"></i></a>
+      <a class="ri" href="{{ url_for('essential_deudas') }}" data-tip="Deudas" data-desc="Control centralizado de tus compromisos por pagar."><i class="ph-duotone ph-clipboard-text"></i></a>
+      <a class="ri" href="{{ url_for('essential_metas') }}" data-tip="Metas" data-desc="Define objetivos financieros y sigue tu avance."><i class="ph-duotone ph-target"></i></a>
     </div>
     <div class="rg">
-      <a class="ri" href="{{ url_for('essential_ia') }}" data-tip="IA Financiera"><i class="ph-duotone ph-brain"></i></a>
-      <a class="ri" href="{{ url_for('essential_fuga_dinero') }}" data-tip="Fuga de Dinero"><i class="ph-duotone ph-detective"></i></a>
-      <a class="ri" href="{{ url_for('essential_punto_equilibrio') }}" data-tip="Punto de Equilibrio"><i class="ph-duotone ph-scales"></i></a>
-      <a class="ri" href="{{ url_for('essential_boveda') }}" data-tip="Bóveda"><i class="ph-duotone ph-vault"></i></a>
-      <a class="ri" href="{{ url_for('essential_orden_express') }}" data-tip="Orden Express"><i class="ph-duotone ph-lightning"></i></a>
-      <a class="ri" href="{{ url_for('essential_inventario') }}" data-tip="Inventario"><i class="ph-duotone ph-package"></i></a>
+      <a class="ri" href="{{ url_for('essential_ia') }}" data-tip="IA Financiera" data-desc="Asistente 24/7 que responde tus dudas del negocio."><i class="ph-duotone ph-brain"></i></a>
+      <a class="ri" href="{{ url_for('essential_fuga_dinero') }}" data-tip="Fuga de Dinero" data-desc="Detecta cobros duplicados y alzas inesperadas."><i class="ph-duotone ph-detective"></i></a>
+      <a class="ri" href="{{ url_for('essential_punto_equilibrio') }}" data-tip="Punto de Equilibrio" data-desc="Calcula cuanto debes vender hoy para ser rentable."><i class="ph-duotone ph-scales"></i></a>
+      <a class="ri" href="{{ url_for('essential_boveda') }}" data-tip="Boveda Legal" data-desc="Guarda documentos y contratos con alertas de vencimiento."><i class="ph-duotone ph-vault"></i></a>
+      <a class="ri" href="{{ url_for('essential_orden_express') }}" data-tip="Orden Express" data-desc="Registra ingresos o gastos en menos de 30 segundos."><i class="ph-duotone ph-lightning"></i></a>
+      <a class="ri" href="{{ url_for('essential_inventario') }}" data-tip="Inventario" data-desc="Controla el stock de tus productos y existencias."><i class="ph-duotone ph-package"></i></a>
     </div>
     <div class="rg">
-      <a class="ri" href="{{ url_for('essential_semaforo') }}" data-tip="Semáforo"><i class="ph-duotone ph-traffic-signal"></i></a>
-      <a class="ri" href="{{ url_for('essential_calendario') }}" data-tip="Calendario"><i class="ph-duotone ph-calendar-dots"></i></a>
-      <a class="ri" href="{{ url_for('essential_export_excel') }}" data-tip="Excel"><i class="ph-duotone ph-file-xls"></i></a>
-      <a class="ri" href="{{ url_for('essential_comunidad') }}" data-tip="Comunidad"><i class="ph-duotone ph-users-three"></i></a>
-      <a id="bizIcon" class="ri" href="{{ url_for('essential_negocio') }}" data-tip="Mi Negocio" style="display:none"><i class="ph-duotone ph-storefront"></i></a>
+      <a class="ri" href="{{ url_for('essential_semaforo') }}" data-tip="Semaforo Pymax" data-desc="Salud financiera visual: verde, amarillo o rojo."><i class="ph-duotone ph-traffic-signal"></i></a>
+      <a class="ri" href="{{ url_for('essential_calendario') }}" data-tip="Calendario" data-desc="Recordatorios de fechas y pagos importantes."><i class="ph-duotone ph-calendar-dots"></i></a>
+      <a class="ri" href="{{ url_for('essential_export_excel') }}" data-tip="Exportar Excel" data-desc="Descarga tus datos para tu contabilidad tradicional."><i class="ph-duotone ph-file-xls"></i></a>
+      <a class="ri" href="{{ url_for('essential_comunidad') }}" data-tip="Comunidad Starter" data-desc="Red de networking para emprendedores como tu."><i class="ph-duotone ph-users-three"></i></a>
+      <a id="bizIcon" class="ri" href="{{ url_for('essential_negocio') }}" data-tip="Mi Negocio" data-desc="Configura el perfil y datos de tu empresa." style="display:none"><i class="ph-duotone ph-storefront"></i></a>
     </div>
     <div class="rg"><div class="r-av" id="railAv">?</div></div>
   </nav>
