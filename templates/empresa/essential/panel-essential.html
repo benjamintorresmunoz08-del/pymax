@@ -368,7 +368,8 @@ body::before{
 .qa-primary{
   flex:1;min-width:200px;padding:20px 18px;border-radius:var(--r);
   cursor:pointer;font-family:inherit;border:none;color:#fff;text-align:left;
-  transition:all .28s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden
+  transition:all .28s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden;
+  opacity:1;visibility:visible
 }
 .qa-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);pointer-events:none}
 .qa-primary:hover{transform:translateY(-3px) scale(1.01)}
@@ -386,7 +387,8 @@ body::before{
 .mini-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
 .mini{border-radius:var(--rg);padding:12px 10px;background:rgba(255,255,255,.027);
   border:1px solid var(--b);cursor:pointer;font-family:inherit;text-align:center;color:var(--t2);
-  transition:all .22s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
+  transition:all .22s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden;
+  opacity:1;visibility:visible}
 .mini::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
   background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent);transition:left .45s}
 .mini:hover::after{left:100%}.mini:hover{border-color:var(--bh);color:var(--t1);transform:translateY(-3px);box-shadow:var(--sh)}
@@ -1712,18 +1714,18 @@ function initAnim(){
   gsap.from('.hero-sub',{opacity:0,y:10,duration:.65,ease:'power3.out',delay:.4});
   // KPI bar
   gsap.from('.kpi',{opacity:0,y:18,duration:.6,stagger:.08,ease:'power3.out',delay:.35});
-  // Quick actions
-  ScrollTrigger.create({trigger:'#secQA',start:'top 92%',onEnter:function(){
-    gsap.from('.qa-primary',{opacity:0,y:36,scale:.95,duration:.75,stagger:.1,ease:'power3.out'});
-    gsap.from('.mini',{opacity:0,y:22,scale:.93,duration:.6,stagger:.07,ease:'power3.out',delay:.2});
-  }});
-  // Grid
-  ScrollTrigger.create({trigger:'#secGrid',start:'top 88%',onEnter:function(){
-    gsap.from('#cardChart',{opacity:0,y:36,duration:.72,ease:'power3.out'});
-    gsap.from('#cardTx',{opacity:0,y:36,duration:.72,ease:'power3.out',delay:.1});
-    gsap.from('#cardSem',{opacity:0,x:24,duration:.68,ease:'power3.out',delay:.07});
-    gsap.from('#cardWk',{opacity:0,x:24,duration:.68,ease:'power3.out',delay:.16});
-    gsap.from('#cardIns',{opacity:0,x:24,duration:.68,ease:'power3.out',delay:.25});
+  // Quick actions — fromTo nunca baja opacity a 0 antes de disparar
+  setTimeout(function(){
+    gsap.fromTo('.qa-primary',{y:32,scale:.96},{opacity:1,y:0,scale:1,duration:.72,stagger:.12,ease:'power3.out'});
+    gsap.fromTo('.mini',{y:20,scale:.94},{opacity:1,y:0,scale:1,duration:.58,stagger:.06,ease:'power3.out',delay:.15});
+  },400);
+  // Grid — también fromTo para seguridad
+  ScrollTrigger.create({trigger:'#secGrid',start:'top 92%',onEnter:function(){
+    gsap.fromTo('#cardChart',{y:32,scale:.97},{opacity:1,y:0,scale:1,duration:.68,ease:'power3.out'});
+    gsap.fromTo('#cardTx',{y:32,scale:.97},{opacity:1,y:0,scale:1,duration:.68,ease:'power3.out',delay:.1});
+    gsap.fromTo('#cardSem',{x:22,scale:.97},{opacity:1,x:0,scale:1,duration:.64,ease:'power3.out',delay:.07});
+    gsap.fromTo('#cardWk',{x:22,scale:.97},{opacity:1,x:0,scale:1,duration:.64,ease:'power3.out',delay:.16});
+    gsap.fromTo('#cardIns',{x:22,scale:.97},{opacity:1,x:0,scale:1,duration:.64,ease:'power3.out',delay:.25});
   }});
   // Tools — use IntersectionObserver (custom scroller fix)
   var _toolsAnimated=false;
