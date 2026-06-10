@@ -550,16 +550,14 @@ body::before{
 .ins-sub{font-size:10px;color:var(--t2);line-height:1.5}
 .ins-val{font-size:13px;font-weight:800;margin-left:auto;flex-shrink:0;align-self:flex-start;margin-top:1px;font-variant-numeric:tabular-nums}
 
-/* ══ TOOLS CASCADE SUAVE ══════════════════════════════ */
+/* ══ TOOLS GRID ORDENADA ══════════════════════════════ */
 .tools-grid{
-  display:flex;
-  flex-wrap:wrap;
-  gap:9px;
-  align-items:flex-start;
-  padding-bottom:20px
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  padding-bottom:32px
 }
 .tool{
-  flex:1 1 140px;max-width:175px;
   border-radius:var(--rg);
   background:rgba(255,255,255,.027);backdrop-filter:blur(12px);
   border:1px solid var(--b);padding:16px 14px;cursor:pointer;
