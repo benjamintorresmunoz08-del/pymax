@@ -1,18 +1,18 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Pymax Â· Essential</title>
+<title>Pymax · Essential</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@phosphor-icons/web"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <style>
-/* â•â• TOKENS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══ TOKENS ══════════════════════════════════════════ */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  /* Premium deep navy â€” NOT pure black */
+  /* Premium deep navy — NOT pure black */
   --bg:#060A14;--s1:#0B1020;--s2:#101828;--s3:#1A2438;--s4:#243048;
   --b:rgba(148,163,184,.1);--bh:rgba(148,163,184,.2);--bx:rgba(148,163,184,.06);
   /* Text */
@@ -37,7 +37,7 @@ body{
   -webkit-font-smoothing:antialiased
 }
 
-/* â•â• AMBIENT BACKGROUND â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══ AMBIENT BACKGROUND ══════════════════════════════ */
 .amb{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .amb-blob{position:absolute;border-radius:50%;filter:blur(80px);animation:blobDrift ease-in-out infinite}
 .ab1{width:600px;height:600px;background:radial-gradient(circle,rgba(59,130,246,.12),transparent);top:-100px;right:-100px;animation-duration:18s}
@@ -51,7 +51,7 @@ body::before{
   background-size:48px 48px
 }
 
-/* â•â• TOPBAR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══ TOPBAR ══════════════════════════════════════════ */
 .topbar{
   height:52px;flex-shrink:0;position:relative;z-index:80;
   background:rgba(6,10,20,.88);backdrop-filter:saturate(180%) blur(24px);
@@ -95,13 +95,13 @@ body::before{
   display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;
   cursor:pointer;box-shadow:0 0 0 2px rgba(59,130,246,.3);flex-shrink:0}
 
-/* â•â• LAYOUT â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══ LAYOUT ══════════════════════════════════════════ */
 .body-area{display:flex;flex:1;overflow:hidden;position:relative;z-index:1}
 .scroll-root{flex:1;overflow-y:auto;overflow-x:hidden}
 .scroll-root::-webkit-scrollbar{width:3px}
 .scroll-root::-webkit-scrollbar-thumb{background:rgba(148,163,184,.12);border-radius:3px}
 
-/* â•â• RAIL â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══ RAIL ════════════════════════════════════════════ */
 .rail{width:54px;flex-shrink:0;background:rgba(6,10,20,.7);backdrop-filter:blur(16px);
   border-right:1px solid var(--b);display:flex;flex-direction:column;align-items:center;
   padding:5px 0;gap:1px;overflow-y:auto;z-index:3}
@@ -122,7 +122,7 @@ body::before{
   display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;
   cursor:pointer;box-shadow:0 0 0 2px rgba(59,130,246,.25)}
 
-/* â•â• AI COLUMN â€” PREMIUM â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══ AI COLUMN — PREMIUM ══════════════════════════════ */
 .ai-col{
   width:280px;flex-shrink:0;position:relative;z-index:2;overflow:hidden;
   display:flex;flex-direction:column;
@@ -160,7 +160,7 @@ body::before{
 .ai-col.closed .ai-tgl i{transform:scaleX(-1)}
 .ai-col.closed{width:0}
 
-/* â”€â”€ AI HEADER â”€â”€ */
+/* ── AI HEADER ── */
 .ai-hdr{padding:14px 13px 10px;border-bottom:1px solid rgba(59,130,246,.1);flex-shrink:0;position:relative;z-index:2}
 .ai-top{display:flex;align-items:center;gap:10px;margin-bottom:9px}
 /* BIG ORB */
@@ -199,7 +199,7 @@ body::before{
   background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);color:rgba(147,197,253,.8)}
 .ctx-t span{color:#fff;font-weight:800}
 
-/* â”€â”€ AI BODY â”€â”€ */
+/* ── AI BODY ── */
 .ai-msgs{flex:1;overflow-y:auto;padding:8px 10px;display:flex;flex-direction:column;gap:6px;position:relative;z-index:2}
 .ai-msgs::-webkit-scrollbar{width:0}
 /* Empty state prompt cards */
@@ -240,7 +240,7 @@ body::before{
 .typdots span:nth-child(2){animation-delay:.2s}.typdots span:nth-child(3){animation-delay:.4s}
 @keyframes td{0%,100%{opacity:.2;transform:scale(.6)}50%{opacity:1;transform:scale(1)}}
 
-/* â”€â”€ AI CHIPS â”€â”€ */
+/* ── AI CHIPS ── */
 .ai-chips{
   padding:8px 10px 6px;display:flex;flex-wrap:wrap;gap:4px;
   border-top:1px solid rgba(59,130,246,.1);flex-shrink:0;position:relative;z-index:2;
@@ -263,7 +263,7 @@ body::before{
 .aichip:active{transform:scale(.93)}
 .aichip i{font-size:9px}
 
-/* â”€â”€ AI INPUT â”€â”€ */
+/* ── AI INPUT ── */
 .ai-inp{padding:6px 10px 10px;display:flex;gap:5px;flex-shrink:0;position:relative;z-index:2}
 .ai-in-wrap{flex:1;position:relative}
 .ai-in{
@@ -284,10 +284,10 @@ body::before{
 .ai-snd:active{transform:scale(.9)}
 .ai-snd i{font-size:14px;color:#fff}
 
-/* â•â• SCROLL CONTENT â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══ SCROLL CONTENT ══════════════════════════════════ */
 .scroll-content{padding-bottom:60px}
 
-/* â•â• HERO SECTION â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══ HERO SECTION ════════════════════════════════════ */
 .hero{
   min-height:44vh;padding:32px 24px 28px;
   position:relative;display:flex;flex-direction:column;justify-content:center;
@@ -335,7 +335,7 @@ body::before{
 /* Period tabs micro label */
 .period-lbl{font-size:9.5px;color:var(--t3);text-align:right}
 
-/* â•â• KPI BAR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══ KPI BAR ════════════════════════════════════════ */
 .kpi-bar{
   display:grid;grid-template-columns:repeat(4,1fr);
   background:var(--s1);border-top:1px solid var(--b);border-bottom:1px solid var(--b)
@@ -353,7 +353,7 @@ body::before{
 .kpi-chg{font-size:10px;font-weight:600;display:flex;align-items:center;gap:3px}
 .kpi-bar-bot{position:absolute;bottom:0;left:0;right:0;height:2px}
 
-/* â•â• SECTION â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══ SECTION ════════════════════════════════════════ */
 .sec{padding:28px 24px 0}
 .sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .sec-ttl{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--t3);
@@ -363,8 +363,8 @@ body::before{
   transition:opacity .15s;background:none;border:none;cursor:pointer;font-family:inherit}
 .sec-lnk:hover{opacity:1}
 
-/* â•â• QUICK ACTIONS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
-.qa-grid{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start}
+/* ══ QUICK ACTIONS ══════════════════════════════════ */
+.qa-grid{display:flex;gap:10px;flex-wrap:wrap}
 .qa-primary{
   flex:1;min-width:200px;padding:20px 18px;border-radius:var(--r);
   cursor:pointer;font-family:inherit;border:none;color:#fff;text-align:left;
@@ -397,12 +397,12 @@ body::before{
 .mini-ic i{font-size:16px}
 .mini-lbl{font-size:10px;font-weight:600;line-height:1.3}
 
-/* â•â• MAIN GRID â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══ MAIN GRID ═══════════════════════════════════════ */
 .main-grid{display:grid;grid-template-columns:1fr 320px;gap:12px;padding:0 24px}
 .left-col{display:flex;flex-direction:column;gap:12px}
 .right-col{display:flex;flex-direction:column;gap:12px}
 
-/* â•â• CARD â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══ CARD ════════════════════════════════════════════ */
 .card{
   border-radius:var(--r);background:rgba(255,255,255,.027);
   backdrop-filter:blur(16px);border:1px solid var(--b);overflow:hidden;
@@ -419,7 +419,7 @@ body::before{
 .cbtn:hover{background:var(--s3);color:var(--t1)}.cbtn.on{background:var(--bd);color:var(--blue2);border-color:rgba(59,130,246,.25)}
 .card-body{padding:14px 16px}
 
-/* â•â• BAR CHART â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══ BAR CHART ═══════════════════════════════════════ */
 .bar-chart{display:flex;align-items:flex-end;gap:6px;height:90px;padding:0 2px}
 .bc-grp{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}
 .bc-bars{display:flex;align-items:flex-end;gap:3px;height:78px}
@@ -434,7 +434,7 @@ body::before{
 .cl-i{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--t2);font-weight:500}
 .cl-dot{width:7px;height:7px;border-radius:50%}
 
-/* â•â• TRANSACTION LIST â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══ TRANSACTION LIST ════════════════════════════════ */
 .tx-srch{display:flex;align-items:center;gap:6px;padding:10px 16px 7px;border-bottom:1px solid var(--bx)}
 .tx-srch i{font-size:13px;color:var(--t3)}
 .tx-srch input{flex:1;background:none;border:none;outline:none;font-size:11.5px;color:var(--t1);font-family:inherit}
@@ -461,7 +461,7 @@ body::before{
 .tx-foot a:hover{opacity:1}
 .tx-count{font-size:10px;color:var(--t3)}
 
-/* â•â• SEMÃFORO â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══ SEMÁFORO ════════════════════════════════════════ */
 .sem-body{display:flex;align-items:center;gap:14px;padding:14px 16px}
 .sem-pole{display:flex;flex-direction:column;gap:7px;padding:12px 10px;
   background:rgba(0,0,0,.3);border-radius:14px;border:1px solid rgba(255,255,255,.07)}
@@ -477,21 +477,21 @@ body::before{
 .sem-lnk:hover{gap:7px}
 .sem-lnk i{font-size:10px}
 
-/* â•â• WEEK â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══ WEEK ════════════════════════════════════════════ */
 .wk-r{margin-bottom:8px}
 .wk-l{display:flex;justify-content:space-between;font-size:10.5px;font-weight:500;color:var(--t2);margin-bottom:3px}
 .wk-l strong{font-weight:700;color:var(--t1)}
 .wk-trk{height:5px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden}
 .wk-fill{height:100%;border-radius:100px;transition:width 1.1s cubic-bezier(.22,1,.36,1)}
 
-/* â•â• PE BAR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══ PE BAR ═══════════════════════════════════════════ */
 .pe-wrap{padding:0 16px 14px}
 .pe-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--t2);margin-bottom:5px;font-weight:500}
 .pe-lbl strong{font-weight:700;color:var(--t1);font-size:11px}
 .pe-trk{height:6px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden}
 .pe-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--amber),var(--green2));transition:width 1.3s cubic-bezier(.22,1,.36,1)}
 
-/* â•â• INSIGHTS â€” PREMIUM â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══ INSIGHTS — PREMIUM ══════════════════════════════ */
 #cardIns{
   position:relative;overflow:visible;
   border-color:rgba(59,130,246,.15);
@@ -550,14 +550,16 @@ body::before{
 .ins-sub{font-size:10px;color:var(--t2);line-height:1.5}
 .ins-val{font-size:13px;font-weight:800;margin-left:auto;flex-shrink:0;align-self:flex-start;margin-top:1px;font-variant-numeric:tabular-nums}
 
-/* â•â• TOOLS CASCADE SUAVE â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══ TOOLS CASCADE SUAVE ══════════════════════════════ */
 .tools-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(155px,1fr));
-  gap:10px;
-  padding-bottom:30px
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  align-items:flex-start;
+  padding-bottom:20px
 }
 .tool{
+  flex:1 1 140px;max-width:175px;
   border-radius:var(--rg);
   background:rgba(255,255,255,.027);backdrop-filter:blur(12px);
   border:1px solid var(--b);padding:16px 14px;cursor:pointer;
@@ -574,7 +576,7 @@ body::before{
 .tool-ttl{font-size:11px;font-weight:700;margin-bottom:3px;line-height:1.3}
 .tool-sub{font-size:9.5px;color:var(--t3);line-height:1.4}
 
-/* â•â• OVERLAYS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ══ OVERLAYS ════════════════════════════════════════ */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(5px);
   opacity:0;pointer-events:none;transition:opacity .28s;z-index:900}
 .ov.open{opacity:1;pointer-events:all}
@@ -698,7 +700,7 @@ body::before{
 <!-- Ambient blobs -->
 <div class="amb"><div class="amb-blob ab1"></div><div class="amb-blob ab2"></div><div class="amb-blob ab3"></div></div>
 
-<!-- â”€â”€ TOPBAR â”€â”€ -->
+<!-- ── TOPBAR ── -->
 <header class="topbar">
   <div class="brand">
     <div class="b-mark"><i class="ph-bold ph-chart-line-up"></i></div>
@@ -707,7 +709,7 @@ body::before{
   </div>
   <div class="tb-sep"></div>
   <button class="tb-cmd" onclick="openCP()">
-    <i class="ph-bold ph-magnifying-glass"></i>Buscarâ€¦<kbd>âŒ˜K</kbd>
+    <i class="ph-bold ph-magnifying-glass"></i>Buscar…<kbd>⌘K</kbd>
   </button>
   <div class="tb-r">
     <a href="{{ url_for('essential_progreso') }}" class="btn btn-g"><i class="ph-duotone ph-gauge"></i>Progreso</a>
@@ -730,12 +732,12 @@ body::before{
       <a class="ri" href="{{ url_for('essential_ia') }}" data-tip="IA Financiera"><i class="ph-duotone ph-brain"></i></a>
       <a class="ri" href="{{ url_for('essential_fuga_dinero') }}" data-tip="Fuga de Dinero"><i class="ph-duotone ph-detective"></i></a>
       <a class="ri" href="{{ url_for('essential_punto_equilibrio') }}" data-tip="Punto de Equilibrio"><i class="ph-duotone ph-scales"></i></a>
-      <a class="ri" href="{{ url_for('essential_boveda') }}" data-tip="BÃ³veda"><i class="ph-duotone ph-vault"></i></a>
+      <a class="ri" href="{{ url_for('essential_boveda') }}" data-tip="Bóveda"><i class="ph-duotone ph-vault"></i></a>
       <a class="ri" href="{{ url_for('essential_orden_express') }}" data-tip="Orden Express"><i class="ph-duotone ph-lightning"></i></a>
       <a class="ri" href="{{ url_for('essential_inventario') }}" data-tip="Inventario"><i class="ph-duotone ph-package"></i></a>
     </div>
     <div class="rg">
-      <a class="ri" href="{{ url_for('essential_semaforo') }}" data-tip="SemÃ¡foro"><i class="ph-duotone ph-traffic-signal"></i></a>
+      <a class="ri" href="{{ url_for('essential_semaforo') }}" data-tip="Semáforo"><i class="ph-duotone ph-traffic-signal"></i></a>
       <a class="ri" href="{{ url_for('essential_calendario') }}" data-tip="Calendario"><i class="ph-duotone ph-calendar-dots"></i></a>
       <a class="ri" href="{{ url_for('essential_export_excel') }}" data-tip="Excel"><i class="ph-duotone ph-file-xls"></i></a>
       <a class="ri" href="{{ url_for('essential_comunidad') }}" data-tip="Comunidad"><i class="ph-duotone ph-users-three"></i></a>
@@ -748,12 +750,12 @@ body::before{
   <div class="scroll-root" id="scrollRoot">
     <div class="scroll-content">
 
-      <!-- â–¸ HERO â”€â”€ -->
+      <!-- ▸ HERO ── -->
       <section class="hero">
         <div class="hero-top">
           <div>
-            <div class="hero-greet" id="heroGreet">Cargandoâ€¦</div>
-            <div class="hero-date" id="heroDate">â€”</div>
+            <div class="hero-greet" id="heroGreet">Cargando…</div>
+            <div class="hero-date" id="heroDate">—</div>
           </div>
           <div>
             <div class="period-lbl" id="periodLbl">Mostrando: Este mes</div>
@@ -771,7 +773,7 @@ body::before{
               <div class="sk" style="width:260px;height:52px;border-radius:8px;display:inline-block"></div>
             </div>
             <div class="hero-sub">
-              <div class="hero-badge" id="heroBadge" style="background:rgba(59,130,246,.12);color:var(--blue2)">Calculandoâ€¦</div>
+              <div class="hero-badge" id="heroBadge" style="background:rgba(59,130,246,.12);color:var(--blue2)">Calculando…</div>
               <span id="heroOpsCount" style="color:var(--t3)"></span>
             </div>
           </div>
@@ -783,45 +785,45 @@ body::before{
         </div>
       </section>
 
-      <!-- â–¸ KPI BAR â”€â”€ -->
+      <!-- ▸ KPI BAR ── -->
       <div class="kpi-bar">
         <div class="kpi" id="kpiB">
           <div class="kpi-lbl"><i class="ph-duotone ph-wallet"></i>Balance</div>
           <div class="kpi-val" id="kpiBv"><div class="sk" style="width:80px;height:20px"></div></div>
-          <div class="kpi-chg" id="kpiBc" style="color:var(--t3)">â€”</div>
+          <div class="kpi-chg" id="kpiBc" style="color:var(--t3)">—</div>
           <div class="kpi-bar-bot" style="background:linear-gradient(90deg,var(--blue),var(--purple))"></div>
         </div>
         <div class="kpi" id="kpiI">
           <div class="kpi-lbl" style="color:var(--green)"><i class="ph-duotone ph-trend-up"></i>Ingresos</div>
           <div class="kpi-val" style="color:var(--green2)" id="kpiIv"><div class="sk" style="width:80px;height:20px"></div></div>
-          <div class="kpi-chg" id="kpiIc" style="color:var(--t3)">â€”</div>
+          <div class="kpi-chg" id="kpiIc" style="color:var(--t3)">—</div>
           <div class="kpi-bar-bot" style="background:var(--green2)"></div>
         </div>
         <div class="kpi" id="kpiG">
           <div class="kpi-lbl" style="color:var(--red)"><i class="ph-duotone ph-trend-down"></i>Gastos</div>
           <div class="kpi-val" style="color:var(--red2)" id="kpiGv"><div class="sk" style="width:80px;height:20px"></div></div>
-          <div class="kpi-chg" id="kpiGc" style="color:var(--t3)">â€”</div>
+          <div class="kpi-chg" id="kpiGc" style="color:var(--t3)">—</div>
           <div class="kpi-bar-bot" style="background:var(--red2)"></div>
         </div>
         <div class="kpi" id="kpiM">
           <div class="kpi-lbl" style="color:var(--purple)"><i class="ph-duotone ph-chart-pie-slice"></i>Margen</div>
           <div class="kpi-val" style="color:var(--purple2)" id="kpiMv"><div class="sk" style="width:60px;height:20px"></div></div>
-          <div class="kpi-chg" id="kpiMc" style="color:var(--t3)">â€”</div>
+          <div class="kpi-chg" id="kpiMc" style="color:var(--t3)">—</div>
           <div class="kpi-bar-bot" style="background:var(--purple2)"></div>
         </div>
       </div>
 
-      <!-- â–¸ QUICK ACTIONS â”€â”€ -->
+      <!-- ▸ QUICK ACTIONS ── -->
       <section class="sec" id="secQA">
-        <div class="sec-hdr"><span class="sec-ttl">Acciones rÃ¡pidas</span></div>
+        <div class="sec-hdr"><span class="sec-ttl">Acciones rápidas</span></div>
         <div class="qa-grid">
-          <button class="qa-primary qa-blue" onclick="openBS('ingreso')">
+          <button class="qa-primary qa-blue" style="margin-top:0" onclick="openBS('ingreso')">
             <div class="qa-glow" style="border-color:rgba(59,130,246,.6)"></div>
             <i class="ph-bold ph-plus-circle qa-ic"></i>
             <div class="qa-ttl">Registrar Ingreso</div>
-            <div class="qa-sub">AÃ±ade una venta o cobro al instante</div>
+            <div class="qa-sub">Añade una venta o cobro al instante</div>
           </button>
-          <button class="qa-primary qa-red" style="transform:translateY(8px)" onclick="openBS('egreso')">
+          <button class="qa-primary qa-red" style="margin-top:18px" onclick="openBS('egreso')">
             <div class="qa-glow" style="border-color:rgba(244,63,94,.55)"></div>
             <i class="ph-bold ph-minus-circle qa-ic"></i>
             <div class="qa-ttl">Registrar Gasto</div>
@@ -830,7 +832,7 @@ body::before{
         </div>
       </section>
 
-      <!-- â–¸ MAIN GRID â”€â”€ -->
+      <!-- ▸ MAIN GRID ── -->
       <section class="sec" id="secGrid">
         <div class="main-grid">
           <div class="left-col">
@@ -838,7 +840,7 @@ body::before{
             <div class="card" id="cardChart">
               <div class="card-hdr">
                 <div>
-                  <div class="card-ttl"><i class="ph-duotone ph-chart-bar" style="color:var(--blue2)"></i>Actividad 7 dÃ­as</div>
+                  <div class="card-ttl"><i class="ph-duotone ph-chart-bar" style="color:var(--blue2)"></i>Actividad 7 días</div>
                   <div class="card-sub">Ingresos vs Gastos diarios</div>
                 </div>
                 <div class="chart-legend">
@@ -867,24 +869,24 @@ body::before{
               </div>
               <div class="tx-srch">
                 <i class="ph-bold ph-magnifying-glass"></i>
-                <input id="txSrch" placeholder="Buscar transacciÃ³nâ€¦" oninput="renderTx()"/>
+                <input id="txSrch" placeholder="Buscar transacción…" oninput="renderTx()"/>
               </div>
               <div class="tx-list" id="txList"></div>
               <div class="tx-foot">
-                <div class="tx-count" id="txCnt">â€”</div>
-                <a href="{{ url_for('essential_ventas') }}">Ver todas â†’</a>
+                <div class="tx-count" id="txCnt">—</div>
+                <a href="{{ url_for('essential_ventas') }}">Ver todas →</a>
               </div>
             </div>
           </div>
           <div class="right-col">
-            <!-- SemÃ¡foro -->
+            <!-- Semáforo -->
             <div class="card" id="cardSem">
               <div class="card-hdr">
                 <div>
-                  <div class="card-ttl"><i class="ph-duotone ph-traffic-signal" style="color:var(--amber2)"></i>SemÃ¡foro Pymax</div>
+                  <div class="card-ttl"><i class="ph-duotone ph-traffic-signal" style="color:var(--amber2)"></i>Semáforo Pymax</div>
                   <div class="card-sub">Salud financiera</div>
                 </div>
-                <a href="{{ url_for('essential_semaforo') }}" class="cbtn">Detalle â†’</a>
+                <a href="{{ url_for('essential_semaforo') }}" class="cbtn">Detalle →</a>
               </div>
               <div class="sem-body">
                 <div class="sem-pole">
@@ -893,9 +895,9 @@ body::before{
                   <div class="sem-led" id="sdG"></div>
                 </div>
                 <div class="sem-info">
-                  <div class="sem-st" id="semSt">â€”</div>
-                  <div class="sem-desc" id="semDesc">Analizandoâ€¦</div>
-                  <a href="{{ url_for('essential_semaforo') }}" class="sem-lnk">AnÃ¡lisis completo <i class="ph-bold ph-arrow-right"></i></a>
+                  <div class="sem-st" id="semSt">—</div>
+                  <div class="sem-desc" id="semDesc">Analizando…</div>
+                  <a href="{{ url_for('essential_semaforo') }}" class="sem-lnk">Análisis completo <i class="ph-bold ph-arrow-right"></i></a>
                 </div>
               </div>
             </div>
@@ -906,7 +908,7 @@ body::before{
                   <div class="card-ttl"><i class="ph-duotone ph-calendar-week" style="color:var(--purple2)"></i>Esta semana</div>
                   <div class="card-sub">vs semana anterior</div>
                 </div>
-                <div id="wkBdg" style="font-size:9px;font-weight:600;color:var(--t3);border:1px solid var(--b);padding:2px 8px;border-radius:100px">â€”</div>
+                <div id="wkBdg" style="font-size:9px;font-weight:600;color:var(--t3);border:1px solid var(--b);padding:2px 8px;border-radius:100px">—</div>
               </div>
               <div class="card-body" id="wkBody">
                 <div class="sk" style="height:5px;margin-bottom:9px;border-radius:100px"></div>
@@ -922,7 +924,7 @@ body::before{
               <div class="card-hdr">
                 <div>
                   <div class="card-ttl"><i class="ph-duotone ph-lightbulb" style="color:var(--amber2)"></i>Insights IA</div>
-                  <div class="card-sub">AnÃ¡lisis en tiempo real de tus nÃºmeros</div>
+                  <div class="card-sub">Análisis en tiempo real de tus números</div>
                 </div>
                 <div class="ins-ai-badge"><i class="ph-bold ph-brain"></i>Live</div>
               </div>
@@ -935,33 +937,33 @@ body::before{
         </div>
       </section>
 
-      <!-- â–¸ TOOLS â”€â”€ -->
+      <!-- ▸ TOOLS ── -->
       <section class="sec" id="secTools" style="padding-bottom:48px">
         <div class="sec-hdr">
           <span class="sec-ttl">Herramientas del Plan Essential</span>
           <span style="font-size:10px;color:var(--t3);font-weight:600">13 herramientas incluidas</span>
         </div>
         <div class="tools-grid">
-          <div class="tool" style="transform:translateY(0)" data-href="{{ url_for('essential_ventas') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--gd)"><i class="ph-duotone ph-currency-dollar" style="color:var(--green2)"></i></div><div class="tool-ttl">Ventas &amp; Gastos</div><div class="tool-sub">Planilla diaria ordenada</div></div>
-          <div class="tool" style="transform:translateY(6px)" data-href="{{ url_for('essential_flujo') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--bd)"><i class="ph-duotone ph-chart-line-up" style="color:var(--blue2)"></i></div><div class="tool-ttl">Flujo de Caja</div><div class="tool-sub">Liquidez inmediata</div></div>
-          <div class="tool" style="transform:translateY(10px)" data-href="{{ url_for('essential_deudas') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--ad)"><i class="ph-duotone ph-clipboard-text" style="color:var(--amber2)"></i></div><div class="tool-ttl">Deudas</div><div class="tool-sub">Registro centralizado</div></div>
-          <div class="tool" style="transform:translateY(6px)" data-href="{{ url_for('essential_calendario') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--pd)"><i class="ph-duotone ph-calendar-dots" style="color:var(--purple2)"></i></div><div class="tool-ttl">Calendario</div><div class="tool-sub">Fechas importantes</div></div>
-          <div class="tool" style="transform:translateY(0)" data-href="{{ url_for('essential_semaforo') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--ad)"><i class="ph-duotone ph-traffic-signal" style="color:var(--amber2)"></i></div><div class="tool-ttl">SemÃ¡foro Pymax</div><div class="tool-sub">Salud financiera visual</div></div>
-          <div class="tool" style="transform:translateY(6px)" data-href="{{ url_for('essential_ia') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--bd)"><i class="ph-duotone ph-brain" style="color:var(--blue2)"></i></div><div class="tool-ttl">IA 24/7</div><div class="tool-sub">Asesor financiero</div></div>
-          <div class="tool" style="transform:translateY(10px)" data-href="{{ url_for('essential_export_excel') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--gd)"><i class="ph-duotone ph-file-xls" style="color:var(--green2)"></i></div><div class="tool-ttl">Excel BÃ¡sico</div><div class="tool-sub">Exportar contabilidad</div></div>
-          <div class="tool" style="transform:translateY(6px)" data-href="{{ url_for('essential_fuga_dinero') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--rd)"><i class="ph-duotone ph-detective" style="color:var(--red2)"></i></div><div class="tool-ttl">Fuga de Dinero</div><div class="tool-sub">Cobros duplicados</div></div>
-          <div class="tool" style="transform:translateY(0)" data-href="{{ url_for('essential_punto_equilibrio') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--ad)"><i class="ph-duotone ph-scales" style="color:var(--amber2)"></i></div><div class="tool-ttl">Punto Equilibrio</div><div class="tool-sub">Calculadora dinÃ¡mica</div></div>
-          <div class="tool" style="transform:translateY(6px)" data-href="{{ url_for('essential_boveda') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--bd)"><i class="ph-duotone ph-vault" style="color:var(--blue2)"></i></div><div class="tool-ttl">BÃ³veda Legal</div><div class="tool-sub">Documentos + alertas</div></div>
-          <div class="tool" style="transform:translateY(10px)" data-href="{{ url_for('essential_orden_express') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--pd)"><i class="ph-duotone ph-lightning" style="color:var(--purple2)"></i></div><div class="tool-ttl">Orden Express</div><div class="tool-sub">Registro en 30 seg</div></div>
-          <div class="tool" style="transform:translateY(6px)" data-href="{{ url_for('essential_comunidad') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--gd)"><i class="ph-duotone ph-users-three" style="color:var(--green2)"></i></div><div class="tool-ttl">Comunidad Starter</div><div class="tool-sub">Red de emprendedores</div></div>
-          <div class="tool" style="transform:translateY(0)" data-href="{{ url_for('essential_metas') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--rd)"><i class="ph-duotone ph-target" style="color:var(--red2)"></i></div><div class="tool-ttl">Metas</div><div class="tool-sub">Objetivos financieros</div></div>
+          <div class="tool" style="margin-top:0" data-href="{{ url_for('essential_ventas') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--gd)"><i class="ph-duotone ph-currency-dollar" style="color:var(--green2)"></i></div><div class="tool-ttl">Ventas &amp; Gastos</div><div class="tool-sub">Planilla diaria ordenada</div></div>
+          <div class="tool" style="margin-top:10px" data-href="{{ url_for('essential_flujo') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--bd)"><i class="ph-duotone ph-chart-line-up" style="color:var(--blue2)"></i></div><div class="tool-ttl">Flujo de Caja</div><div class="tool-sub">Liquidez inmediata</div></div>
+          <div class="tool" style="margin-top:18px" data-href="{{ url_for('essential_deudas') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--ad)"><i class="ph-duotone ph-clipboard-text" style="color:var(--amber2)"></i></div><div class="tool-ttl">Deudas</div><div class="tool-sub">Registro centralizado</div></div>
+          <div class="tool" style="margin-top:10px" data-href="{{ url_for('essential_calendario') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--pd)"><i class="ph-duotone ph-calendar-dots" style="color:var(--purple2)"></i></div><div class="tool-ttl">Calendario</div><div class="tool-sub">Fechas importantes</div></div>
+          <div class="tool" style="margin-top:0" data-href="{{ url_for('essential_semaforo') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--ad)"><i class="ph-duotone ph-traffic-signal" style="color:var(--amber2)"></i></div><div class="tool-ttl">Semáforo Pymax</div><div class="tool-sub">Salud financiera visual</div></div>
+          <div class="tool" style="margin-top:10px" data-href="{{ url_for('essential_ia') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--bd)"><i class="ph-duotone ph-brain" style="color:var(--blue2)"></i></div><div class="tool-ttl">IA 24/7</div><div class="tool-sub">Asesor financiero</div></div>
+          <div class="tool" style="margin-top:18px" data-href="{{ url_for('essential_export_excel') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--gd)"><i class="ph-duotone ph-file-xls" style="color:var(--green2)"></i></div><div class="tool-ttl">Excel Básico</div><div class="tool-sub">Exportar contabilidad</div></div>
+          <div class="tool" style="margin-top:10px" data-href="{{ url_for('essential_fuga_dinero') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--rd)"><i class="ph-duotone ph-detective" style="color:var(--red2)"></i></div><div class="tool-ttl">Fuga de Dinero</div><div class="tool-sub">Cobros duplicados</div></div>
+          <div class="tool" style="margin-top:0" data-href="{{ url_for('essential_punto_equilibrio') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--ad)"><i class="ph-duotone ph-scales" style="color:var(--amber2)"></i></div><div class="tool-ttl">Punto Equilibrio</div><div class="tool-sub">Calculadora dinámica</div></div>
+          <div class="tool" style="margin-top:10px" data-href="{{ url_for('essential_boveda') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--bd)"><i class="ph-duotone ph-vault" style="color:var(--blue2)"></i></div><div class="tool-ttl">Bóveda Legal</div><div class="tool-sub">Documentos + alertas</div></div>
+          <div class="tool" style="margin-top:18px" data-href="{{ url_for('essential_orden_express') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--pd)"><i class="ph-duotone ph-lightning" style="color:var(--purple2)"></i></div><div class="tool-ttl">Orden Express</div><div class="tool-sub">Registro en 30 seg</div></div>
+          <div class="tool" style="margin-top:10px" data-href="{{ url_for('essential_comunidad') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--gd)"><i class="ph-duotone ph-users-three" style="color:var(--green2)"></i></div><div class="tool-ttl">Comunidad Starter</div><div class="tool-sub">Red de emprendedores</div></div>
+          <div class="tool" style="margin-top:0" data-href="{{ url_for('essential_metas') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--rd)"><i class="ph-duotone ph-target" style="color:var(--red2)"></i></div><div class="tool-ttl">Metas</div><div class="tool-sub">Objetivos financieros</div></div>
         </div>
       </section>
 
     </div>
   </div>
 
-  <!-- AI COLUMN â€” PREMIUM -->
+  <!-- AI COLUMN — PREMIUM -->
   <div class="ai-col" id="aiCol">
     <div class="ai-glow-border"></div>
     <div class="ai-tgl" id="aiTgl" onclick="toggleAI()"><i class="ph-bold ph-caret-right" id="aiTglI"></i></div>
@@ -994,17 +996,17 @@ body::before{
       </div>
       <!-- Prompt cards shown in empty state -->
       <div class="ai-prompts" id="aiPrompts">
-        <div class="ai-prompt-card" onclick="sendChip('Â¿DÃ³nde se va mi dinero este mes?')">
+        <div class="ai-prompt-card" onclick="sendChip('¿Dónde se va mi dinero este mes?')">
           <div class="apc-top"><div class="apc-ic" style="background:rgba(52,211,153,.12)"><i class="ph-bold ph-detective" style="color:#34D399"></i></div><div class="apc-lbl">Fugas de dinero</div></div>
           <div class="apc-sub">Detecta cobros duplicados y gastos invisibles</div>
         </div>
-        <div class="ai-prompt-card" onclick="sendChip('Â¿CuÃ¡nto debo vender hoy para ser rentable?')">
+        <div class="ai-prompt-card" onclick="sendChip('¿Cuánto debo vender hoy para ser rentable?')">
           <div class="apc-top"><div class="apc-ic" style="background:rgba(252,211,77,.1)"><i class="ph-bold ph-scales" style="color:#FCD34D"></i></div><div class="apc-lbl">Punto de equilibrio</div></div>
-          <div class="apc-sub">Calcula cuÃ¡nto vender para cubrir costos</div>
+          <div class="apc-sub">Calcula cuánto vender para cubrir costos</div>
         </div>
-        <div class="ai-prompt-card" onclick="sendChip('Â¿QuÃ© debo priorizar esta semana?')">
+        <div class="ai-prompt-card" onclick="sendChip('¿Qué debo priorizar esta semana?')">
           <div class="apc-top"><div class="apc-ic" style="background:rgba(167,139,250,.1)"><i class="ph-bold ph-list-checks" style="color:#A78BFA"></i></div><div class="apc-lbl">Plan semanal</div></div>
-          <div class="apc-sub">ObtÃ©n un plan de acciÃ³n financiero</div>
+          <div class="apc-sub">Obtén un plan de acción financiero</div>
         </div>
         <div class="ai-prompt-card" onclick="sendChip('Dame 3 consejos para mejorar mi margen')">
           <div class="apc-top"><div class="apc-ic" style="background:rgba(96,165,250,.1)"><i class="ph-bold ph-sparkle" style="color:#60A5FA"></i></div><div class="apc-lbl">Analizar negocio</div></div>
@@ -1015,17 +1017,17 @@ body::before{
 
     <!-- CHIPS -->
     <div class="ai-chips">
-      <button class="aichip" onclick="sendChip('Â¿DÃ³nde se va mi dinero este mes?')"><i class="ph-bold ph-detective"></i>Fugas</button>
-      <button class="aichip" onclick="sendChip('Â¿CÃ³mo mejorar mi margen?')"><i class="ph-bold ph-trend-up"></i>Margen</button>
-      <button class="aichip" onclick="sendChip('Â¿QuÃ© debo priorizar esta semana?')"><i class="ph-bold ph-list-checks"></i>Plan</button>
-      <button class="aichip" onclick="sendChip('Â¿CuÃ¡nto vender hoy para ser rentable?')"><i class="ph-bold ph-scales"></i>Equilibrio</button>
+      <button class="aichip" onclick="sendChip('¿Dónde se va mi dinero este mes?')"><i class="ph-bold ph-detective"></i>Fugas</button>
+      <button class="aichip" onclick="sendChip('¿Cómo mejorar mi margen?')"><i class="ph-bold ph-trend-up"></i>Margen</button>
+      <button class="aichip" onclick="sendChip('¿Qué debo priorizar esta semana?')"><i class="ph-bold ph-list-checks"></i>Plan</button>
+      <button class="aichip" onclick="sendChip('¿Cuánto vender hoy para ser rentable?')"><i class="ph-bold ph-scales"></i>Equilibrio</button>
       <button class="aichip" onclick="sendChip('Dame 3 recomendaciones para reducir gastos')"><i class="ph-bold ph-sparkle"></i>Analizar</button>
     </div>
 
     <!-- INPUT -->
     <div class="ai-inp">
       <div class="ai-in-wrap">
-        <input class="ai-in" id="aiIn" placeholder="Pregunta algo financieroâ€¦" onkeydown="if(event.key==='Enter')sendMsg()"/>
+        <input class="ai-in" id="aiIn" placeholder="Pregunta algo financiero…" onkeydown="if(event.key==='Enter')sendMsg()"/>
       </div>
       <button class="ai-snd" onclick="sendMsg()"><i class="ph-bold ph-paper-plane-right"></i></button>
     </div>
@@ -1038,7 +1040,7 @@ body::before{
 <div class="ov" id="bsOv" onclick="if(event.target===this)closeBS()">
   <div class="bs">
     <div class="bs-handle"></div>
-    <div class="bs-hdr"><span class="bs-ttl" id="bsTitle">Registrar transacciÃ³n</span><div class="bs-x" onclick="closeBS()"><i class="ph-bold ph-x"></i></div></div>
+    <div class="bs-hdr"><span class="bs-ttl" id="bsTitle">Registrar transacción</span><div class="bs-x" onclick="closeBS()"><i class="ph-bold ph-x"></i></div></div>
     <div class="type-sw">
       <button class="tsb ing" id="tsI" onclick="setType('ingreso')"><i class="ph-bold ph-trend-up"></i>Ingreso</button>
       <button class="tsb" id="tsG" onclick="setType('egreso')"><i class="ph-bold ph-trend-down"></i>Gasto</button>
@@ -1046,21 +1048,21 @@ body::before{
     <div class="bs-flds">
       <div class="bf"><label>Monto ($) *</label><input type="number" id="bsAmt" placeholder="0" min="0"/></div>
       <div class="bf"><label>Fecha</label><input type="date" id="bsDate"/></div>
-      <div class="bf full"><label>DescripciÃ³n</label><input type="text" id="bsDesc" placeholder="Ej: Venta producto, Arriendoâ€¦"/></div>
-      <div class="bf"><label>CategorÃ­a</label>
+      <div class="bf full"><label>Descripción</label><input type="text" id="bsDesc" placeholder="Ej: Venta producto, Arriendo…"/></div>
+      <div class="bf"><label>Categoría</label>
         <select id="bsCat">
-          <option value="">Sin categorÃ­a</option>
+          <option value="">Sin categoría</option>
           <option value="ventas">Ventas</option>
           <option value="servicios">Servicios</option>
           <option value="arriendo">Arriendo</option>
           <option value="sueldos">Sueldos</option>
           <option value="marketing">Marketing</option>
           <option value="insumos">Insumos / Stock</option>
-          <option value="servicios_basicos">Servicios bÃ¡sicos</option>
+          <option value="servicios_basicos">Servicios básicos</option>
           <option value="otros">Otros</option>
         </select>
       </div>
-      <div class="bf"><label>Notas</label><input type="text" id="bsNote" placeholder="Opcionalâ€¦"/></div>
+      <div class="bf"><label>Notas</label><input type="text" id="bsNote" placeholder="Opcional…"/></div>
     </div>
     <div class="bs-foot">
       <button class="bs-cx" onclick="closeBS()">Cancelar</button>
@@ -1074,7 +1076,7 @@ body::before{
   <div class="dr">
     <div class="dr-hdr">
       <div class="dr-ic" id="drIc"><i class="ph-duotone ph-receipt"></i></div>
-      <div><div class="dr-ttl" id="drTtl">TransacciÃ³n</div><div class="dr-sub" id="drSub">Detalle</div></div>
+      <div><div class="dr-ttl" id="drTtl">Transacción</div><div class="dr-sub" id="drSub">Detalle</div></div>
       <div class="dr-x" onclick="closeDR()"><i class="ph-bold ph-x"></i></div>
     </div>
     <div class="dr-body">
@@ -1093,7 +1095,7 @@ body::before{
   <div class="cp">
     <div class="cp-top">
       <i class="ph-bold ph-magnifying-glass"></i>
-      <input class="cp-in" id="cpIn" placeholder="Buscar mÃ³dulos, accionesâ€¦" oninput="filterCP(this.value)" onkeydown="navCP(event)"/>
+      <input class="cp-in" id="cpIn" placeholder="Buscar módulos, acciones…" oninput="filterCP(this.value)" onkeydown="navCP(event)"/>
       <span class="cp-esc" onclick="closeCP()">esc</span>
     </div>
     <div class="cp-res" id="cpRes"></div>
@@ -1129,7 +1131,7 @@ document.addEventListener('DOMContentLoaded',async function(){
 
 function initUI(u){
   var h=new Date().getHours();
-  var g=h<12?'Buenos dÃ­as':h<18?'Buenas tardes':'Buenas noches';
+  var g=h<12?'Buenos días':h<18?'Buenas tardes':'Buenas noches';
   var raw=(u.user_metadata&&(u.user_metadata.full_name||u.user_metadata.name))||u.email.split('@')[0];
   var n=(raw.split(' ')[0]);n=n.charAt(0).toUpperCase()+n.slice(1);
   var d=new Date().toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
@@ -1208,8 +1210,8 @@ function renderHero(){
   // Badge
   var bdg=document.getElementById('heroBadge');
   if(bdg){
-    if(f.bal>0){bdg.textContent='â–² Balance positivo';bdg.style.background='rgba(16,185,129,.12)';bdg.style.color='var(--green2)';}
-    else if(f.bal<0){bdg.textContent='â–¼ Balance negativo';bdg.style.background='rgba(244,63,94,.12)';bdg.style.color='var(--red2)';}
+    if(f.bal>0){bdg.textContent='▲ Balance positivo';bdg.style.background='rgba(16,185,129,.12)';bdg.style.color='var(--green2)';}
+    else if(f.bal<0){bdg.textContent='▼ Balance negativo';bdg.style.background='rgba(244,63,94,.12)';bdg.style.color='var(--red2)';}
     else{bdg.textContent='Balance neutro';bdg.style.background='var(--bd)';bdg.style.color='var(--blue2)';}
   }
   setText('heroOpsCount',f.ops.length+' transacciones registradas');
@@ -1228,7 +1230,7 @@ function renderKPIs(){
   var f=_fin;
   countUp('kpiBv',f.bal,'$');
   var bc=document.getElementById('kpiBc');
-  if(bc){bc.style.color=f.bal>=0?'var(--green2)':'var(--red2)';bc.textContent=f.bal>=0?'â–² Positivo':'â–¼ Negativo';}
+  if(bc){bc.style.color=f.bal>=0?'var(--green2)':'var(--red2)';bc.textContent=f.bal>=0?'▲ Positivo':'▼ Negativo';}
   countUp('kpiIv',f.ing,'$');
   setText('kpiIc',countOps('ingreso')+' registros');
   countUp('kpiGv',f.gas,'$');
@@ -1236,14 +1238,14 @@ function renderKPIs(){
   var mv=document.getElementById('kpiMv');if(mv){mv.innerHTML='';countUpEl(mv,f.mar,'%');}
   var mc=document.getElementById('kpiMc');
   if(mc){mc.style.color=f.mar>20?'var(--green2)':f.mar>0?'var(--amber2)':'var(--red2)';
-    mc.textContent=f.mar>20?'Saludable':f.mar>0?'AtenciÃ³n':'CrÃ­tico';}
+    mc.textContent=f.mar>20?'Saludable':f.mar>0?'Atención':'Crítico';}
 }
 
 function countOps(t){return _fin.ops.filter(function(o){return o.type===t;}).length;}
 
 function buildBarChart(){
   var cont=document.getElementById('barChart');if(!cont)return;
-  var lbls=['Lu','Ma','Mi','Ju','Vi','SÃ¡','Do'];
+  var lbls=['Lu','Ma','Mi','Ju','Vi','Sá','Do'];
   var days=[];for(var i=6;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);days.push(d);}
   var iV=days.map(function(d){return _fin.ops.filter(function(o){return o.type==='ingreso'&&sameDay(new Date(o.created_at),d);}).reduce(function(a,o){return a+parseFloat(o.amount||0);},0);});
   var gV=days.map(function(d){return _fin.ops.filter(function(o){return o.type==='egreso'&&sameDay(new Date(o.created_at),d);}).reduce(function(a,o){return a+parseFloat(o.amount||0);},0);});
@@ -1323,8 +1325,8 @@ async function loadWeek(){
     var diff=cI-pI;
     var bdg=document.getElementById('wkBdg');
     if(bdg){
-      if(diff>0){bdg.textContent='â–² +$'+fmt(diff);bdg.style.cssText='font-size:9px;font-weight:600;color:var(--green2);border:1px solid rgba(52,211,153,.22);background:rgba(16,185,129,.07);padding:2px 8px;border-radius:100px';}
-      else if(diff<0){bdg.textContent='â–¼ -$'+fmt(Math.abs(diff));bdg.style.cssText='font-size:9px;font-weight:600;color:var(--red2);border:1px solid rgba(251,113,133,.2);background:rgba(244,63,94,.06);padding:2px 8px;border-radius:100px';}
+      if(diff>0){bdg.textContent='▲ +$'+fmt(diff);bdg.style.cssText='font-size:9px;font-weight:600;color:var(--green2);border:1px solid rgba(52,211,153,.22);background:rgba(16,185,129,.07);padding:2px 8px;border-radius:100px';}
+      else if(diff<0){bdg.textContent='▼ -$'+fmt(Math.abs(diff));bdg.style.cssText='font-size:9px;font-weight:600;color:var(--red2);border:1px solid rgba(251,113,133,.2);background:rgba(244,63,94,.06);padding:2px 8px;border-radius:100px';}
       else{bdg.textContent='Sin cambios';bdg.style.cssText='font-size:9px;font-weight:600;color:var(--t3);border:1px solid var(--b);padding:2px 8px;border-radius:100px';}
     }
     var wb=document.getElementById('wkBody');
@@ -1344,13 +1346,13 @@ async function loadWeek(){
   }catch(err){console.error('loadWeek:',err);}
 }
 
-/* SEMÃFORO */
+/* SEMÁFORO */
 function updateSem(){
   var f=_fin,st='green';
   if(f.bal<0||f.mar<0)st='red';else if(f.mar<15)st='amber';
-  var M={green:{l:'VERDE â€” Saludable',d:'Finanzas en buen estado. Â¡Sigue asÃ­!',g:true},
-    amber:{l:'AMARILLO â€” AtenciÃ³n',d:'Margen bajo. Revisa tu estructura de costos.',a:true},
-    red:{l:'ROJO â€” Alerta',d:'Los gastos superan los ingresos. ActÃºa ahora.',r:true}};
+  var M={green:{l:'VERDE — Saludable',d:'Finanzas en buen estado. ¡Sigue así!',g:true},
+    amber:{l:'AMARILLO — Atención',d:'Margen bajo. Revisa tu estructura de costos.',a:true},
+    red:{l:'ROJO — Alerta',d:'Los gastos superan los ingresos. Actúa ahora.',r:true}};
   var COL={green:'#34D399',amber:'#FCD34D',red:'#FB7185'};
   document.querySelectorAll('.sem-led').forEach(function(l){l.className='sem-led';});
   var cv=M[st];
@@ -1374,9 +1376,9 @@ function updateInsights(){
   var html='';
   if(!f.ops.length){
     html+=insCard('ins-b','ph-rocket-launch','#60A5FA','rgba(59,130,246,.12)',
-      'Empieza ahora','Registra tu primera transacciÃ³n para ver el anÃ¡lisis IA.','');
+      'Empieza ahora','Registra tu primera transacción para ver el análisis IA.','');
     html+=insCard('ins-p','ph-brain','#A78BFA','rgba(139,92,246,.1)',
-      'Pymax IA lista','Haz una pregunta a tu asesor financiero 24/7.','â–¶');
+      'Pymax IA lista','Haz una pregunta a tu asesor financiero 24/7.','▶');
     ib.innerHTML=html;
     gsap.from('#cardIns .ins-item',{opacity:0,x:-12,duration:.55,stagger:.1,ease:'power3.out'});
     return;
@@ -1384,16 +1386,16 @@ function updateInsights(){
   // Margen
   if(f.mar>25)
     html+=insCard('ins-g','ph-trend-up','#34D399','rgba(52,211,153,.12)',
-      'Margen excelente','Rentabilidad sÃ³lida, por encima del 25%.',''+f.mar+'%');
+      'Margen excelente','Rentabilidad sólida, por encima del 25%.',''+f.mar+'%');
   else if(f.mar>10)
     html+=insCard('ins-a','ph-warning','#FCD34D','rgba(252,211,77,.1)',
       'Margen en zona media','Hay espacio para crecer. Revisa costos variables.',''+f.mar+'%');
   else if(f.mar>=0)
     html+=insCard('ins-r','ph-warning-octagon','#FB7185','rgba(244,63,94,.1)',
-      'Margen crÃ­tico','Revisa urgente tu estructura de costos.',''+f.mar+'%');
+      'Margen crítico','Revisa urgente tu estructura de costos.',''+f.mar+'%');
   else
     html+=insCard('ins-r','ph-skull','#FB7185','rgba(244,63,94,.12)',
-      'Balance negativo','Gastas mÃ¡s de lo que ingresas. ActÃºa hoy.',''+f.mar+'%');
+      'Balance negativo','Gastas más de lo que ingresas. Actúa hoy.',''+f.mar+'%');
   // Ratio gasto/ingreso
   if(f.ing>0){
     var ratio=Math.round((f.gas/f.ing)*100);
@@ -1407,12 +1409,12 @@ function updateInsights(){
       html+=insCard('ins-g','ph-check-circle','#34D399','rgba(52,211,153,.1)',
         'Ratio saludable','Solo el '+ratio+'% de tus ingresos en gastos.',''+ratio+'%');
   }
-  // Top categorÃ­a gasto
+  // Top categoría gasto
   var catG={};f.ops.filter(function(o){return o.type==='egreso'&&o.category;})
     .forEach(function(o){catG[o.category]=(catG[o.category]||0)+parseFloat(o.amount||0);});
   var top=Object.keys(catG).sort(function(a,b){return catG[b]-catG[a];})[0];
   if(top)html+=insCard('ins-p','ph-chart-pie-slice','#A78BFA','rgba(139,92,246,.1)',
-    'Mayor gasto: '+top,'Representa $'+fmt(catG[top])+' del perÃ­odo.','$'+fmt(catG[top]));
+    'Mayor gasto: '+top,'Representa $'+fmt(catG[top])+' del período.','$'+fmt(catG[top]));
   // Balance insight
   if(f.bal>0)
     html+=insCard('ins-b','ph-piggy-bank','#60A5FA','rgba(59,130,246,.1)',
@@ -1437,10 +1439,10 @@ async function loadBiz(){
 function hidePrompts(){var p=document.getElementById('aiPrompts');if(p&&p.parentNode){p.style.transition='opacity .3s';p.style.opacity='0';setTimeout(function(){if(p.parentNode)p.parentNode.removeChild(p);},300);}}
 function aiWelcome(){
   var el=document.getElementById('aiW');if(!el)return;
-  var f=_fin,m='Hola ðŸ‘‹ Soy Pymax AI, tu asesor financiero personal.';
-  if(f.ing>0||f.gas>0){m+=' Llevas $'+fmt(f.ing)+' en ingresos y $'+fmt(f.gas)+' en gastos.';m+=f.bal>=0?' âœ… Balance positivo.':' âš ï¸ Balance negativo, revisemos.';}
-  else m+=' Sin transacciones aÃºn. Â¡Empieza registrando tus movimientos!';
-  m+=' Â¿En quÃ© te puedo ayudar?';
+  var f=_fin,m='Hola 👋 Soy Pymax AI, tu asesor financiero personal.';
+  if(f.ing>0||f.gas>0){m+=' Llevas $'+fmt(f.ing)+' en ingresos y $'+fmt(f.gas)+' en gastos.';m+=f.bal>=0?' ✅ Balance positivo.':' ⚠️ Balance negativo, revisemos.';}
+  else m+=' Sin transacciones aún. ¡Empieza registrando tus movimientos!';
+  m+=' ¿En qué te puedo ayudar?';
   el.innerHTML='';typeText(el,m,0);
   // Animate AI column header entrance
   gsap.from('.ai-hdr',{opacity:0,y:-10,duration:.65,ease:'power3.out',delay:.2});
@@ -1476,7 +1478,7 @@ async function callAI(msg){
     var b=document.getElementById('aiMsgs');
     if(b){var d=document.createElement('div');d.className='am ai';d.style.cssText='opacity:0;transform:translateY(6px)';b.appendChild(d);b.scrollTop=b.scrollHeight;
       setTimeout(function(){d.style.transition='all .28s cubic-bezier(.22,1,.36,1)';d.style.opacity='1';d.style.transform='translateY(0)';typeText(d,resp,0);},10);}
-  }catch(e){if(t)t.remove();addMsg('Error de conexiÃ³n. Por favor intenta de nuevo.','ai');}
+  }catch(e){if(t)t.remove();addMsg('Error de conexión. Por favor intenta de nuevo.','ai');}
 }
 function toggleAI(){
   var col=document.getElementById('aiCol');_aiClosed=!_aiClosed;
@@ -1500,7 +1502,7 @@ function setType(t){
 }
 async function saveTx(){
   var amt=parseFloat((document.getElementById('bsAmt')||{}).value||'0');
-  if(!amt||amt<=0){showToast('Ingresa un monto vÃ¡lido','amber');return;}
+  if(!amt||amt<=0){showToast('Ingresa un monto válido','amber');return;}
   var bsD=document.getElementById('bsDate'),bsDesc=document.getElementById('bsDesc'),bsCat=document.getElementById('bsCat'),bsNote=document.getElementById('bsNote');
   var tx={user_id:_u.id,type:_txType,amount:amt,
     description:(bsDesc&&bsDesc.value.trim())||null,
@@ -1538,41 +1540,41 @@ function openDR(id){
   if(am){am.textContent=(isI?'+':'-')+'$'+fmt(parseFloat(o.amount||0));am.style.color=isI?'var(--green2)':'var(--red2)';}
   var d=new Date(o.created_at);
   document.getElementById('drRows').innerHTML=[
-    ['Tipo',isI?'âœ… Ingreso':'âŒ Gasto'],
+    ['Tipo',isI?'✅ Ingreso':'❌ Gasto'],
     ['Fecha',d.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'long',year:'numeric'})],
-    ['CategorÃ­a',o.category||'Sin categorÃ­a'],
-    ['DescripciÃ³n',o.description||'â€”'],
+    ['Categoría',o.category||'Sin categoría'],
+    ['Descripción',o.description||'—'],
     ['Monto','$'+fmt(parseFloat(o.amount||0))]
   ].map(function(r){return '<div class="dr-r"><span>'+r[0]+'</span><span>'+r[1]+'</span></div>';}).join('');
   document.getElementById('drOv').classList.add('open');
 }
 function closeDR(){document.getElementById('drOv').classList.remove('open');_curTx=null;}
 async function delTx(){
-  if(!_curTx||!confirm('Â¿Eliminar esta transacciÃ³n?'))return;
+  if(!_curTx||!confirm('¿Eliminar esta transacción?'))return;
   var id=_curTx.id;
   _fin.ops=_fin.ops.filter(function(o){return o.id!==id;});
   if(!String(id).startsWith('L_')){try{await _sb.from('user_operations').delete().eq('id',id);}catch(e){}}
-  closeDR();showToast('TransacciÃ³n eliminada','red');
+  closeDR();showToast('Transacción eliminada','red');
   await loadFin();
 }
 
 /* CMD PALETTE */
 var _cpItems=[];
 var CP=[
-  {g:'âš¡ Acciones rÃ¡pidas',items:[
-    {i:'ph-plus-circle',c:'var(--green2)',bg:'var(--gd)',l:'Registrar Ingreso',s:'AÃ±ade una venta',fn:function(){openBS('ingreso');}},
-    {i:'ph-minus-circle',c:'var(--red2)',bg:'var(--rd)',l:'Registrar Gasto',s:'AÃ±ade un egreso',fn:function(){openBS('egreso');}},
+  {g:'⚡ Acciones rápidas',items:[
+    {i:'ph-plus-circle',c:'var(--green2)',bg:'var(--gd)',l:'Registrar Ingreso',s:'Añade una venta',fn:function(){openBS('ingreso');}},
+    {i:'ph-minus-circle',c:'var(--red2)',bg:'var(--rd)',l:'Registrar Gasto',s:'Añade un egreso',fn:function(){openBS('egreso');}},
     {i:'ph-lightning',c:'var(--purple2)',bg:'var(--pd)',l:'Orden Express',s:'Registro en 30 segundos',hr:"{{ url_for('essential_orden_express') }}"},
   ]},
-  {g:'ðŸ“ MÃ³dulos',items:[
+  {g:'📍 Módulos',items:[
     {i:'ph-currency-dollar',c:'var(--green2)',bg:'var(--gd)',l:'Ingresos &amp; Gastos',s:'Registro de transacciones',hr:"{{ url_for('essential_ventas') }}"},
     {i:'ph-chart-line-up',c:'var(--blue2)',bg:'var(--bd)',l:'Flujo de Caja',s:'Liquidez del negocio',hr:"{{ url_for('essential_flujo') }}"},
     {i:'ph-target',c:'var(--green2)',bg:'var(--gd)',l:'Metas',s:'Objetivos financieros',hr:"{{ url_for('essential_metas') }}"},
     {i:'ph-brain',c:'var(--blue2)',bg:'var(--bd)',l:'Asistente IA',s:'Chat financiero 24/7',hr:"{{ url_for('essential_ia') }}"},
-    {i:'ph-scales',c:'var(--amber2)',bg:'var(--ad)',l:'Punto de Equilibrio',s:'Calculadora dinÃ¡mica',hr:"{{ url_for('essential_punto_equilibrio') }}"},
+    {i:'ph-scales',c:'var(--amber2)',bg:'var(--ad)',l:'Punto de Equilibrio',s:'Calculadora dinámica',hr:"{{ url_for('essential_punto_equilibrio') }}"},
     {i:'ph-detective',c:'var(--red2)',bg:'var(--rd)',l:'Fuga de Dinero',s:'Detectar cobros',hr:"{{ url_for('essential_fuga_dinero') }}"},
-    {i:'ph-vault',c:'var(--blue2)',bg:'var(--bd)',l:'BÃ³veda Documentos',s:'Almacenamiento legal',hr:"{{ url_for('essential_boveda') }}"},
-    {i:'ph-traffic-signal',c:'var(--amber2)',bg:'var(--ad)',l:'SemÃ¡foro Pymax',s:'Estado financiero',hr:"{{ url_for('essential_semaforo') }}"},
+    {i:'ph-vault',c:'var(--blue2)',bg:'var(--bd)',l:'Bóveda Documentos',s:'Almacenamiento legal',hr:"{{ url_for('essential_boveda') }}"},
+    {i:'ph-traffic-signal',c:'var(--amber2)',bg:'var(--ad)',l:'Semáforo Pymax',s:'Estado financiero',hr:"{{ url_for('essential_semaforo') }}"},
     {i:'ph-file-xls',c:'var(--green2)',bg:'var(--gd)',l:'Exportar Excel',s:'Contabilidad tradicional',hr:"{{ url_for('essential_export_excel') }}"},
     {i:'ph-users-three',c:'var(--amber2)',bg:'var(--ad)',l:'Comunidad Starter',s:'Networking emprendedor',hr:"{{ url_for('essential_comunidad') }}"},
     {i:'ph-gauge',c:'var(--blue2)',bg:'var(--bd)',l:'Mi Progreso',s:'Tablero de avance',hr:"{{ url_for('essential_progreso') }}"},
@@ -1619,12 +1621,12 @@ function initAnim(){
   gsap.from('.hero-sub',{opacity:0,y:10,duration:.65,ease:'power3.out',delay:.4});
   // KPI bar
   gsap.from('.kpi',{opacity:0,y:18,duration:.6,stagger:.08,ease:'power3.out',delay:.35});
-  // Quick actions â€” fromTo nunca baja opacity a 0 antes de disparar
+  // Quick actions — fromTo nunca baja opacity a 0 antes de disparar
   setTimeout(function(){
     gsap.fromTo('.qa-primary',{y:32,scale:.96},{opacity:1,y:0,scale:1,duration:.72,stagger:.12,ease:'power3.out'});
     gsap.fromTo('.mini',{y:20,scale:.94},{opacity:1,y:0,scale:1,duration:.58,stagger:.06,ease:'power3.out',delay:.15});
   },400);
-  // Grid â€” tambiÃ©n fromTo para seguridad
+  // Grid — también fromTo para seguridad
   ScrollTrigger.create({trigger:'#secGrid',start:'top 92%',onEnter:function(){
     gsap.fromTo('#cardChart',{y:32,scale:.97},{opacity:1,y:0,scale:1,duration:.68,ease:'power3.out'});
     gsap.fromTo('#cardTx',{y:32,scale:.97},{opacity:1,y:0,scale:1,duration:.68,ease:'power3.out',delay:.1});
@@ -1632,7 +1634,7 @@ function initAnim(){
     gsap.fromTo('#cardWk',{x:22,scale:.97},{opacity:1,x:0,scale:1,duration:.64,ease:'power3.out',delay:.16});
     gsap.fromTo('#cardIns',{x:22,scale:.97},{opacity:1,x:0,scale:1,duration:.64,ease:'power3.out',delay:.25});
   }});
-  // Tools â€” use IntersectionObserver (custom scroller fix)
+  // Tools — use IntersectionObserver (custom scroller fix)
   var _toolsAnimated=false;
   var toolsObs=new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
