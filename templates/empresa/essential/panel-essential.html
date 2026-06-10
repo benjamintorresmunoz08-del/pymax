@@ -817,35 +817,17 @@ body::before{
       <section class="sec" id="secQA">
         <div class="sec-hdr"><span class="sec-ttl">Acciones rápidas</span></div>
         <div class="qa-grid">
-          <button class="qa-primary qa-blue" onclick="openBS('ingreso')">
+          <button class="qa-primary qa-blue" style="margin-top:0" onclick="openBS('ingreso')">
             <div class="qa-glow" style="border-color:rgba(59,130,246,.6)"></div>
             <i class="ph-bold ph-plus-circle qa-ic"></i>
             <div class="qa-ttl">Registrar Ingreso</div>
             <div class="qa-sub">Añade una venta o cobro al instante</div>
           </button>
-          <button class="qa-primary qa-red" onclick="openBS('egreso')">
+          <button class="qa-primary qa-red" style="margin-top:18px" onclick="openBS('egreso')">
             <div class="qa-glow" style="border-color:rgba(244,63,94,.55)"></div>
             <i class="ph-bold ph-minus-circle qa-ic"></i>
             <div class="qa-ttl">Registrar Gasto</div>
             <div class="qa-sub">Registra un egreso o compra</div>
-          </button>
-        </div>
-        <div class="mini-row">
-          <button class="mini" data-href="{{ url_for('essential_orden_express') }}">
-            <div class="mini-ic" style="background:var(--pd)"><i class="ph-duotone ph-lightning" style="color:var(--purple2)"></i></div>
-            <div class="mini-lbl">Orden Express</div>
-          </button>
-          <button class="mini" data-href="{{ url_for('essential_fuga_dinero') }}">
-            <div class="mini-ic" style="background:var(--rd)"><i class="ph-duotone ph-detective" style="color:var(--red2)"></i></div>
-            <div class="mini-lbl">Fugas de Dinero</div>
-          </button>
-          <button class="mini" data-href="{{ url_for('essential_punto_equilibrio') }}">
-            <div class="mini-ic" style="background:var(--ad)"><i class="ph-duotone ph-scales" style="color:var(--amber2)"></i></div>
-            <div class="mini-lbl">Punto Equilibrio</div>
-          </button>
-          <button class="mini" data-ai="¿Qué debo priorizar financieramente esta semana?">
-            <div class="mini-ic" style="background:var(--bd)"><i class="ph-duotone ph-brain" style="color:var(--blue2)"></i></div>
-            <div class="mini-lbl">Preguntar a la IA</div>
           </button>
         </div>
       </section>
