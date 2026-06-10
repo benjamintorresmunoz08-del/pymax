@@ -114,12 +114,17 @@ body::before{
 .ri i{font-size:17px;color:var(--t3);transition:color .15s}
 .ri:hover{background:rgba(59,130,246,.1);transform:scale(1.1)}.ri:hover i{color:var(--blue2)}
 .ri.on{background:rgba(59,130,246,.18);box-shadow:0 0 14px rgba(59,130,246,.3)}.ri.on i{color:var(--blue2)}
-.ri[data-tip]:hover::after{content:attr(data-tip) "\A" attr(data-desc);position:absolute;left:50px;top:50%;transform:translateY(-50%);white-space:pre-line;
+/* Tooltip JS — fixed, no se recorta por overflow del rail */
+#railTip{position:fixed;z-index:2000;pointer-events:none;opacity:0;transform:translateX(-6px);
+  transition:opacity .16s,transform .16s;
   background:rgba(6,10,20,.98);backdrop-filter:blur(14px);border:1px solid var(--bh);
-  color:var(--t1);font-size:11px;font-weight:600;line-height:1.55;padding:9px 13px;border-radius:10px;
-  width:max-content;max-width:215px;text-align:left;
-  z-index:999;box-shadow:var(--shd);pointer-events:none}
-.ri[data-tip]:hover::after::first-line{font-weight:800;font-size:12px}
+  border-radius:10px;padding:9px 13px;width:max-content;max-width:230px;text-align:left;
+  box-shadow:var(--shd)}
+#railTip.show{opacity:1;transform:translateX(0)}
+#railTip .rt-t{font-size:12px;font-weight:800;color:var(--t1);margin-bottom:2px;letter-spacing:-.01em}
+#railTip .rt-d{font-size:10.5px;font-weight:500;color:var(--t2);line-height:1.5}
+#railTip::before{content:'';position:absolute;left:-5px;top:50%;transform:translateY(-50%) rotate(45deg);
+  width:9px;height:9px;background:rgba(6,10,20,.98);border-left:1px solid var(--bh);border-bottom:1px solid var(--bh)}
 
 .r-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));
   display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;
@@ -1105,6 +1110,9 @@ body::before{
 
 <div class="toast" id="toast"><i class="ph-bold ph-check-circle"></i><span id="toastTxt">Listo</span></div>
 
+<!-- Tooltip flotante del rail -->
+<div id="railTip"><div class="rt-t"></div><div class="rt-d"></div></div>
+
 <script>
 gsap.registerPlugin(ScrollTrigger);
 var _sb=null,_u=null,_fin={ing:0,gas:0,bal:0,mar:0,ops:[]},
@@ -1121,7 +1129,8 @@ document.addEventListener('DOMContentLoaded',async function(){
     _u=user;initUI(user);
   }catch(e){window.location.href='/';return;}
   document.getElementById('bsDate').value=new Date().toISOString().split('T')[0];
-  initAnim();wireClicks();
+  initAnim();wireClicks();initRailTooltips();
+
   await Promise.all([loadFin(),loadBiz(),loadWeek()]);
   setTimeout(aiWelcome,1000);
   document.addEventListener('keydown',function(e){
@@ -1647,6 +1656,26 @@ function initAnim(){
     });
   },{root:document.getElementById('scrollRoot'),threshold:0.05});
   var ts=document.getElementById('secTools');if(ts)toolsObs.observe(ts);
+}
+
+/* RAIL TOOLTIPS — flotante fixed, no se recorta */
+function initRailTooltips(){
+  var tip=document.getElementById('railTip');if(!tip)return;
+  var tt=tip.querySelector('.rt-t'),td=tip.querySelector('.rt-d');
+  document.querySelectorAll('.ri[data-tip]').forEach(function(el){
+    el.addEventListener('mouseenter',function(){
+      tt.textContent=el.getAttribute('data-tip')||'';
+      td.textContent=el.getAttribute('data-desc')||'';
+      td.style.display=el.getAttribute('data-desc')?'block':'none';
+      var r=el.getBoundingClientRect();
+      tip.style.left=(r.right+10)+'px';
+      tip.style.top=(r.top+r.height/2)+'px';
+      tip.style.transform='translateY(-50%) translateX(-6px)';
+      tip.classList.add('show');
+      requestAnimationFrame(function(){tip.style.transform='translateY(-50%) translateX(0)';});
+    });
+    el.addEventListener('mouseleave',function(){tip.classList.remove('show');});
+  });
 }
 
 /* TOAST */
