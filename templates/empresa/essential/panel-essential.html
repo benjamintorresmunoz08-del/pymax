@@ -558,7 +558,8 @@ body::before{
   border-radius:var(--rg);
   background:rgba(255,255,255,.027);backdrop-filter:blur(12px);
   border:1px solid var(--b);padding:16px 14px;cursor:pointer;
-  transition:all .3s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden
+  transition:all .3s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden;
+  opacity:1;visibility:visible
 }
 .tool-sh{position:absolute;top:0;left:-100%;height:1px;width:100%;
   background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);transition:left .55s}
@@ -1724,10 +1725,18 @@ function initAnim(){
     gsap.from('#cardWk',{opacity:0,x:24,duration:.68,ease:'power3.out',delay:.16});
     gsap.from('#cardIns',{opacity:0,x:24,duration:.68,ease:'power3.out',delay:.25});
   }});
-  // Tools
-  ScrollTrigger.create({trigger:'#secTools',start:'top 90%',onEnter:function(){
-    gsap.from('.tool',{opacity:0,y:40,scale:.9,duration:.7,stagger:.045,ease:'power3.out'});
-  }});
+  // Tools — use IntersectionObserver (custom scroller fix)
+  var _toolsAnimated=false;
+  var toolsObs=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting&&!_toolsAnimated){
+        _toolsAnimated=true;
+        gsap.fromTo('.tool',{y:28,scale:.96},{opacity:1,y:0,scale:1,duration:.62,stagger:.05,ease:'power3.out'});
+        toolsObs.disconnect();
+      }
+    });
+  },{root:document.getElementById('scrollRoot'),threshold:0.05});
+  var ts=document.getElementById('secTools');if(ts)toolsObs.observe(ts);
 }
 
 /* TOAST */
