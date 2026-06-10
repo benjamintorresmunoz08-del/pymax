@@ -550,13 +550,16 @@ body::before{
 .ins-sub{font-size:10px;color:var(--t2);line-height:1.5}
 .ins-val{font-size:13px;font-weight:800;margin-left:auto;flex-shrink:0;align-self:flex-start;margin-top:1px;font-variant-numeric:tabular-nums}
 
-/* ══ TOOLS GRID ═══════════════════════════════════════ */
+/* ══ TOOLS CASCADE SUAVE ══════════════════════════════ */
 .tools-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(138px,1fr));
-  gap:10px
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  align-items:flex-start;
+  padding-bottom:20px
 }
 .tool{
+  flex:1 1 140px;max-width:175px;
   border-radius:var(--rg);
   background:rgba(255,255,255,.027);backdrop-filter:blur(12px);
   border:1px solid var(--b);padding:16px 14px;cursor:pointer;
@@ -959,97 +962,19 @@ body::before{
           <span style="font-size:10px;color:var(--t3);font-weight:600">13 herramientas incluidas</span>
         </div>
         <div class="tools-grid">
-          <!-- 1 -->
-          <div class="tool" data-href="{{ url_for('essential_ventas') }}">
-            <div class="tool-sh"></div>
-            <div class="tool-ic" style="background:var(--gd)"><i class="ph-duotone ph-currency-dollar" style="color:var(--green2)"></i></div>
-            <div class="tool-ttl">Ventas &amp; Gastos</div>
-            <div class="tool-sub">Planilla diaria ordenada</div>
-          </div>
-          <!-- 2 -->
-          <div class="tool" data-href="{{ url_for('essential_flujo') }}">
-            <div class="tool-sh"></div>
-            <div class="tool-ic" style="background:var(--bd)"><i class="ph-duotone ph-chart-line-up" style="color:var(--blue2)"></i></div>
-            <div class="tool-ttl">Flujo de Caja</div>
-            <div class="tool-sub">Liquidez inmediata</div>
-          </div>
-          <!-- 3 -->
-          <div class="tool" data-href="{{ url_for('essential_deudas') }}">
-            <div class="tool-sh"></div>
-            <div class="tool-ic" style="background:var(--ad)"><i class="ph-duotone ph-clipboard-text" style="color:var(--amber2)"></i></div>
-            <div class="tool-ttl">Deudas</div>
-            <div class="tool-sub">Registro centralizado</div>
-          </div>
-          <!-- 4 -->
-          <div class="tool" data-href="{{ url_for('essential_calendario') }}">
-            <div class="tool-sh"></div>
-            <div class="tool-ic" style="background:var(--pd)"><i class="ph-duotone ph-calendar-dots" style="color:var(--purple2)"></i></div>
-            <div class="tool-ttl">Calendario</div>
-            <div class="tool-sub">Fechas importantes</div>
-          </div>
-          <!-- 5 -->
-          <div class="tool" data-href="{{ url_for('essential_semaforo') }}">
-            <div class="tool-sh"></div>
-            <div class="tool-ic" style="background:var(--ad)"><i class="ph-duotone ph-traffic-signal" style="color:var(--amber2)"></i></div>
-            <div class="tool-ttl">Semáforo Pymax</div>
-            <div class="tool-sub">Salud financiera visual</div>
-          </div>
-          <!-- 6 -->
-          <div class="tool" data-href="{{ url_for('essential_ia') }}">
-            <div class="tool-sh"></div>
-            <div class="tool-ic" style="background:var(--bd)"><i class="ph-duotone ph-brain" style="color:var(--blue2)"></i></div>
-            <div class="tool-ttl">IA 24/7</div>
-            <div class="tool-sub">Asesor financiero</div>
-          </div>
-          <!-- 7 -->
-          <div class="tool" data-href="{{ url_for('essential_export_excel') }}">
-            <div class="tool-sh"></div>
-            <div class="tool-ic" style="background:var(--gd)"><i class="ph-duotone ph-file-xls" style="color:var(--green2)"></i></div>
-            <div class="tool-ttl">Excel Básico</div>
-            <div class="tool-sub">Exportar contabilidad</div>
-          </div>
-          <!-- 8 -->
-          <div class="tool" data-href="{{ url_for('essential_fuga_dinero') }}">
-            <div class="tool-sh"></div>
-            <div class="tool-ic" style="background:var(--rd)"><i class="ph-duotone ph-detective" style="color:var(--red2)"></i></div>
-            <div class="tool-ttl">Fuga de Dinero</div>
-            <div class="tool-sub">Cobros duplicados</div>
-          </div>
-          <!-- 9 -->
-          <div class="tool" data-href="{{ url_for('essential_punto_equilibrio') }}">
-            <div class="tool-sh"></div>
-            <div class="tool-ic" style="background:var(--ad)"><i class="ph-duotone ph-scales" style="color:var(--amber2)"></i></div>
-            <div class="tool-ttl">Punto Equilibrio</div>
-            <div class="tool-sub">Calculadora dinámica</div>
-          </div>
-          <!-- 10 -->
-          <div class="tool" data-href="{{ url_for('essential_boveda') }}">
-            <div class="tool-sh"></div>
-            <div class="tool-ic" style="background:var(--bd)"><i class="ph-duotone ph-vault" style="color:var(--blue2)"></i></div>
-            <div class="tool-ttl">Bóveda Legal</div>
-            <div class="tool-sub">Documentos + alertas</div>
-          </div>
-          <!-- 11 -->
-          <div class="tool" data-href="{{ url_for('essential_orden_express') }}">
-            <div class="tool-sh"></div>
-            <div class="tool-ic" style="background:var(--pd)"><i class="ph-duotone ph-lightning" style="color:var(--purple2)"></i></div>
-            <div class="tool-ttl">Orden Express</div>
-            <div class="tool-sub">Registro en 30 seg</div>
-          </div>
-          <!-- 12 -->
-          <div class="tool" data-href="{{ url_for('essential_comunidad') }}">
-            <div class="tool-sh"></div>
-            <div class="tool-ic" style="background:var(--gd)"><i class="ph-duotone ph-users-three" style="color:var(--green2)"></i></div>
-            <div class="tool-ttl">Comunidad Starter</div>
-            <div class="tool-sub">Red de emprendedores</div>
-          </div>
-          <!-- 13 -->
-          <div class="tool" data-href="{{ url_for('essential_metas') }}">
-            <div class="tool-sh"></div>
-            <div class="tool-ic" style="background:var(--rd)"><i class="ph-duotone ph-target" style="color:var(--red2)"></i></div>
-            <div class="tool-ttl">Metas</div>
-            <div class="tool-sub">Objetivos financieros</div>
-          </div>
+          <div class="tool" style="margin-top:0" data-href="{{ url_for('essential_ventas') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--gd)"><i class="ph-duotone ph-currency-dollar" style="color:var(--green2)"></i></div><div class="tool-ttl">Ventas &amp; Gastos</div><div class="tool-sub">Planilla diaria ordenada</div></div>
+          <div class="tool" style="margin-top:10px" data-href="{{ url_for('essential_flujo') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--bd)"><i class="ph-duotone ph-chart-line-up" style="color:var(--blue2)"></i></div><div class="tool-ttl">Flujo de Caja</div><div class="tool-sub">Liquidez inmediata</div></div>
+          <div class="tool" style="margin-top:18px" data-href="{{ url_for('essential_deudas') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--ad)"><i class="ph-duotone ph-clipboard-text" style="color:var(--amber2)"></i></div><div class="tool-ttl">Deudas</div><div class="tool-sub">Registro centralizado</div></div>
+          <div class="tool" style="margin-top:10px" data-href="{{ url_for('essential_calendario') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--pd)"><i class="ph-duotone ph-calendar-dots" style="color:var(--purple2)"></i></div><div class="tool-ttl">Calendario</div><div class="tool-sub">Fechas importantes</div></div>
+          <div class="tool" style="margin-top:0" data-href="{{ url_for('essential_semaforo') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--ad)"><i class="ph-duotone ph-traffic-signal" style="color:var(--amber2)"></i></div><div class="tool-ttl">Semáforo Pymax</div><div class="tool-sub">Salud financiera visual</div></div>
+          <div class="tool" style="margin-top:10px" data-href="{{ url_for('essential_ia') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--bd)"><i class="ph-duotone ph-brain" style="color:var(--blue2)"></i></div><div class="tool-ttl">IA 24/7</div><div class="tool-sub">Asesor financiero</div></div>
+          <div class="tool" style="margin-top:18px" data-href="{{ url_for('essential_export_excel') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--gd)"><i class="ph-duotone ph-file-xls" style="color:var(--green2)"></i></div><div class="tool-ttl">Excel Básico</div><div class="tool-sub">Exportar contabilidad</div></div>
+          <div class="tool" style="margin-top:10px" data-href="{{ url_for('essential_fuga_dinero') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--rd)"><i class="ph-duotone ph-detective" style="color:var(--red2)"></i></div><div class="tool-ttl">Fuga de Dinero</div><div class="tool-sub">Cobros duplicados</div></div>
+          <div class="tool" style="margin-top:0" data-href="{{ url_for('essential_punto_equilibrio') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--ad)"><i class="ph-duotone ph-scales" style="color:var(--amber2)"></i></div><div class="tool-ttl">Punto Equilibrio</div><div class="tool-sub">Calculadora dinámica</div></div>
+          <div class="tool" style="margin-top:10px" data-href="{{ url_for('essential_boveda') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--bd)"><i class="ph-duotone ph-vault" style="color:var(--blue2)"></i></div><div class="tool-ttl">Bóveda Legal</div><div class="tool-sub">Documentos + alertas</div></div>
+          <div class="tool" style="margin-top:18px" data-href="{{ url_for('essential_orden_express') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--pd)"><i class="ph-duotone ph-lightning" style="color:var(--purple2)"></i></div><div class="tool-ttl">Orden Express</div><div class="tool-sub">Registro en 30 seg</div></div>
+          <div class="tool" style="margin-top:10px" data-href="{{ url_for('essential_comunidad') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--gd)"><i class="ph-duotone ph-users-three" style="color:var(--green2)"></i></div><div class="tool-ttl">Comunidad Starter</div><div class="tool-sub">Red de emprendedores</div></div>
+          <div class="tool" style="margin-top:0" data-href="{{ url_for('essential_metas') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--rd)"><i class="ph-duotone ph-target" style="color:var(--red2)"></i></div><div class="tool-ttl">Metas</div><div class="tool-sub">Objetivos financieros</div></div>
         </div>
       </section>
 
