@@ -1,0 +1,734 @@
+/**
+ * ═════════════════════════════════════════════════════════════════
+ * PYMAX AI COMPANION - ESTILOS
+ * Estilos para sistema de manifestación inteligente
+ * ═════════════════════════════════════════════════════════════════
+ */
+
+/* ============================================
+   ORB AMBIENTAL (Siempre visible)
+   ============================================ */
+
+.pymax-ai-orb {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 70px;
+    height: 70px;
+    z-index: 9999;
+    cursor: pointer;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.3s ease;
+}
+
+.pymax-ai-orb.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.pymax-ai-orb:hover {
+    transform: scale(1.1);
+}
+
+.orb-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* Core del orb */
+.orb-core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle, #00d4ff 0%, #0088cc 70%, transparent 100%);
+    border-radius: 50%;
+    animation: orbPulse 2s ease-in-out infinite;
+    box-shadow: 
+        0 0 20px #00d4ff,
+        0 0 40px #00d4ff80,
+        inset 0 0 20px #00d4ff40;
+}
+
+/* Anillos giratorios */
+.orb-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 2px solid #00d4ff40;
+    border-radius: 50%;
+    animation: orbRotate 4s linear infinite;
+}
+
+.orb-ring.ring-1 {
+    width: 50px;
+    height: 50px;
+    animation-duration: 3s;
+}
+
+.orb-ring.ring-2 {
+    width: 60px;
+    height: 60px;
+    animation-duration: 4s;
+    animation-direction: reverse;
+}
+
+.orb-ring.ring-3 {
+    width: 70px;
+    height: 70px;
+    animation-duration: 5s;
+}
+
+/* Badge */
+.orb-badge {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #00d4ff, #00a3cc);
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 212, 255, 0.4);
+}
+
+/* Estados del orb */
+.pymax-ai-orb.thinking .orb-core {
+    background: radial-gradient(circle, #ffd700 0%, #cc8800 70%, transparent 100%);
+    box-shadow: 0 0 20px #ffd700, 0 0 40px #ffd70080;
+    animation: orbThinking 0.8s ease-in-out infinite;
+}
+
+.pymax-ai-orb.alert .orb-core {
+    background: radial-gradient(circle, #ff0066 0%, #cc0044 70%, transparent 100%);
+    box-shadow: 0 0 20px #ff0066, 0 0 40px #ff006680;
+    animation: orbAlert 0.5s ease-in-out infinite;
+}
+
+.pymax-ai-orb.alert {
+    animation: shake 0.5s ease-in-out infinite;
+}
+
+.pymax-ai-orb.speaking .orb-core {
+    background: radial-gradient(circle, #a855f7 0%, #8844cc 70%, transparent 100%);
+    box-shadow: 0 0 20px #a855f7, 0 0 40px #a855f780;
+}
+
+/* ============================================
+   MANIFESTACIÓN CRÍTICA (Fullscreen)
+   ============================================ */
+
+.pymax-ai-overlay.critical {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 14, 39, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.pymax-ai-overlay.critical.visible {
+    opacity: 1;
+}
+
+.critical-container {
+    max-width: 600px;
+    text-align: center;
+    padding: 40px;
+    animation: criticalAppear 0.5s ease-out;
+}
+
+.critical-header {
+    margin-bottom: 30px;
+}
+
+.critical-icon {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 10px;
+    animation: pulseIcon 1s ease-in-out infinite;
+}
+
+.critical-header h2 {
+    color: #ff0066;
+    font-size: 32px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 20px #ff006680;
+}
+
+.critical-hologram {
+    margin: 30px 0;
+}
+
+.hologram-avatar {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+    background: radial-gradient(circle, #00d4ff 0%, transparent 70%);
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 0 60px #00d4ff80;
+}
+
+.hologram-avatar.pulsing {
+    animation: hologramPulse 2s ease-in-out infinite;
+}
+
+.hologram-avatar::before {
+    content: 'P';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 80px;
+    font-weight: bold;
+    color: #00d4ff;
+    text-shadow: 0 0 30px #00d4ff;
+}
+
+.critical-message {
+    margin: 30px 0;
+}
+
+.message-text {
+    color: #fff;
+    font-size: 20px;
+    line-height: 1.6;
+}
+
+.critical-data {
+    margin: 30px 0;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.metric-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.metric-label {
+    color: #94a3b8;
+    font-size: 12px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.metric-value {
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.critical-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+/* ============================================
+   MANIFESTACIÓN IMPORTANTE (Panel lateral)
+   ============================================ */
+
+.pymax-ai-panel.important {
+    position: fixed;
+    top: 0;
+    right: -45%;
+    width: 42%;
+    height: 100%;
+    background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+    border-left: 2px solid #00d4ff40;
+    z-index: 9998;
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+    transition: right 0.5s ease;
+    overflow-y: auto;
+}
+
+.pymax-ai-panel.important.visible {
+    right: 0;
+}
+
+.panel-header {
+    background: rgba(0, 212, 255, 0.1);
+    border-bottom: 1px solid #00d4ff40;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.hologram-mini {
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle, #00d4ff 0%, transparent 70%);
+    border-radius: 50%;
+    animation: orbPulse 2s ease-in-out infinite;
+}
+
+.panel-header h3 {
+    color: #fff;
+    font-size: 20px;
+    flex: 1;
+    margin: 0;
+}
+
+.panel-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 32px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.panel-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(90deg);
+}
+
+.panel-content {
+    padding: 30px;
+}
+
+.panel-message {
+    color: #cbd5e1;
+    font-size: 16px;
+    line-height: 1.8;
+    margin-bottom: 30px;
+}
+
+.panel-data {
+    margin: 20px 0;
+}
+
+.panel-actions {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ============================================
+   MANIFESTACIÓN INFORMATIVA (Tooltip)
+   ============================================ */
+
+.pymax-ai-tooltip.informative {
+    position: fixed;
+    top: 100px;
+    right: 120px;
+    width: 350px;
+    background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+    border: 2px solid #00d4ff60;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 212, 255, 0.2);
+    z-index: 9997;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+}
+
+.pymax-ai-tooltip.informative.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.tooltip-header {
+    background: rgba(0, 212, 255, 0.15);
+    border-bottom: 1px solid #00d4ff40;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 14px 14px 0 0;
+}
+
+.hologram-micro {
+    width: 24px;
+    height: 24px;
+    background: radial-gradient(circle, #00d4ff 0%, transparent 70%);
+    border-radius: 50%;
+    animation: orbPulse 2s ease-in-out infinite;
+}
+
+.tooltip-header span {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    flex: 1;
+}
+
+.tooltip-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.tooltip-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.tooltip-content {
+    padding: 20px;
+}
+
+.info-message {
+    color: #cbd5e1;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.tooltip-actions {
+    padding: 15px 20px 20px;
+    display: flex;
+    gap: 10px;
+}
+
+/* ============================================
+   BOTONES DE ACCIÓN
+   ============================================ */
+
+.ai-action-btn {
+    background: linear-gradient(135deg, #00d4ff, #00a3cc);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+    flex: 1;
+}
+
+.ai-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.5);
+}
+
+.ai-action-btn:active {
+    transform: translateY(0);
+}
+
+.ai-action-btn.small {
+    padding: 8px 16px;
+    font-size: 12px;
+}
+
+.ai-action-btn.secondary {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.ai-action-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+
+@keyframes orbPulse {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+@keyframes orbRotate {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+@keyframes orbThinking {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.15) rotate(180deg);
+    }
+}
+
+@keyframes orbAlert {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0) rotate(0deg);
+    }
+    25% {
+        transform: translateX(-3px) rotate(-2deg);
+    }
+    75% {
+        transform: translateX(3px) rotate(2deg);
+    }
+}
+
+@keyframes pulseIcon {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes hologramPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 60px #00d4ff80;
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 80px #00d4ff;
+    }
+}
+
+@keyframes criticalAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ============================================
+   EFECTO GLITCH
+   ============================================ */
+
+.glitch-effect {
+    animation: glitch 0.2s linear;
+}
+
+@keyframes glitch {
+    0% {
+        transform: translate(0);
+    }
+    20% {
+        transform: translate(-2px, 2px);
+    }
+    40% {
+        transform: translate(-2px, -2px);
+    }
+    60% {
+        transform: translate(2px, 2px);
+    }
+    80% {
+        transform: translate(2px, -2px);
+    }
+    100% {
+        transform: translate(0);
+    }
+}
+
+/* ============================================
+   EFECTOS DE PARTICULAS
+   ============================================ */
+
+.orb-particles {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.orb-particles::before,
+.orb-particles::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #00d4ff;
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: particleFloat 3s ease-in-out infinite;
+}
+
+.orb-particles::before {
+    top: 20%;
+    left: 20%;
+    animation-delay: 0s;
+}
+
+.orb-particles::after {
+    top: 60%;
+    left: 70%;
+    animation-delay: 1.5s;
+}
+
+@keyframes particleFloat {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translate(10px, -10px) scale(1.5);
+        opacity: 0.3;
+    }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .pymax-ai-orb {
+        width: 55px;
+        height: 55px;
+        bottom: 20px;
+        right: 20px;
+    }
+    
+    .orb-core {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .pymax-ai-panel.important {
+        width: 100%;
+        right: -100%;
+    }
+    
+    .pymax-ai-panel.important.visible {
+        right: 0;
+    }
+    
+    .pymax-ai-tooltip.informative {
+        width: calc(100% - 40px);
+        right: 20px;
+        left: 20px;
+    }
+    
+    .critical-container {
+        padding: 20px;
+    }
+    
+    .critical-header h2 {
+        font-size: 24px;
+    }
+    
+    .hologram-avatar {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .hologram-avatar::before {
+        font-size: 50px;
+    }
+}
+
+/* ============================================
+   SCROLLBAR PERSONALIZADO
+   ============================================ */
+
+.pymax-ai-panel.important::-webkit-scrollbar {
+    width: 8px;
+}
+
+.pymax-ai-panel.important::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.pymax-ai-panel.important::-webkit-scrollbar-thumb {
+    background: rgba(0, 212, 255, 0.5);
+    border-radius: 4px;
+}
+
+.pymax-ai-panel.important::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 212, 255, 0.8);
+}
+
+/* ============================================
+   ESTADOS ADICIONALES
+   ============================================ */
+
+.pymax-ai-orb.success .orb-core {
+    background: radial-gradient(circle, #34d399 0%, #10b981 70%, transparent 100%);
+    box-shadow: 0 0 20px #34d399, 0 0 40px #34d39980;
+}
+
+.pymax-ai-orb.loading .orb-core {
+    animation: orbRotate 1s linear infinite;
+}
+
+/* Overlay para oscurecer fondo cuando hay manifestación importante */
+.pymax-ai-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(2px);
+    z-index: 9996;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.pymax-ai-backdrop.visible {
+    opacity: 1;
+    pointer-events: all;
+}

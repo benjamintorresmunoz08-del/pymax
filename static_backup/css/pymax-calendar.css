@@ -1,0 +1,563 @@
+/**
+ * ============================================
+ * PYMAX CALENDAR STYLES - FASE 13
+ * ============================================
+ * Estilos para el calendario mensual visual modal
+ */
+
+/* Modal Container */
+.pymax-calendar-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.pymax-calendar-modal.active {
+  opacity: 1;
+}
+
+/* Overlay */
+.pymax-calendar-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(2, 6, 23, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Calendar Container */
+.pymax-calendar-container {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Header */
+.pymax-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 32px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(124, 58, 237, 0.08) 100%);
+}
+
+.pymax-calendar-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pymax-calendar-title i {
+  font-size: 28px;
+  color: #60a5fa;
+}
+
+.pymax-calendar-title h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  font-family: 'Outfit', sans-serif;
+}
+
+.pymax-calendar-close {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pymax-calendar-close:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+.pymax-calendar-close i {
+  font-size: 20px;
+}
+
+/* Navigation */
+.pymax-calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 32px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pymax-calendar-nav-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pymax-calendar-nav-btn:hover {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #60a5fa;
+}
+
+.pymax-calendar-nav-btn i {
+  font-size: 20px;
+}
+
+.pymax-calendar-current-month {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Quick Actions */
+.pymax-calendar-quick-actions {
+  display: flex;
+  gap: 12px;
+  padding: 16px 32px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pymax-calendar-quick-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pymax-calendar-quick-btn:hover {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #60a5fa;
+}
+
+.pymax-calendar-quick-btn i {
+  font-size: 16px;
+}
+
+/* Calendar Grid */
+.pymax-calendar-grid {
+  padding: 24px 32px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Weekdays */
+.pymax-calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.pymax-calendar-weekday {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 8px 0;
+}
+
+/* Days Grid */
+.pymax-calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.pymax-calendar-day {
+  aspect-ratio: 1;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.pymax-calendar-day:hover {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+  transform: translateY(-2px);
+}
+
+.pymax-calendar-day.empty {
+  background: transparent;
+  border: none;
+  cursor: default;
+}
+
+.pymax-calendar-day.empty:hover {
+  transform: none;
+}
+
+.pymax-calendar-day.today {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.pymax-calendar-day.today .pymax-calendar-day-number {
+  color: #60a5fa;
+  font-weight: 700;
+}
+
+.pymax-calendar-day-number {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 4px;
+}
+
+.pymax-calendar-day-events {
+  display: flex;
+  gap: 4px;
+  margin-top: auto;
+}
+
+.pymax-calendar-event-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.pymax-calendar-event-dot.income {
+  background: #34d399;
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.5);
+}
+
+.pymax-calendar-event-dot.expense {
+  background: #f87171;
+  box-shadow: 0 0 8px rgba(248, 113, 113, 0.5);
+}
+
+/* Event Details Panel */
+.pymax-calendar-details {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.2);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.pymax-calendar-details-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  position: sticky;
+  top: 0;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(8px);
+  z-index: 10;
+}
+
+.pymax-calendar-details-header h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.pymax-calendar-details-header button {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pymax-calendar-details-header button:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+.pymax-calendar-details-content {
+  padding: 20px 32px;
+}
+
+/* Day Summary */
+.pymax-calendar-day-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.pymax-calendar-summary-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pymax-calendar-summary-item i {
+  font-size: 24px;
+}
+
+.pymax-calendar-summary-item.income i {
+  color: #34d399;
+}
+
+.pymax-calendar-summary-item.expense i {
+  color: #f87171;
+}
+
+.pymax-calendar-summary-item.balance i {
+  color: #60a5fa;
+}
+
+.pymax-calendar-summary-item.balance.positive .value {
+  color: #34d399;
+}
+
+.pymax-calendar-summary-item.balance.negative .value {
+  color: #f87171;
+}
+
+.pymax-calendar-summary-item .label {
+  display: block;
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.pymax-calendar-summary-item .value {
+  display: block;
+  font-size: 1rem;
+  color: #fff;
+  font-weight: 700;
+}
+
+/* Events List */
+.pymax-calendar-events-list h4 {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 16px 0;
+}
+
+.pymax-calendar-event-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 8px;
+  transition: all 0.2s;
+}
+
+.pymax-calendar-event-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.pymax-calendar-event-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pymax-calendar-event-item.income .pymax-calendar-event-icon {
+  background: rgba(52, 211, 153, 0.1);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  color: #34d399;
+}
+
+.pymax-calendar-event-item.expense .pymax-calendar-event-icon {
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  color: #f87171;
+}
+
+.pymax-calendar-event-icon i {
+  font-size: 20px;
+}
+
+.pymax-calendar-event-info {
+  flex: 1;
+}
+
+.pymax-calendar-event-description {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 4px;
+}
+
+.pymax-calendar-event-time {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.pymax-calendar-event-amount {
+  font-size: 1rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.pymax-calendar-event-amount.income {
+  color: #34d399;
+}
+
+.pymax-calendar-event-amount.expense {
+  color: #f87171;
+}
+
+/* Legend */
+.pymax-calendar-legend {
+  display: flex;
+  gap: 20px;
+  padding: 16px 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.pymax-calendar-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.pymax-calendar-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pymax-calendar-container {
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .pymax-calendar-header,
+  .pymax-calendar-nav,
+  .pymax-calendar-quick-actions,
+  .pymax-calendar-grid,
+  .pymax-calendar-details-header,
+  .pymax-calendar-details-content,
+  .pymax-calendar-legend {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .pymax-calendar-day-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .pymax-calendar-legend {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+/* Scrollbar */
+.pymax-calendar-grid::-webkit-scrollbar,
+.pymax-calendar-details::-webkit-scrollbar {
+  width: 8px;
+}
+
+.pymax-calendar-grid::-webkit-scrollbar-track,
+.pymax-calendar-details::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+}
+
+.pymax-calendar-grid::-webkit-scrollbar-thumb,
+.pymax-calendar-details::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.pymax-calendar-grid::-webkit-scrollbar-thumb:hover,
+.pymax-calendar-details::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}

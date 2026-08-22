@@ -4,7 +4,6 @@ import os
 import json
 from dotenv import load_dotenv
 from pathlib import Path
-from openai import OpenAI
 
 # CARGA DEL .ENV
 env_path = Path('.') / '.env'
@@ -149,16 +148,6 @@ def onboarding_config():
 def onboarding_loading():
     """Paso 3: Pantalla de carga con animación"""
     return render_template('empresa/onboarding/loading-animation.html')
-
-# ==============================================================================
-# RUTA DE LOGOUT (cierra sesión server-side de Flask)
-# ==============================================================================
-
-@app.route('/logout')
-def logout_route():
-    session.clear()
-    return redirect(url_for('index'))
-
 
 # ==============================================================================
 # RUTAS MOVER (Deprecated - Redirige a Essential)

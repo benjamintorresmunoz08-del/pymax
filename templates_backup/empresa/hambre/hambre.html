@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Operations Management - Task Management & Team Efficiency" />
+    <title>Pymax | Hambre Operations</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- PYMAX CORE SYSTEMS -->
+    <script src="/static/js/pymax-performance.js"></script>
+    <script src="/static/js/pymax-i18n.js"></script>
+    <script src="/static/js/pymax-data-manager.js"></script>
+    <script src="/static/js/pymax-real-auth.js"></script>
+
+    <style>
+        :root {
+            --bg-void: #020617;
+            --bg-card: rgba(15, 23, 42, 0.6);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --neon-orange: #fb923c;
+            --neon-violet: #a78bfa;
+            --neon-emerald: #34d399;
+            --neon-rose: #fb7185;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        .nebula-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(251, 146, 60, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(239, 68, 68, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            backdrop-filter: blur(24px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        /* AI Premium Panel */
+        .ai-premium-panel {
+            background: linear-gradient(135deg, rgba(251, 146, 60, 0.1), rgba(239, 68, 68, 0.1));
+            border: 2px solid rgba(251, 146, 60, 0.3);
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-premium-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #fb923c, transparent);
+        }
+
+        .ai-lock-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #f97316, #fb923c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 40px rgba(251, 146, 60, 0.5);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .ai-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(251, 146, 60, 0.1);
+            border: 1px solid rgba(251, 146, 60, 0.2);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        .ai-upgrade-btn {
+            background: linear-gradient(135deg, #f97316, #fb923c);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(251, 146, 60, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-upgrade-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(251, 146, 60, 0.6);
+        }
+
+        /* Task Card */
+        .task-card {
+            padding: 16px;
+            border-radius: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .task-card:hover {
+            border-color: rgba(251, 146, 60, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .task-card.completed {
+            opacity: 0.6;
+        }
+
+        /* Priority Badge */
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .priority-badge.urgent { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .priority-badge.high { background: rgba(251, 146, 60, 0.2); color: #fdba74; border: 1px solid rgba(251, 146, 60, 0.3); }
+        .priority-badge.normal { background: rgba(96, 165, 250, 0.2); color: #93c5fd; border: 1px solid rgba(96, 165, 250, 0.3); }
+        .priority-badge.low { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.3); }
+
+        /* Progress Ring */
+        .progress-ring {
+            width: 120px;
+            height: 120px;
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring__circle {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 280px;
+            padding: 20px 10px;
+        }
+
+        /* Modern Button */
+        .modern-btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #fb923c, #f97316);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 30px rgba(251, 146, 60, 0.4);
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(251, 146, 60, 0.3); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(251, 146, 60, 0.5); }
+    </style>
+</head>
+
+<body>
+    <div class="nebula-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-[#020617]/90 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="/empresa" class="flex items-center gap-2 text-slate-400 hover:text-white transition group">
+                    <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/30 transition">
+                        <i class="ph-bold ph-arrow-left"></i>
+                    </div>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest" data-i18n="back">Back</span>
+                </a>
+                <div class="h-6 w-px bg-white/10"></div>
+                <h1 class="text-xl font-bold text-white font-display tracking-tight">
+                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-400" data-i18n="operations">HAMBRE OPS</span>
+                </h1>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <!-- Language Selector -->
+                <select data-language-selector class="text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-white/20 transition cursor-pointer">
+                    <option value="es">ES</option>
+                    <option value="en">EN</option>
+                    <option value="pt">PT</option>
+                </select>
+                <button onclick="addTask()" class="flex items-center gap-2 px-3 py-2 rounded-full border border-orange-500/30 text-orange-400 bg-orange-500/5 hover:bg-orange-500/10 text-[10px] font-bold uppercase transition">
+                    <i class="ph-bold ph-plus"></i>
+                    <span class="hidden md:inline" data-i18n="new_task">New Task</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 md:px-6 pt-24 pb-12 relative z-10">
+
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8 fade-in">
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500" data-i18n="active_tasks">Active Tasks</p>
+                    <i class="ph-duotone ph-list-checks text-orange-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statActive">0</h3>
+                <p class="text-xs text-slate-400" data-i18n="in_progress">In progress</p>
+            </div>
+
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500" data-i18n="completed">Completed</p>
+                    <i class="ph-duotone ph-check-circle text-emerald-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statCompleted">0</h3>
+                <p class="text-xs text-slate-400" data-i18n="this_month">This month</p>
+            </div>
+
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500" data-i18n="efficiency">Efficiency</p>
+                    <i class="ph-duotone ph-trend-up text-cyan-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statEfficiency">0%</h3>
+                <p class="text-xs text-slate-400" data-i18n="team_average">Team average</p>
+            </div>
+
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500" data-i18n="overdue">Overdue</p>
+                    <i class="ph-duotone ph-warning text-rose-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statOverdue">0</h3>
+                <p class="text-xs text-slate-400" data-i18n="need_attention">Need attention</p>
+            </div>
+
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-500" data-i18n="avg_completion">Avg. Completion</p>
+                    <i class="ph-duotone ph-clock text-violet-400 text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statAvgDays">-</h3>
+                <p class="text-xs text-slate-400" data-i18n="days_per_task">Days per task</p>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-8">
+
+            <!-- Left Column: Tasks -->
+            <div class="lg:col-span-8 space-y-6">
+
+                <!-- Task Board -->
+                <div class="glass-card p-6 fade-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold text-white font-display flex items-center gap-2">
+                            <i class="ph-duotone ph-kanban text-orange-400"></i>
+                            <span data-i18n="task_board">Task Board</span>
+                        </h3>
+                        <div class="flex gap-2">
+                            <select id="taskFilter" class="text-xs bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-slate-400" onchange="loadTasks()">
+                                <option value="all" data-i18n="all_tasks">All Tasks</option>
+                                <option value="urgent" data-i18n="urgent">Urgent</option>
+                                <option value="high" data-i18n="high_priority">High Priority</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="tasksContainer" class="space-y-3 custom-scroll" style="max-height: 600px;">
+                        <!-- Tasks loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Team Performance -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-6 flex items-center gap-2">
+                        <i class="ph-duotone ph-users-three text-emerald-400"></i>
+                        <span data-i18n="team_performance">Team Performance</span>
+                    </h3>
+
+                    <div id="teamPerformanceContainer" class="grid md:grid-cols-3 gap-4">
+                        <!-- Team performance from assigned_to - loaded dynamically -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: AI Panel & Analytics -->
+            <div class="lg:col-span-4 space-y-6">
+
+                <!-- AI OPERATIONS INTELLIGENCE - ACTIVE -->
+                <div class="ai-premium-panel fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center border border-orange-500/30">
+                            <i class="ph-duotone ph-robot text-2xl text-orange-400"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-white font-display" data-i18n="ai_operations_intelligence">AI Operations Intelligence</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+                                <span class="text-xs text-emerald-400 font-bold" data-i18n="active_optimizing">Active & Optimizing</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-sm text-slate-300 mb-6" data-i18n="included_with_hambre">Included with your Hambre plan</p>
+
+                    <div class="grid grid-cols-1 gap-3 mb-6">
+                        <div class="flex items-start gap-3">
+                            <i class="ph-bold ph-check-circle text-emerald-400 text-lg mt-0.5"></i>
+                            <span class="text-sm text-slate-300" data-i18n="task_prioritization_active">Smart task prioritization active</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="ph-bold ph-check-circle text-emerald-400 text-lg mt-0.5"></i>
+                            <span class="text-sm text-slate-300" data-i18n="workload_balancing_ready">Workload balancing & distribution ready</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="ph-bold ph-check-circle text-emerald-400 text-lg mt-0.5"></i>
+                            <span class="text-sm text-slate-300" data-i18n="deadline_predictions_configured">Deadline predictions configured</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="ph-bold ph-check-circle text-emerald-400 text-lg mt-0.5"></i>
+                            <span class="text-sm text-slate-300" data-i18n="efficiency_recommendations_enabled">Efficiency recommendations enabled</span>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-orange-500/20 to-red-500/20 border border-orange-500/30 text-orange-400 font-bold text-sm hover:from-orange-500/30 hover:to-red-500/30 transition flex items-center justify-center gap-2">
+                        <i class="ph-bold ph-chats-circle"></i>
+                        <span data-i18n="chat_with_ai_assistant">Chat with AI Assistant</span>
+                    </button>
+                </div>
+
+                <!-- Task Completion Progress -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-6 flex items-center gap-2">
+                        <i class="ph-duotone ph-chart-pie text-violet-400"></i>
+                        <span data-i18n="this_week">This Week</span>
+                    </h3>
+                    
+                    <div class="flex justify-center mb-6">
+                        <div class="relative">
+                            <svg class="progress-ring" width="120" height="120">
+                                <circle class="progress-ring__circle" stroke="rgba(255,255,255,0.1)" stroke-width="8" r="52" cx="60" cy="60" />
+                                <circle id="progressRingCircle" class="progress-ring__circle" stroke="#fb923c" stroke-width="8" r="52" cx="60" cy="60" style="stroke-dasharray: 326.73; stroke-dashoffset: 326.73;" />
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center flex-col">
+                                <span class="text-3xl font-bold text-white" id="progressRingPercent">0%</span>
+                                <span class="text-xs text-slate-400" data-i18n="complete">Complete</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-slate-400" data-i18n="completed">Completed</span>
+                            <span class="text-sm font-bold text-emerald-400" id="weekCompleted">0 tasks</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-slate-400" data-i18n="in_progress">In Progress</span>
+                            <span class="text-sm font-bold text-orange-400" id="weekInProgress">0 tasks</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-slate-400" data-i18n="remaining">Remaining</span>
+                            <span class="text-sm font-bold text-slate-400" id="weekRemaining">0 tasks</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Task Distribution -->
+                <div class="glass-card p-6 fade-in">
+                    <h3 class="text-lg font-bold text-white font-display mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-chart-bar text-cyan-400"></i>
+                        <span data-i18n="task_distribution">Task Distribution</span>
+                    </h3>
+                    
+                    <div class="chart-container">
+                        <canvas id="taskChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- JavaScript -->
+    <script>
+        // Supabase Configuration
+        // Credenciales desde variables de entorno (configuradas en Render)
+        const SU_URL = '{{ SUPABASE_URL or "https://haqjuyagyvxynmulanhe.supabase.co" }}';
+        const SU_KEY = '{{ SUPABASE_KEY or "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g" }}';
+        const client = window.supabase.createClient(SU_URL, SU_KEY);
+
+        let taskChart = null;
+
+        // Toast Notification
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            background: '#0b0b14',
+            color: '#fff'
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await checkRealAuth(client);
+            if (!user) return;
+            await pymaxData.init(client);
+            pymaxData.on('data_updated', () => loadTasks());
+            window.addEventListener('languageChanged', () => updateUI());
+            i18n.init();
+            loadTasks();
+        });
+
+        function updateUI() {
+            if (typeof i18n !== 'undefined') i18n.updateDOM();
+        }
+
+        // Load Tasks from Supabase
+        async function loadTasks() {
+            try {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) return;
+                const { data: tasks, error } = await supabase
+                    .from('user_tasks')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .order('created_at', { ascending: false });
+                if (error) throw error;
+                const taskList = tasks || [];
+                renderTasks(taskList);
+                updateStats(taskList);
+                renderTaskChart(taskList);
+                renderTeamPerformance(taskList);
+            } catch (err) {
+                console.error('Error loading tasks:', err);
+                renderTasks([]);
+                updateStats([]);
+                renderTaskChart([]);
+                renderTeamPerformance([]);
+            }
+        }
+
+        function renderTasks(tasks) {
+            const container = document.getElementById('tasksContainer');
+            const filter = document.getElementById('taskFilter')?.value || 'all';
+            let filtered = tasks;
+            if (filter === 'urgent') filtered = tasks.filter(t => t.priority === 'urgent');
+            else if (filter === 'high') filtered = tasks.filter(t => t.priority === 'high' || t.priority === 'urgent');
+            if (!filtered.length) {
+                container.innerHTML = '<div class="text-center py-12 text-slate-500"><i class="ph-duotone ph-clipboard-text text-4xl mb-3 opacity-50"></i><p class="text-sm" data-i18n="no_tasks_yet">No tasks yet. Add your first task!</p></div>';
+                i18n?.updateDOM();
+                return;
+            }
+            container.innerHTML = filtered.map(t => {
+                const isCompleted = t.status === 'completed';
+                const priorityClass = t.priority === 'urgent' ? 'urgent' : t.priority === 'high' ? 'high' : t.priority === 'medium' ? 'normal' : 'low';
+                const dueStr = t.due_date ? (window.i18n ? i18n.formatDate(t.due_date) : new Date(t.due_date).toLocaleDateString()) : '-';
+                return `<div class="task-card ${isCompleted ? 'completed' : ''}" data-id="${t.id}">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" class="mt-1" ${isCompleted ? 'checked' : ''} onchange="toggleTaskStatus('${t.id}', this.checked)" />
+                            <div>
+                                <p class="font-bold text-white text-sm mb-1 ${isCompleted ? 'line-through' : ''}">${escapeHtml(t.title)}</p>
+                                <p class="text-xs text-slate-400">${escapeHtml(t.description || '')}</p>
+                            </div>
+                        </div>
+                        <span class="priority-badge ${priorityClass}" data-i18n="${t.priority}">${t.priority}</span>
+                    </div>
+                    <div class="flex items-center gap-4 text-xs text-slate-500">
+                        <div class="flex items-center gap-1"><i class="ph-bold ph-calendar"></i><span>${dueStr}</span></div>
+                        ${t.assigned_to ? `<div class="flex items-center gap-1"><i class="ph-bold ph-user"></i><span>${escapeHtml(t.assigned_to)}</span></div>` : ''}
+                        ${isCompleted ? '<div class="flex items-center gap-1"><i class="ph-bold ph-check-circle text-emerald-400"></i><span data-i18n="completed">Completed</span></div>' : ''}
+                    </div>
+                </div>`;
+            }).join('');
+            i18n?.updateDOM();
+        }
+
+        function escapeHtml(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+        async function toggleTaskStatus(id, completed) {
+            try {
+                const { error } = await client.from('user_tasks').update({
+                    status: completed ? 'completed' : 'in_progress',
+                    completed_at: completed ? new Date().toISOString() : null
+                }).eq('id', id);
+                if (error) throw error;
+                await pymaxData.refresh();
+            } catch (err) {
+                Toast.fire({ icon: 'error', title: err.message || 'Error' });
+            }
+        }
+
+        function renderTeamPerformance(tasks) {
+            const container = document.getElementById('teamPerformanceContainer');
+            if (!container) return;
+            const byAssignee = {};
+            tasks.forEach(t => {
+                const name = t.assigned_to || (window.i18n?.t('unassigned') || 'Unassigned');
+                if (!byAssignee[name]) byAssignee[name] = { total: 0, completed: 0 };
+                byAssignee[name].total++;
+                if (t.status === 'completed') byAssignee[name].completed++;
+            });
+            const entries = Object.entries(byAssignee).slice(0, 6);
+            const colorClasses = ['bg-cyan-500/20 text-cyan-400', 'bg-violet-500/20 text-violet-400', 'bg-amber-500/20 text-amber-400', 'bg-emerald-500/20 text-emerald-400', 'bg-rose-500/20 text-rose-400', 'bg-orange-500/20 text-orange-400'];
+            if (entries.length === 0) {
+                container.innerHTML = '<div class="col-span-full text-center py-8 text-slate-500 text-sm" data-i18n="no_team_data">No team data yet. Assign tasks to see performance.</div>';
+            } else {
+                container.innerHTML = entries.map(([name, stats], i) => {
+                    const eff = stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0;
+                    const initials = name.split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0, 2) || '?';
+                    const cc = colorClasses[i % colorClasses.length];
+                    return `<div class="p-4 rounded-lg bg-white/5 border border-white/5">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full ${cc} flex items-center justify-center font-bold">${escapeHtml(initials)}</div>
+                            <div><p class="font-bold text-white text-sm">${escapeHtml(name)}</p><p class="text-xs text-slate-400">${stats.total} ${window.i18n?.t('tasks') || 'tasks'}</p></div>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-500">${window.i18n?.t('efficiency') || 'Efficiency'}</span>
+                            <span class="text-emerald-400 font-bold">${eff}%</span>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+            i18n?.updateDOM();
+        }
+
+        function updateStats(tasks) {
+            const now = new Date();
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+            const weekStart = new Date(now);
+            weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+            const active = tasks.filter(t => t.status !== 'completed' && t.status !== 'cancelled').length;
+            const completed = tasks.filter(t => t.status === 'completed').length;
+            const completedThisMonth = tasks.filter(t => t.status === 'completed' && t.completed_at && new Date(t.completed_at) >= monthStart).length;
+            const overdue = tasks.filter(t => t.status !== 'completed' && t.due_date && new Date(t.due_date) < now).length;
+            const weekCompleted = tasks.filter(t => t.status === 'completed' && t.completed_at && new Date(t.completed_at) >= weekStart).length;
+            const weekInProgress = tasks.filter(t => t.status === 'in_progress').length;
+            const weekPending = tasks.filter(t => t.status === 'pending').length;
+            const eff = tasks.length > 0 ? Math.round((completed / tasks.length) * 100) : 0;
+            document.getElementById('statActive').textContent = active;
+            document.getElementById('statCompleted').textContent = completedThisMonth;
+            document.getElementById('statEfficiency').textContent = eff + '%';
+            document.getElementById('statOverdue').textContent = overdue;
+            const el = document.getElementById('statAvgDays');
+            if (el) el.textContent = completed > 0 ? '-' : '-';
+            const ring = document.getElementById('progressRingCircle');
+            const pctEl = document.getElementById('progressRingPercent');
+            if (ring && pctEl) {
+                const circumference = 326.73;
+                ring.style.strokeDashoffset = circumference - (eff / 100) * circumference;
+                pctEl.textContent = eff + '%';
+            }
+            const wc = document.getElementById('weekCompleted');
+            const wp = document.getElementById('weekInProgress');
+            const wr = document.getElementById('weekRemaining');
+            if (wc) wc.textContent = weekCompleted + ' ' + (window.i18n?.t('tasks') || 'tasks');
+            if (wp) wp.textContent = weekInProgress + ' ' + (window.i18n?.t('tasks') || 'tasks');
+            if (wr) wr.textContent = weekPending + ' ' + (window.i18n?.t('tasks') || 'tasks');
+        }
+
+        // Add Task - SweetAlert2 Modal
+        async function addTask() {
+            const t = (k) => (window.i18n ? i18n.t(k) : k);
+            const { value: formValues } = await Swal.fire({
+                title: t('new_task'),
+                html: `
+                    <div class="text-left space-y-4 swal-form">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-1">${t('title')}</label>
+                            <input id="swal-title" class="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm" placeholder="${t('task_title_placeholder')}" required />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-1">${t('description')}</label>
+                            <textarea id="swal-description" class="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm" rows="2" placeholder="${t('task_description_placeholder')}"></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 mb-1">${t('status')}</label>
+                                <select id="swal-status" class="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-sm">
+                                    <option value="pending">${t('pending')}</option>
+                                    <option value="in_progress">${t('in_progress')}</option>
+                                    <option value="completed">${t('completed')}</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 mb-1">${t('priority')}</label>
+                                <select id="swal-priority" class="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-sm">
+                                    <option value="low">${t('low')}</option>
+                                    <option value="medium" selected>${t('medium')}</option>
+                                    <option value="high">${t('high')}</option>
+                                    <option value="urgent">${t('urgent')}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-1">${t('assigned_to')}</label>
+                            <input id="swal-assigned" class="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm" placeholder="${t('assigned_to_placeholder')}" />
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 mb-1">${t('due_date')}</label>
+                                <input id="swal-due" type="date" class="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-sm" />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 mb-1">${t('estimated_hours')}</label>
+                                <input id="swal-hours" type="number" step="0.5" min="0" class="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm" placeholder="0" />
+                            </div>
+                        </div>
+                    </div>
+                `,
+                background: '#0b0b14',
+                color: '#fff',
+                showCancelButton: true,
+                confirmButtonColor: '#fb923c',
+                cancelButtonColor: '#3f3f46',
+                confirmButtonText: t('save'),
+                cancelButtonText: t('cancel'),
+                preConfirm: () => {
+                    const title = document.getElementById('swal-title').value?.trim();
+                    if (!title) {
+                        Swal.showValidationMessage(window.i18n?.t('required_field') || 'Title is required');
+                        return false;
+                    }
+                    return {
+                        title,
+                        description: document.getElementById('swal-description').value?.trim() || null,
+                        status: document.getElementById('swal-status').value || 'pending',
+                        priority: document.getElementById('swal-priority').value || 'medium',
+                        assigned_to: document.getElementById('swal-assigned').value?.trim() || null,
+                        due_date: document.getElementById('swal-due').value || null,
+                        estimated_hours: parseFloat(document.getElementById('swal-hours').value) || null
+                    };
+                }
+            });
+            if (!formValues) return;
+            try {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) { Toast.fire({ icon: 'error', title: 'Session required' }); return; }
+                const { data, error } = await client.from('user_tasks').insert({
+                    user_id: user.id,
+                    title: formValues.title,
+                    description: formValues.description,
+                    status: formValues.status,
+                    priority: formValues.priority,
+                    assigned_to: formValues.assigned_to,
+                    due_date: formValues.due_date || null,
+                    estimated_hours: formValues.estimated_hours
+                }).select().single();
+                if (error) throw error;
+                Toast.fire({ icon: 'success', title: window.i18n?.t('task_added') || 'Task added' });
+                await pymaxData.refresh();
+            } catch (err) {
+                Toast.fire({ icon: 'error', title: err.message || 'Error saving task' });
+            }
+        }
+
+        // Render Task Chart (dynamic from task data)
+        function renderTaskChart(tasks = []) {
+            const ctx = document.getElementById('taskChart');
+            if (!ctx) return;
+            const categoryCounts = {};
+            (tasks || []).forEach(t => {
+                const cat = t.category || (window.i18n?.t('other') || 'Other');
+                categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+            });
+            const labels = Object.keys(categoryCounts);
+            const data = Object.values(categoryCounts);
+            if (labels.length === 0) {
+                labels.push(window.i18n?.t('no_data') || 'No data');
+                data.push(1);
+            }
+            const colors = ['#60a5fa', '#fb923c', '#34d399', '#a78bfa', '#fbbf24', '#f472b6', '#22d3ee'];
+            const bgColors = labels.map((_, i) => colors[i % colors.length]);
+            if (taskChart) taskChart.destroy();
+            taskChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels,
+                    datasets: [{
+                        data,
+                        backgroundColor: bgColors,
+                        borderColor: '#020617',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#94a3b8',
+                                font: { size: 10 },
+                                padding: 12
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#fff',
+                            bodyColor: '#94a3b8',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = (context.parsed / total * 100).toFixed(1);
+                                    return `${context.label}: ${context.parsed} tasks (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>

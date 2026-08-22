@@ -1,0 +1,499 @@
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * PYMAX HOLOGRAM AI - HOLOGRAPHIC ASSISTANT STYLES
+ * Estilos para avatar holográfico tipo Iron Man/Blade Runner
+ * ═══════════════════════════════════════════════════════════════
+ */
+
+/* ===== CONTENEDOR PRINCIPAL ===== */
+.pymax-hologram-container {
+  position: relative;
+  width: 300px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 20px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+.pymax-hologram-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.8), transparent);
+}
+
+/* ===== CANVAS (PARTÍCULAS) ===== */
+.hologram-canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ===== LOGO CONTAINER (NUEVO) ===== */
+.hologram-logo-container {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+/* Logo "P" de PYMAX - ULTRA FUTURISTA */
+.hologram-logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3.5rem;
+  font-weight: 900;
+  font-family: 'Outfit', sans-serif;
+  color: #00d4ff;
+  text-shadow: 
+    0 0 5px rgba(0, 212, 255, 1),
+    0 0 10px rgba(0, 212, 255, 0.9),
+    0 0 20px rgba(0, 212, 255, 0.7),
+    0 0 30px rgba(0, 212, 255, 0.5),
+    0 0 40px rgba(0, 212, 255, 0.3),
+    0 0 60px rgba(0, 212, 255, 0.2),
+    0 0 80px rgba(0, 212, 255, 0.1);
+  animation: logo-glow-ultra 2s ease-in-out infinite;
+  z-index: 5;
+  user-select: none;
+  filter: brightness(1.2) saturate(1.3);
+}
+
+@keyframes logo-glow-ultra {
+  0%, 100% { 
+    opacity: 1;
+    filter: brightness(1.2) saturate(1.3);
+    text-shadow: 
+      0 0 5px rgba(0, 212, 255, 1),
+      0 0 10px rgba(0, 212, 255, 0.9),
+      0 0 20px rgba(0, 212, 255, 0.7),
+      0 0 30px rgba(0, 212, 255, 0.5),
+      0 0 40px rgba(0, 212, 255, 0.3),
+      0 0 60px rgba(0, 212, 255, 0.2),
+      0 0 80px rgba(0, 212, 255, 0.1);
+  }
+  50% { 
+    opacity: 1;
+    filter: brightness(1.5) saturate(1.5);
+    text-shadow: 
+      0 0 8px rgba(0, 212, 255, 1),
+      0 0 15px rgba(0, 212, 255, 1),
+      0 0 25px rgba(0, 212, 255, 0.9),
+      0 0 35px rgba(0, 212, 255, 0.7),
+      0 0 50px rgba(0, 212, 255, 0.5),
+      0 0 70px rgba(0, 212, 255, 0.3),
+      0 0 100px rgba(0, 212, 255, 0.2);
+  }
+}
+
+/* Anillos orbitales - ULTRA NEON */
+.hologram-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  border-width: 3px;
+  border-style: solid;
+  filter: brightness(1.3);
+}
+
+.hologram-ring.ring-1 {
+  width: 80px;
+  height: 80px;
+  transform: translate(-50%, -50%) rotate(0deg);
+  animation: ring-rotate-1 8s linear infinite, ring-pulse-1 2s ease-in-out infinite;
+  border-color: rgba(0, 212, 255, 0.8);
+  box-shadow: 
+    0 0 5px rgba(0, 212, 255, 0.8),
+    0 0 15px rgba(0, 212, 255, 0.6),
+    0 0 25px rgba(0, 212, 255, 0.4),
+    inset 0 0 15px rgba(0, 212, 255, 0.3),
+    inset 0 0 25px rgba(0, 212, 255, 0.2);
+}
+
+.hologram-ring.ring-2 {
+  width: 100px;
+  height: 100px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  animation: ring-rotate-2 6s linear infinite reverse, ring-pulse-2 2.5s ease-in-out infinite;
+  border-color: rgba(168, 85, 247, 0.7);
+  box-shadow: 
+    0 0 5px rgba(168, 85, 247, 0.7),
+    0 0 15px rgba(168, 85, 247, 0.5),
+    0 0 25px rgba(168, 85, 247, 0.3),
+    inset 0 0 15px rgba(168, 85, 247, 0.3),
+    inset 0 0 25px rgba(168, 85, 247, 0.2);
+}
+
+.hologram-ring.ring-3 {
+  width: 120px;
+  height: 120px;
+  transform: translate(-50%, -50%) rotate(90deg);
+  animation: ring-rotate-3 10s linear infinite, ring-pulse-3 3s ease-in-out infinite;
+  border-color: rgba(0, 255, 159, 0.6);
+  box-shadow: 
+    0 0 5px rgba(0, 255, 159, 0.6),
+    0 0 15px rgba(0, 255, 159, 0.4),
+    0 0 25px rgba(0, 255, 159, 0.3),
+    inset 0 0 15px rgba(0, 255, 159, 0.25),
+    inset 0 0 25px rgba(0, 255, 159, 0.15);
+}
+
+@keyframes ring-pulse-1 {
+  0%, 100% { 
+    opacity: 1;
+    filter: brightness(1.3);
+  }
+  50% { 
+    opacity: 0.8;
+    filter: brightness(1.6);
+  }
+}
+
+@keyframes ring-pulse-2 {
+  0%, 100% { 
+    opacity: 1;
+    filter: brightness(1.3);
+  }
+  50% { 
+    opacity: 0.7;
+    filter: brightness(1.7);
+  }
+}
+
+@keyframes ring-pulse-3 {
+  0%, 100% { 
+    opacity: 1;
+    filter: brightness(1.3);
+  }
+  50% { 
+    opacity: 0.6;
+    filter: brightness(1.8);
+  }
+}
+
+@keyframes ring-rotate-1 {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes ring-rotate-2 {
+  from { transform: translate(-50%, -50%) rotate(45deg); }
+  to { transform: translate(-50%, -50%) rotate(405deg); }
+}
+
+@keyframes ring-rotate-3 {
+  from { transform: translate(-50%, -50%) rotate(90deg); }
+  to { transform: translate(-50%, -50%) rotate(450deg); }
+}
+
+/* ===== ORB CENTRAL (AVATAR) - LEGACY (mantener compatibilidad) ===== */
+.hologram-orb {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 212, 255, 0.4) 0%, rgba(0, 212, 255, 0.1) 50%, transparent 100%);
+  border: 2px solid rgba(0, 212, 255, 0.6);
+  box-shadow: 
+    0 0 20px rgba(0, 212, 255, 0.4),
+    0 0 40px rgba(0, 212, 255, 0.3),
+    inset 0 0 20px rgba(0, 212, 255, 0.2);
+  animation: orb-pulse 3s ease-in-out infinite;
+  z-index: 2;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes orb-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.1); }
+}
+
+/* Estados del orb */
+.hologram-orb.state-idle {
+  background: radial-gradient(circle, rgba(0, 212, 255, 0.4) 0%, rgba(0, 212, 255, 0.1) 50%, transparent 100%);
+  border-color: rgba(0, 212, 255, 0.6);
+  animation: orb-pulse 3s ease-in-out infinite;
+}
+
+.hologram-orb.state-listening {
+  background: radial-gradient(circle, rgba(0, 255, 159, 0.5) 0%, rgba(0, 255, 159, 0.15) 50%, transparent 100%);
+  border-color: rgba(0, 255, 159, 0.7);
+  animation: orb-pulse 1.5s ease-in-out infinite;
+}
+
+.hologram-orb.state-speaking {
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.5) 0%, rgba(168, 85, 247, 0.15) 50%, transparent 100%);
+  border-color: rgba(168, 85, 247, 0.7);
+  animation: orb-pulse 0.8s ease-in-out infinite;
+}
+
+.hologram-orb.state-processing {
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.5) 0%, rgba(255, 215, 0, 0.15) 50%, transparent 100%);
+  border-color: rgba(255, 215, 0, 0.7);
+  animation: orb-rotate 2s linear infinite;
+}
+
+.hologram-orb.state-alert {
+  background: radial-gradient(circle, rgba(255, 0, 102, 0.6) 0%, rgba(255, 0, 102, 0.2) 50%, transparent 100%);
+  border-color: rgba(255, 0, 102, 0.8);
+  animation: orb-pulse-alert 0.5s ease-in-out infinite;
+}
+
+@keyframes orb-rotate {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes orb-pulse-alert {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+}
+
+/* ===== VISUALIZADOR DE ONDAS ===== */
+.hologram-wave-container {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 60px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  z-index: 2;
+}
+
+.wave-bar {
+  width: 12px;
+  height: 10%;
+  background: linear-gradient(to top, rgba(0, 212, 255, 0.8), rgba(0, 212, 255, 0.3));
+  border-radius: 6px;
+  transition: height 0.1s ease;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+/* Estados de las ondas */
+.hologram-wave-container.state-idle .wave-bar {
+  background: linear-gradient(to top, rgba(0, 212, 255, 0.6), rgba(0, 212, 255, 0.2));
+}
+
+.hologram-wave-container.state-listening .wave-bar {
+  background: linear-gradient(to top, rgba(0, 255, 159, 0.8), rgba(0, 255, 159, 0.3));
+  box-shadow: 0 0 10px rgba(0, 255, 159, 0.5);
+}
+
+.hologram-wave-container.state-speaking .wave-bar {
+  background: linear-gradient(to top, rgba(168, 85, 247, 0.8), rgba(168, 85, 247, 0.3));
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+}
+
+.hologram-wave-container.state-processing .wave-bar {
+  background: linear-gradient(to top, rgba(255, 215, 0, 0.8), rgba(255, 215, 0, 0.3));
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.hologram-wave-container.state-alert .wave-bar {
+  background: linear-gradient(to top, rgba(255, 0, 102, 0.9), rgba(255, 0, 102, 0.4));
+  box-shadow: 0 0 10px rgba(255, 0, 102, 0.6);
+  animation: wave-alert 0.3s ease-in-out infinite;
+}
+
+@keyframes wave-alert {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ===== STATUS/MENSAJE ===== */
+.hologram-status {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 3;
+  width: 100%;
+  padding: 0 20px;
+}
+
+.hologram-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #00d4ff;
+  margin-bottom: 4px;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.hologram-message {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #94a3b8;
+  opacity: 0.9;
+}
+
+/* ===== EFECTOS HOLOGRÁFICOS ===== */
+
+/* Scan lines sutiles */
+.pymax-hologram-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 212, 255, 0.03) 0px,
+    transparent 2px,
+    transparent 4px
+  );
+  pointer-events: none;
+  animation: scan-lines 8s linear infinite;
+  z-index: 10;
+}
+
+@keyframes scan-lines {
+  from { transform: translateY(0); }
+  to { transform: translateY(4px); }
+}
+
+/* Glow effect en hover */
+.pymax-hologram-container:hover {
+  border-color: rgba(0, 212, 255, 0.4);
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .pymax-hologram-container {
+    width: 250px;
+    height: 350px;
+  }
+  
+  .hologram-orb {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .hologram-wave-container {
+    width: 160px;
+    height: 50px;
+  }
+  
+  .wave-bar {
+    width: 10px;
+  }
+}
+
+/* ===== MINI VERSION (para navbar) ===== */
+.pymax-hologram-mini {
+  width: 60px !important;
+  height: 60px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  overflow: visible !important;
+}
+
+.pymax-hologram-mini .hologram-canvas {
+  width: 60px !important;
+  height: 60px !important;
+}
+
+.pymax-hologram-mini .hologram-logo-container {
+  width: 60px !important;
+  height: 60px !important;
+  top: 50% !important;
+  left: 50% !important;
+}
+
+.pymax-hologram-mini .hologram-logo {
+  font-size: 1.8rem !important;
+}
+
+.pymax-hologram-mini .hologram-ring.ring-1 {
+  width: 50px !important;
+  height: 50px !important;
+}
+
+.pymax-hologram-mini .hologram-ring.ring-2 {
+  width: 55px !important;
+  height: 55px !important;
+}
+
+.pymax-hologram-mini .hologram-ring.ring-3 {
+  width: 60px !important;
+  height: 60px !important;
+}
+
+.pymax-hologram-mini .hologram-wave-container {
+  display: none !important;
+}
+
+.pymax-hologram-mini .hologram-status {
+  display: none !important;
+}
+
+.pymax-hologram-mini::before,
+.pymax-hologram-mini::after {
+  display: none !important;
+}
+
+/* ===== ANIMACIONES ADICIONALES ===== */
+
+/* Shimmer effect */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Glow pulsante */
+@keyframes glow-pulse {
+  0%, 100% {
+    filter: brightness(1) saturate(1);
+  }
+  50% {
+    filter: brightness(1.3) saturate(1.2);
+  }
+}
+
+/* Aplicar shimmer al orb cuando está activo */
+.hologram-orb.state-processing::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}

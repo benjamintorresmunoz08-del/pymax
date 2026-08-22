@@ -1,0 +1,287 @@
+/**
+ * ============================================
+ * PYMAX THEME STYLES - FASE 22
+ * ============================================
+ * Estilos para el sistema de temas (Oscuro/Claro)
+ */
+
+/* Variables CSS para temas */
+:root {
+  /* Tema Oscuro (por defecto) */
+  --bg-primary: #020617;
+  --bg-secondary: rgba(15, 23, 42, 0.8);
+  --bg-tertiary: rgba(15, 23, 42, 0.6);
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --border-color-hover: rgba(255, 255, 255, 0.2);
+}
+
+/* Transiciones suaves para cambio de tema */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Tema Claro */
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: rgba(248, 250, 252, 0.9);
+  --bg-tertiary: rgba(241, 245, 249, 0.8);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #64748b;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --border-color-hover: rgba(0, 0, 0, 0.2);
+}
+
+/* Aplicar variables a elementos comunes */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Cards y contenedores */
+.card-stat,
+.card-module,
+.chart-container,
+[style*="background: rgba(15, 23, 42"] {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Textos */
+h1, h2, h3, h4, h5, h6,
+.text-white {
+  color: var(--text-primary) !important;
+}
+
+.text-slate-400,
+.text-slate-300 {
+  color: var(--text-secondary) !important;
+}
+
+.text-slate-600,
+.text-slate-500 {
+  color: var(--text-tertiary) !important;
+}
+
+/* Tema Claro - Ajustes específicos */
+[data-theme="light"] .card-stat,
+[data-theme="light"] .card-module {
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(241, 245, 249, 0.8) 100%) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .card-stat:hover,
+[data-theme="light"] .card-module:hover {
+  background: linear-gradient(135deg, rgba(241, 245, 249, 0.95) 0%, rgba(226, 232, 240, 0.9) 100%) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Modales en tema claro */
+[data-theme="light"] .pymax-calendar-container,
+[data-theme="light"] .pymax-chat-container {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.95) 100%) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .pymax-calendar-overlay,
+[data-theme="light"] .pymax-chat-overlay {
+  background: rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Inputs y selectores en tema claro */
+[data-theme="light"] input,
+[data-theme="light"] select,
+[data-theme="light"] textarea {
+  background-color: rgba(241, 245, 249, 0.8) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] input:focus,
+[data-theme="light"] select:focus,
+[data-theme="light"] textarea:focus {
+  background-color: rgba(248, 250, 252, 0.9) !important;
+  border-color: rgba(59, 130, 246, 0.5) !important;
+}
+
+/* Botones en tema claro */
+[data-theme="light"] .btn-link {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #475569 !important;
+}
+
+[data-theme="light"] .btn-link:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+  color: #0f172a !important;
+}
+
+/* Gráficos en tema claro */
+[data-theme="light"] .chart-container {
+  background: rgba(248, 250, 252, 0.8) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Alertas en tema claro */
+[data-theme="light"] .alert-card {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(239, 68, 68, 0.03) 100%) !important;
+  border-color: rgba(239, 68, 68, 0.2) !important;
+}
+
+/* Widgets en tema claro */
+[data-theme="light"] .pymax-widget {
+  background: rgba(248, 250, 252, 0.9) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Calendario en tema claro */
+[data-theme="light"] .pymax-calendar-day {
+  background: rgba(241, 245, 249, 0.6) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme="light"] .pymax-calendar-day:hover {
+  background: rgba(59, 130, 246, 0.08) !important;
+  border-color: rgba(59, 130, 246, 0.2) !important;
+}
+
+[data-theme="light"] .pymax-calendar-day.today {
+  background: rgba(59, 130, 246, 0.12) !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+/* Chat en tema claro */
+[data-theme="light"] .pymax-chat-message-ai .pymax-chat-message-content {
+  background: rgba(241, 245, 249, 0.8) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .pymax-chat-input {
+  background: rgba(241, 245, 249, 0.8) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #0f172a !important;
+}
+
+/* Scrollbars en tema claro */
+[data-theme="light"] ::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+/* Toggle button animations */
+.pymax-theme-toggle {
+  position: relative;
+  overflow: hidden;
+}
+
+.pymax-theme-toggle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.pymax-theme-toggle:active::before {
+  width: 100px;
+  height: 100px;
+}
+
+/* Animación de cambio de tema */
+@keyframes themeChange {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+body[data-theme-changing] {
+  animation: themeChange 0.3s ease;
+}
+
+/* Mejoras de contraste para tema claro */
+[data-theme="light"] .stat-value {
+  background: linear-gradient(135deg, #0f172a 0%, #475569 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+[data-theme="light"] .icon-box {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Sombras más suaves en tema claro */
+[data-theme="light"] .card-stat::before,
+[data-theme="light"] .card-module::before {
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.08), transparent);
+}
+
+/* Drag & Drop zone en tema claro */
+[data-theme="light"] .drag-drop-zone {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.03) 0%, rgba(124, 58, 237, 0.03) 100%);
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+[data-theme="light"] .drag-drop-zone:hover {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.06) 0%, rgba(124, 58, 237, 0.06) 100%);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+/* Hero IA CFO en tema claro */
+[data-theme="light"] .hero-ia-cfo {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(59, 130, 246, 0.06) 100%) !important;
+  border-color: rgba(124, 58, 237, 0.2) !important;
+}
+
+/* Semáforo en tema claro */
+[data-theme="light"] #trafficLight {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive - mantener legibilidad en móviles */
+@media (max-width: 768px) {
+  [data-theme="light"] .card-stat,
+  [data-theme="light"] .card-module {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  }
+}
+
+/* Accesibilidad - alto contraste */
+@media (prefers-contrast: high) {
+  [data-theme="light"] {
+    --text-primary: #000000;
+    --text-secondary: #1e293b;
+    --border-color: rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Reducir movimiento si el usuario lo prefiere */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
