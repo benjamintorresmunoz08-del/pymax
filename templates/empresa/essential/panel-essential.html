@@ -581,6 +581,57 @@ body::before{
 .tool-ic i{font-size:19px}
 .tool-ttl{font-size:11px;font-weight:700;margin-bottom:3px;line-height:1.3}
 .tool-sub{font-size:9.5px;color:var(--t3);line-height:1.4}
+/* Enhanced tool card — hint affordance */
+.tool-spec-hint{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;
+  background:rgba(148,163,184,.08);border:1px solid rgba(148,163,184,.14);display:flex;
+  align-items:center;justify-content:center;opacity:0;transform:scale(.5);transition:all .25s cubic-bezier(.34,1.56,.64,1);
+  flex-shrink:0}
+.tool-spec-hint i{font-size:10px;color:var(--t2)}
+.tool:hover .tool-spec-hint{opacity:1;transform:scale(1)}
+
+/* ══ TOOL SPEC CARD (hover reveal premium) ═══════════ */
+#toolSpec{
+  position:fixed;z-index:1500;pointer-events:none;width:330px;max-width:88vw;
+  background:rgba(9,14,26,.98);backdrop-filter:blur(28px);
+  border:1px solid rgba(148,163,184,.16);border-radius:16px;
+  box-shadow:0 30px 80px rgba(0,0,0,.85),0 0 0 1px rgba(59,130,246,.06),0 0 44px rgba(59,130,246,.08);
+  opacity:0;transform:translateY(12px) scale(.96) translateX(-8px);
+  transition:opacity .24s cubic-bezier(.22,1,.36,1),transform .26s cubic-bezier(.22,1,.36,1);
+  overflow:hidden
+}
+#toolSpec.show{opacity:1;transform:translateY(0) scale(1) translateX(0)}
+#toolSpec .ts-band{height:3px;width:100%;background:linear-gradient(90deg,var(--blue),var(--purple))}
+#toolSpec .ts-hdr{display:flex;align-items:center;gap:11px;padding:15px 16px 10px}
+#toolSpec .ts-ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+#toolSpec .ts-ic i{font-size:19px}
+#toolSpec .ts-ttl{font-size:15px;font-weight:800;letter-spacing:-.02em;color:var(--t1)}
+#toolSpec .ts-pln{display:inline-flex;align-items:center;gap:3px;font-size:8px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--blue2);background:var(--bd);border:1px solid rgba(59,130,246,.2);
+  padding:2px 7px;border-radius:100px;margin-top:3px}
+#toolSpec .ts-pln i{font-size:8px}
+#toolSpec .ts-body{padding:2px 16px 8px}
+#toolSpec .ts-verdict{
+  font-size:12.5px;font-weight:700;line-height:1.5;color:var(--t1);
+  background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.12);
+  border-left:3px solid var(--blue);border-radius:4px 9px 9px 4px;
+  padding:9px 12px;margin-bottom:12px
+}
+#toolSpec .ts-row{display:flex;gap:9px;padding:7px 0;border-bottom:1px solid rgba(148,163,184,.06)}
+#toolSpec .ts-row:last-of-type{border-bottom:none}
+#toolSpec .ts-ry{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);
+  flex-shrink:0;width:74px;padding-top:1px}
+#toolSpec .ts-ry i{font-size:9px;margin-right:3px}
+#toolSpec .ts-rv{font-size:11px;color:var(--t2);line-height:1.5;flex:1}
+#toolSpec .ts-rv strong{color:var(--t1);font-weight:600}
+#toolSpec .ts-foot{padding:4px 16px 12px;display:flex;align-items:center;gap:6px}
+#toolSpec .ts-hint{font-size:9.5px;color:var(--t3);display:flex;align-items:center;gap:4px}
+#toolSpec .ts-hint i{font-size:9px}
+#toolSpec .ts-go{margin-left:auto;display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;
+  color:var(--blue2);background:var(--bd);border:1px solid rgba(59,130,246,.2);padding:5px 11px;border-radius:8px}
+#toolSpec .ts-go i{font-size:9px}
+#toolSpec::before{content:'';position:absolute;width:11px;height:11px;background:rgba(9,14,26,.98);
+  border-left:1px solid rgba(148,163,184,.16);border-top:1px solid rgba(148,163,184,.16);
+  transform:rotate(45deg);transition:left .18s,top .18s}
 
 /* ══ OVERLAYS ════════════════════════════════════════ */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(5px);
@@ -1113,6 +1164,28 @@ body::before{
 <!-- Tooltip flotante del rail -->
 <div id="railTip"><div class="rt-t"></div><div class="rt-d"></div></div>
 
+<!-- Tool Spec Card — hover reveal de cada herramienta -->
+<div id="toolSpec">
+  <div class="ts-band"></div>
+  <div class="ts-hdr">
+    <div class="ts-ic"><i class="ph-duotone ph-scales"></i></div>
+    <div>
+      <div class="ts-ttl">Punto de Equilibrio</div>
+      <div class="ts-pln"><i class="ph-bold ph-crown"></i>Incluido en Essential</div>
+    </div>
+  </div>
+  <div class="ts-body">
+    <div class="ts-verdict">Te dice cuánto debes vender para ser rentable.</div>
+    <div class="ts-row"><div class="ts-ry"><i class="ph-bold ph-check"></i>Qué es</div><div class="ts-rv">El nivel de ventas en el que tus ingresos cubren exactamente tus costos.</div></div>
+    <div class="ts-row"><div class="ts-ry"><i class="ph-bold ph-lightbulb"></i>Te ayuda a</div><div class="ts-rv">Saber si hoy estás por encima o por debajo del punto que te hace rentable.</div></div>
+    <div class="ts-row"><div class="ts-ry"><i class="ph-bold ph-example"></i>Ejemplo</div><div class="ts-rv">Si tu punto es <strong>$1.500.000</strong> y llevas $1.200.000, aún te faltan $300.000 para cubrir costos.</div></div>
+  </div>
+  <div class="ts-foot">
+    <span class="ts-hint"><i class="ph-bold ph-cursor-click"></i>Haz clic para abrir</span>
+    <span class="ts-go">Abrir <i class="ph-bold ph-arrow-right"></i></span>
+  </div>
+</div>
+
 <script>
 gsap.registerPlugin(ScrollTrigger);
 var _sb=null,_u=null,_fin={ing:0,gas:0,bal:0,mar:0,ops:[]},
@@ -1152,15 +1225,122 @@ function initUI(u){
   var ra=document.getElementById('railAv');if(ra)ra.textContent=n.charAt(0);
 }
 
+// ── ESPECIFICACIONES DE HERRAMIENTAS (para el hover reveal) ──
+var TOOL_SPECS={
+  'Ventas &amp; Gastos':{ico:'ph-currency-dollar',bg:'var(--gd)',c:'var(--green2)',
+    verdict:'Tu planilla diaria para registrar cada ingreso y gasto.',
+    q:'Registro cronológico de ventas (ingresos) y gastos (egresos), con categorías y fechas.',
+    a:'Mantener el control exacto de cuánto entra y sale del negocio cada día.',
+    e:'Registras una venta de $80.000 y un gasto de $30.000 → tu día queda con +$50.000.'},
+  'Flujo de Caja':{ico:'ph-chart-line-up',bg:'var(--bd)',c:'var(--blue2)',
+    verdict:'Te muestra tu liquidez en tiempo real: el dinero disponible hoy.',
+    q:'Es el movimiento de dinero que entra y sale, proyectado para que sepas cuánto tienes disponible.',
+    a:'Anticipar faltantes de efectivo y planificar pagos sin riesgo.',
+    e:'Ves que este mes tienes -$120.000 la semana 3, así mueves un cobro para no quedar en rojo.'},
+  'Deudas':{ico:'ph-clipboard-text',bg:'var(--ad)',c:'var(--amber2)',
+    verdict:'Control centralizado de todo lo que debes pagar.',
+    q:'Registro de obligaciones con montos, fechas de vencimiento y prioridad.',
+    a:'Nunca olvidar un pago y saber cuánto debes en total.',
+    e:'Tienes registradas 5 deudas por $1.800.000 y la app te avisa cuál vence esta semana.'},
+  'Calendario':{ico:'ph-calendar-dots',bg:'var(--pd)',c:'var(--purple2)',
+    verdict:'Tus fechas y pagos importantes en un solo lugar.',
+    q:'Calendario visual con tus compromisos, vencimientos y recordatorios.',
+    a:'Organizar tu tiempo financiero sin olvidar fechas clave.',
+    e:'Marcas que el día 10 pagas el arriendo y el 25 el impuesto. La app te lo recuerda.'},
+  'Semáforo Pymax':{ico:'ph-traffic-signal',bg:'var(--ad)',c:'var(--amber2)',
+    verdict:'La salud de tu negocio en un semáforo: verde, amarillo o rojo.',
+    q:'Indicador visual que resume tu situación financiera general.',
+    a:'Saber de un vistazo si tu negocio está bien o necesita atención.',
+    e:'Rojo: los gastos superan ingresos. Verde: vas con buen margen. Amarillo: revisa costos.'},
+  'IA 24/7':{ico:'ph-brain',bg:'var(--bd)',c:'var(--blue2)',
+    verdict:'Tu asesor financiero inteligente disponible en todo momento.',
+    q:'Asistente que responde preguntas y entrega recomendaciones basadas en tus datos.',
+    a:'Resolver dudas financieras al instante, sin esperas ni costos extra.',
+    e:'Le preguntas "¿dónde gasté más este mes?" y te lo desglosa por categorías.'},
+  'Excel Básico':{ico:'ph-file-xls',bg:'var(--gd)',c:'var(--green2)',
+    verdict:'Descarga tus números para tu contabilidad en Excel.',
+    q:'Exporta tus transacciones y datos a formato de hoja de cálculo.',
+    a:'Entregar información a tu contador o guardar respaldo ordenado.',
+    e:'Un clic y descargas tu mes completo para enviarlo a tu contador.'},
+  'Fuga de Dinero':{ico:'ph-detective',bg:'var(--rd)',c:'var(--red2)',
+    verdict:'Detecta cobros duplicados, suscripciones y alzas inesperadas.',
+    q:'Revisa tus pagos recurrentes y marca patrones de cobro que no deberían existir.',
+    a:'Recuperar dinero que se te escapa sin darte cuenta.',
+    e:'Encuentra que pagas dos veces la misma suscripción de $9.990 desde hace 3 meses.'},
+  'Punto Equilibrio':{ico:'ph-scales',bg:'var(--ad)',c:'var(--amber2)',
+    verdict:'Te dice cuánto debes vender para ser rentable.',
+    q:'El nivel de ventas en el que tus ingresos cubren exactamente tus costos.',
+    a:'Saber si hoy estás por encima o por debajo del punto que te hace rentable.',
+    e:'Si tu punto es $1.500.000 y llevas $1.200.000, aún te faltan $300.000 para cubrir costos.'},
+  'Bóveda Legal':{ico:'ph-vault',bg:'var(--bd)',c:'var(--blue2)',
+    verdict:'Guarda contratos y documentos importantes con alertas.',
+    q:'Almacenamiento seguro de documentos con avisos de vencimiento.',
+    a:'Nunca perder un papel clave ni dejar vencer un contrato importante.',
+    e:'Subes tu contrato de arriendo y la app te avisa 7 días antes de que venza.'},
+  'Orden Express':{ico:'ph-lightning',bg:'var(--pd)',c:'var(--purple2)',
+    verdict:'Registra un ingreso o gasto en menos de 30 segundos.',
+    q:'Flujo ultra rápido para capturar movimientos sin fricción.',
+    a:'Llevar el registro al día sin perder tiempo, incluso a mitad del día.',
+    e:'Estás en tu negocio, vendes, y en 3 toques ya quedó registrado.'},
+  'Comunidad Starter':{ico:'ph-users-three',bg:'var(--gd)',c:'var(--green2)',
+    verdict:'Red de networking para emprendedores como tú.',
+    q:'Conecta con otros negocios, comparte experiencias y crece en red.',
+    a:'Hacer contactos, aliados y clientes potenciales.',
+    e:'Encuentras otro emprendedor que le vende exactamente lo que tu negocio compra.'},
+  'Metas':{ico:'ph-target',bg:'var(--rd)',c:'var(--red2)',
+    verdict:'Define objetivos financieros y sigue tu avance.',
+    q:'Establece metas de ahorro, ventas o gastos y monitorea el progreso.',
+    a:'Darle dirección a tu negocio y motivarte con resultados visibles.',
+    e:'Te pones la meta de vender $5.000.000 este mes y ves la barra avanzar cada día.'}
+};
+
 function wireClicks(){
+  // Hover reveal de especificacion en cada herramienta
+  var specEl=document.getElementById('toolSpec');
+  document.querySelectorAll('.tool').forEach(function(t){
+    // Añade el indicador (?) en la esquina superior derecha
+    var hint=document.createElement('div');hint.className='tool-spec-hint';
+    hint.innerHTML='<i class="ph-bold ph-question"></i>';
+    t.appendChild(hint);
+    var sub=t.querySelector('.tool-sub');
+    if(sub){sub.insertAdjacentHTML('beforeend',' <span style="opacity:.35">· pasa el cursor</span>');}
+
+    t.addEventListener('mouseenter',function(){
+      if(specEl&&TOOL_SPECS){
+        var name=(t.querySelector('.tool-ttl')||{}).textContent||'';
+        var spec=TOOL_SPECS[name];
+        if(!spec)return;
+        specEl.querySelector('.ts-band').style.background='linear-gradient(90deg,'+spec.c+','+spec.c+'66)';
+        specEl.querySelector('.ts-ic').style.background=spec.bg;
+        var si=specEl.querySelector('.ts-ic i');
+        si.className='ph-duotone '+spec.ico;si.style.color=spec.c;
+        specEl.querySelector('.ts-ttl').textContent=name;
+        specEl.querySelector('.ts-verdict').textContent=spec.verdict;
+        var rows=specEl.querySelectorAll('.ts-row');
+        rows[0].querySelector('.ts-rv').textContent=spec.q;
+        rows[1].querySelector('.ts-rv').textContent=spec.a;
+        rows[2].querySelector('.ts-rv').innerHTML=spec.e;
+        // Posicionar
+        var r=t.getBoundingClientRect();
+        var l=r.left-344,top=r.top+r.height/2;
+        if(l<10)l=r.right+14;
+        specEl.style.left=l+'px';specEl.style.top=top+'px';
+        specEl.style.transform='translateY(-50%)';
+        specEl.classList.add('show');
+      }
+    });
+    t.addEventListener('mouseleave',function(){if(specEl)specEl.classList.remove('show');});
+
+    t.addEventListener('click',function(){
+      if(specEl)specEl.classList.remove('show');
+      var hr=t.getAttribute('data-href');if(hr)window.location.href=hr;
+    });
+  });
   document.querySelectorAll('.mini').forEach(function(b){
     b.addEventListener('click',function(){
       var hr=b.getAttribute('data-href'),ai=b.getAttribute('data-ai');
       if(hr)window.location.href=hr;else if(ai)sendChip(ai);
     });
-  });
-  document.querySelectorAll('.tool').forEach(function(t){
-    t.addEventListener('click',function(){var hr=t.getAttribute('data-href');if(hr)window.location.href=hr;});
   });
 }
 
