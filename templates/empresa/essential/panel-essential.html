@@ -207,6 +207,28 @@ body::before{
   background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);color:rgba(147,197,253,.8)}
 .ctx-t span{color:#fff;font-weight:800}
 
+/* ── AI SEÑAL PROACTIVA (mentora que tiene algo que decir) ── */
+.ai-signal{
+  display:flex;align-items:center;gap:8px;margin-top:9px;padding:9px 10px;
+  border-radius:9px;background:linear-gradient(135deg,rgba(59,130,246,.1),rgba(139,92,246,.07));
+  border:1px solid rgba(59,130,246,.22);position:relative;z-index:2;
+  transition:all .25s cubic-bezier(.34,1.56,.64,1)
+}
+.ai-signal:hover{border-color:rgba(59,130,246,.45);transform:translateY(-2px)}
+.ai-signal-ic{width:26px;height:26px;border-radius:8px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;
+  animation:siPls 2.2s ease-in-out infinite}
+.ai-signal-ic i{font-size:13px;color:#fff}
+@keyframes siPls{0%,100%{box-shadow:0 0 0 0 rgba(59,130,246,.4)}50%{box-shadow:0 0 0 6px rgba(59,130,246,0)}}
+.ai-signal-txt{flex:1;min-width:0}
+.ai-signal-ttl{font-size:10.5px;font-weight:700;color:var(--t1);line-height:1.35}
+.ai-signal-sub{font-size:8.5px;color:var(--t3);margin-top:1px}
+.ai-signal-go{width:22px;height:22px;border-radius:6px;flex-shrink:0;border:none;cursor:pointer;
+  background:rgba(59,130,246,.14);color:var(--blue2);display:flex;align-items:center;justify-content:center;
+  transition:all .2s}
+.ai-signal-go:hover{background:var(--blue);color:#fff;transform:scale(1.12)}
+.ai-signal-go i{font-size:12px}
+
 /* ── AI BODY ── */
 .ai-msgs{flex:1;overflow-y:auto;padding:8px 10px;display:flex;flex-direction:column;gap:6px;position:relative;z-index:2}
 .ai-msgs::-webkit-scrollbar{width:0}
@@ -343,7 +365,7 @@ body::before{
 /* Period tabs micro label */
 .period-lbl{font-size:9.5px;color:var(--t3);text-align:right}
 
-/* ══ KPI BAR ════════════════════════════════════════ */
+/* ══ KPI BAR / SISTEMA DE SALUD ══════════════════════ */
 .kpi-bar{
   display:grid;grid-template-columns:repeat(4,1fr);
   background:var(--s1);border-top:1px solid var(--b);border-bottom:1px solid var(--b)
@@ -355,11 +377,29 @@ body::before{
 .kpi:last-child{border-right:none}
 .kpi:hover{background:rgba(59,130,246,.04)}
 .kpi-lbl{font-size:9px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
-  color:var(--t3);margin-bottom:5px;display:flex;align-items:center;gap:4px}
+  color:var(--t3);margin-bottom:7px;display:flex;align-items:center;gap:4px}
 .kpi-lbl i{font-size:11px}
 .kpi-val{font-size:22px;font-weight:800;letter-spacing:-.035em;font-variant-numeric:tabular-nums;line-height:1;margin-bottom:4px}
 .kpi-chg{font-size:10px;font-weight:600;display:flex;align-items:center;gap:3px}
 .kpi-bar-bot{position:absolute;bottom:0;left:0;right:0;height:2px}
+/* Métrica protagonista (Balance → Sistema de Salud) */
+.kpi-lead{
+  background:linear-gradient(180deg,rgba(59,130,246,.06),transparent);
+  border-right-color:rgba(59,130,246,.18)
+}
+.kpi-lead-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.kpi-lead .kpi-val{font-size:26px;font-weight:900;letter-spacing:-.04em}
+.kpi-lead .kpi-lbl{color:rgba(96,165,250,.9)}
+/* Score ring */
+.score-ring{position:relative;width:34px;height:34px;flex-shrink:0}
+.score-ring svg{width:100%;height:100%;transform:rotate(-90deg);display:block}
+.score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:900;color:var(--t1)}
+/* Tendencia */
+.kpi-trend{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;
+  color:var(--green2);margin-top:3px}
+.kpi-trend.down{color:var(--red2)}
+.kpi-trendlbl{font-size:9px;font-weight:500;color:var(--t3)}
 
 /* ══ SECTION ════════════════════════════════════════ */
 .sec{padding:28px 24px 0}
@@ -567,6 +607,8 @@ body::before{
   gap:12px;
   padding-bottom:32px
 }
+.tools-grid-sub{padding-bottom:8px}
+.fav-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding-bottom:24px}
 .tool{
   border-radius:var(--rg);
   background:rgba(255,255,255,.027);backdrop-filter:blur(12px);
@@ -583,6 +625,70 @@ body::before{
 .tool-ic i{font-size:19px}
 .tool-ttl{font-size:11px;font-weight:700;margin-bottom:3px;line-height:1.3}
 .tool-sub{font-size:9.5px;color:var(--t3);line-height:1.4}
+/* Badge de plan en cada tarjeta */
+.tool-plan{position:absolute;top:16px;right:14px;font-size:7.5px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--t3);background:var(--s3);border:1px solid var(--b);
+  padding:2px 6px;border-radius:100px}
+.tool-plan.ess{color:var(--green2);background:rgba(16,185,129,.08);border-color:rgba(52,211,153,.2)}
+/* Favoritas destacadas */
+.tool-fav{
+  background:linear-gradient(160deg,rgba(59,130,246,.06),rgba(139,92,246,.04));
+  border-color:rgba(59,130,246,.2);padding:20px 16px
+}
+.tool-fav:hover{border-color:rgba(59,130,246,.45);box-shadow:0 14px 40px rgba(0,0,0,.55)}
+.tool-fav-ic{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  margin-bottom:12px;box-shadow:0 4px 18px rgba(0,0,0,.3)}
+.tool-fav-ic i{font-size:23px}
+.tool-fav .tool-ttl{font-size:12.5px}
+.tool-fav .tool-sub{font-size:10px}
+/* Módulo de progreso de plan */
+.plan-progress{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  background:linear-gradient(120deg,rgba(59,130,246,.1),rgba(139,92,246,.07));
+  border:1px solid rgba(59,130,246,.2);border-radius:var(--r);
+  padding:16px 20px;margin-bottom:26px;position:relative;overflow:hidden
+}
+.plan-progress::before{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);animation:ppShine 6s ease-in-out infinite}
+@keyframes ppShine{0%,100%{left:-100%}60%{left:150%}}
+.pp-left{display:flex;align-items:center;gap:14px}
+.pp-badge{font-size:11px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--blue),var(--purple));
+  padding:4px 12px;border-radius:8px;letter-spacing:.02em;white-space:nowrap}
+.pp-info{min-width:0}
+.pp-ttl{font-size:14px;font-weight:800;letter-spacing:-.02em;color:var(--t1)}
+.pp-sub{font-size:11px;color:var(--t2);margin-top:2px}
+.pp-sub strong{color:var(--blue2)}
+.pp-right{flex:1;max-width:360px;text-align:right}
+.pp-meta{font-size:10.5px;color:var(--t3);margin-bottom:6px}
+.pp-dot{margin:0 4px;opacity:.5}
+.pp-trk{height:6px;background:rgba(148,163,184,.12);border-radius:100px;overflow:hidden}
+.pp-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--blue),var(--purple));transition:width 1.2s cubic-bezier(.22,1,.36,1)}
+.pp-actions{display:flex;align-items:center;gap:6px;justify-content:flex-end;margin-top:6px}
+.pp-up{font-size:11px;font-weight:700;color:var(--blue2);text-decoration:none}
+.pp-up:hover{text-decoration:underline}
+.pp-up-arrow{display:inline-flex;align-items:center;color:var(--blue2)}
+/* Ventana de escalamiento */
+.upsell{background:rgba(255,255,255,.02);border:1px solid var(--b);border-radius:var(--r);padding:22px;position:relative}
+.upsell-hdr{margin-bottom:16px}
+.upsell-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.ust{border-radius:var(--rg);background:rgba(255,255,255,.02);border:1px solid var(--b);
+  padding:14px 13px;cursor:pointer;position:relative;transition:all .28s cubic-bezier(.34,1.56,.64,1);overflow:hidden}
+.ust:hover{transform:translateY(-3px);border-color:var(--bh);box-shadow:0 10px 28px rgba(0,0,0,.5)}
+.ust::before{content:'';position:absolute;top:10px;right:10px;width:7px;height:7px;border-radius:50%;
+  background:var(--t4)}
+.ust[data-plan="biz"]::before{background:var(--blue2);box-shadow:0 0 8px rgba(96,165,250,.7)}
+.ust[data-plan="bfe"]::before{background:var(--purple2);box-shadow:0 0 8px rgba(167,139,250,.7)}
+.ust-ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:9px}
+.ust-ic i{font-size:17px}
+.ust-b{font-size:7.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.ust-b:nth-of-type(1){color:var(--blue2)}
+.ust[data-plan="bfe"] .ust-b{color:var(--purple2)}
+.ust-ttl{font-size:11.5px;font-weight:700;margin-bottom:3px;line-height:1.3;color:var(--t1)}
+.ust-sub{font-size:9px;color:var(--t3);line-height:1.5}
+.upsell-cta{display:flex;align-items:center;gap:16px;margin-top:18px;padding-top:16px;
+  border-top:1px solid var(--bx);flex-wrap:wrap}
+.btn-lg{padding:8px 20px;font-size:12.5px}
+.ust-note{font-size:10px;color:var(--t3)}
 /* Enhanced tool card — hint affordance */
 .tool-spec-hint{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;
   background:rgba(148,163,184,.08);border:1px solid rgba(148,163,184,.14);display:flex;
@@ -844,12 +950,23 @@ body::before{
         </div>
       </section>
 
-      <!-- ▸ KPI BAR ── -->
+            <!-- ▸ SISTEMA DE SALUD ── -->
       <div class="kpi-bar">
-        <div class="kpi" id="kpiB">
-          <div class="kpi-lbl"><i class="ph-duotone ph-wallet"></i>Balance</div>
-          <div class="kpi-val" id="kpiBv"><div class="sk" style="width:80px;height:20px"></div></div>
+        <!-- Métrica protagonista: Balance → Score de salud -->
+        <div class="kpi kpi-lead" id="kpiB">
+          <div class="kpi-lbl"><i class="ph-duotone ph-heart-pulse"></i>Salud de tu negocio</div>
+          <div class="kpi-lead-row">
+            <div class="kpi-val" id="kpiBv"><div class="sk" style="width:90px;height:20px"></div></div>
+            <div class="score-ring" id="scoreRing">
+              <svg width="34" height="34" viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(148,163,184,.15)" stroke-width="3"/>
+                <circle cx="18" cy="18" r="15" fill="none" stroke="var(--blue2)" stroke-width="3" stroke-linecap="round" stroke-dasharray="94.2" stroke-dashoffset="94.2" id="scoreArc"/>
+              </svg>
+              <span class="score-num" id="scoreNum">–</span>
+            </div>
+          </div>
           <div class="kpi-chg" id="kpiBc" style="color:var(--t3)">—</div>
+          <div class="kpi-trend" id="kpiTrend" style="display:none"><i class="ph-bold ph-trend-up"></i> <span id="kpiTrendV">+0%</span> <span class="kpi-trendlbl">vs mes anterior</span></div>
           <div class="kpi-bar-bot" style="background:linear-gradient(90deg,var(--blue),var(--purple))"></div>
         </div>
         <div class="kpi" id="kpiI">
@@ -996,26 +1113,70 @@ body::before{
         </div>
       </section>
 
-      <!-- ▸ TOOLS ── -->
+            <!-- ▸ TOOLS → MAPA DE ESCALADA ── -->
       <section class="sec" id="secTools" style="padding-bottom:48px">
+        <!-- Módulo de progreso de plan (sed de crecer) -->
+        <div class="plan-progress" id="planProgress">
+          <div class="pp-left">
+            <div class="pp-badge">Essential</div>
+            <div class="pp-info">
+              <div class="pp-ttl">Tu negocio ya está ordenado.</div>
+              <div class="pp-sub">Desbloquea el control profesional con <strong>Business</strong> →</div>
+            </div>
+          </div>
+          <div class="pp-right">
+            <div class="pp-meta"><span id="ppUsed">0</span>/13 herramientas <span class="pp-dot">·</span> +25 por subir de plan</div>
+            <div class="pp-trk"><div class="pp-fill" id="ppFill" style="width:0%"></div></div>
+            <div class="pp-actions">
+              <a class="pp-up" href="#plans">Ver Business</a>
+              <span class="pp-up-arrow"><i class="ph-bold ph-arrow-up-right"></i></span>
+            </div>
+          </div>
+        </div>
+
         <div class="sec-hdr">
           <span class="sec-ttl">Herramientas del Plan Essential</span>
-          <span style="font-size:10px;color:var(--t3);font-weight:600">13 herramientas incluidas</span>
+          <span style="font-size:10px;color:var(--t3);font-weight:600">4 destacadas · 9 esenciales</span>
         </div>
-        <div class="tools-grid">
-          <div class="tool" data-href="{{ url_for('essential_ventas') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--gd)"><i class="ph-duotone ph-currency-dollar" style="color:var(--green2)"></i></div><div class="tool-ttl">Ventas &amp; Gastos</div><div class="tool-sub">Planilla diaria ordenada</div></div>
-          <div class="tool" data-href="{{ url_for('essential_flujo') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--bd)"><i class="ph-duotone ph-chart-line-up" style="color:var(--blue2)"></i></div><div class="tool-ttl">Flujo de Caja</div><div class="tool-sub">Liquidez inmediata</div></div>
-          <div class="tool" data-href="{{ url_for('essential_deudas') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--ad)"><i class="ph-duotone ph-clipboard-text" style="color:var(--amber2)"></i></div><div class="tool-ttl">Deudas</div><div class="tool-sub">Registro centralizado</div></div>
-          <div class="tool" data-href="{{ url_for('essential_calendario') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--pd)"><i class="ph-duotone ph-calendar-dots" style="color:var(--purple2)"></i></div><div class="tool-ttl">Calendario</div><div class="tool-sub">Fechas importantes</div></div>
-          <div class="tool" data-href="{{ url_for('essential_semaforo') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--ad)"><i class="ph-duotone ph-traffic-signal" style="color:var(--amber2)"></i></div><div class="tool-ttl">Semáforo Pymax</div><div class="tool-sub">Salud financiera visual</div></div>
-          <div class="tool" data-href="{{ url_for('essential_ia') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--bd)"><i class="ph-duotone ph-brain" style="color:var(--blue2)"></i></div><div class="tool-ttl">IA 24/7</div><div class="tool-sub">Asesor financiero</div></div>
-          <div class="tool" data-href="{{ url_for('essential_export_excel') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--gd)"><i class="ph-duotone ph-file-xls" style="color:var(--green2)"></i></div><div class="tool-ttl">Excel Básico</div><div class="tool-sub">Exportar contabilidad</div></div>
-          <div class="tool" data-href="{{ url_for('essential_fuga_dinero') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--rd)"><i class="ph-duotone ph-detective" style="color:var(--red2)"></i></div><div class="tool-ttl">Fuga de Dinero</div><div class="tool-sub">Cobros duplicados</div></div>
-          <div class="tool" data-href="{{ url_for('essential_punto_equilibrio') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--ad)"><i class="ph-duotone ph-scales" style="color:var(--amber2)"></i></div><div class="tool-ttl">Punto Equilibrio</div><div class="tool-sub">Calculadora dinámica</div></div>
-          <div class="tool" data-href="{{ url_for('essential_boveda') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--bd)"><i class="ph-duotone ph-vault" style="color:var(--blue2)"></i></div><div class="tool-ttl">Bóveda Legal</div><div class="tool-sub">Documentos + alertas</div></div>
-          <div class="tool" data-href="{{ url_for('essential_orden_express') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--pd)"><i class="ph-duotone ph-lightning" style="color:var(--purple2)"></i></div><div class="tool-ttl">Orden Express</div><div class="tool-sub">Registro en 30 seg</div></div>
-          <div class="tool" data-href="{{ url_for('essential_comunidad') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--gd)"><i class="ph-duotone ph-users-three" style="color:var(--green2)"></i></div><div class="tool-ttl">Comunidad Starter</div><div class="tool-sub">Red de emprendedores</div></div>
-          <div class="tool" data-href="{{ url_for('essential_metas') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--rd)"><i class="ph-duotone ph-target" style="color:var(--red2)"></i></div><div class="tool-ttl">Metas</div><div class="tool-sub">Objetivos financieros</div></div>
+        <!-- Favoritas destacadas -->
+        <div class="fav-grid">
+          <div class="tool tool-fav" data-href="{{ url_for('essential_ventas') }}"><div class="tool-sh"></div><div class="tool-fav-ic" style="background:var(--gd)"><i class="ph-duotone ph-currency-dollar" style="color:var(--green2)"></i></div><div class="tool-ttl">Ventas &amp; Gastos</div><div class="tool-sub">Planilla diaria ordenada</div><span class="tool-plan ess">Essential</span></div>
+          <div class="tool tool-fav" data-href="{{ url_for('essential_deudas') }}"><div class="tool-sh"></div><div class="tool-fav-ic" style="background:var(--ad)"><i class="ph-duotone ph-clipboard-text" style="color:var(--amber2)"></i></div><div class="tool-ttl">Deudas</div><div class="tool-sub">Registro centralizado</div><span class="tool-plan ess">Essential</span></div>
+          <div class="tool tool-fav" data-href="{{ url_for('essential_semaforo') }}"><div class="tool-sh"></div><div class="tool-fav-ic" style="background:var(--ad)"><i class="ph-duotone ph-traffic-signal" style="color:var(--amber2)"></i></div><div class="tool-ttl">Semáforo Pymax</div><div class="tool-sub">Salud financiera visual</div><span class="tool-plan ess">Essential</span></div>
+          <div class="tool tool-fav" data-href="{{ url_for('essential_flujo') }}"><div class="tool-sh"></div><div class="tool-fav-ic" style="background:var(--bd)"><i class="ph-duotone ph-chart-line-up" style="color:var(--blue2)"></i></div><div class="tool-ttl">Flujo de Caja</div><div class="tool-sub">Liquidez inmediata</div><span class="tool-plan ess">Essential</span></div>
+        </div>
+        <!-- Resto compactas -->
+        <div class="tools-grid tools-grid-sub">
+          <div class="tool" data-href="{{ url_for('essential_calendario') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--pd)"><i class="ph-duotone ph-calendar-dots" style="color:var(--purple2)"></i></div><div class="tool-ttl">Calendario</div><div class="tool-sub">Fechas importantes</div><span class="tool-plan ess">Essential</span></div>
+          <div class="tool" data-href="{{ url_for('essential_ia') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--bd)"><i class="ph-duotone ph-brain" style="color:var(--blue2)"></i></div><div class="tool-ttl">IA 24/7</div><div class="tool-sub">Asesor financiero</div><span class="tool-plan ess">Essential</span></div>
+          <div class="tool" data-href="{{ url_for('essential_export_excel') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--gd)"><i class="ph-duotone ph-file-xls" style="color:var(--green2)"></i></div><div class="tool-ttl">Excel Básico</div><div class="tool-sub">Exportar contabilidad</div><span class="tool-plan ess">Essential</span></div>
+          <div class="tool" data-href="{{ url_for('essential_fuga_dinero') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--rd)"><i class="ph-duotone ph-detective" style="color:var(--red2)"></i></div><div class="tool-ttl">Fuga de Dinero</div><div class="tool-sub">Cobros duplicados</div><span class="tool-plan ess">Essential</span></div>
+          <div class="tool" data-href="{{ url_for('essential_punto_equilibrio') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--ad)"><i class="ph-duotone ph-scales" style="color:var(--amber2)"></i></div><div class="tool-ttl">Punto Equilibrio</div><div class="tool-sub">Calculadora dinámica</div><span class="tool-plan ess">Essential</span></div>
+          <div class="tool" data-href="{{ url_for('essential_boveda') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--bd)"><i class="ph-duotone ph-vault" style="color:var(--blue2)"></i></div><div class="tool-ttl">Bóveda Legal</div><div class="tool-sub">Documentos + alertas</div><span class="tool-plan ess">Essential</span></div>
+          <div class="tool" data-href="{{ url_for('essential_orden_express') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--pd)"><i class="ph-duotone ph-lightning" style="color:var(--purple2)"></i></div><div class="tool-ttl">Orden Express</div><div class="tool-sub">Registro en 30 seg</div><span class="tool-plan ess">Essential</span></div>
+          <div class="tool" data-href="{{ url_for('essential_comunidad') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--gd)"><i class="ph-duotone ph-users-three" style="color:var(--green2)"></i></div><div class="tool-ttl">Comunidad Starter</div><div class="tool-sub">Red de emprendedores</div><span class="tool-plan ess">Essential</span></div>
+          <div class="tool" data-href="{{ url_for('essential_metas') }}"><div class="tool-sh"></div><div class="tool-ic" style="background:var(--rd)"><i class="ph-duotone ph-target" style="color:var(--red2)"></i></div><div class="tool-ttl">Metas</div><div class="tool-sub">Objetivos financieros</div><span class="tool-plan ess">Essential</span></div>
+        </div>
+
+        <!-- Ventana de escalamiento: Business -->
+        <div class="upsell" id="plans">
+          <div class="upsell-hdr">
+            <span class="sec-ttl">Sube a <span style="color:var(--blue2)">Business</span> y recupera el control total</span>
+          </div>
+          <div class="upsell-grid">
+            <div class="ust" data-plan="biz"><div class="ust-ic" style="background:var(--bd)"><i class="ph-duotone ph-detective" style="color:var(--blue2)"></i></div><div class="ust-b">Business</div><div class="ust-ttl">Detector de Anomalías</div><div class="ust-sub">Alertas en tiempo real ante gastos fuera de presupuesto.</div></div>
+            <div class="ust" data-plan="biz"><div class="ust-ic" style="background:var(--bd)"><i class="ph-duotone ph-magic-wand" style="color:var(--blue2)"></i></div><div class="ust-b">Business</div><div class="ust-ttl">Conciliación Magic Match</div><div class="ust-sub">Empareja el 90% de tus movimientos bancarios vía IA.</div></div>
+            <div class="ust" data-plan="biz"><div class="ust-ic" style="background:var(--bd)"><i class="ph-duotone ph-calculator" style="color:var(--blue2)"></i></div><div class="ust-b">Business</div><div class="ust-ttl">Radar de Impuestos</div><div class="ust-sub">Calcula tu IVA y PPM para evitar sorpresas mensuales.</div></div>
+            <div class="ust" data-plan="biz"><div class="ust-ic" style="background:var(--bd)"><i class="ph-duotone ph-send" style="color:var(--blue2)"></i></div><div class="ust-b">Business</div><div class="ust-ttl">Cobranza Persuasiva</div><div class="ust-sub">Recordatorios de pago automáticos por WhatsApp/Email.</div></div>
+            <div class="ust" data-plan="biz"><div class="ust-ic" style="background:var(--bd)"><i class="ph-duotone ph-user-list" style="color:var(--blue2)"></i></div><div class="ust-b">Business</div><div class="ust-ttl">Analista de Margen</div><div class="ust-sub">Descubre tus productos más y menos rentables.</div></div>
+            <div class="ust" data-plan="bfe"><div class="ust-ic" style="background:var(--pd)"><i class="ph-duotone ph-microphone" style="color:var(--purple2)"></i></div><div class="ust-b">Founder Elite</div><div class="ust-ttl">WhatsApp CFO</div><div class="ust-sub">Consulta y registra tus finanzas 100% por voz.</div></div>
+            <div class="ust" data-plan="bfe"><div class="ust-ic" style="background:var(--pd)"><i class="ph-duotone ph-crystal-ball" style="color:var(--purple2)"></i></div><div class="ust-b">Founder Elite</div><div class="ust-ttl">IA Predictiva</div><div class="ust-sub">Runway, burn rate y sugerencias proactivas autónomas.</div></div>
+            <div class="ust" data-plan="bfe"><div class="ust-ic" style="background:var(--pd)"><i class="ph-duotone ph-credit-card" style="color:var(--purple2)"></i></div><div class="ust-b">Founder Elite</div><div class="ust-ttl">Gemelo Financiero</div><div class="ust-sub">Simula el futuro de tu negocio con probabilidad estadística.</div></div>
+          </div>
+          <div class="upsell-cta">
+            <a class="btn btn-p btn-lg" href="{{ url_for('essential_progreso') }}"><i class="ph-bold ph-crown"></i> Conocer Business &amp; Founder Elite</a>
+            <span class="ust-note">Sin compromiso · Elige lo que tu negocio necesite hoy</span>
+          </div>
         </div>
       </section>
 
@@ -1040,9 +1201,18 @@ body::before{
         </div>
         <div class="ai-live"><div class="ald"></div>Activa</div>
       </div>
-      <div class="ai-ctx" id="aiCtx">
+            <div class="ai-ctx" id="aiCtx">
         <div class="sk" style="width:70px;height:18px;border-radius:100px"></div>
         <div class="sk" style="width:52px;height:18px;border-radius:100px"></div>
+      </div>
+      <!-- Señal proactiva: la IA "tiene algo que decirte" -->
+      <div class="ai-signal" id="aiSignal" style="display:none">
+        <div class="ai-signal-ic"><i class="ph-bold ph-bell-ringing"></i></div>
+        <div class="ai-signal-txt">
+          <div class="ai-signal-ttl" id="aiSignalTtl">—</div>
+          <div class="ai-signal-sub">Pregúntame y lo vemos juntos</div>
+        </div>
+        <button class="ai-signal-go" onclick="focusAI()"><i class="ph-bold ph-arrow-circle-up-right"></i></button>
       </div>
     </div>
 
@@ -1207,6 +1377,7 @@ document.addEventListener('DOMContentLoaded',async function(){
   initAnim();wireClicks();initRailTooltips();
 
   await Promise.all([loadFin(),loadBiz(),loadWeek()]);
+  updatePlanProgress();
   setTimeout(aiWelcome,1000);
   document.addEventListener('keydown',function(e){
     if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();openCP();}
@@ -1296,8 +1467,25 @@ var TOOL_SPECS={
     e:'Te pones la meta de vender $5.000.000 este mes y ves la barra avanzar cada día.'}
 };
 
+// ── PROGRESO DE PLAN (sed de crecer) ──
+function updatePlanProgress(){
+  var fill=document.getElementById('ppFill');
+  var used=document.getElementById('ppUsed');
+  // En Essential, todas las herramientas están disponibles. Mostramos uso real según transacciones.
+  var txt=document.getElementById('ppSub');
+  var f=_fin||{ing:0,gas:0};
+  // Porcentaje ilustrativo: cuánto del potencial Essential está siendo aprovechado
+  var pct=38;
+  if(f.ing>0||f.gas>0){
+    // Con actividad, mostramos un mayor aprovechamiento
+    pct=f.bal>0?64:48;
+  }
+  if(fill)fill.style.width=Math.min(pct,100)+'%';
+  if(used)used.textContent=f.ops&&f.ops.length||0;
+  if(txt&&pct>50){txt.innerHTML='Estás usando bien las herramientas esenciales. <strong>Business</strong> te lleva al siguiente nivel →';}
+}
+
 function wireClicks(){
-  // Hover reveal de especificacion en cada herramienta
   var specEl=document.getElementById('toolSpec');
   document.querySelectorAll('.tool').forEach(function(t){
     // Añade el indicador (?) en la esquina superior derecha
@@ -1377,19 +1565,35 @@ async function loadFin(){
     var ops=res.data||[];
     var ing=ops.filter(function(o){return o.type==='ingreso';}).reduce(function(a,o){return a+parseFloat(o.amount||0);},0);
     var gas=ops.filter(function(o){return o.type==='egreso';}).reduce(function(a,o){return a+parseFloat(o.amount||0);},0);
-    _fin={ing:ing,gas:gas,bal:ing-gas,mar:ing>0?Math.round(((ing-gas)/ing)*100):0,ops:ops};
-    renderHero();renderKPIs();buildBarChart();renderTx();updateSem();updateInsights();
+        _fin={ing:ing,gas:gas,bal:ing-gas,mar:ing>0?Math.round(((ing-gas)/ing)*100):0,ops:ops};
+        renderHero();renderKPIs();buildBarChart();renderTx();updateSem();updateInsights();updateAISignal();
     var ctx=document.getElementById('aiCtx');
     if(ctx)ctx.innerHTML='<div class="ctx-t">Bal <span>$'+fmt(Math.abs(_fin.bal))+'</span></div>'+
       '<div class="ctx-t">Mg <span>'+_fin.mar+'%</span></div>'+
       '<div class="ctx-t"><span>'+ops.length+'</span> tx</div>';
+    // Tendencia vs mes anterior (paralelo, fuego y olvido)
+    loadPrevMonth();
     ScrollTrigger.refresh();
   }catch(err){console.error('loadFin:',err);}
 }
 
+// Tendencia: ingresa del mes anterior para el comparativo del Sistema de Salud
+async function loadPrevMonth(){
+  try{
+    var now=new Date(),s=new Date(now.getFullYear(),now.getMonth()-1,1).toISOString(),
+        e=new Date(now.getFullYear(),now.getMonth(),0,23,59,59).toISOString();
+    var res=await _sb.from('user_operations').select('type,amount').eq('user_id',_u.id)
+      .gte('created_at',s).lte('created_at',e);
+    var ops=res.data||[];
+    var ing=ops.filter(function(o){return o.type==='ingreso';}).reduce(function(a,o){return a+parseFloat(o.amount||0);},0);
+    var gas=ops.filter(function(o){return o.type==='egreso';}).reduce(function(a,o){return a+parseFloat(o.amount||0);},0);
+    _prevCalc={ing:ing,gas:gas};
+    renderTrend();
+  }catch(err){_prevCalc=null;}
+}
+
 function renderHero(){
   var f=_fin;
-  // Balance
   var bEl=document.getElementById('heroBal');
   if(bEl){bEl.innerHTML='';countUpEl(bEl,f.bal,'$');}
   if(f.bal<0){
@@ -1431,7 +1635,53 @@ function renderKPIs(){
   var mc=document.getElementById('kpiMc');
   if(mc){mc.style.color=f.mar>20?'var(--green2)':f.mar>0?'var(--amber2)':'var(--red2)';
     mc.textContent=f.mar>20?'Saludable':f.mar>0?'Atención':'Crítico';}
+  renderHealthScore();
+  renderTrend();
 }
+
+// ── SISTEMA DE SALUD (score 0-100) ──
+function renderHealthScore(){
+  var f=_fin,score=50;
+  // Modelo simple: margen + ratio gasto/ingreso + signo del balance
+  var marW=(Math.min(Math.max(f.mar,0),50)/50)*30;          // hasta 30 pts por margen sano
+  var ingW=_fin.ing>0?Math.min(f.ing/(f.ing+f.gas||1),1)*35:0; // hasta 35 por proporción ingreso
+  score=Math.round(20+marW+ingW-(f.bal<0?25:0));
+  score=Math.max(5,Math.min(score,100));
+  var ST,arcColor;
+  if(score>=75){ST='Saludable';arcColor='#34D399';}
+  else if(score>=50){ST='Bajo control';arcColor='#FCD34D';}
+  else if(score>=30){ST='En atención';arcColor='#FB923C';}
+  else{ST='Crítico';arcColor='#FB7185';}
+  var sn=document.getElementById('scoreNum');
+  if(sn){sn.textContent=score;sn.style.color=arcColor;}
+  var arc=document.getElementById('scoreArc');
+  if(arc){
+    var C=94.2; // 2*pi*15
+    arc.style.stroke=arcColor;
+    var len=(score/100)*C;
+    arc.style.transition='stroke-dashoffset 1.2s cubic-bezier(.22,1,.36,1)';
+    requestAnimationFrame(function(){requestAnimationFrame(function(){arc.style.strokeDashoffset=(C-len)+'';});});
+  }
+  // Aplicar veredicto en el chg del balance
+  var bc=document.getElementById('kpiBc');
+  if(bc){bc.style.color=arcColor;bc.textContent=ST;}
+}
+
+// ── TENDENCIA VS MES ANTERIOR ──
+function renderTrend(){
+  var el=document.getElementById('kpiTrend');
+  var tv=document.getElementById('kpiTrendV');
+  if(!el||!tv)return;
+  if(!_prev && !_prevCalc){el.style.display='none';return;}
+  var prev=(_prevCalc&&_prevCalc.ing)||0,cur=_fin.ing||0;
+  var pct=cur>=0&&prev>0?Math.round(((cur-prev)/prev)*100):(prev===0&&cur>0?100:0);
+  el.style.display='inline-flex';
+  el.classList.remove('down');
+  var ico=el.querySelector('i');
+  if(pct>=0){el.classList.remove('down');ico.className='ph-bold ph-trend-up';tv.textContent='+'+pct+'%';}
+  else{el.classList.add('down');ico.className='ph-bold ph-trend-down';tv.textContent=pct+'%';}
+}
+var _prevCalc=null;
 
 function countOps(t){return _fin.ops.filter(function(o){return o.type===t;}).length;}
 
@@ -1556,6 +1806,41 @@ function updateSem(){
 }
 
 /* INSIGHTS */
+// ── SEÑAL PROACTIVA de la IA (mentora sobre tus números) ──
+function updateAISignal(){
+  var el=document.getElementById('aiSignal');
+  var ttl=document.getElementById('aiSignalTtl');
+  if(!el||!ttl)return;
+  var f=_fin;
+  if(!f.ops.length){el.style.display='none';return;}
+  var msg='';
+  if(f.bal<0||f.mar<0){
+    msg='Tu margen está crítico. Hablemos de cómo frenarlo.';
+    el.style.display='flex';ttl.textContent=msg;gsap.from(el,{opacity:0,y:8,duration:.5,ease:'power3.out'});return;
+  }
+  var catG={};f.ops.filter(function(o){return o.type==='egreso'&&o.category;})
+    .forEach(function(o){catG[o.category]=(catG[o.category]||0)+parseFloat(o.amount||0);});
+  var top=Object.keys(catG).sort(function(a,b){return catG[b]-catG[a];})[0];
+  var gasPct=f.ing>0?Math.round((f.gas/f.ing)*100):0;
+  if(gasPct>85)msg='El '+gasPct+'% de tus ingresos se va en gastos. Vamos a bajarlo.';
+  else if(top)msg='Tus gastos más altos están en «'+top+'». ¿Lo analizamos?';
+  else msg='Detecté algo interesante en tus números. ¿Te lo cuento?';
+  el.style.display='flex';ttl.textContent=msg;
+  gsap.from(el,{opacity:0,y:8,duration:.5,ease:'power3.out'});
+}
+function focusAI(){
+  var inp=document.getElementById('aiIn');
+  if(!inp)return;
+  toggleAI(true);
+  setTimeout(function(){inp.focus();},350);
+}
+function toggleAI(force){
+  var col=document.getElementById('aiCol');
+  if(!col)return;
+  var close=typeof force==='boolean'?!force:col.classList.contains('closed');
+  col.classList.toggle('closed',close);
+}
+
 function insCard(cls,icCls,icColor,icBg,ttl,sub,val){
   return '<div class="ins-item '+cls+'">'+
     '<div class="ins-ic" style="background:'+icBg+'"><i class="ph-bold '+icCls+'" style="color:'+icColor+'"></i></div>'+
@@ -1611,279 +1896,10 @@ function updateInsights(){
   if(f.bal>0)
     html+=insCard('ins-b','ph-piggy-bank','#60A5FA','rgba(59,130,246,.1)',
       'Flujo positivo','Tienes $'+fmt(f.bal)+' de excedente disponible.','$'+fmt(f.bal));
-  ib.innerHTML=html;
+    ib.innerHTML=html;
   gsap.from('#cardIns .ins-item',{opacity:0,x:-16,scale:.98,duration:.55,stagger:.08,ease:'power3.out'});
-}
-
-/* BIZ */
-var BIZ={retail:{i:'ph-storefront',c:'#3B82F6'},tecnico:{i:'ph-wrench',c:'#F59E0B'},gastronomia:{i:'ph-fork-knife',c:'#F43F5E'},profesional:{i:'ph-briefcase',c:'#8B5CF6'},bienestar:{i:'ph-heartbeat',c:'#10B981'}};
-async function loadBiz(){
-  var bt=null;
-  try{var r=await _sb.from('user_business_profiles').select('business_type').eq('user_id',_u.id).single();bt=r.data&&r.data.business_type;}catch(e){}
-  if(!bt){try{bt=JSON.parse(localStorage.getItem('pymax_onboarding_config')||'{}').business_type;}catch(e){}}
-  if(!bt)return;
-  var bz=BIZ[bt];if(!bz)return;
-  var el=document.getElementById('bizIcon');
-  if(el){el.style.display='flex';el.innerHTML='<i class="ph-duotone '+bz.i+'" style="color:'+bz.c+';font-size:16px"></i>';el.style.background='rgba(255,255,255,.06)';}
-}
-
-/* AI */
-function hidePrompts(){var p=document.getElementById('aiPrompts');if(p&&p.parentNode){p.style.transition='opacity .3s';p.style.opacity='0';setTimeout(function(){if(p.parentNode)p.parentNode.removeChild(p);},300);}}
-function aiWelcome(){
-  var el=document.getElementById('aiW');if(!el)return;
-  var f=_fin,m='Hola 👋 Soy Pymax AI, tu asesor financiero personal.';
-  if(f.ing>0||f.gas>0){m+=' Llevas $'+fmt(f.ing)+' en ingresos y $'+fmt(f.gas)+' en gastos.';m+=f.bal>=0?' ✅ Balance positivo.':' ⚠️ Balance negativo, revisemos.';}
-  else m+=' Sin transacciones aún. ¡Empieza registrando tus movimientos!';
-  m+=' ¿En qué te puedo ayudar?';
-  el.innerHTML='';typeText(el,m,0);
-  // Animate AI column header entrance
-  gsap.from('.ai-hdr',{opacity:0,y:-10,duration:.65,ease:'power3.out',delay:.2});
-  gsap.from('#aiPrompts .ai-prompt-card',{opacity:0,y:16,scale:.95,duration:.55,stagger:.08,ease:'power3.out',delay:.5});
-}
-function typeText(el,txt,i){if(i===0)el.textContent='';if(i<txt.length){el.textContent+=txt[i];setTimeout(function(){typeText(el,txt,i+1);},8);}}
-function addMsg(txt,role){
-  var b=document.getElementById('aiMsgs');if(!b)return;
-  var d=document.createElement('div');d.className='am '+role;d.textContent=txt;
-  d.style.cssText='opacity:0;transform:translateY(6px)';
-  b.appendChild(d);b.scrollTop=b.scrollHeight;
-  setTimeout(function(){d.style.transition='all .28s cubic-bezier(.22,1,.36,1)';d.style.opacity='1';d.style.transform='translateY(0)';},10);
-  if(role==='usr')_hist.push({role:'user',content:txt});
-}
-function showTyping(){
-  var b=document.getElementById('aiMsgs');if(!b)return null;
-  var d=document.createElement('div');d.className='typdots';d.innerHTML='<span></span><span></span><span></span>';
-  b.appendChild(d);b.scrollTop=b.scrollHeight;return d;
-}
-async function sendMsg(){var inp=document.getElementById('aiIn');var m=inp&&inp.value.trim();if(!m)return;inp.value='';addMsg(m,'usr');await callAI(m);}
-function sendChip(txt){
-  if(_aiClosed)toggleAI();
-  setTimeout(function(){addMsg(txt,'usr');callAI(txt);},_aiClosed?400:0);
-}
-async function callAI(msg){
-  var t=showTyping();
-  try{
-    var r=await fetch('/api/ai/chat',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({message:msg,context:{balance:_fin.bal,ingresos:_fin.ing,gastos:_fin.gas,margen:_fin.mar,transacciones:_fin.ops.length},history:_hist.slice(-6),plan:'essential'})});
-    var data=await r.json();if(t)t.remove();
-    var resp=data.response||'Sin respuesta del servidor.';
-    _hist.push({role:'assistant',content:resp});
-    var b=document.getElementById('aiMsgs');
-    if(b){var d=document.createElement('div');d.className='am ai';d.style.cssText='opacity:0;transform:translateY(6px)';b.appendChild(d);b.scrollTop=b.scrollHeight;
-      setTimeout(function(){d.style.transition='all .28s cubic-bezier(.22,1,.36,1)';d.style.opacity='1';d.style.transform='translateY(0)';typeText(d,resp,0);},10);}
-  }catch(e){if(t)t.remove();addMsg('Error de conexión. Por favor intenta de nuevo.','ai');}
-}
-function toggleAI(){
-  var col=document.getElementById('aiCol');_aiClosed=!_aiClosed;
-  if(_aiClosed){gsap.to(col,{width:0,duration:.3,ease:'power3.inOut',onComplete:function(){col.classList.add('closed');}});}
-  else{col.classList.remove('closed');gsap.to(col,{width:280,duration:.3,ease:'power3.inOut'});}
-  var ic=document.getElementById('aiTglI');if(ic)gsap.to(ic,{scaleX:_aiClosed?-1:1,duration:.28});
-}
-
-/* BOTTOM SHEET */
-function openBS(type){_txType=type||'ingreso';setType(_txType);document.getElementById('bsOv').classList.add('open');setTimeout(function(){var a=document.getElementById('bsAmt');if(a)a.focus();},420);}
-function closeBS(){document.getElementById('bsOv').classList.remove('open');}
-function setType(t){
-  _txType=t;var isI=t==='ingreso';
-  var tsI=document.getElementById('tsI'),tsG=document.getElementById('tsG');
-  if(tsI)tsI.className='tsb'+(isI?' ing':'');
-  if(tsG)tsG.className='tsb'+(!isI?' gas':'');
-  var sv=document.getElementById('bsSv'),st=document.getElementById('bsSvTxt'),ttl=document.getElementById('bsTitle');
-  if(sv)sv.className='bs-sv '+(isI?'is':'gs');
-  if(st)st.textContent='Guardar '+(isI?'ingreso':'gasto');
-  if(ttl)ttl.textContent='Registrar '+(isI?'ingreso':'gasto');
-}
-async function saveTx(){
-  var amt=parseFloat((document.getElementById('bsAmt')||{}).value||'0');
-  if(!amt||amt<=0){showToast('Ingresa un monto válido','amber');return;}
-  var bsD=document.getElementById('bsDate'),bsDesc=document.getElementById('bsDesc'),bsCat=document.getElementById('bsCat'),bsNote=document.getElementById('bsNote');
-  var tx={user_id:_u.id,type:_txType,amount:amt,
-    description:(bsDesc&&bsDesc.value.trim())||null,
-    category:(bsCat&&bsCat.value)||null,
-    notes:(bsNote&&bsNote.value.trim())||null,
-    created_at:new Date((bsD&&bsD.value)||Date.now()).toISOString()};
-  try{
-    var res=await _sb.from('user_operations').insert([tx]).select().single();
-    if(res.error)throw res.error;
-    _fin.ops.unshift(res.data);
-    if(_txType==='ingreso')_fin.ing+=amt;else _fin.gas+=amt;
-    _fin.bal=_fin.ing-_fin.gas;_fin.mar=_fin.ing>0?Math.round((_fin.bal/_fin.ing)*100):0;
-    closeBS();showToast((_txType==='ingreso'?'Ingreso':'Gasto')+' $'+fmt(amt)+' guardado','green');
-    ['bsAmt','bsDesc','bsNote'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
-    if(bsCat)bsCat.value='';
-    renderHero();renderKPIs();buildBarChart();renderTx();updateSem();updateInsights();
-  }catch(err){
-    _fin.ops.unshift(Object.assign({},tx,{id:'L_'+Date.now()}));
-    if(_txType==='ingreso')_fin.ing+=amt;else _fin.gas+=amt;
-    _fin.bal=_fin.ing-_fin.gas;
-    closeBS();showToast('Guardado localmente','amber');
-    renderHero();renderKPIs();renderTx();updateSem();
-  }
-}
-
-/* DRAWER */
-function openDR(id){
-  var o=_fin.ops.find(function(op){return String(op.id)===String(id);});if(!o)return;
-  _curTx=o;var isI=o.type==='ingreso';
-  var ic=document.getElementById('drIc');
-  if(ic){ic.style.background=isI?'var(--gd)':'var(--rd)';ic.innerHTML='<i class="ph-duotone '+(isI?'ph-arrow-up':'ph-arrow-down')+'" style="color:'+(isI?'var(--green2)':'var(--red2)')+'"></i>';}
-  setText('drTtl',o.description||o.category||(isI?'Ingreso':'Gasto'));
-  setText('drSub',isI?'Ingreso registrado':'Gasto registrado');
-  var am=document.getElementById('drAmt');
-  if(am){am.textContent=(isI?'+':'-')+'$'+fmt(parseFloat(o.amount||0));am.style.color=isI?'var(--green2)':'var(--red2)';}
-  var d=new Date(o.created_at);
-  document.getElementById('drRows').innerHTML=[
-    ['Tipo',isI?'✅ Ingreso':'❌ Gasto'],
-    ['Fecha',d.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'long',year:'numeric'})],
-    ['Categoría',o.category||'Sin categoría'],
-    ['Descripción',o.description||'—'],
-    ['Monto','$'+fmt(parseFloat(o.amount||0))]
-  ].map(function(r){return '<div class="dr-r"><span>'+r[0]+'</span><span>'+r[1]+'</span></div>';}).join('');
-  document.getElementById('drOv').classList.add('open');
-}
-function closeDR(){document.getElementById('drOv').classList.remove('open');_curTx=null;}
-async function delTx(){
-  if(!_curTx||!confirm('¿Eliminar esta transacción?'))return;
-  var id=_curTx.id;
-  _fin.ops=_fin.ops.filter(function(o){return o.id!==id;});
-  if(!String(id).startsWith('L_')){try{await _sb.from('user_operations').delete().eq('id',id);}catch(e){}}
-  closeDR();showToast('Transacción eliminada','red');
-  await loadFin();
-}
-
-/* CMD PALETTE */
-var _cpItems=[];
-var CP=[
-  {g:'⚡ Acciones rápidas',items:[
-    {i:'ph-plus-circle',c:'var(--green2)',bg:'var(--gd)',l:'Registrar Ingreso',s:'Añade una venta',fn:function(){openBS('ingreso');}},
-    {i:'ph-minus-circle',c:'var(--red2)',bg:'var(--rd)',l:'Registrar Gasto',s:'Añade un egreso',fn:function(){openBS('egreso');}},
-    {i:'ph-lightning',c:'var(--purple2)',bg:'var(--pd)',l:'Orden Express',s:'Registro en 30 segundos',hr:"{{ url_for('essential_orden_express') }}"},
-  ]},
-  {g:'📍 Módulos',items:[
-    {i:'ph-currency-dollar',c:'var(--green2)',bg:'var(--gd)',l:'Ingresos &amp; Gastos',s:'Registro de transacciones',hr:"{{ url_for('essential_ventas') }}"},
-    {i:'ph-chart-line-up',c:'var(--blue2)',bg:'var(--bd)',l:'Flujo de Caja',s:'Liquidez del negocio',hr:"{{ url_for('essential_flujo') }}"},
-    {i:'ph-target',c:'var(--green2)',bg:'var(--gd)',l:'Metas',s:'Objetivos financieros',hr:"{{ url_for('essential_metas') }}"},
-    {i:'ph-brain',c:'var(--blue2)',bg:'var(--bd)',l:'Asistente IA',s:'Chat financiero 24/7',hr:"{{ url_for('essential_ia') }}"},
-    {i:'ph-scales',c:'var(--amber2)',bg:'var(--ad)',l:'Punto de Equilibrio',s:'Calculadora dinámica',hr:"{{ url_for('essential_punto_equilibrio') }}"},
-    {i:'ph-detective',c:'var(--red2)',bg:'var(--rd)',l:'Fuga de Dinero',s:'Detectar cobros',hr:"{{ url_for('essential_fuga_dinero') }}"},
-    {i:'ph-vault',c:'var(--blue2)',bg:'var(--bd)',l:'Bóveda Documentos',s:'Almacenamiento legal',hr:"{{ url_for('essential_boveda') }}"},
-    {i:'ph-traffic-signal',c:'var(--amber2)',bg:'var(--ad)',l:'Semáforo Pymax',s:'Estado financiero',hr:"{{ url_for('essential_semaforo') }}"},
-    {i:'ph-file-xls',c:'var(--green2)',bg:'var(--gd)',l:'Exportar Excel',s:'Contabilidad tradicional',hr:"{{ url_for('essential_export_excel') }}"},
-    {i:'ph-users-three',c:'var(--amber2)',bg:'var(--ad)',l:'Comunidad Starter',s:'Networking emprendedor',hr:"{{ url_for('essential_comunidad') }}"},
-    {i:'ph-gauge',c:'var(--blue2)',bg:'var(--bd)',l:'Mi Progreso',s:'Tablero de avance',hr:"{{ url_for('essential_progreso') }}"},
-  ]},
-];
-function renderCP(q){
-  var res=document.getElementById('cpRes');if(!res)return;
-  var qL=(q||'').toLowerCase().trim();var html='';_cpItems=[];
-  CP.forEach(function(grp){
-    var items=grp.items.filter(function(it){return !qL||(it.l+' '+it.s).toLowerCase().indexOf(qL)>=0;});
-    if(!items.length)return;
-    html+='<div class="cp-gl">'+grp.g+'</div>';
-    items.forEach(function(it){
-      var idx=_cpItems.length;_cpItems.push(it);
-      html+='<div class="cp-it" data-idx="'+idx+'">'+
-        '<div class="cpi-ic" style="background:'+it.bg+'"><i class="ph-duotone '+it.i+'" style="color:'+it.c+'"></i></div>'+
-        '<div style="flex:1"><div class="cpil">'+it.l+'</div><div class="cpis">'+it.s+'</div></div>'+
-        '<i class="ph-bold ph-arrow-right" style="font-size:10px;color:var(--t4)"></i>'+
-      '</div>';
-    });
-  });
-  if(!html)html='<div style="padding:24px;text-align:center;color:var(--t3);font-size:12px">Sin resultados para "'+q+'"</div>';
-  res.innerHTML=html;
-  res.querySelectorAll('.cp-it').forEach(function(el){
-    el.addEventListener('click',function(){
-      var it=_cpItems[parseInt(el.dataset.idx)];if(!it)return;
-      if(it.fn)it.fn();else if(it.hr)window.location.href=it.hr;
-      closeCP();
-    });
-  });
-}
-function openCP(){document.getElementById('cpOv').classList.add('open');renderCP('');setTimeout(function(){var i=document.getElementById('cpIn');if(i)i.focus();},80);}
-function closeCP(){document.getElementById('cpOv').classList.remove('open');var i=document.getElementById('cpIn');if(i)i.value='';}
-function filterCP(q){renderCP(q);}
-function navCP(e){if(e.key==='Enter'){var s=document.querySelector('.cp-it');if(s)s.click();}if(e.key==='Escape')closeCP();}
-
-/* SCROLL ANIMATIONS */
-function initAnim(){
-  var sc=_scroller;
-  ScrollTrigger.defaults({scroller:sc,toggleActions:'play none none none'});
-  // Hero
-  gsap.from('.hero-top',{opacity:0,y:-14,duration:.7,ease:'power3.out',delay:.1});
-  gsap.from('.hero-bal',{opacity:0,y:20,duration:.85,ease:'power3.out',delay:.2});
-  gsap.from('.hero-sub',{opacity:0,y:10,duration:.65,ease:'power3.out',delay:.4});
-  // KPI bar
-  gsap.from('.kpi',{opacity:0,y:18,duration:.6,stagger:.08,ease:'power3.out',delay:.35});
-  // Quick actions — fromTo nunca baja opacity a 0 antes de disparar
-  setTimeout(function(){
-    gsap.fromTo('.qa-primary',{y:32,scale:.96},{opacity:1,y:0,scale:1,duration:.72,stagger:.12,ease:'power3.out'});
-    gsap.fromTo('.mini',{y:20,scale:.94},{opacity:1,y:0,scale:1,duration:.58,stagger:.06,ease:'power3.out',delay:.15});
-  },400);
-  // Grid — también fromTo para seguridad
-  ScrollTrigger.create({trigger:'#secGrid',start:'top 92%',onEnter:function(){
-    gsap.fromTo('#cardChart',{y:32,scale:.97},{opacity:1,y:0,scale:1,duration:.68,ease:'power3.out'});
-    gsap.fromTo('#cardTx',{y:32,scale:.97},{opacity:1,y:0,scale:1,duration:.68,ease:'power3.out',delay:.1});
-    gsap.fromTo('#cardSem',{x:22,scale:.97},{opacity:1,x:0,scale:1,duration:.64,ease:'power3.out',delay:.07});
-    gsap.fromTo('#cardWk',{x:22,scale:.97},{opacity:1,x:0,scale:1,duration:.64,ease:'power3.out',delay:.16});
-    gsap.fromTo('#cardIns',{x:22,scale:.97},{opacity:1,x:0,scale:1,duration:.64,ease:'power3.out',delay:.25});
-  }});
-  // Tools — use IntersectionObserver (custom scroller fix)
-  var _toolsAnimated=false;
-  var toolsObs=new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if(entry.isIntersecting&&!_toolsAnimated){
-        _toolsAnimated=true;
-        gsap.fromTo('.tool',{y:28,scale:.96},{opacity:1,y:0,scale:1,duration:.62,stagger:.05,ease:'power3.out'});
-        toolsObs.disconnect();
-      }
-    });
-  },{root:document.getElementById('scrollRoot'),threshold:0.05});
-  var ts=document.getElementById('secTools');if(ts)toolsObs.observe(ts);
-}
-
-/* RAIL TOOLTIPS — flotante fixed, no se recorta */
-function initRailTooltips(){
-  var tip=document.getElementById('railTip');if(!tip)return;
-  var tt=tip.querySelector('.rt-t'),td=tip.querySelector('.rt-d');
-  document.querySelectorAll('.ri[data-tip]').forEach(function(el){
-    el.addEventListener('mouseenter',function(){
-      tt.textContent=el.getAttribute('data-tip')||'';
-      td.textContent=el.getAttribute('data-desc')||'';
-      td.style.display=el.getAttribute('data-desc')?'block':'none';
-      var r=el.getBoundingClientRect();
-      tip.style.left=(r.right+10)+'px';
-      tip.style.top=(r.top+r.height/2)+'px';
-      tip.style.transform='translateY(-50%) translateX(-6px)';
-      tip.classList.add('show');
-      requestAnimationFrame(function(){tip.style.transform='translateY(-50%) translateX(0)';});
-    });
-    el.addEventListener('mouseleave',function(){tip.classList.remove('show');});
-  });
-}
-
-/* TOAST */
-function showToast(msg,color){
-  var t=document.getElementById('toast'),s=document.getElementById('toastTxt');if(!t||!s)return;
-  s.textContent=msg;var ic=t.querySelector('i');
-  var icons={green:'ph-check-circle',amber:'ph-warning',red:'ph-x-circle'};
-  var colors={green:'var(--green2)',amber:'var(--amber2)',red:'var(--red2)'};
-  if(ic){ic.className='ph-bold '+(icons[color]||'ph-check-circle');ic.style.color=colors[color]||'var(--green2)';}
-  t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2800);
-}
-
-/* UTILS */
-function fmt(n){return Math.round(Math.abs(n||0)).toLocaleString('es-CL');}
-function setText(id,v){var e=document.getElementById(id);if(e)e.textContent=v;}
-function countUp(id,val,pre){var el=document.getElementById(id);if(!el)return;el.innerHTML='';countUpEl(el,val,pre||'');}
-function countUpEl(el,val,pre){
-  var end=Math.abs(val||0),dur=900,begin=performance.now();
-  function frame(now){
-    var p=Math.min((now-begin)/dur,1),cur=Math.round(p*p*(3-2*p)*end);
-    el.textContent=(val<0?'-':'')+(pre||'')+(cur.toLocaleString('es-CL'));
-    if(p<1)requestAnimationFrame(frame);
-    else el.textContent=(val<0?'-':'')+(pre||'')+(fmt(val));
-  }
-  requestAnimationFrame(frame);
 }
 </script>
 </body>
 </html>
+  
