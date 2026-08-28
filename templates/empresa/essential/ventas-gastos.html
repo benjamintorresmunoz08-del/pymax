@@ -879,9 +879,26 @@
 
         // Verificar autenticación REAL
         async function checkAuthentication() {
-            const { data: { user }, error } = await client.auth.getUser();
-            
-            if (error || !user) {
+            let user = null;
+
+            try {
+                const { data: { session } } = await client.auth.getSession();
+                user = session && session.user;
+            } catch (e) {
+                console.warn('⚠️ getSession falló, intentando getUser:', e);
+            }
+
+            if (!user) {
+                try {
+                    const { data: { user: u }, error } = await client.auth.getUser();
+                    if (!error) user = u;
+                } catch (e) {
+                    console.warn('⚠️ getUser falló:', e);
+                }
+            }
+
+            if (!user) {
+                console.error('❌ No se detectó sesión activa en Supabase.');
                 Swal.fire({
                     title: window.i18n?.t('session_required') || 'Session required',
                     text: window.i18n?.t('login_required_text') || 'You must log in to access this module',
@@ -894,7 +911,7 @@
                 });
                 return null;
             }
-            
+
             console.log('Usuario autenticado:', user.email);
             return user;
         }
