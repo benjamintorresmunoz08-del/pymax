@@ -1709,7 +1709,7 @@ function renderTrend(){
   var el=document.getElementById('kpiTrend');
   var tv=document.getElementById('kpiTrendV');
   if(!el||!tv)return;
-  if(!_prev && !_prevCalc){el.style.display='none';return;}
+  if(!_prevCalc){el.style.display='none';return;}
   var prev=(_prevCalc&&_prevCalc.ing)||0,cur=_fin.ing||0;
   var pct=cur>=0&&prev>0?Math.round(((cur-prev)/prev)*100):(prev===0&&cur>0?100:0);
   el.style.display='inline-flex';
@@ -1963,7 +1963,7 @@ function aiWelcome(){
   gsap.from('.ai-hdr',{opacity:0,y:-10,duration:.65,ease:'power3.out',delay:.2});
   gsap.from('#aiPrompts .ai-prompt-card',{opacity:0,y:16,scale:.95,duration:.55,stagger:.08,ease:'power3.out',delay:.5});
 }
-function typeText(el,txt,i){if(i===0)el.textContent='';if(i<txt.length){el.textContent+=txt[i];setTimeout(function(){typeText(el,txt,i+1);},8);}}
+function typeText(el,txt,i){var a=Array.from(txt);if(i===0)el.textContent='';if(i<a.length){el.textContent+=a[i];setTimeout(function(){typeText(el,txt,i+1);},8);}}
 function addMsg(txt,role){
   var b=document.getElementById('aiMsgs');if(!b)return;
   var d=document.createElement('div');d.className='am '+role;d.textContent=txt;
