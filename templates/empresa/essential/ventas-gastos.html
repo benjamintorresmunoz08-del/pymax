@@ -19,6 +19,7 @@
     <script src="/static/js/pymax-performance.js"></script>
     <script src="/static/js/pymax-i18n.js"></script>
     <script src="/static/js/pymax-data-manager.js"></script>
+    <script src="/static/js/pymax-currency.js"></script>
     <script src="/static/js/pymax-real-auth.js"></script>
 
     <style>
@@ -555,6 +556,176 @@ body{background:#060A14;background-image:
 .tx-empty-t{font-size:14px;font-weight:700;color:#e2e8f0}
 .tx-empty-s{font-size:11px;color:#64748b}
 </style>
+
+    <!-- ══════════════════ PYMAX PREMIUM LAYER ══════════════════ -->
+    <style>
+        :root{
+            --vg-ink:#020617;
+            --vg-cyan:#22d3ee;
+            --vg-violet:#a78bfa;
+            --vg-emerald:#34d399;
+            --vg-rose:#fb7185;
+        }
+
+        /* ---- Ambient grid texture ---- */
+        .vg-grid{
+            position:fixed;inset:0;z-index:0;pointer-events:none;
+            background-image:
+                linear-gradient(rgba(148,163,184,.045) 1px,transparent 1px),
+                linear-gradient(90deg,rgba(148,163,184,.045) 1px,transparent 1px);
+            background-size:46px 46px;
+            mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 0%,transparent 75%);
+            -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 0%,transparent 75%);
+        }
+        .vg-grid::after{
+            content:'';position:absolute;inset:0;
+            background:radial-gradient(circle at 50% 0%,rgba(34,211,238,.06),transparent 45%);
+        }
+
+        /* ---- Animated aurora blobs ---- */
+        .vg-aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+        .vg-aurora span{position:absolute;border-radius:50%;filter:blur(90px);opacity:.35;will-change:transform}
+        .vg-aurora .va1{width:420px;height:420px;left:-120px;top:-80px;background:radial-gradient(circle,rgba(34,211,238,.5),transparent 70%);animation:vaFloat 16s ease-in-out infinite}
+        .vg-aurora .va2{width:380px;height:380px;right:-100px;top:12%;background:radial-gradient(circle,rgba(167,139,250,.5),transparent 70%);animation:vaFloat 20s ease-in-out infinite reverse}
+        .vg-aurora .va3{width:360px;height:360px;left:30%;bottom:-140px;background:radial-gradient(circle,rgba(52,211,153,.42),transparent 70%);animation:vaFloat 22s ease-in-out infinite}
+        @keyframes vaFloat{
+            0%,100%{transform:translate(0,0) scale(1)}
+            33%{transform:translate(40px,30px) scale(1.08)}
+            66%{transform:translate(-30px,20px) scale(.95)}
+        }
+
+        /* ---- Premium glass nav ---- */
+        .vg-nav{
+            position:fixed;top:0;left:0;right:0;z-index:50;
+            background:rgba(2,6,23,.72);
+            backdrop-filter:blur(22px) saturate(150%);
+            -webkit-backdrop-filter:blur(22px) saturate(150%);
+            border-bottom:1px solid rgba(255,255,255,.07);
+        }
+        .vg-nav::after{
+            content:'';position:absolute;left:0;right:0;bottom:-1px;height:1px;
+            background:linear-gradient(90deg,transparent,rgba(34,211,238,.5),rgba(167,139,250,.5),transparent);
+            opacity:.6;
+        }
+        .vg-brand-orb{
+            width:38px;height:38px;border-radius:12px;position:relative;
+            display:flex;align-items:center;justify-content:center;
+            background:linear-gradient(135deg,#22d3ee,#6366f1 55%,#a78bfa);
+            box-shadow:0 0 22px rgba(99,102,241,.55),inset 0 1px 0 rgba(255,255,255,.35);
+            font-family:'Outfit',sans-serif;font-weight:800;font-size:17px;color:#fff;
+        }
+        .vg-brand-orb::before{
+            content:'';position:absolute;inset:-3px;border-radius:15px;
+            background:conic-gradient(from 0deg,#22d3ee,#a78bfa,#22d3ee);
+            opacity:0;filter:blur(6px);z-index:-1;transition:opacity .3s;
+        }
+        .vg-brand-orb:hover::before{opacity:.55}
+        .vg-chip{
+            display:inline-flex;align-items:center;gap:8px;
+            padding:8px 13px;border-radius:100px;
+            background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);
+            font-size:11px;font-weight:700;letter-spacing:.02em;color:#cbd5e1;
+            cursor:pointer;transition:all .22s;white-space:nowrap;
+        }
+        .vg-chip:hover{background:rgba(255,255,255,.09);border-color:rgba(34,211,238,.4);color:#fff;transform:translateY(-1px)}
+        .vg-chip .chip-flag{font-size:15px;line-height:1}
+        .vg-chip .chip-chev{color:#64748b;font-size:10px}
+
+        /* ---- Hero ---- */
+        .vg-hero{position:relative;padding:22px 2px 6px}
+        .vg-eyebrow{
+            display:inline-flex;align-items:center;gap:7px;
+            font-size:10px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;
+            color:#22d3ee;padding:6px 12px;border-radius:100px;
+            background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.22);
+        }
+        .vg-title{
+            font-family:'Outfit',sans-serif;font-weight:800;letter-spacing:-.03em;
+            font-size:clamp(30px,5vw,44px);line-height:1.02;margin-top:14px;
+        }
+        .vg-title .grad{
+            background:linear-gradient(100deg,#22d3ee 0%,#818cf8 45%,#a78bfa 100%);
+            -webkit-background-clip:text;background-clip:text;color:transparent;
+            background-size:200% auto;animation:gradShift 6s ease infinite;
+        }
+        @keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+        .vg-sub{color:#94a3b8;font-size:14px;margin-top:10px;max-width:560px;line-height:1.6}
+
+        /* ---- Premium stat cards ---- */
+        .vg-stat{
+            position:relative;border-radius:22px;overflow:hidden;
+            background:linear-gradient(160deg,rgba(15,23,42,.85),rgba(9,13,26,.85));
+            border:1px solid rgba(255,255,255,.08);
+            backdrop-filter:blur(18px);
+            padding:22px 24px;transition:transform .28s,box-shadow .28s,border-color .28s;
+        }
+        .vg-stat:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.16)}
+        .vg-stat::before{
+            content:'';position:absolute;top:0;left:0;right:0;height:3px;
+            background:linear-gradient(90deg,var(--ac1),var(--ac2));opacity:.9;
+        }
+        .vg-stat::after{
+            content:'';position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:50%;
+            background:radial-gradient(circle,var(--glow),transparent 70%);opacity:.5;
+        }
+        .vg-stat .ic{
+            width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+            font-size:20px;background:var(--icbg);color:var(--ac1);
+            border:1px solid var(--icbd);box-shadow:0 0 18px var(--glow);
+        }
+        .vg-stat .lbl{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#7c8ba1;margin-top:14px}
+        .vg-stat .val{font-family:'Outfit',sans-serif;font-weight:800;font-size:clamp(24px,3vw,32px);letter-spacing:-.02em;color:#fff;margin-top:6px;font-variant-numeric:tabular-nums}
+        .vg-stat .sub{font-size:11px;color:#64748b;margin-top:5px;display:flex;align-items:center;gap:6px}
+        .vg-stat .spark{position:absolute;right:18px;bottom:18px;width:54px;height:28px;opacity:.75}
+
+        /* ---- Form & buttons polish ---- */
+        .vg-card-title{display:flex;align-items:center;gap:11px}
+        .vg-card-title .t-ic{
+            width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+            background:linear-gradient(135deg,rgba(34,211,238,.18),rgba(167,139,250,.18));
+            color:#22d3ee;font-size:17px;border:1px solid rgba(34,211,238,.25);
+        }
+        .vg-btn-primary{
+            background:linear-gradient(135deg,#06b6d4,#6366f1 60%,#a78bfa);
+            box-shadow:0 10px 30px -8px rgba(99,102,241,.65);
+        }
+        .vg-btn-primary:hover{box-shadow:0 14px 40px -8px rgba(34,211,238,.7);transform:translateY(-2px)}
+
+        /* ---- Currency modal premium ---- */
+        .cur-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+        @media(max-width:480px){.cur-grid{grid-template-columns:1fr}}
+        .cur-card{
+            position:relative;border-radius:16px;padding:16px;cursor:pointer;
+            background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);
+            transition:all .22s;overflow:hidden;
+        }
+        .cur-card:hover{background:rgba(255,255,255,.07);border-color:rgba(34,211,238,.4);transform:translateY(-2px)}
+        .cur-card.selected{
+            background:linear-gradient(150deg,rgba(34,211,238,.12),rgba(167,139,250,.12));
+            border-color:rgba(34,211,238,.55);box-shadow:0 0 0 1px rgba(34,211,238,.2),0 12px 30px -12px rgba(34,211,238,.5);
+        }
+        .cur-card .flag{font-size:24px}
+        .cur-card .code{font-family:'Outfit',sans-serif;font-weight:800;color:#fff;font-size:14px}
+        .cur-card .name{font-size:11px;color:#64748b;margin-top:2px}
+        .cur-card .sym{position:absolute;right:14px;top:14px;font-family:'Outfit',sans-serif;font-weight:700;color:#22d3ee;font-size:15px}
+        .cur-card .check{
+            position:absolute;right:14px;bottom:14px;width:18px;height:18px;border-radius:50%;
+            display:none;align-items:center;justify-content:center;background:#22d3ee;color:#02121f;font-size:11px;
+        }
+        .cur-card.selected .check{display:flex}
+
+        /* ---- Transaction list polish ---- */
+        .transaction-item{animation:txIn .35s ease both}
+        @keyframes txIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+        /* ---- Loading spinner premium ---- */
+        .loading-spinner{
+            width:34px;height:34px;border-radius:50%;
+            border:3px solid rgba(148,163,184,.15);border-top-color:#22d3ee;
+            animation:spin .7s linear infinite;
+        }
+        @keyframes spin{to{transform:rotate(360deg)}}
+    </style>
 </head>
 
 <body>    <style id="pmx-anti-flash-inline">html,body{background:#020617!important}body{transition:background .4s ease}</style>
@@ -566,6 +737,8 @@ body{background:#060A14;background-image:
       <div class="pm-txt">Preparando tu panel financiero</div>
     </div>
     <div class="nebula-bg"></div>
+    <div class="vg-aurora"><span class="va1"></span><span class="va2"></span><span class="va3"></span></div>
+    <div class="vg-grid"></div>
     <div class="amb">
       <div class="amb-blob ab1"></div>
       <div class="amb-blob ab2"></div>
@@ -573,36 +746,39 @@ body{background:#060A14;background-image:
     </div>
 
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 w-full z-50 bg-[#020617]/90 backdrop-blur-md border-b border-white/5">
+    <nav class="vg-nav">
         <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <a href="/empresa/essential" class="flex items-center gap-2 text-slate-400 hover:text-white transition group">
-                    <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/30 transition">
-                        <i class="ph-bold ph-arrow-left"></i>
-                    </div>
-                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest" data-i18n="back">Back</span>
+            <div class="flex items-center gap-3 min-w-0">
+                <a href="/empresa/essential" class="vg-chip" aria-label="Back">
+                    <i class="ph-bold ph-arrow-left"></i>
+                    <span class="hidden md:inline" data-i18n="back">Back</span>
                 </a>
-                <div class="h-6 w-px bg-white/10"></div>
-                <h1 class="text-xl font-bold text-white font-display tracking-tight">
-                    PYMAX <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400" data-i18n="sales_expenses">SALES & EXPENSES</span>
-                </h1>
+                <div class="h-6 w-px bg-white/10 hidden sm:block"></div>
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="vg-brand-orb">P</div>
+                    <div class="min-w-0">
+                        <div class="text-[10px] font-extrabold tracking-[.24em] text-slate-500 uppercase">Pymax · Essential</div>
+                        <h1 class="text-base md:text-lg font-extrabold text-white font-display leading-tight truncate">
+                            Ventas &amp; <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-violet-400">Gastos</span>
+                        </h1>
+                    </div>
+                </div>
             </div>
 
-            <div class="flex items-center gap-3">
-                <!-- Language Selector -->
-                <select data-language-selector class="text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-white/20 transition cursor-pointer mr-2">
-                    <option value="es">ES</option>
-                    <option value="en">EN</option>
-                    <option value="pt">PT</option>
+            <div class="flex items-center gap-2 md:gap-3">
+                <select data-language-selector class="vg-chip">
+                    <option value="es">🇪🇸 ES</option>
+                    <option value="en">🇺🇸 EN</option>
+                    <option value="pt">🇧🇷 PT</option>
                 </select>
-                
-                <div class="currency-selector" onclick="openCurrencyModal()">
-                    <i class="ph-bold ph-currency-circle-dollar text-cyan-400"></i>
-                    <span class="text-xs font-bold" id="currentCurrency">USD</span>
-                    <i class="ph-bold ph-caret-down text-xs text-slate-500"></i>
+
+                <div class="vg-chip" onclick="openCurrencyModal()" id="currencyChip">
+                    <span class="chip-flag" id="currencyFlag">🇨🇱</span>
+                    <span id="currentCurrency">CLP</span>
+                    <i class="ph-bold ph-caret-down chip-chev"></i>
                 </div>
 
-                <button onclick="exportData()" class="hidden md:flex items-center gap-2 px-3 py-2 rounded-full border border-cyan-500/30 text-cyan-400 bg-cyan-500/5 hover:bg-cyan-500/10 text-[10px] font-bold uppercase transition">
+                <button onclick="exportData()" class="vg-chip hidden md:inline-flex" style="color:#22d3ee;border-color:rgba(34,211,238,.3)">
                     <i class="ph-bold ph-download-simple"></i> <span data-i18n="export">Export</span>
                 </button>
             </div>
@@ -611,25 +787,38 @@ body{background:#060A14;background-image:
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 md:px-6 pt-24 pb-12 relative z-10">
-        
+
+        <!-- Hero -->
+        <div class="vg-hero">
+            <span class="vg-eyebrow"><i class="ph-duotone ph-sparkle"></i> Finanzas · Essential</span>
+            <h2 class="vg-title">Controla tu flujo con <span class="grad">claridad total</span></h2>
+            <p class="vg-sub">Registra ventas y gastos, visualiza tu balance en tiempo real y convierte tus cifras a la moneda que necesites.</p>
+        </div>
+
         <!-- Stats Overview -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 fade-in">
-            <div class="stat-card income">
-                <p class="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-2" data-i18n="total_income">Total Income</p>
-                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statIncome">$0</h3>
-                <p class="text-xs text-slate-400" id="statIncomeCount">0 transactions</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-8 mb-8">
+            <div class="vg-stat" style="--ac1:#34d399;--ac2:#22d3ee;--icbg:rgba(52,211,153,.14);--icbd:rgba(52,211,153,.3);--glow:rgba(52,211,153,.35)">
+                <div class="ic"><i class="ph-duotone ph-trend-up"></i></div>
+                <div class="lbl" data-i18n="total_income">Total Ingresos</div>
+                <div class="val" id="statIncome">$0</div>
+                <div class="sub"><i class="ph-bold ph-receipt"></i><span id="statIncomeCount">0 transacciones</span></div>
+                <svg class="spark" viewBox="0 0 54 28" preserveAspectRatio="none"><polyline points="0,24 12,18 22,20 34,10 44,12 54,4" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
 
-            <div class="stat-card expense">
-                <p class="text-xs font-bold text-rose-400 uppercase tracking-widest mb-2" data-i18n="total_expenses">Total Expenses</p>
-                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statExpense">$0</h3>
-                <p class="text-xs text-slate-400" id="statExpenseCount">0 transactions</p>
+            <div class="vg-stat" style="--ac1:#fb7185;--ac2:#f43f5e;--icbg:rgba(251,113,133,.14);--icbd:rgba(251,113,133,.3);--glow:rgba(251,113,133,.35)">
+                <div class="ic"><i class="ph-duotone ph-trend-down"></i></div>
+                <div class="lbl" data-i18n="total_expenses">Total Gastos</div>
+                <div class="val" id="statExpense">$0</div>
+                <div class="sub"><i class="ph-bold ph-receipt"></i><span id="statExpenseCount">0 transacciones</span></div>
+                <svg class="spark" viewBox="0 0 54 28" preserveAspectRatio="none"><polyline points="0,4 12,12 22,10 34,18 44,16 54,24" fill="none" stroke="#fb7185" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
 
-            <div class="stat-card balance">
-                <p class="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-2" data-i18n="net_balance">Net Balance</p>
-                <h3 class="text-3xl font-bold text-white font-display mb-1" id="statBalance">$0</h3>
-                <p class="text-xs text-slate-400" id="statProfitMargin">0% profit margin</p>
+            <div class="vg-stat" style="--ac1:#22d3ee;--ac2:#a78bfa;--icbg:rgba(34,211,238,.14);--icbd:rgba(34,211,238,.3);--glow:rgba(34,211,238,.35)">
+                <div class="ic"><i class="ph-duotone ph-scales"></i></div>
+                <div class="lbl" data-i18n="net_balance">Balance Neto</div>
+                <div class="val" id="statBalance">$0</div>
+                <div class="sub"><i class="ph-bold ph-percent"></i><span id="statProfitMargin">0% margen</span></div>
+                <svg class="spark" viewBox="0 0 54 28" preserveAspectRatio="none"><polyline points="0,20 12,14 22,16 34,8 44,14 54,6" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
         </div>
 
@@ -641,10 +830,13 @@ body{background:#060A14;background-image:
                 <!-- Quick Add Card -->
                 <div class="glass-card p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-lg font-bold text-white font-display flex items-center gap-2">
-                            <i class="ph-duotone ph-plus-circle text-cyan-400"></i>
-                            <span data-i18n="add_transaction">Add Transaction</span>
-                        </h2>
+                        <div class="vg-card-title">
+                            <div class="t-ic"><i class="ph-duotone ph-plus-circle"></i></div>
+                            <div>
+                                <h2 class="text-lg font-bold text-white font-display" data-i18n="add_transaction">Agregar Transacción</h2>
+                                <p class="text-[11px] text-slate-500">Registra un movimiento en segundos</p>
+                            </div>
+                        </div>
                         <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                     </div>
 
@@ -664,11 +856,12 @@ body{background:#060A14;background-image:
 
                         <!-- Amount -->
                         <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block" data-i18n="amount">Amount</label>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block" data-i18n="amount">Monto</label>
                             <div class="relative">
-                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-lg" id="currencySymbol">$</span>
-                                <input type="number" id="transactionAmount" placeholder="0.00" class="modern-input pl-10 text-2xl font-bold font-display" step="0.01" required>
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-300 font-bold text-sm tracking-wide" id="currencySymbol">CLP</span>
+                                <input type="number" id="transactionAmount" placeholder="0" class="modern-input pl-16 text-2xl font-bold font-display" step="0.01" required>
                             </div>
+                            <p class="text-[10px] text-slate-500 mt-1.5 flex items-center gap-1"><i class="ph-bold ph-info"></i> Se guarda en CLP · se convierte al visualizar</p>
                         </div>
 
                         <!-- Description -->
@@ -714,8 +907,9 @@ body{background:#060A14;background-image:
 
                         <!-- Action Buttons -->
                         <div class="flex gap-3 pt-2">
-                            <button type="submit" class="modern-btn btn-primary flex-1">
-                                <span id="btnSubmitText" data-i18n="add_transaction">Add Transaction</span>
+                            <button type="submit" class="modern-btn btn-primary vg-btn-primary flex-1">
+                                <i class="ph-bold ph-check-circle"></i>
+                                <span id="btnSubmitText" data-i18n="add_transaction">Agregar Transacción</span>
                             </button>
                             <button type="button" onclick="cancelEdit()" class="modern-btn btn-secondary px-4" id="btnCancel" style="display: none;">
                                 <i class="ph-bold ph-x"></i>
@@ -829,89 +1023,22 @@ body{background:#060A14;background-image:
 
     <!-- Currency Selector Modal -->
     <div id="currencyModal" class="modal-overlay">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width:520px">
             <div class="p-6 border-b border-white/10 flex justify-between items-center">
-                <h2 class="text-lg font-bold text-white font-display flex items-center gap-2">
-                    <i class="ph-fill ph-currency-circle-dollar text-cyan-400"></i>
-                    <span data-i18n="select_currency">Select Currency</span>
-                </h2>
-                <button onclick="closeCurrencyModal()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition" data-i18n-title="close">
+                <div class="flex items-center gap-3">
+                    <div style="width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(34,211,238,.18),rgba(167,139,250,.18));color:#22d3ee;border:1px solid rgba(34,211,238,.25)"><i class="ph-duotone ph-currency-circle-dollar" style="font-size:20px"></i></div>
+                    <div>
+                        <h2 class="text-lg font-bold text-white font-display">Moneda de visualización</h2>
+                        <p class="text-[11px] text-slate-500">Tus cifras se convierten al instante</p>
+                    </div>
+                </div>
+                <button onclick="closeCurrencyModal()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition">
                     <i class="ph-bold ph-x"></i>
                 </button>
             </div>
-            <div class="p-6 space-y-3 overflow-y-auto custom-scroll" style="max-height: 500px;">
-                <div class="currency-option" onclick="setCurrency('USD', '$')">
-                    <div class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 cursor-pointer transition border border-white/5 hover:border-cyan-500/50">
-                        <div>
-                            <p class="font-bold text-white">US Dollar (USD)</p>
-                            <p class="text-xs text-slate-400">United States</p>
-                        </div>
-                        <span class="text-2xl">$</span>
-                    </div>
-                </div>
-                <div class="currency-option" onclick="setCurrency('EUR', '€')">
-                    <div class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 cursor-pointer transition border border-white/5 hover:border-cyan-500/50">
-                        <div>
-                            <p class="font-bold text-white">Euro (EUR)</p>
-                            <p class="text-xs text-slate-400">European Union</p>
-                        </div>
-                        <span class="text-2xl">€</span>
-                    </div>
-                </div>
-                <div class="currency-option" onclick="setCurrency('GBP', '£')">
-                    <div class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 cursor-pointer transition border border-white/5 hover:border-cyan-500/50">
-                        <div>
-                            <p class="font-bold text-white">British Pound (GBP)</p>
-                            <p class="text-xs text-slate-400">United Kingdom</p>
-                        </div>
-                        <span class="text-2xl">£</span>
-                    </div>
-                </div>
-                <div class="currency-option" onclick="setCurrency('CLP', '$')">
-                    <div class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 cursor-pointer transition border border-white/5 hover:border-cyan-500/50">
-                        <div>
-                            <p class="font-bold text-white">Chilean Peso (CLP)</p>
-                            <p class="text-xs text-slate-400">Chile</p>
-                        </div>
-                        <span class="text-2xl">$</span>
-                    </div>
-                </div>
-                <div class="currency-option" onclick="setCurrency('MXN', '$')">
-                    <div class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 cursor-pointer transition border border-white/5 hover:border-cyan-500/50">
-                        <div>
-                            <p class="font-bold text-white">Mexican Peso (MXN)</p>
-                            <p class="text-xs text-slate-400">Mexico</p>
-                        </div>
-                        <span class="text-2xl">$</span>
-                    </div>
-                </div>
-                <div class="currency-option" onclick="setCurrency('ARS', '$')">
-                    <div class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 cursor-pointer transition border border-white/5 hover:border-cyan-500/50">
-                        <div>
-                            <p class="font-bold text-white">Argentine Peso (ARS)</p>
-                            <p class="text-xs text-slate-400">Argentina</p>
-                        </div>
-                        <span class="text-2xl">$</span>
-                    </div>
-                </div>
-                <div class="currency-option" onclick="setCurrency('BRL', 'R$')">
-                    <div class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 cursor-pointer transition border border-white/5 hover:border-cyan-500/50">
-                        <div>
-                            <p class="font-bold text-white">Brazilian Real (BRL)</p>
-                            <p class="text-xs text-slate-400">Brazil</p>
-                        </div>
-                        <span class="text-2xl">R$</span>
-                    </div>
-                </div>
-                <div class="currency-option" onclick="setCurrency('CAD', '$')">
-                    <div class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 cursor-pointer transition border border-white/5 hover:border-cyan-500/50">
-                        <div>
-                            <p class="font-bold text-white">Canadian Dollar (CAD)</p>
-                            <p class="text-xs text-slate-400">Canada</p>
-                        </div>
-                        <span class="text-2xl">$</span>
-                    </div>
-                </div>
+            <div class="p-6 overflow-y-auto custom-scroll" style="max-height:460px">
+                <div class="cur-grid" id="currencyGrid"></div>
+                <p class="text-[10px] text-slate-500 mt-4 flex items-center gap-1.5"><i class="ph-bold ph-info"></i> Moneda base: CLP · tasas de referencia aproximadas</p>
             </div>
         </div>
     </div>
@@ -1026,10 +1153,45 @@ body{background:#060A14;background-image:
         let filteredTransactions = [];
         let currentFilter = 'all';
         let currentTimePeriod = 'all';
-        let currentCurrency = 'USD';
-        let currentSymbol = '$';
+        let currentCurrency = (window.pymaxCurrency && window.pymaxCurrency.code()) || 'CLP';
+        let currentSymbol = (window.pymaxCurrency && window.pymaxCurrency.symbol()) || '$';
         let transactionChart = null;
         let displayLimit = 20;
+
+        // Formatea un monto (en CLP base) a la moneda seleccionada
+        function fmtMoney(amount) {
+            if (window.pymaxCurrency) return window.pymaxCurrency.format(amount);
+            return currentSymbol + Number(amount || 0).toLocaleString('es-CL');
+        }
+
+        function syncCurrencyUI() {
+            if (!window.pymaxCurrency) return;
+            const info = window.pymaxCurrency.getInfo();
+            currentCurrency = info.code;
+            currentSymbol = info.symbol;
+            const codeEl = document.getElementById('currentCurrency');
+            const flagEl = document.getElementById('currencyFlag');
+            const symEl = document.getElementById('currencySymbol');
+            if (codeEl) codeEl.textContent = info.code;
+            if (flagEl) flagEl.textContent = info.flag;
+            if (symEl) symEl.textContent = 'CLP';
+            renderCurrencyModal();
+        }
+
+        function renderCurrencyModal() {
+            const grid = document.getElementById('currencyGrid');
+            if (!grid || !window.pymaxCurrency) return;
+            const current = window.pymaxCurrency.code();
+            grid.innerHTML = window.pymaxCurrency.getList().map(c =>
+                `<div class="cur-card ${c.code === current ? 'selected' : ''}" onclick="setCurrency('${c.code}')">
+                    <div class="flag">${c.flag}</div>
+                    <div class="code">${c.code}</div>
+                    <div class="name">${c.name}</div>
+                    <span class="sym">${c.symbol}</span>
+                    <span class="check"><i class="ph-bold ph-check"></i></span>
+                </div>`
+            ).join('');
+        }
 
         // Categories Configuration
         const CATEGORIES = {
@@ -1092,6 +1254,7 @@ body{background:#060A14;background-image:
             updateCategories();
             initializeChart();
             loadUserCurrency();
+            syncCurrencyUI();
             
             // Actualizar contenido dinámico al cambiar idioma
             window.addEventListener('languageChanged', () => {
@@ -1117,28 +1280,27 @@ body{background:#060A14;background-image:
 
                 const { data } = await client
                     .from('user_profiles')
-                    .select('currency, currency_symbol')
+                    .select('currency')
                     .eq('id', user.id)
                     .single();
 
-                if (data && data.currency) {
-                    currentCurrency = data.currency;
-                    currentSymbol = data.currency_symbol || '$';
-                    document.getElementById('currentCurrency').textContent = currentCurrency;
-                    document.getElementById('currencySymbol').textContent = currentSymbol;
+                if (data && data.currency && window.pymaxCurrency) {
+                    window.pymaxCurrency.setCurrency(data.currency);
                 }
             } catch (error) {
                 console.error('Error loading currency:', error);
             }
+            syncCurrencyUI();
         }
 
         // Set Currency
-        async function setCurrency(currency, symbol) {
-            currentCurrency = currency;
-            currentSymbol = symbol;
-            
-            document.getElementById('currentCurrency').textContent = currency;
-            document.getElementById('currencySymbol').textContent = symbol;
+        async function setCurrency(currency) {
+            if (window.pymaxCurrency) {
+                window.pymaxCurrency.setCurrency(currency);
+            }
+            const info = window.pymaxCurrency ? window.pymaxCurrency.getInfo(currency) : { code: currency, symbol: '$' };
+            currentCurrency = info.code;
+            currentSymbol = info.symbol;
 
             // Save to user preferences
             try {
@@ -1148,7 +1310,7 @@ body{background:#060A14;background-image:
                         .from('user_profiles')
                         .update({ 
                             currency: currency, 
-                            currency_symbol: symbol 
+                            currency_symbol: info.symbol 
                         })
                         .eq('id', user.id);
                 }
@@ -1156,10 +1318,13 @@ body{background:#060A14;background-image:
                 console.error('Error saving currency:', error);
             }
 
+            syncCurrencyUI();
             closeCurrencyModal();
             renderTransactions();
             updateStatistics();
-            Toast.fire({ icon: 'success', title: `${window.i18n?.t('currency_changed') || 'Currency changed to'} ${currency}` });
+            updateQuickInsights();
+            updateChart();
+            Toast.fire({ icon: 'success', title: `${window.i18n?.t('currency_changed') || 'Moneda cambiada a'} ${currency}` });
         }
 
         // Transaction Type Toggle
@@ -1282,7 +1447,7 @@ body{background:#060A14;background-image:
                             </div>
                         </div>
                         <div class="tx-right">
-                            <p class="tx-amt ${isIncome ? 'in' : 'out'}">${isIncome ? '+' : '-'} ${currentSymbol}${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                            <p class="tx-amt ${isIncome ? 'in' : 'out'}">${isIncome ? '+' : '-'} ${fmtMoney(amount)}</p>
                             <div class="action-btns">
                                 <div class="action-btn" onclick="duplicateTransaction('${t.id}')" title="Duplicar"><i class="ph-bold ph-copy"></i></div>
                                 <div class="action-btn" onclick="editTransaction('${t.id}')" title="Editar"><i class="ph-bold ph-pencil"></i></div>
@@ -1320,9 +1485,9 @@ body{background:#060A14;background-image:
             const incomeCount = filteredTransactions.filter(t => t.type === 'ingreso' || t.type === 'income').length;
             const expenseCount = filteredTransactions.filter(t => t.type === 'egreso' || t.type === 'expense').length;
 
-            document.getElementById('statIncome').textContent = `${currentSymbol}${income.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-            document.getElementById('statExpense').textContent = `${currentSymbol}${expense.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-            document.getElementById('statBalance').textContent = `${currentSymbol}${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            document.getElementById('statIncome').textContent = fmtMoney(income);
+            document.getElementById('statExpense').textContent = fmtMoney(expense);
+            document.getElementById('statBalance').textContent = fmtMoney(balance);
             
             const transKey = incomeCount !== 1 ? 'transactions' : 'transaction';
             const expKey = expenseCount !== 1 ? 'transactions' : 'transaction';
@@ -1363,10 +1528,10 @@ body{background:#060A14;background-image:
                 .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
             const thisMonthTotal = thisMonthIncome - thisMonthExpense;
 
-            document.getElementById('avgTransaction').textContent = `${currentSymbol}${avgTransaction.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-            document.getElementById('largestExpense').textContent = `${currentSymbol}${largestExpense.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-            document.getElementById('largestIncome').textContent = `${currentSymbol}${largestIncome.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-            document.getElementById('thisMonthTotal').textContent = `${currentSymbol}${thisMonthTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            document.getElementById('avgTransaction').textContent = fmtMoney(avgTransaction);
+            document.getElementById('largestExpense').textContent = fmtMoney(largestExpense);
+            document.getElementById('largestIncome').textContent = fmtMoney(largestIncome);
+            document.getElementById('thisMonthTotal').textContent = fmtMoney(thisMonthTotal);
         }
 
         // Initialize Chart
@@ -1420,7 +1585,7 @@ body{background:#060A14;background-image:
                             displayColors: true,
                             callbacks: {
                                 label: function(context) {
-                                    return `${context.dataset.label}: ${currentSymbol}${context.parsed.y.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+                                    return `${context.dataset.label}: ${fmtMoney(context.parsed.y)}`;
                                 }
                             }
                         }
@@ -1436,7 +1601,7 @@ body{background:#060A14;background-image:
                                 color: '#64748b', 
                                 font: { size: 10 },
                                 callback: function(value) {
-                                    return currentSymbol + value.toLocaleString('en-US');
+                                    return fmtMoney(value);
                                 }
                             }
                         }
@@ -1888,9 +2053,9 @@ body{background:#060A14;background-image:
           setTimeout(function(){
             hidePre();
             if (typeof gsap !== 'undefined') {
-              gsap.from('.stat-card', {y:26, duration:.7, stagger:.12, ease:'power3.out'});
+              gsap.from('.vg-stat', {y:26, duration:.7, stagger:.12, ease:'power3.out'});
               gsap.from('.glass-card', {y:22, duration:.7, stagger:.1, ease:'power3.out', delay:.05});
-              gsap.from('main h2', {y:14, duration:.6, stagger:.08, ease:'power3.out', delay:.1});
+              gsap.from('.vg-hero', {y:16, duration:.7, ease:'power3.out', delay:.02});
             }
           }, wait);
         }
