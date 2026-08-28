@@ -743,48 +743,89 @@ body::before{
   transform:rotate(45deg);transition:left .18s,top .18s}
 
 /* ══ OVERLAYS ════════════════════════════════════════ */
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(5px);
-  opacity:0;pointer-events:none;transition:opacity .28s;z-index:900}
+.ov{position:fixed;inset:0;z-index:900;
+  background:radial-gradient(1100px 680px at 50% 115%,rgba(59,130,246,.16),transparent 62%),rgba(3,6,15,.72);
+  backdrop-filter:blur(9px) saturate(120%);
+  opacity:0;pointer-events:none;transition:opacity .32s ease}
 .ov.open{opacity:1;pointer-events:all}
-/* Bottom Sheet */
-.bs{position:fixed;bottom:0;left:0;right:0;z-index:901;background:rgba(11,16,32,.99);
-  backdrop-filter:blur(30px);border-top:1px solid rgba(148,163,184,.12);border-radius:14px 14px 0 0;
-  transform:translateY(100%);transition:transform .42s cubic-bezier(.22,1,.36,1)}
+/* Bottom Sheet — premium */
+.bs{position:fixed;bottom:0;left:0;right:0;z-index:901;margin:0 auto;max-width:520px;
+  background:linear-gradient(180deg,rgba(15,22,38,.94),rgba(7,11,21,.99));
+  backdrop-filter:blur(34px) saturate(160%);
+  border:1px solid rgba(148,163,184,.14);border-bottom:none;border-radius:24px 24px 0 0;
+  box-shadow:0 -24px 70px rgba(0,0,0,.72),0 0 0 1px rgba(255,255,255,.02) inset,0 0 80px rgba(59,130,246,.07);
+  transform:translateY(105%);transition:transform .55s cubic-bezier(.16,1,.3,1);overflow:hidden}
 .ov.open .bs{transform:translateY(0)}
-.bs-handle{width:32px;height:4px;background:rgba(255,255,255,.12);border-radius:100px;margin:10px auto 0}
-.bs-hdr{padding:12px 18px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--b)}
-.bs-ttl{font-size:14px;font-weight:700}
-.bs-x{width:24px;height:24px;border-radius:6px;background:var(--s2);border:1px solid var(--b);
-  display:flex;align-items:center;justify-content:center;cursor:pointer}
-.bs-x i{font-size:12px;color:var(--t2)}
-.type-sw{display:flex;gap:3px;margin:10px 18px 0;background:var(--s2);border:1px solid var(--b);border-radius:9px;padding:3px}
-.tsb{flex:1;padding:7px;border-radius:7px;font-size:11.5px;font-weight:600;cursor:pointer;
-  transition:all .2s;border:none;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px;
-  color:var(--t3);background:none}
-.tsb i{font-size:12px}
-.tsb.ing{background:rgba(16,185,129,.13);color:var(--green2);border:1px solid rgba(16,185,129,.2)!important}
-.tsb.gas{background:rgba(244,63,94,.1);color:var(--red2);border:1px solid rgba(244,63,94,.18)!important}
-.bs-flds{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 18px}
-.bf{display:flex;flex-direction:column;gap:4px}
+.bs::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(560px 300px at 50% -12%,rgba(52,211,153,.15),transparent 62%),
+             radial-gradient(480px 260px at 100% 100%,rgba(139,92,246,.1),transparent 60%)}
+.bs::after{content:'';position:absolute;top:0;left:12%;right:12%;height:2px;z-index:2;pointer-events:none;border-radius:0 0 4px 4px;
+  background:linear-gradient(90deg,transparent,var(--green2),transparent);box-shadow:0 0 18px rgba(52,211,153,.55);opacity:0;transition:opacity .45s}
+.ov.open .bs::after{opacity:1}
+.ov.mode-gas .bs::before{background:radial-gradient(560px 300px at 50% -12%,rgba(244,63,94,.14),transparent 62%),
+  radial-gradient(480px 260px at 0% 100%,rgba(245,158,11,.09),transparent 60%)}
+.ov.mode-gas .bs::after{background:linear-gradient(90deg,transparent,var(--red2),transparent);box-shadow:0 0 18px rgba(244,63,94,.55)}
+.bs-handle{position:relative;z-index:1;width:40px;height:4px;background:rgba(255,255,255,.14);border-radius:100px;margin:10px auto 0}
+.bs-hdr{position:relative;z-index:1;padding:14px 20px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bs-hdr-l{display:flex;align-items:center;gap:11px;min-width:0}
+.bs-hdr-t{min-width:0}
+.bs-badge{width:40px;height:40px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,rgba(52,211,153,.22),rgba(16,185,129,.05));
+  border:1px solid rgba(52,211,153,.3);box-shadow:0 0 24px rgba(52,211,153,.16)}
+.bs-badge i{font-size:19px;color:var(--green2)}
+.ov.mode-gas .bs-badge{background:linear-gradient(135deg,rgba(244,63,94,.22),rgba(244,63,94,.05));border-color:rgba(244,63,94,.32);box-shadow:0 0 24px rgba(244,63,94,.16)}
+.ov.mode-gas .bs-badge i{color:var(--red2)}
+.bs-eyebrow{font-size:9px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--t3)}
+.bs-ttl{display:block;font-size:16px;font-weight:800;letter-spacing:-.02em;color:var(--t1);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bs-x{width:30px;height:30px;border-radius:9px;background:rgba(255,255,255,.04);border:1px solid var(--b);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .18s;flex-shrink:0}
+.bs-x:hover{background:rgba(244,63,94,.12);border-color:rgba(244,63,94,.3)}
+.bs-x:hover i{color:var(--red2)}
+.bs-x i{font-size:13px;color:var(--t2);transition:color .18s}
+.type-sw{position:relative;z-index:1;display:flex;gap:4px;margin:4px 20px 0;background:rgba(255,255,255,.03);border:1px solid var(--b);border-radius:12px;padding:4px}
+.tsb{flex:1;padding:9px 8px;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;
+  transition:all .25s cubic-bezier(.34,1.56,.64,1);border:1px solid transparent;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:6px;color:var(--t3);background:none}
+.tsb i{font-size:13px}
+.tsb:hover{color:var(--t2)}
+.tsb.ing{background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(16,185,129,.08));color:var(--green2);border-color:rgba(16,185,129,.28);box-shadow:0 2px 16px rgba(16,185,129,.16)}
+.tsb.gas{background:linear-gradient(135deg,rgba(244,63,94,.18),rgba(244,63,94,.06));color:var(--red2);border-color:rgba(244,63,94,.28);box-shadow:0 2px 16px rgba(244,63,94,.16)}
+.bs-flds{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 20px 4px}
+.bf{display:flex;flex-direction:column;gap:6px}
 .bf.full{grid-column:span 2}
-.bf label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t3)}
-.bf input,.bf select{background:var(--s2);border:1px solid var(--b);border-radius:7px;
-  padding:7px 10px;font-size:12px;color:var(--t1);font-family:inherit;outline:none;
-  transition:border-color .18s,box-shadow .18s;width:100%}
-.bf input:focus,.bf select:focus{border-color:rgba(59,130,246,.45);box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+.bf label{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--t3)}
+.bf label .opt{text-transform:none;font-weight:600;opacity:.7}
+.bf label .req{color:var(--red2)}
+.bf input,.bf select{background:rgba(255,255,255,.03);border:1px solid rgba(148,163,184,.12);border-radius:11px;
+  padding:11px 12px;font-size:13px;color:var(--t1);font-family:inherit;outline:none;
+  transition:border-color .2s,box-shadow .2s,background .2s;width:100%}
+.bf input:hover,.bf select:hover{border-color:rgba(148,163,184,.24)}
+.bf input:focus,.bf select:focus{border-color:rgba(59,130,246,.5);box-shadow:0 0 0 4px rgba(59,130,246,.12);background:rgba(255,255,255,.05)}
 .bf input::placeholder{color:var(--t3)}
-.bf select option{background:var(--s2);color:var(--t1)}
-.bs-foot{padding:0 18px 16px;display:flex;gap:7px;margin-top:4px}
-.bs-sv{flex:1;padding:10px;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;
-  font-family:inherit;border:none;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:5px}
-.bs-sv.is{background:var(--green2);color:#000;box-shadow:0 2px 14px rgba(52,211,153,.4)}
-.bs-sv.is:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 4px 22px rgba(52,211,153,.55)}
-.bs-sv.gs{background:var(--red);color:#fff;box-shadow:0 2px 14px rgba(244,63,94,.4)}
-.bs-sv.gs:hover{filter:brightness(1.1);transform:translateY(-1px)}
-.bs-sv:active{transform:scale(.96)!important}
-.bs-cx{padding:10px 16px;border-radius:8px;background:var(--s2);color:var(--t2);border:1px solid var(--b);
-  font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
-.bs-cx:hover{background:var(--s3);color:var(--t1)}
+.bf select option{background:#0b1020;color:var(--t1)}
+.bf select{cursor:pointer;appearance:none;padding-right:34px}
+.sel-wrap{position:relative}
+.sel-caret{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--t3);pointer-events:none}
+.bf-amount .amt-wrap{position:relative;display:flex;align-items:center}
+.amt-cur{position:absolute;left:15px;font-size:20px;font-weight:800;color:var(--t2);pointer-events:none;z-index:1}
+.bf-amount input{height:58px;font-size:26px;font-weight:800;letter-spacing:-.02em;padding:0 16px 0 38px;border-radius:14px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(148,163,184,.15)}
+.ov.mode-ing .bf-amount input:focus{border-color:rgba(52,211,153,.55);box-shadow:0 0 0 4px rgba(52,211,153,.12),0 0 34px rgba(52,211,153,.08)}
+.ov.mode-gas .bf-amount input:focus{border-color:rgba(244,63,94,.55);box-shadow:0 0 0 4px rgba(244,63,94,.12),0 0 34px rgba(244,63,94,.08)}
+.bs-foot{position:relative;z-index:1;padding:8px 20px 18px;display:flex;gap:10px;margin-top:8px}
+.bs-cx{padding:12px 18px;border-radius:12px;background:rgba(255,255,255,.03);color:var(--t2);border:1px solid var(--b);
+  font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .18s}
+.bs-cx:hover{background:rgba(255,255,255,.06);color:var(--t1)}
+.bs-sv{flex:1;position:relative;padding:12px 16px;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;
+  font-family:inherit;border:none;transition:all .22s;display:flex;align-items:center;justify-content:center;gap:6px;overflow:hidden}
+.bs-sv i{font-size:14px}
+.bs-sv.is{background:linear-gradient(135deg,#10B981,#34D399);color:#03231a;box-shadow:0 6px 22px rgba(52,211,153,.32)}
+.bs-sv.is:hover{transform:translateY(-1px);box-shadow:0 9px 30px rgba(52,211,153,.42)}
+.bs-sv.gs{background:linear-gradient(135deg,#F43F5E,#FB7185);color:#fff;box-shadow:0 6px 22px rgba(244,63,94,.32)}
+.bs-sv.gs:hover{transform:translateY(-1px);box-shadow:0 9px 30px rgba(244,63,94,.42)}
+.bs-sv:active{transform:scale(.97)!important}
+.bs-sv::after{content:'';position:absolute;top:0;left:-80%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);transform:skewX(-20deg);transition:left .55s}
+.bs-sv:hover::after{left:130%}
 /* Drawer */
 .dr-ov{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);
   opacity:0;pointer-events:none;transition:opacity .28s;z-index:800}
@@ -1270,29 +1311,43 @@ body::before{
 <div class="ov" id="bsOv" onclick="if(event.target===this)closeBS()">
   <div class="bs">
     <div class="bs-handle"></div>
-    <div class="bs-hdr"><span class="bs-ttl" id="bsTitle">Registrar transacción</span><div class="bs-x" onclick="closeBS()"><i class="ph-bold ph-x"></i></div></div>
+    <div class="bs-hdr">
+      <div class="bs-hdr-l">
+        <div class="bs-badge"><i class="ph-duotone ph-arrow-circle-up" id="bsBadgeI"></i></div>
+        <div class="bs-hdr-t">
+          <span class="bs-eyebrow">Nueva transacción</span>
+          <span class="bs-ttl" id="bsTitle">Registrar ingreso</span>
+        </div>
+      </div>
+      <div class="bs-x" onclick="closeBS()"><i class="ph-bold ph-x"></i></div>
+    </div>
     <div class="type-sw">
-      <button class="tsb ing" id="tsI" onclick="setType('ingreso')"><i class="ph-bold ph-trend-up"></i>Ingreso</button>
-      <button class="tsb" id="tsG" onclick="setType('egreso')"><i class="ph-bold ph-trend-down"></i>Gasto</button>
+      <button class="tsb ing" id="tsI" onclick="setType('ingreso')"><i class="ph-bold ph-trend-up"></i><span>Ingreso</span></button>
+      <button class="tsb" id="tsG" onclick="setType('egreso')"><i class="ph-bold ph-trend-down"></i><span>Gasto</span></button>
     </div>
     <div class="bs-flds">
-      <div class="bf"><label>Monto ($) *</label><input type="number" id="bsAmt" placeholder="0" min="0"/></div>
-      <div class="bf"><label>Fecha</label><input type="date" id="bsDate"/></div>
-      <div class="bf full"><label>Descripción</label><input type="text" id="bsDesc" placeholder="Ej: Venta producto, Arriendo…"/></div>
-      <div class="bf"><label>Categoría</label>
-        <select id="bsCat">
-          <option value="">Sin categoría</option>
-          <option value="ventas">Ventas</option>
-          <option value="servicios">Servicios</option>
-          <option value="arriendo">Arriendo</option>
-          <option value="sueldos">Sueldos</option>
-          <option value="marketing">Marketing</option>
-          <option value="insumos">Insumos / Stock</option>
-          <option value="servicios_basicos">Servicios básicos</option>
-          <option value="otros">Otros</option>
-        </select>
+      <div class="bf bf-amount full"><label>Monto <span class="req">*</span></label>
+        <div class="amt-wrap"><span class="amt-cur">$</span><input type="number" id="bsAmt" placeholder="0" min="0" inputmode="decimal"/></div>
       </div>
-      <div class="bf"><label>Notas</label><input type="text" id="bsNote" placeholder="Opcional…"/></div>
+      <div class="bf"><label>Fecha</label><input type="date" id="bsDate"/></div>
+      <div class="bf"><label>Categoría</label>
+        <div class="sel-wrap">
+          <select id="bsCat">
+            <option value="">Sin categoría</option>
+            <option value="ventas">Ventas</option>
+            <option value="servicios">Servicios</option>
+            <option value="arriendo">Arriendo</option>
+            <option value="sueldos">Sueldos</option>
+            <option value="marketing">Marketing</option>
+            <option value="insumos">Insumos / Stock</option>
+            <option value="servicios_basicos">Servicios básicos</option>
+            <option value="otros">Otros</option>
+          </select>
+          <i class="ph-bold ph-caret-down sel-caret"></i>
+        </div>
+      </div>
+      <div class="bf full"><label>Descripción</label><input type="text" id="bsDesc" placeholder="Ej: Venta producto, Arriendo…"/></div>
+      <div class="bf full"><label>Notas <span class="opt">(opcional)</span></label><input type="text" id="bsNote" placeholder="Agrega un detalle…"/></div>
     </div>
     <div class="bs-foot">
       <button class="bs-cx" onclick="closeBS()">Cancelar</button>
@@ -2009,6 +2064,8 @@ function setType(t){
   if(sv)sv.className='bs-sv '+(isI?'is':'gs');
   if(st)st.textContent='Guardar '+(isI?'ingreso':'gasto');
   if(ttl)ttl.textContent='Registrar '+(isI?'ingreso':'gasto');
+  var ov=document.getElementById('bsOv');if(ov){ov.classList.toggle('mode-ing',isI);ov.classList.toggle('mode-gas',!isI);}
+  var bd=document.getElementById('bsBadgeI');if(bd)bd.className='ph-duotone '+(isI?'ph-arrow-circle-up':'ph-arrow-circle-down');
 }
 async function saveTx(){
   var amt=parseFloat((document.getElementById('bsAmt')||{}).value||'0');
