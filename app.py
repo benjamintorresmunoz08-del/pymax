@@ -29,6 +29,10 @@ SUPABASE_KEY = (
      os.getenv('SUPABASE_ANON_KEY') or '').strip() or _SUPABASE_DEFAULT_KEY
 )
 
+# CONFIGURACIÓN DEEPSEEK (IA de Pymax)
+DEEPSEEK_API_KEY = (os.getenv('DEEPSEEK_API_KEY') or '').strip()
+DEEPSEEK_BASE_URL = (os.getenv('DEEPSEEK_BASE_URL') or 'https://api.deepseek.com').strip()
+
 # Context processor para hacer las variables disponibles en todos los templates
 @app.context_processor
 def inject_config():
@@ -185,19 +189,19 @@ def hambre():
     return render_template('empresa/hambre/hambre.html')
 
 # ==============================================================================
-# API IA — OPENAI INTEGRADO CON CONTEXTO FINANCIERO REAL
+# API IA — DEEPSEEK INTEGRADO CON CONTEXTO FINANCIERO REAL
 # ==============================================================================
 
 PLAN_LIMITS = {
-    'essential': { 'daily_messages': 20, 'max_tokens': 500,  'model': 'gpt-4o-mini', 'months_history': 3  },
-    'tiburon':   { 'daily_messages': 100,'max_tokens': 1000, 'model': 'gpt-4o',      'months_history': 12 },
-    'hambre':    { 'daily_messages': 200,'max_tokens': 2000, 'model': 'gpt-4o',      'months_history': 24 },
+    'essential': { 'daily_messages': 20, 'max_tokens': 500,  'model': 'deepseek-chat', 'months_history': 3  },
+    'tiburon':   { 'daily_messages': 100,'max_tokens': 1000, 'model': 'deepseek-chat',      'months_history': 12 },
+    'hambre':    { 'daily_messages': 200,'max_tokens': 2000, 'model': 'deepseek-chat',      'months_history': 24 },
 }
 
 @app.route('/api/ai/chat', methods=['POST'])
 def ai_chat():
     """
-    Endpoint principal de IA — Lee contexto financiero real y consulta OpenAI.
+    Endpoint principal de IA — Lee contexto financiero real y consulta DeepSeek.
     Recibe: { message, context, history, plan }
     Devuelve: { response, tokens_used }
     """
@@ -256,8 +260,11 @@ Recuerda: el usuario confía en ti para tomar decisiones reales de su negocio.""
 
         messages.append({'role': 'user', 'content': user_msg})
 
-        # ── Llamar a OpenAI ──
-        client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+        # ── Llamar a DeepSeek (API compatible con OpenAI) ──
+        if DEEPSEEK_API_KEY:
+            client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url=DEEPSEEK_BASE_URL)
+        else:
+            client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
         completion = client.chat.completions.create(
             model=limits['model'],
