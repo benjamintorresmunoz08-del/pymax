@@ -594,43 +594,52 @@ body::before{
 }
 .ins-ai-badge i{font-size:9px;animation:insBadgePls 2s ease-in-out infinite}
 @keyframes insBadgePls{0%,100%{opacity:.6}50%{opacity:1}}
-/* Insight cards */
-.ins-item{
-  display:flex;gap:9px;padding:10px 12px;border-radius:9px;margin-bottom:7px;
-  border:1px solid;position:relative;overflow:hidden;cursor:default;
-  transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s
-}
-.ins-item:last-child{margin-bottom:0}
-.ins-item:hover{transform:translateX(4px);box-shadow:0 4px 16px rgba(0,0,0,.3)}
-/* Shimmer on hover */
-.ins-item::before{
-  content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);
-  transition:left .5s
-}
-.ins-item:hover::before{left:150%}
-/* Left accent bar */
-.ins-item::after{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;border-radius:2px 0 0 2px}
-/* Color variants */
-.ins-g{background:rgba(16,185,129,.06);border-color:rgba(52,211,153,.18)}
-.ins-g::after{background:linear-gradient(180deg,var(--green2),#059669)}
-.ins-a{background:rgba(245,158,11,.06);border-color:rgba(252,211,77,.18)}
-.ins-a::after{background:linear-gradient(180deg,var(--amber2),#D97706)}
-.ins-r{background:rgba(244,63,94,.06);border-color:rgba(251,113,133,.18)}
-.ins-r::after{background:linear-gradient(180deg,var(--red2),#E11D48)}
-.ins-b{background:rgba(59,130,246,.06);border-color:rgba(96,165,250,.18)}
-.ins-b::after{background:linear-gradient(180deg,var(--blue2),#2563EB)}
-.ins-p{background:rgba(139,92,246,.06);border-color:rgba(167,139,250,.18)}
-.ins-p::after{background:linear-gradient(180deg,var(--purple2),#6D28D9)}
-.ins-ic{
-  width:30px;height:30px;border-radius:8px;display:flex;align-items:center;
-  justify-content:center;flex-shrink:0;margin-top:1px
-}
-.ins-ic i{font-size:15px}
-.ins-body{flex:1;min-width:0}
-.ins-ttl{font-size:11.5px;font-weight:700;margin-bottom:3px;line-height:1.3;color:var(--t1)}
-.ins-sub{font-size:10px;color:var(--t2);line-height:1.5}
-.ins-val{font-size:13px;font-weight:800;margin-left:auto;flex-shrink:0;align-self:flex-start;margin-top:1px;font-variant-numeric:tabular-nums}
+/* Insight cards — premium */
+.ins-hero{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:12px;margin-bottom:10px;
+  border:1px solid;position:relative;overflow:hidden}
+.ins-hero::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(300px 120px at 20% 0%,rgba(255,255,255,.06),transparent 60%)}
+.ins-hero-ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09)}
+.ins-hero-ic i{font-size:22px}
+.ins-hero-body{flex:1;min-width:0}
+.ins-hero-eyebrow{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--t3)}
+.ins-hero-ttl{font-size:14px;font-weight:800;margin:2px 0 3px;letter-spacing:-.01em;color:var(--t1)}
+.ins-hero-sub{font-size:10.5px;color:var(--t2);line-height:1.5}
+.ins-hero-val{font-size:18px;font-weight:800;flex-shrink:0;align-self:center;font-variant-numeric:tabular-nums}
+.ins-hero.ins-g{background:linear-gradient(135deg,rgba(16,185,129,.13),rgba(16,185,129,.02));border-color:rgba(52,211,153,.2)}
+.ins-hero.ins-g .ins-hero-ic i,.ins-hero.ins-g .ins-hero-val{color:var(--green2)}
+.ins-hero.ins-a{background:linear-gradient(135deg,rgba(245,158,11,.13),rgba(245,158,11,.02));border-color:rgba(252,211,77,.2)}
+.ins-hero.ins-a .ins-hero-ic i,.ins-hero.ins-a .ins-hero-val{color:var(--amber2)}
+.ins-hero.ins-r{background:linear-gradient(135deg,rgba(244,63,94,.13),rgba(244,63,94,.02));border-color:rgba(251,113,133,.2)}
+.ins-hero.ins-r .ins-hero-ic i,.ins-hero.ins-r .ins-hero-val{color:var(--red2)}
+.ins-hero.ins-b{background:linear-gradient(135deg,rgba(59,130,246,.13),rgba(59,130,246,.02));border-color:rgba(96,165,250,.2)}
+.ins-hero.ins-b .ins-hero-ic i,.ins-hero.ins-b .ins-hero-val{color:var(--blue2)}
+
+.ins-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.ins-stat{display:flex;flex-direction:column;gap:4px;padding:10px 11px;border-radius:10px;
+  background:rgba(255,255,255,.03);border:1px solid var(--bx);position:relative;overflow:hidden;transition:background .2s,border-color .2s}
+.ins-stat:hover{background:rgba(255,255,255,.05);border-color:var(--bh)}
+.ins-stat-ic{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:2px}
+.ins-stat-ic i{font-size:14px}
+.ins-stat-lbl{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3)}
+.ins-stat-val{font-size:14px;font-weight:800;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+
+.ins-detail{padding:11px 12px;border-radius:10px;background:rgba(139,92,246,.06);border:1px solid rgba(167,139,250,.16)}
+.ins-detail-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.ins-detail-lbl{font-size:10px;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:5px}
+.ins-detail-lbl i{font-size:12px;color:var(--purple2)}
+.ins-detail-val{font-size:12px;font-weight:800;color:var(--purple2);font-variant-numeric:tabular-nums}
+.ins-detail-bar{height:5px;border-radius:100px;background:rgba(255,255,255,.06);overflow:hidden}
+.ins-detail-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,#8B5CF6,#A78BFA);box-shadow:0 0 10px rgba(139,92,246,.5);transition:width .9s cubic-bezier(.22,1,.36,1)}
+.ins-detail-sub{font-size:8.5px;color:var(--t3);margin-top:6px}
+
+.ins-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:22px 18px}
+.ins-empty-ic{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,rgba(139,92,246,.16),rgba(59,130,246,.1));border:1px solid rgba(139,92,246,.24)}
+.ins-empty-ic i{font-size:20px;color:var(--purple2)}
+.ins-empty-t{font-size:12px;font-weight:700;color:var(--t1)}
+.ins-empty-s{font-size:9.5px;color:var(--t3);line-height:1.5}
 
 /* ══ TOOLS GRID ORDENADA ══════════════════════════════ */
 .tools-grid{
@@ -1992,63 +2001,71 @@ function toggleAI(force){
   var ic=document.getElementById('aiTglI');if(ic)ic.style.transform=close?'scaleX(-1)':'scaleX(1)';
 }
 
-function insCard(cls,icCls,icColor,icBg,ttl,sub,val){
-  return '<div class="ins-item '+cls+'">'+
-    '<div class="ins-ic" style="background:'+icBg+'"><i class="ph-bold '+icCls+'" style="color:'+icColor+'"></i></div>'+
-    '<div class="ins-body"><div class="ins-ttl">'+ttl+'</div><div class="ins-sub">'+sub+'</div></div>'+
-    (val?'<div class="ins-val" style="color:'+icColor+'">'+val+'</div>':'')+
+function insStat(ic,label,icBg,icColor,val){
+  return '<div class="ins-stat">'+
+    '<div class="ins-stat-ic" style="background:'+icBg+'"><i class="ph-duotone '+ic+'" style="color:'+icColor+'"></i></div>'+
+    '<div class="ins-stat-lbl">'+label+'</div>'+
+    '<div class="ins-stat-val" style="color:'+icColor+'">'+val+'</div>'+
   '</div>';
 }
 function updateInsights(){
   var f=_fin,ib=document.getElementById('insBody');if(!ib)return;
-  var html='';
+
   if(!f.ops.length){
-    html+=insCard('ins-b','ph-rocket-launch','#60A5FA','rgba(59,130,246,.12)',
-      'Empieza ahora','Registra tu primera transacción para ver el análisis IA.','');
-    html+=insCard('ins-p','ph-brain','#A78BFA','rgba(139,92,246,.1)',
-      'Pymax IA lista','Haz una pregunta a tu asesor financiero 24/7.','▶');
-    ib.innerHTML=html;
-    gsap.from('#cardIns .ins-item',{opacity:0,x:-12,duration:.55,stagger:.1,ease:'power3.out'});
+    ib.innerHTML='<div class="ins-empty">'+
+      '<div class="ins-empty-ic"><i class="ph-duotone ph-sparkle"></i></div>'+
+      '<div class="ins-empty-t">Tu IA está lista</div>'+
+      '<div class="ins-empty-s">Registra tu primera transacción y recibirás análisis automáticos de tus números.</div>'+
+    '</div>';
     return;
   }
-  // Margen
-  if(f.mar>25)
-    html+=insCard('ins-g','ph-trend-up','#34D399','rgba(52,211,153,.12)',
-      'Margen excelente','Rentabilidad sólida, por encima del 25%.',''+f.mar+'%');
-  else if(f.mar>10)
-    html+=insCard('ins-a','ph-warning','#FCD34D','rgba(252,211,77,.1)',
-      'Margen en zona media','Hay espacio para crecer. Revisa costos variables.',''+f.mar+'%');
-  else if(f.mar>=0)
-    html+=insCard('ins-r','ph-warning-octagon','#FB7185','rgba(244,63,94,.1)',
-      'Margen crítico','Revisa urgente tu estructura de costos.',''+f.mar+'%');
-  else
-    html+=insCard('ins-r','ph-skull','#FB7185','rgba(244,63,94,.12)',
-      'Balance negativo','Gastas más de lo que ingresas. Actúa hoy.',''+f.mar+'%');
-  // Ratio gasto/ingreso
-  if(f.ing>0){
-    var ratio=Math.round((f.gas/f.ing)*100);
-    if(ratio>85)
-      html+=insCard('ins-r','ph-fire','#FB7185','rgba(244,63,94,.09)',
-        'Gastos muy altos','El '+ratio+'% de tus ingresos se va en gastos.',''+ratio+'%');
-    else if(ratio>60)
-      html+=insCard('ins-a','ph-scales','#FCD34D','rgba(252,211,77,.09)',
-        'Ratio bajo control','Los gastos son el '+ratio+'% de ingresos.',''+ratio+'%');
-    else
-      html+=insCard('ins-g','ph-check-circle','#34D399','rgba(52,211,153,.1)',
-        'Ratio saludable','Solo el '+ratio+'% de tus ingresos en gastos.',''+ratio+'%');
-  }
-  // Top categoría gasto
-  var catG={};f.ops.filter(function(o){return o.type==='egreso'&&o.category;})
-    .forEach(function(o){catG[o.category]=(catG[o.category]||0)+parseFloat(o.amount||0);});
+
+  var ratio=f.ing>0?Math.round((f.gas/f.ing)*100):0;
+  var txN=f.ops.length;
+  var ticket=txN?Math.round((f.ing+f.gas)/txN):0;
+  var catG={};f.ops.filter(function(o){return o.type==='egreso'&&o.category;}).forEach(function(o){catG[o.category]=(catG[o.category]||0)+parseFloat(o.amount||0);});
   var top=Object.keys(catG).sort(function(a,b){return catG[b]-catG[a];})[0];
-  if(top)html+=insCard('ins-p','ph-chart-pie-slice','#A78BFA','rgba(139,92,246,.1)',
-    'Mayor gasto: '+top,'Representa $'+fmt(catG[top])+' del período.','$'+fmt(catG[top]));
-  // Balance insight
-  if(f.bal>0)
-    html+=insCard('ins-b','ph-piggy-bank','#60A5FA','rgba(59,130,246,.1)',
-      'Flujo positivo','Tienes $'+fmt(f.bal)+' de excedente disponible.','$'+fmt(f.bal));
-    ib.innerHTML=html;
-  gsap.from('#cardIns .ins-item',{opacity:0,x:-16,scale:.98,duration:.55,stagger:.08,ease:'power3.out'});
+  var topV=top?catG[top]:0;
+
+  var hero;
+  if(f.bal<0||f.mar<0){hero={c:'ins-r',ic:'ph-skull',t:'Balance negativo',s:'Gastas más de lo que ingresas. Actúa hoy para frenar la sangría.',v:'-$'+fmt(f.bal)};}
+  else if(ratio>85){hero={c:'ins-r',ic:'ph-fire',t:'Gastos muy altos',s:'El '+ratio+'% de tus ingresos se va en gastos. Prioriza reducir costos.',v:ratio+'%'};}
+  else if(f.mar>25){hero={c:'ins-g',ic:'ph-trend-up',t:'Margen excelente',s:'Rentabilidad sólida, muy por encima del promedio saludable.',v:f.mar+'%'};}
+  else if(f.mar>10){hero={c:'ins-a',ic:'ph-warning',t:'Margen en zona media',s:'Hay espacio para crecer. Revisa tus costos variables.',v:f.mar+'%'};}
+  else if(f.mar>=0){hero={c:'ins-b',ic:'ph-rocket-launch',t:'Buen comienzo',s:'Tu operación está arrancando. Sigue registrando para afinar el análisis.',v:f.mar+'%'};}
+  else{hero={c:'ins-b',ic:'ph-rocket-launch',t:'Arranca tu análisis',s:'Registra más movimientos para obtener insights profundos.',v:''};}
+
+  var html='<div class="ins-hero '+hero.c+'">'+
+    '<div class="ins-hero-ic"><i class="ph-duotone '+hero.ic+'"></i></div>'+
+    '<div class="ins-hero-body">'+
+      '<div class="ins-hero-eyebrow">Insight principal</div>'+
+      '<div class="ins-hero-ttl">'+hero.t+'</div>'+
+      '<div class="ins-hero-sub">'+hero.s+'</div>'+
+    '</div>'+
+    (hero.v?'<div class="ins-hero-val">'+hero.v+'</div>':'')+
+  '</div>';
+
+  html+='<div class="ins-grid">'+
+    insStat('ph-trend-up','Margen','rgba(52,211,153,.14)','#34D399',f.mar+'%')+
+    insStat('ph-scales','Gasto / Ingreso','rgba(245,158,11,.14)','#FCD34D',ratio+'%')+
+    insStat('ph-piggy-bank','Balance','rgba(59,130,246,.14)','#60A5FA',(f.bal>=0?'+$':'-$')+fmt(f.bal))+
+    insStat('ph-receipt','Ticket promedio','rgba(139,92,246,.14)','#A78BFA','$'+fmt(ticket))+
+  '</div>';
+
+  if(top){
+    var pct=f.gas>0?Math.min(Math.round((topV/f.gas)*100),100):0;
+    html+='<div class="ins-detail">'+
+      '<div class="ins-detail-top"><span class="ins-detail-lbl"><i class="ph-bold ph-chart-pie-slice"></i>Mayor gasto: '+top+'</span><span class="ins-detail-val">$'+fmt(topV)+'</span></div>'+
+      '<div class="ins-detail-bar"><div class="ins-detail-fill" style="width:0%" data-w="'+pct+'"></div></div>'+
+      '<div class="ins-detail-sub">Representa el '+pct+'% de tus gastos del período.</div>'+
+    '</div>';
+  }
+
+  ib.innerHTML=html;
+  gsap.from('#cardIns .ins-hero,#cardIns .ins-stat,#cardIns .ins-detail',{opacity:0,y:12,scale:.97,duration:.55,stagger:.07,ease:'power3.out'});
+  if(top){
+    setTimeout(function(){var el=document.querySelector('#cardIns .ins-detail-fill');if(el)el.style.width=el.getAttribute('data-w')+'%';},150);
+  }
 }
 
 var BIZ={retail:{i:'ph-storefront',c:'#3B82F6'},tecnico:{i:'ph-wrench',c:'#F59E0B'},gastronomia:{i:'ph-fork-knife',c:'#F43F5E'},profesional:{i:'ph-briefcase',c:'#8B5CF6'},bienestar:{i:'ph-heartbeat',c:'#10B981'}};
