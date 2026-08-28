@@ -8,6 +8,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
 /* ══ TOKENS ══════════════════════════════════════════ */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -1366,13 +1367,49 @@ var _sb=null,_u=null,_fin={ing:0,gas:0,bal:0,mar:0,ops:[]},
 
 document.addEventListener('DOMContentLoaded',async function(){
   _scroller=document.getElementById('scrollRoot');
-  _sb=window.supabase.createClient('{{ SUPABASE_URL }}','{{ SUPABASE_KEY }}');
+  var SU_URL='{{ SUPABASE_URL or "https://haqjuyagyvxynmulanhe.supabase.co" }}';
+  var SU_KEY='{{ SUPABASE_KEY or "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g" }}';
+  _sb=window.supabase.createClient(SU_URL,SU_KEY);
+
+  async function goToLogin(msg){
+    console.error(msg);
+    if(window.Swal){
+      await Swal.fire({
+        title:'Sesión requerida',
+        text:'Debes iniciar sesión para acceder a este módulo',
+        icon:'warning',
+        confirmButtonText:'Ir a login',
+        background:'#0b0b14',
+        color:'#fff',
+        allowOutsideClick:false
+      });
+    }
+    window.location.href='/';
+  }
+
+  var user=null;
   try{
-    var r=await _sb.auth.getUser();
-    var user=r.data&&r.data.user;
-    if(!user){window.location.href='/';return;}
-    _u=user;initUI(user);
-  }catch(e){window.location.href='/';return;}
+    var sr=await _sb.auth.getSession();
+    user=(sr&&sr.data&&sr.data.session&&sr.data.session.user)||null;
+  }catch(e){
+    console.warn('⚠️ getSession falló, intentando getUser:',e);
+  }
+
+  if(!user){
+    try{
+      var gr=await _sb.auth.getUser();
+      user=(gr&&gr.data&&gr.data.user)||null;
+    }catch(e){
+      console.warn('⚠️ getUser falló:',e);
+    }
+  }
+
+  if(!user){
+    await goToLogin('❌ No se detectó sesión activa en Supabase.');
+    return;
+  }
+
+  _u=user;initUI(user);
   document.getElementById('bsDate').value=new Date().toISOString().split('T')[0];
   initAnim();wireClicks();initRailTooltips();
 
