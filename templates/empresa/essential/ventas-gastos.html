@@ -452,10 +452,13 @@
       #pymax-preloader .pm-mx{font-size:42px;font-weight:800;color:#fff;letter-spacing:.02em;opacity:.95}
       #pymax-preloader .pm-nm{position:relative;z-index:1;font-size:11px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:rgba(147,197,253,.55);margin-top:-8px}
       #pymax-preloader .pm-bar{position:relative;z-index:1;width:230px;height:4px;background:rgba(148,163,184,.12);border-radius:100px;overflow:hidden}
-      #pymax-preloader .pm-bar-fill{height:100%;width:0;border-radius:100px;background:linear-gradient(90deg,#3B82F6,#8B5CF6,#06B6D4);background-size:200% 100%;animation:pmFill 1.5s ease-in-out infinite,pmHue 2.4s linear infinite}
+      #pymax-preloader .pm-bar-fill{height:100%;width:0;border-radius:100px;background:linear-gradient(90deg,#3B82F6,#8B5CF6,#06B6D4);background-size:200% 100%;animation:pmFillOnce 1.5s cubic-bezier(.4,0,.2,1) forwards,pmHue 2.4s linear infinite}
       #pymax-preloader .pm-txt{position:relative;z-index:1;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(148,163,184,.55)}
       #pymax-preloader.pm-done{opacity:0;visibility:hidden;transition:opacity .45s ease,visibility .45s}
-      @keyframes pmFill{0%{width:8%}55%{width:78%}100%{width:96%}}
+      @keyframes pmFillOnce{from{width:0}to{width:100%}}
+      @keyframes pmIcpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+      #pymax-preloader .pm-ic{position:relative;z-index:1;width:58px;height:58px;border-radius:18px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#3B82F6,#06B6D4);box-shadow:0 8px 32px rgba(59,130,246,.4),0 0 0 1px rgba(255,255,255,.06) inset;animation:pmIcpulse 1.5s ease-in-out infinite;margin-top:2px}
+      #pymax-preloader .pm-ic i{font-size:26px;color:#fff}
       @keyframes pmHue{to{background-position:-200% 0}}
     </style>
 <style id="vg-premium">
@@ -525,9 +528,10 @@ body{background:#060A14;background-image:
 <body>    <style id="pmx-anti-flash-inline">html,body{background:#020617!important}body{transition:background .4s ease}</style>
     <div id="pymax-preloader">
       <div class="pm-logos"><span class="pm-lo">Py</span><span class="pm-mx">max</span></div>
-      <div class="pm-nm">Quantum ERP</div>
+      <div class="pm-ic"><i class="ph-duotone ph-currency-dollar"></i></div>
+      <div class="pm-nm">Ventas & Gastos</div>
       <div class="pm-bar"><div class="pm-bar-fill"></div></div>
-      <div class="pm-txt">Cargando tu espacio seguro</div>
+      <div class="pm-txt">Preparando tu panel financiero</div>
     </div>
     <div class="nebula-bg"></div>
     <div class="amb">
@@ -1855,20 +1859,23 @@ body{background:#060A14;background-image:
     </script>
     <script>
       (function(){
+        var started = Date.now();
         function hidePre(){var p=document.getElementById('pymax-preloader');if(p)p.classList.add('pm-done');}
-        function onReady(){hidePre();setTimeout(hidePre,400);}
-        if(document.readyState==='complete'){hidePre();}
-        else{window.addEventListener('load',onReady);}
-        setTimeout(hidePre,3500);
+        function reveal(){
+          var wait = Math.max(0, 1500 - (Date.now() - started));
+          setTimeout(function(){
+            hidePre();
+            if (typeof gsap !== 'undefined') {
+              gsap.from('.stat-card', {y:26, duration:.7, stagger:.12, ease:'power3.out'});
+              gsap.from('.glass-card', {y:22, duration:.7, stagger:.1, ease:'power3.out', delay:.05});
+              gsap.from('main h2', {y:14, duration:.6, stagger:.08, ease:'power3.out', delay:.1});
+            }
+          }, wait);
+        }
+        if(document.readyState==='complete'){reveal();}
+        else{window.addEventListener('load',reveal);}
+        setTimeout(hidePre, 2600);
       })();
-    </script>
-    <script>
-      window.addEventListener('load', function(){
-        if (typeof gsap === 'undefined') return;
-        gsap.from('.stat-card', {opacity:0, y:24, duration:.7, stagger:.12, ease:'power3.out', delay:.15});
-        gsap.from('.glass-card', {opacity:0, y:20, duration:.7, stagger:.1, ease:'power3.out', delay:.3});
-        gsap.from('main h2', {opacity:0, y:12, duration:.6, stagger:.08, ease:'power3.out', delay:.4});
-      });
     </script>
 </body>
 </html>
