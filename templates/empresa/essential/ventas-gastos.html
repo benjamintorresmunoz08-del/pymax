@@ -522,6 +522,38 @@ body{background:#060A14;background-image:
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 .fade-in{animation:fadeIn .6s cubic-bezier(.22,1,.36,1) forwards}
 .slide-up{animation:slideUp .6s cubic-bezier(.22,1,.36,1) forwards}
+
+/* Transaction list premium */
+.transaction-item{display:flex;align-items:center;gap:14px;padding:13px 16px;border-radius:14px;
+  background:rgba(255,255,255,.02);border:1px solid rgba(148,163,184,.08);
+  transition:all .25s cubic-bezier(.34,1.56,.64,1);margin-bottom:8px}
+.transaction-item:hover{background:rgba(255,255,255,.045);border-color:rgba(148,163,184,.18);transform:translateX(4px)}
+.tx-ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tx-ic.in{background:linear-gradient(135deg,rgba(52,211,153,.16),rgba(16,185,129,.05));border:1px solid rgba(52,211,153,.25);box-shadow:0 0 18px rgba(16,185,129,.12)}
+.tx-ic.out{background:linear-gradient(135deg,rgba(251,113,133,.16),rgba(244,63,94,.05));border:1px solid rgba(251,113,133,.25);box-shadow:0 0 18px rgba(244,63,94,.12)}
+.tx-ic.in i{color:#34d399;font-size:18px}
+.tx-ic.out i{color:#fb7185;font-size:18px}
+.tx-body{flex:1;min-width:0}
+.tx-top{display:flex;align-items:center;gap:8px;margin-bottom:4px;min-width:0}
+.tx-title{font-size:13.5px;font-weight:800;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx-cat{font-size:9px;font-weight:700;padding:2px 8px;border-radius:100px;background:rgba(139,92,246,.1);border:1px solid rgba(167,139,250,.2);color:#a78bfa;white-space:nowrap;flex-shrink:0}
+.tx-meta{display:flex;align-items:center;gap:6px;font-size:10.5px;color:#64748b;min-width:0}
+.tx-note{font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
+.tx-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.tx-amt{font-family:'Outfit',sans-serif;font-weight:800;font-size:16px;letter-spacing:-.01em}
+.tx-amt.in{color:#34d399}
+.tx-amt.out{color:#fb7185}
+.action-btns{display:flex;gap:4px;opacity:0;transition:opacity .2s}
+.transaction-item:hover .action-btns{opacity:1}
+.action-btn{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(255,255,255,.04);border:1px solid rgba(148,163,184,.12);color:#94a3b8;transition:all .18s}
+.action-btn:hover{background:rgba(96,165,250,.15);border-color:rgba(96,165,250,.3);color:#60a5fa;transform:scale(1.08)}
+.action-btn.danger:hover{background:rgba(244,63,94,.15);border-color:rgba(244,63,94,.3);color:#fb7185}
+.action-btn i{font-size:13px}
+.tx-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:48px 20px;text-align:center}
+.tx-empty-ic{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2)}
+.tx-empty-ic i{font-size:26px;color:#60a5fa}
+.tx-empty-t{font-size:14px;font-weight:700;color:#e2e8f0}
+.tx-empty-s{font-size:11px;color:#64748b}
 </style>
 </head>
 
@@ -1207,13 +1239,13 @@ body{background:#060A14;background-image:
             const displayData = filteredTransactions.slice(0, displayLimit);
             
             if (displayData.length === 0) {
-                const noTrans = window.i18n?.t('no_transactions') || 'No transactions found';
-                const addFirst = window.i18n?.t('add_first_transaction') || 'Add your first transaction to get started';
+                const noTrans = window.i18n?.t('no_transactions') || 'No hay transacciones';
+                const addFirst = window.i18n?.t('add_first_transaction') || 'Agrega tu primera transacción para comenzar';
                 container.innerHTML = `
-                    <div class="flex flex-col items-center justify-center py-20 text-center">
-                        <i class="ph-duotone ph-archive text-6xl text-slate-700 mb-4"></i>
-                        <p class="text-slate-500 font-medium">${noTrans}</p>
-                        <p class="text-xs text-slate-600 mt-2">${addFirst}</p>
+                    <div class="tx-empty">
+                        <div class="tx-empty-ic"><i class="ph-duotone ph-receipt"></i></div>
+                        <p class="tx-empty-t">${noTrans}</p>
+                        <p class="tx-empty-s">${addFirst}</p>
                     </div>
                 `;
                 document.getElementById('showingCount').textContent = '0';
@@ -1225,46 +1257,36 @@ body{background:#060A14;background-image:
             container.innerHTML = displayData.map(t => {
                 const isIncome = t.type === 'ingreso' || t.type === 'income';
                 const date = new Date(t.created_at);
-                const formattedDate = date.toLocaleDateString('en-US', { 
+                const formattedDate = date.toLocaleDateString('es-ES', { 
                     month: 'short', 
                     day: 'numeric', 
                     year: 'numeric' 
                 });
                 const amount = parseFloat(t.amount || 0);
+                const title = t.concept || t.description || t.title || 'Sin título';
 
                 return `
-                    <div class="transaction-item">
-                        <div class="flex items-center gap-4 flex-1">
-                            <div class="w-12 h-12 rounded-xl ${isIncome ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/10 text-rose-400 border border-rose-500/30'} flex items-center justify-center text-lg">
-                                <i class="ph-bold ${isIncome ? 'ph-trend-up' : 'ph-trend-down'}"></i>
+                    <div class="transaction-item ${isIncome ? 'tx-in' : 'tx-out'}">
+                        <div class="tx-ic ${isIncome ? 'in' : 'out'}">
+                            <i class="ph-bold ${isIncome ? 'ph-trend-up' : 'ph-trend-down'}"></i>
+                        </div>
+                        <div class="tx-body">
+                            <div class="tx-top">
+                                <p class="tx-title">${title}</p>
+                                ${t.category ? `<span class="tx-cat">${t.category}</span>` : ''}
                             </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-2 mb-1">
-                                    <p class="font-bold text-white truncate">${t.concept || 'Untitled Transaction'}</p>
-                                </div>
-                                <div class="flex items-center gap-2 text-xs text-slate-500">
-                                    <span>${formattedDate}</span>
-                                    <span>•</span>
-                                    <span>${t.category || 'Uncategorized'}</span>
-                                </div>
+                            <div class="tx-meta">
+                                <span>${formattedDate}</span>
+                                ${t.payment_method ? `<span>•</span><span>${t.payment_method}</span>` : ''}
+                                ${t.notes ? `<span>•</span><span class="tx-note">${t.notes}</span>` : ''}
                             </div>
                         </div>
-                        <div class="flex items-center gap-4">
-                            <div class="text-right">
-                                <p class="font-display font-bold text-lg ${isIncome ? 'text-emerald-400' : 'text-rose-400'}">
-                                    ${isIncome ? '+' : '-'} ${currentSymbol}${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                </p>
-                            </div>
+                        <div class="tx-right">
+                            <p class="tx-amt ${isIncome ? 'in' : 'out'}">${isIncome ? '+' : '-'} ${currentSymbol}${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                             <div class="action-btns">
-                                <div class="action-btn" onclick="duplicateTransaction('${t.id}')" data-i18n-title="duplicate" title="Duplicate">
-                                    <i class="ph-bold ph-copy"></i>
-                                </div>
-                                <div class="action-btn" onclick="editTransaction('${t.id}')" data-i18n-title="edit" title="Edit">
-                                    <i class="ph-bold ph-pencil"></i>
-                                </div>
-                                <div class="action-btn danger" onclick="deleteTransaction('${t.id}')" data-i18n-title="delete" title="Delete">
-                                    <i class="ph-bold ph-trash"></i>
-                                </div>
+                                <div class="action-btn" onclick="duplicateTransaction('${t.id}')" title="Duplicar"><i class="ph-bold ph-copy"></i></div>
+                                <div class="action-btn" onclick="editTransaction('${t.id}')" title="Editar"><i class="ph-bold ph-pencil"></i></div>
+                                <div class="action-btn danger" onclick="deleteTransaction('${t.id}')" title="Eliminar"><i class="ph-bold ph-trash"></i></div>
                             </div>
                         </div>
                     </div>
