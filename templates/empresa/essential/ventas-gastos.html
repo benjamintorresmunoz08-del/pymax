@@ -12,6 +12,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
     
     <!-- PYMAX CORE SYSTEMS -->
     <script src="/static/js/pymax-performance.js"></script>
@@ -456,6 +458,68 @@
       @keyframes pmFill{0%{width:8%}55%{width:78%}100%{width:96%}}
       @keyframes pmHue{to{background-position:-200% 0}}
     </style>
+<style id="vg-premium">
+/* ══ PYMAX PREMIUM OVERRIDE ══ */
+:root{--bg-void:#060A14;--bg-card:rgba(11,16,32,.72);--border-glass:rgba(148,163,184,.12);
+  --neon-cyan:#60a5fa;--neon-violet:#a78bfa;--neon-emerald:#34d399;--neon-rose:#fb7185;
+  --text-main:#e2e8f0;--text-muted:#94a3b8}
+body{background:#060A14;background-image:
+  linear-gradient(rgba(148,163,184,.025) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(148,163,184,.025) 1px,transparent 1px);
+  background-size:48px 48px}
+
+/* Ambient blobs */
+.amb{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.amb-blob{position:absolute;border-radius:50%;filter:blur(80px);animation:blobDrift ease-in-out infinite}
+.ab1{width:600px;height:600px;background:radial-gradient(circle,rgba(59,130,246,.13),transparent);top:-100px;right:-100px;animation-duration:18s}
+.ab2{width:500px;height:500px;background:radial-gradient(circle,rgba(139,92,246,.1),transparent);bottom:-150px;left:-100px;animation-duration:24s;animation-delay:-8s}
+.ab3{width:400px;height:400px;background:radial-gradient(circle,rgba(16,185,129,.07),transparent);top:40%;left:30%;animation-duration:20s;animation-delay:-4s}
+@keyframes blobDrift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-20px) scale(1.05)}66%{transform:translate(-20px,30px) scale(.96)}}
+
+/* Glass card premium */
+.glass-card{background:linear-gradient(165deg,rgba(15,22,38,.9),rgba(7,11,21,.9));border:1px solid rgba(148,163,184,.12);border-radius:18px;backdrop-filter:blur(24px) saturate(140%);transition:all .3s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
+.glass-card:hover{border-color:rgba(148,163,184,.22);transform:translateY(-3px);box-shadow:0 16px 44px rgba(0,0,0,.5),0 0 0 1px rgba(59,130,246,.05) inset}
+.glass-card::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,rgba(148,163,184,.25),transparent)}
+
+/* Inputs */
+.modern-input{background:rgba(11,16,32,.8);border:1px solid rgba(148,163,184,.12);border-radius:12px;padding:13px 15px;color:#fff;outline:none;transition:all .25s;font-family:'Inter',sans-serif}
+.modern-input:focus{border-color:rgba(59,130,246,.55);box-shadow:0 0 0 4px rgba(59,130,246,.12),0 0 24px rgba(59,130,246,.1);background:rgba(11,16,32,.95)}
+
+/* Buttons */
+.modern-btn{position:relative;overflow:hidden;border-radius:13px}
+.btn-primary{background:linear-gradient(135deg,#60A5FA,#3B82F6);box-shadow:0 4px 18px rgba(59,130,246,.35)}
+.btn-primary:hover{box-shadow:0 8px 30px rgba(59,130,246,.5);transform:translateY(-2px)}
+.btn-primary::after{content:'';position:absolute;top:0;left:-80%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);transform:skewX(-20deg);transition:left .5s}
+.btn-primary:hover::after{left:130%}
+
+/* Toggle income/expense */
+.toggle-option{transition:all .3s cubic-bezier(.34,1.56,.64,1);border-radius:12px}
+#optIncome.active{background:linear-gradient(135deg,rgba(52,211,153,.2),rgba(16,185,129,.07));color:#34d399;box-shadow:0 2px 16px rgba(16,185,129,.18)}
+#optExpense.active{background:linear-gradient(135deg,rgba(251,113,133,.2),rgba(244,63,94,.07));color:#fb7185;box-shadow:0 2px 16px rgba(244,63,94,.18)}
+
+/* Stat cards */
+.stat-card{border-radius:18px;background:linear-gradient(165deg,rgba(15,22,38,.88),rgba(7,11,21,.92));border:1px solid rgba(148,163,184,.12);backdrop-filter:blur(24px);position:relative;overflow:hidden;transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+.stat-card:hover{transform:translateY(-3px);border-color:rgba(148,163,184,.22);box-shadow:0 16px 44px rgba(0,0,0,.5)}
+.stat-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;border-radius:3px}
+.stat-card.income::before{background:linear-gradient(180deg,#34d399,#10b981)}
+.stat-card.expense::before{background:linear-gradient(180deg,#fb7185,#f43f5e)}
+.stat-card.balance::before{background:linear-gradient(180deg,#60a5fa,#3b82f6)}
+.stat-card::after{content:'';position:absolute;top:-60px;right:-60px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,.09),transparent 70%)}
+
+/* Chart */
+.chart-container{background:rgba(255,255,255,.02);border:1px solid rgba(148,163,184,.08);border-radius:14px;padding:16px}
+
+/* Currency + modal polish */
+.currency-selector{transition:all .25s}
+.currency-selector:hover{transform:translateY(-1px)}
+.modal-content{background:linear-gradient(165deg,#0f1626,#070b15);border:1px solid rgba(148,163,184,.14);border-radius:22px}
+
+/* Animations */
+@keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .6s cubic-bezier(.22,1,.36,1) forwards}
+.slide-up{animation:slideUp .6s cubic-bezier(.22,1,.36,1) forwards}
+</style>
 </head>
 
 <body>    <style id="pmx-anti-flash-inline">html,body{background:#020617!important}body{transition:background .4s ease}</style>
@@ -466,6 +530,11 @@
       <div class="pm-txt">Cargando tu espacio seguro</div>
     </div>
     <div class="nebula-bg"></div>
+    <div class="amb">
+      <div class="amb-blob ab1"></div>
+      <div class="amb-blob ab2"></div>
+      <div class="amb-blob ab3"></div>
+    </div>
 
     <!-- Navigation -->
     <nav class="fixed top-0 left-0 w-full z-50 bg-[#020617]/90 backdrop-blur-md border-b border-white/5">
@@ -1792,6 +1861,14 @@
         else{window.addEventListener('load',onReady);}
         setTimeout(hidePre,3500);
       })();
+    </script>
+    <script>
+      window.addEventListener('load', function(){
+        if (typeof gsap === 'undefined') return;
+        gsap.from('.stat-card', {opacity:0, y:24, duration:.7, stagger:.12, ease:'power3.out', delay:.15});
+        gsap.from('.glass-card', {opacity:0, y:20, duration:.7, stagger:.1, ease:'power3.out', delay:.3});
+        gsap.from('main h2', {opacity:0, y:12, duration:.6, stagger:.08, ease:'power3.out', delay:.4});
+      });
     </script>
 </body>
 </html>
