@@ -219,8 +219,23 @@ select.inp{appearance:none}
 .hide-sm{display:inline}
 @media(max-width:640px){.hide-sm{display:none}}
 @keyframes lpls{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+/* SweetAlert2 premium */
+.swal2-popup{background:linear-gradient(160deg,#0B1020,#101828)!important;border:1px solid rgba(59,130,246,.25)!important;border-radius:18px!important;box-shadow:0 24px 70px rgba(0,0,0,.75),0 0 0 1px rgba(59,130,246,.08)!important;font-family:'Inter',sans-serif!important;color:var(--t1)!important}
+.swal2-title{color:var(--t1)!important;font-weight:800!important;font-size:18px!important;letter-spacing:-.02em}
+.swal2-html-container{color:var(--t2)!important}
+.swal2-input{background:var(--s1)!important;border:1px solid var(--b)!important;border-radius:10px!important;color:var(--t1)!important;box-shadow:none!important;font-size:14px!important;padding:11px 13px!important}
+.swal2-input:focus{border-color:rgba(59,130,246,.5)!important;box-shadow:0 0 0 3px rgba(59,130,246,.12)!important}
+.swal2-validation-message{background:var(--rd)!important;color:var(--red2)!important}
+.swal2-confirm{background:linear-gradient(135deg,var(--blue),#2563eb)!important;border-radius:10px!important;font-weight:700!important;box-shadow:0 6px 20px rgba(59,130,246,.4)!important}
+.swal2-cancel{background:var(--s2)!important;border:1px solid var(--b)!important;color:var(--t2)!important;border-radius:10px!important;font-weight:700!important}
+.swal2-toast{background:rgba(11,16,32,.96)!important;border:1px solid rgba(59,130,246,.25)!important;border-radius:14px!important;box-shadow:0 14px 40px rgba(0,0,0,.6)!important;backdrop-filter:blur(12px)!important}
+.swal2-toast .swal2-title{font-size:13px!important;font-weight:700!important;color:var(--t1)!important}
+.swal2-icon.swal2-success{border-color:rgba(52,211,153,.5)!important;color:var(--green2)!important}
+.swal2-icon.swal2-error{border-color:rgba(244,63,94,.5)!important;color:var(--red2)!important}
+.swal2-icon.swal2-warning{border-color:rgba(245,158,11,.5)!important;color:var(--amber2)!important}
+.swal2-icon.swal2-info{border-color:rgba(59,130,246,.5)!important;color:var(--blue2)!important}
 /* ═══════════ FORMULARIO PREMIUM (Registrar transacción) ═══════════ */
-.tx-card{background:linear-gradient(160deg,rgba(59,130,246,.09),rgba(139,92,246,.05) 45%,rgba(16,185,129,.05));border:1px solid rgba(59,130,246,.22);box-shadow:0 14px 44px -20px rgba(59,130,246,.55),inset 0 1px 0 rgba(255,255,255,.04);overflow:visible}
+.tx-card{background:linear-gradient(160deg,rgba(59,130,246,.09),rgba(139,92,246,.05) 45%,rgba(16,185,129,.05));border:1px solid rgba(59,130,246,.22);box-shadow:0 14px 44px -20px rgba(59,130,246,.55),inset 0 1px 0 rgba(255,255,255,.04);overflow:visible;position:relative;z-index:60}
 .tx-card:hover{border-color:rgba(96,165,250,.4);box-shadow:0 20px 60px -22px rgba(59,130,246,.65),inset 0 1px 0 rgba(255,255,255,.06)}
 .tx-clip{position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none;z-index:0}
 .tx-glow{position:absolute;top:-60px;right:-60px;width:180px;height:180px;background:radial-gradient(circle,rgba(59,130,246,.24),transparent 70%);pointer-events:none;filter:blur(8px);z-index:0;animation:txGlow 6s ease-in-out infinite}
@@ -477,7 +492,7 @@ select.inp{appearance:none}
                                 <label class="f-lbl"><i class="ph-bold ph-currency-dollar"></i>Monto</label>
                                 <div class="amt-wrap" id="amtWrap">
                                     <span class="amt-cur" id="currencySymbol">CLP</span>
-                                    <input type="number" id="transactionAmount" placeholder="0" step="0.01" required>
+                                    <input type="text" id="transactionAmount" inputmode="numeric" placeholder="0" autocomplete="off" required>
                                     <span class="amt-glow"></span>
                                 </div>
                                 <div class="quick-amt">
@@ -726,10 +741,10 @@ select.inp{appearance:none}
             if (!user) {
                 console.error('❌ No se detectó sesión activa en Supabase.');
                 Swal.fire({
-                    title: window.i18n?.t('session_required') || 'Session required',
-                    text: window.i18n?.t('login_required_text') || 'You must log in to access this module',
+                    title: window.i18n?.t('session_required') || 'Sesión requerida',
+                    text: window.i18n?.t('login_required_text') || 'Debes iniciar sesión para acceder a este módulo',
                     icon: 'warning',
-                    confirmButtonText: window.i18n?.t('go_to_login') || 'Go to login',
+                    confirmButtonText: window.i18n?.t('go_to_login') || 'Ir al inicio de sesión',
                     background: '#0b0b14',
                     color: '#fff'
                 }).then(() => {
@@ -822,8 +837,8 @@ select.inp{appearance:none}
         }
 
         const DEFAULT_CATEGORIES = {
-            income: ['Product Sales','Service Revenue','Consulting','Subscription','Investment Return','Loan/Funding','Gift/Donation','Refund','Other Income'],
-            expense: ['Inventory/Stock','Rent/Lease','Utilities','Salaries/Wages','Marketing/Advertising','Software/Licenses','Office Supplies','Insurance','Taxes','Transportation','Professional Services','Bank Fees','Maintenance','Other Expense']
+            income: ['Ventas de productos','Servicios','Consultoría','Suscripciones','Retorno de inversión','Préstamo / Financiamiento','Regalo / Donación','Reembolso','Otros ingresos'],
+            expense: ['Inventario / Stock','Arriendo','Servicios básicos','Sueldos','Marketing / Publicidad','Software / Licencias','Útiles de oficina','Seguros','Impuestos','Transporte','Servicios profesionales','Comisiones bancarias','Mantenimiento','Otros gastos']
         };
 
         const DEFAULT_METHODS = [
@@ -870,9 +885,9 @@ select.inp{appearance:none}
             });
             
             initCustomControls();
-            await loadTransactions();
             updateCategories();
             initializeChart();
+            await loadTransactions();
             loadUserCurrency();
             syncCurrencyUI();
             
@@ -880,14 +895,14 @@ select.inp{appearance:none}
             window.addEventListener('languageChanged', () => {
                 updateCategories();
                 if (transactionChart) {
-                    transactionChart.data.datasets[0].label = window.i18n?.t('income') || 'Income';
-                    transactionChart.data.datasets[1].label = window.i18n?.t('expense') || 'Expenses';
+                    transactionChart.data.datasets[0].label = window.i18n?.t('income') || 'Ingresos';
+                    transactionChart.data.datasets[1].label = window.i18n?.t('expense') || 'Gastos';
                     transactionChart.update();
                 }
                 const editingId = document.getElementById('editingId').value;
                 document.getElementById('btnSubmitText').textContent = editingId 
-                    ? (window.i18n?.t('update_transaction') || 'Update Transaction') 
-                    : (window.i18n?.t('add_transaction') || 'Add Transaction');
+                    ? (window.i18n?.t('update_transaction') || 'Actualizar transacción') 
+                    : (window.i18n?.t('add_transaction') || 'Agregar transacción');
                 renderTransactions();
             });
         });
@@ -1197,11 +1212,18 @@ select.inp{appearance:none}
             syncTagsInput();
         }
 
-        // ── Montos rápidos ──
+        // ── Montos (formato CLP: 10.000 = diez mil) ──
+        function parseAmount(v) {
+            return parseInt(String(v).replace(/\D/g, '')) || 0;
+        }
+        function formatAmountInput(v) {
+            const n = parseAmount(v);
+            return n ? n.toLocaleString('es-CL') : '';
+        }
         function quickAmount(n) {
             const el = document.getElementById('transactionAmount');
-            const cur = parseFloat(el.value) || 0;
-            el.value = Math.round((cur + n) * 100) / 100;
+            const cur = parseAmount(el.value);
+            el.value = (cur + n).toLocaleString('es-CL');
             const wrap = document.getElementById('amtWrap');
             wrap.classList.remove('pulse');
             void wrap.offsetWidth;
@@ -1229,6 +1251,10 @@ select.inp{appearance:none}
                 const c = document.getElementById('descCount');
                 if (c) c.textContent = `${e.target.value.length}/80`;
             });
+            document.getElementById('transactionAmount').addEventListener('input', (e) => {
+                const digits = e.target.value.replace(/\D/g, '');
+                e.target.value = digits ? Number(digits).toLocaleString('es-CL') : '';
+            });
             document.addEventListener('click', (e) => {
                 if (!e.target.closest('.dd')) closeAllDropdowns();
                 if (!e.target.closest('.date-field')) closeDatePicker();
@@ -1251,7 +1277,7 @@ select.inp{appearance:none}
                 updateChart();
             } catch (error) {
                 console.error('Error loading transactions:', error);
-                Toast.fire({ icon: 'error', title: window.i18n?.t('operation_failed') || 'Failed to load transactions' });
+                Toast.fire({ icon: 'error', title: window.i18n?.t('operation_failed') || 'No se pudieron cargar las transacciones' });
             }
         }
 
@@ -1401,7 +1427,7 @@ select.inp{appearance:none}
                     labels: [],
                     datasets: [
                         {
-                            label: window.i18n?.t('income') || 'Income',
+                            label: window.i18n?.t('income') || 'Ingresos',
                             data: [],
                             backgroundColor: 'rgba(59, 130, 246, 0.85)',
                             borderColor: 'rgba(96, 165, 250, 1)',
@@ -1409,7 +1435,7 @@ select.inp{appearance:none}
                             borderRadius: 8
                         },
                         {
-                            label: window.i18n?.t('expense') || 'Expenses',
+                            label: window.i18n?.t('expense') || 'Gastos',
                             data: [],
                             backgroundColor: 'rgba(244, 63, 94, 0.85)',
                             borderColor: 'rgba(251, 113, 133, 1)',
@@ -1508,7 +1534,7 @@ select.inp{appearance:none}
             e.preventDefault();
 
             try {
-                const amount = document.getElementById('transactionAmount').value;
+                const amount = parseAmount(document.getElementById('transactionAmount').value);
                 const description = document.getElementById('transactionDescription').value;
                 const type = document.getElementById('transactionType').value;
                 const category = document.getElementById('transactionCategory').value;
@@ -1518,11 +1544,11 @@ select.inp{appearance:none}
                 const editingId = document.getElementById('editingId').value;
 
                 if (!amount || !description || !category) {
-                    throw new Error(window.i18n?.t('fill_all_fields') || 'Please fill in all required fields');
+                    throw new Error(window.i18n?.t('fill_all_fields') || 'Completa todos los campos requeridos');
                 }
 
                 const transactionData = {
-                    amount: parseFloat(amount),
+                    amount: amount,
                     concept: description,
                     description: description,
                     type: type === 'income' ? 'ingreso' : 'egreso',
@@ -1539,7 +1565,7 @@ select.inp{appearance:none}
                     result = await pymaxData.addOperation(transactionData);
                 }
 
-                if (!result.success) throw result.error || new Error('Operation failed');
+                if (!result.success) throw result.error || new Error('Operación fallida');
 
                 // Reset form
                 document.getElementById('transactionForm').reset();
@@ -1548,7 +1574,7 @@ select.inp{appearance:none}
                 selectCategory('');
                 selectMethod('');
                 document.getElementById('editingId').value = '';
-                document.getElementById('btnSubmitText').textContent = window.i18n?.t('add_transaction') || 'Add Transaction';
+                document.getElementById('btnSubmitText').textContent = window.i18n?.t('add_transaction') || 'Agregar transacción';
                 document.getElementById('btnCancel').style.display = 'none';
                 setType('income');
 
@@ -1556,7 +1582,7 @@ select.inp{appearance:none}
                 
                 Toast.fire({
                     icon: 'success',
-                    title: editingId ? (window.i18n?.t('transaction_updated') || 'Transaction updated') : (window.i18n?.t('transaction_added') || 'Transaction added')
+                    title: editingId ? (window.i18n?.t('transaction_updated') || 'Transacción actualizada') : (window.i18n?.t('transaction_added') || 'Transacción agregada')
                 });
 
             } catch (error) {
@@ -1580,7 +1606,7 @@ select.inp{appearance:none}
             const type = transaction.type === 'ingreso' ? 'income' : 'expense';
             setType(type);
 
-            document.getElementById('transactionAmount').value = transaction.amount;
+            document.getElementById('transactionAmount').value = formatAmountInput(transaction.amount);
             document.getElementById('transactionDescription').value = transaction.concept || '';
             const dc = document.getElementById('descCount');
             if (dc) dc.textContent = `${(transaction.concept || '').length}/80`;
@@ -1603,7 +1629,7 @@ select.inp{appearance:none}
             }
 
             document.getElementById('editingId').value = id;
-            document.getElementById('btnSubmitText').textContent = window.i18n?.t('update_transaction') || 'Update Transaction';
+            document.getElementById('btnSubmitText').textContent = window.i18n?.t('update_transaction') || 'Actualizar transacción';
             document.getElementById('btnCancel').style.display = 'block';
 
             // Scroll to form
@@ -1618,7 +1644,7 @@ select.inp{appearance:none}
             selectCategory('');
             selectMethod('');
             document.getElementById('editingId').value = '';
-            document.getElementById('btnSubmitText').textContent = window.i18n?.t('add_transaction') || 'Add Transaction';
+            document.getElementById('btnSubmitText').textContent = window.i18n?.t('add_transaction') || 'Agregar transacción';
             document.getElementById('btnCancel').style.display = 'none';
             setType('income');
         }
@@ -1656,11 +1682,11 @@ select.inp{appearance:none}
                 if (!res.success) throw res.error;
 
                 await loadTransactions();
-                Toast.fire({ icon: 'success', title: window.i18n?.t('transaction_duplicated') || 'Transaction duplicated' });
+                Toast.fire({ icon: 'success', title: window.i18n?.t('transaction_duplicated') || 'Transacción duplicada' });
 
             } catch (error) {
                 console.error('Error duplicating transaction:', error);
-                Toast.fire({ icon: 'error', title: window.i18n?.t('operation_failed') || 'Failed to duplicate transaction' });
+                Toast.fire({ icon: 'error', title: window.i18n?.t('operation_failed') || 'No se pudo duplicar la transacción' });
             }
         }
 
@@ -1685,11 +1711,11 @@ select.inp{appearance:none}
                 if (!res.success) throw res.error;
 
                 await loadTransactions();
-                Toast.fire({ icon: 'success', title: window.i18n?.t('transaction_deleted') || 'Transaction deleted' });
+                Toast.fire({ icon: 'success', title: window.i18n?.t('transaction_deleted') || 'Transacción eliminada' });
 
             } catch (error) {
                 console.error('Error deleting transaction:', error);
-                Toast.fire({ icon: 'error', title: window.i18n?.t('operation_failed') || 'Failed to delete transaction' });
+                Toast.fire({ icon: 'error', title: window.i18n?.t('operation_failed') || 'No se pudo eliminar la transacción' });
             }
         }
 
@@ -1828,7 +1854,7 @@ select.inp{appearance:none}
             updateChart();
             closeFiltersModal();
             
-            Toast.fire({ icon: 'success', title: window.i18n?.t('filters_applied') || 'Filters applied' });
+            Toast.fire({ icon: 'success', title: window.i18n?.t('filters_applied') || 'Filtros aplicados' });
         }
 
         // Clear Filters
@@ -1844,7 +1870,7 @@ select.inp{appearance:none}
             applyAllFilters();
             closeFiltersModal();
             
-            Toast.fire({ icon: 'info', title: window.i18n?.t('filters_cleared') || 'Filters cleared' });
+            Toast.fire({ icon: 'info', title: window.i18n?.t('filters_cleared') || 'Filtros limpiados' });
         }
 
         // Export Data
@@ -1854,7 +1880,7 @@ select.inp{appearance:none}
             filteredTransactions.forEach(t => {
                 const date = new Date(t.created_at).toLocaleDateString();
                 const amount = parseFloat(t.amount || 0);
-                const type = (t.type === 'ingreso' || t.type === 'income') ? 'Income' : 'Expense';
+                const type = (t.type === 'ingreso' || t.type === 'income') ? 'Ingreso' : 'Gasto';
                 
                 let method = '', tags = '';
                 try {
@@ -1875,7 +1901,7 @@ select.inp{appearance:none}
             link.download = `Pymax_Transactions_${new Date().toISOString().split('T')[0]}.csv`;
             link.click();
             
-            Toast.fire({ icon: 'success', title: window.i18n?.t('data_exported') || 'Data exported' });
+            Toast.fire({ icon: 'success', title: window.i18n?.t('data_exported') || 'Datos exportados' });
         }
 
         // Modal Functions
@@ -1926,7 +1952,7 @@ select.inp{appearance:none}
         var started = Date.now();
         function hidePre(){var p=document.getElementById('pymax-preloader');if(p)p.classList.add('pm-done');}
         function reveal(){
-          var wait = Math.max(0, 1500 - (Date.now() - started));
+          var wait = Math.max(0, 700 - (Date.now() - started));
           setTimeout(function(){
             hidePre();
             if (typeof gsap !== 'undefined') {
@@ -1939,7 +1965,7 @@ select.inp{appearance:none}
         }
         if(document.readyState==='complete'){reveal();}
         else{window.addEventListener('load',reveal);}
-        setTimeout(hidePre, 2600);
+        setTimeout(hidePre, 1500);
       })();
     
     </script>
