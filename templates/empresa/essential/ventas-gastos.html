@@ -219,6 +219,54 @@ select.inp{appearance:none}
 .hide-sm{display:inline}
 @media(max-width:640px){.hide-sm{display:none}}
 @keyframes lpls{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+/* ═══════════ CARD MOVIMIENTO PREMIUM ═══════════ */
+.chart-card{
+  background:linear-gradient(160deg,rgba(59,130,246,.07),rgba(139,92,246,.05) 40%,rgba(16,185,129,.04));
+  border:1px solid transparent;
+  position:relative;
+}
+.chart-card::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;padding:1.5px;z-index:0;pointer-events:none;
+  background:conic-gradient(from 0deg,#3B82F6,#A78BFA,#34D399,#3B82F6);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  animation:spinBorder 6s linear infinite;
+}
+@keyframes spinBorder{to{transform:rotate(360deg)}}
+.chart-scan{position:absolute;top:0;left:0;right:0;height:2px;z-index:2;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(96,165,250,.85),transparent);animation:scanX 4s ease-in-out infinite}
+@keyframes scanX{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.chart-ttl{display:flex;align-items:center;gap:11px}
+.chart-ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(59,130,246,.2),rgba(139,92,246,.2));color:#7dd3fc;font-size:18px;box-shadow:0 0 20px rgba(59,130,246,.35);animation:hicFloat 3.2s ease-in-out infinite}
+@keyframes hicFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.chart-body{padding:16px 16px 14px;position:relative}
+.bc-sum{display:flex;gap:9px;margin-bottom:14px}
+.bc-sum-it{flex:1;display:flex;flex-direction:row;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--bx);position:relative;overflow:hidden;transition:transform .22s,box-shadow .22s,border-color .22s}
+.bc-sum-it:hover{transform:translateY(-3px);border-color:var(--bh);box-shadow:0 10px 26px rgba(0,0,0,.35)}
+.bc-sum-it::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;border-radius:2px}
+.bc-sum-it.in::before{background:linear-gradient(180deg,#38BDF8,#10B981)}
+.bc-sum-it.out::before{background:linear-gradient(180deg,#FB7185,#F43F5E)}
+.bc-sum-it.net::before{background:linear-gradient(180deg,#8B5CF6,#3B82F6)}
+.bc-ic{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.bc-sum-it.in .bc-ic{background:rgba(16,185,129,.14);color:var(--green2)}
+.bc-sum-it.out .bc-ic{background:rgba(244,63,94,.14);color:var(--red2)}
+.bc-sum-it.net .bc-ic{background:rgba(139,92,246,.14);color:var(--purple2)}
+.bc-ic i{font-size:14px}
+.bc-txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.bc-txt .lbl{font-size:7.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);white-space:nowrap}
+.bc-txt .val{font-size:14px;font-weight:800;letter-spacing:-.01em;color:var(--t1);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chart-wrap{height:260px;position:relative}
+.chart-wrap canvas{position:relative;z-index:1}
+.chart-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 100%,rgba(59,130,246,.08),transparent 70%);pointer-events:none;z-index:0}
+.chart-empty{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--t3);font-size:12px;z-index:2;pointer-events:none}
+.chart-empty.show{display:flex}
+.chart-empty i{font-size:30px;opacity:.25}
+
+/* Borde animado compartido para otras cards */
+.glow-card{position:relative;border:1px solid transparent}
+.glow-card::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1.5px;z-index:0;pointer-events:none;background:conic-gradient(from 0deg,#3B82F6,#A78BFA,#34D399,#3B82F6);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:spinBorder 6s linear infinite}
+.card-scan{position:absolute;top:0;left:0;right:0;height:2px;z-index:2;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(96,165,250,.85),transparent);animation:scanX 4s ease-in-out infinite}
+.hdr-chip{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,rgba(59,130,246,.18),rgba(139,92,246,.18));font-size:16px;box-shadow:0 0 16px rgba(59,130,246,.28);animation:hicFloat 3.2s ease-in-out infinite}
+
 /* SweetAlert2 premium */
 .swal2-popup{background:linear-gradient(160deg,#0B1020,#101828)!important;border:1px solid rgba(59,130,246,.25)!important;border-radius:18px!important;box-shadow:0 24px 70px rgba(0,0,0,.75),0 0 0 1px rgba(59,130,246,.08)!important;font-family:'Inter',sans-serif!important;color:var(--t1)!important}
 .swal2-title{color:var(--t1)!important;font-weight:800!important;font-size:18px!important;letter-spacing:-.02em}
@@ -577,10 +625,11 @@ select.inp{appearance:none}
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card glow-card">
                     <span class="card-sh"></span>
+                    <span class="card-scan"></span>
                     <div class="card-hdr">
-                        <div class="card-ttl"><i class="ph-duotone ph-chart-bar" style="color:var(--purple2)"></i>Resumen</div>
+                        <div class="card-ttl"><span class="hdr-chip" style="color:var(--purple2)"><i class="ph-duotone ph-chart-bar"></i></span>Resumen</div>
                     </div>
                     <div class="card-body">
                         <div class="srow"><span class="k"><i class="ph-bold ph-arrow-up"></i>Mayor ingreso</span><span class="v" id="largestIncome" style="color:var(--green2)">$0</span></div>
@@ -591,12 +640,16 @@ select.inp{appearance:none}
             </div>
 
             <div class="right-col">
-                <div class="card">
+                <div class="card chart-card">
                     <span class="card-sh"></span>
+                    <span class="chart-scan"></span>
                     <div class="card-hdr">
-                        <div>
-                            <div class="card-ttl"><i class="ph-duotone ph-chart-line-up" style="color:var(--blue2)"></i>Movimiento</div>
-                            <div class="card-sub">Ingresos vs gastos</div>
+                        <div class="chart-ttl">
+                            <div class="chart-ic"><i class="ph-duotone ph-chart-line-up"></i></div>
+                            <div>
+                                <div class="card-ttl">Movimiento</div>
+                                <div class="card-sub">Flujo de ingresos y gastos</div>
+                            </div>
                         </div>
                         <div class="chips">
                             <span class="chip on" onclick="setTimePeriod('all', this)">Todo</span>
@@ -605,20 +658,33 @@ select.inp{appearance:none}
                             <span class="chip" onclick="setTimePeriod('today', this)">Hoy</span>
                         </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body chart-body">
                         <div class="bc-sum">
-                            <div class="bc-sum-it in"><span class="lbl"><i class="ph-bold ph-trend-up"></i>Ingresos</span><span class="val" id="bcIncome">$0</span></div>
-                            <div class="bc-sum-it out"><span class="lbl"><i class="ph-bold ph-trend-down"></i>Gastos</span><span class="val" id="bcExpense">$0</span></div>
-                            <div class="bc-sum-it net"><span class="lbl"><i class="ph-bold ph-scales"></i>Neto</span><span class="val" id="bcNet">$0</span></div>
+                            <div class="bc-sum-it in">
+                                <span class="bc-ic"><i class="ph-bold ph-trend-up"></i></span>
+                                <span class="bc-txt"><span class="lbl">Ingresos</span><span class="val" id="bcIncome">$0</span></span>
+                            </div>
+                            <div class="bc-sum-it out">
+                                <span class="bc-ic"><i class="ph-bold ph-trend-down"></i></span>
+                                <span class="bc-txt"><span class="lbl">Gastos</span><span class="val" id="bcExpense">$0</span></span>
+                            </div>
+                            <div class="bc-sum-it net">
+                                <span class="bc-ic"><i class="ph-bold ph-scales"></i></span>
+                                <span class="bc-txt"><span class="lbl">Neto</span><span class="val" id="bcNet">$0</span></span>
+                            </div>
                         </div>
-                        <div class="chart-wrap"><canvas id="transactionChart"></canvas></div>
+                        <div class="chart-wrap">
+                            <div class="chart-empty" id="chartEmpty"><i class="ph-duotone ph-chart-bar"></i><span>Sin movimientos aún</span></div>
+                            <canvas id="transactionChart"></canvas>
+                        </div>
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card glow-card">
                     <span class="card-sh"></span>
+                    <span class="card-scan"></span>
                     <div class="card-hdr">
-                        <div class="card-ttl"><i class="ph-duotone ph-list-dashes" style="color:var(--blue2)"></i>Transacciones</div>
+                        <div class="card-ttl"><span class="hdr-chip" style="color:var(--blue2)"><i class="ph-duotone ph-list-dashes"></i></span>Transacciones</div>
                         <div class="chips">
                             <span class="chip on" onclick="filterTransactions('all', this)">Todas</span>
                             <span class="chip" onclick="filterTransactions('income', this)">Ingresos</span>
@@ -1421,6 +1487,17 @@ select.inp{appearance:none}
             const ctx = document.getElementById('transactionChart');
             if (!ctx) return;
 
+            // Gradiente vertical para las barras (efecto premium)
+            const grad = (top, bottom) => (context) => {
+                const { chart } = context;
+                const { chartArea } = chart;
+                if (!chartArea) return top;
+                const g = chart.ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+                g.addColorStop(0, bottom);
+                g.addColorStop(1, top);
+                return g;
+            };
+
             transactionChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -1429,45 +1506,58 @@ select.inp{appearance:none}
                         {
                             label: window.i18n?.t('income') || 'Ingresos',
                             data: [],
-                            backgroundColor: 'rgba(59, 130, 246, 0.85)',
-                            borderColor: 'rgba(96, 165, 250, 1)',
-                            borderWidth: 1,
-                            borderRadius: 8
+                            backgroundColor: grad('#60A5FA', 'rgba(59,130,246,.12)'),
+                            hoverBackgroundColor: grad('#93C5FD', 'rgba(59,130,246,.22)'),
+                            borderWidth: 0,
+                            borderRadius: { topLeft: 8, topRight: 8, bottomLeft: 2, bottomRight: 2 },
+                            borderSkipped: false,
+                            maxBarThickness: 26
                         },
                         {
                             label: window.i18n?.t('expense') || 'Gastos',
                             data: [],
-                            backgroundColor: 'rgba(244, 63, 94, 0.85)',
-                            borderColor: 'rgba(251, 113, 133, 1)',
-                            borderWidth: 1,
-                            borderRadius: 8
+                            backgroundColor: grad('#FB7185', 'rgba(244,63,94,.12)'),
+                            hoverBackgroundColor: grad('#FDA4AF', 'rgba(244,63,94,.22)'),
+                            borderWidth: 0,
+                            borderRadius: { topLeft: 8, topRight: 8, bottomLeft: 2, bottomRight: 2 },
+                            borderSkipped: false,
+                            maxBarThickness: 26
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    animation: { duration: 900, easing: 'easeOutQuart' },
+                    layout: { padding: { top: 10 } },
                     plugins: {
                         legend: {
                             display: true,
                             position: 'top',
+                            align: 'end',
                             labels: {
                                 color: '#94a3b8',
-                                font: { size: 11, family: 'Inter' },
-                                padding: 15
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                boxWidth: 7,
+                                boxHeight: 7,
+                                font: { size: 11, family: 'Inter', weight: 600 },
+                                padding: 14
                             }
                         },
                         tooltip: {
-                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            backgroundColor: 'rgba(11,16,32,.96)',
                             titleColor: '#fff',
-                            bodyColor: '#94a3b8',
-                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            bodyColor: '#cbd5e1',
+                            borderColor: 'rgba(59,130,246,.35)',
                             borderWidth: 1,
                             padding: 12,
+                            cornerRadius: 12,
                             displayColors: true,
+                            boxPadding: 5,
                             callbacks: {
                                 label: function(context) {
-                                    return `${context.dataset.label}: ${fmtMoney(context.parsed.y)}`;
+                                    return ` ${context.dataset.label}: ${fmtMoney(context.parsed.y)}`;
                                 }
                             }
                         }
@@ -1475,13 +1565,16 @@ select.inp{appearance:none}
                     scales: {
                         x: {
                             grid: { display: false },
-                            ticks: { color: '#64748b', font: { size: 10 } }
+                            border: { display: false },
+                            ticks: { color: '#64748b', font: { size: 10, family: 'Inter' }, maxRotation: 0 }
                         },
                         y: {
-                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                            ticks: { 
-                                color: '#64748b', 
-                                font: { size: 10 },
+                            border: { display: false },
+                            grid: { color: 'rgba(148,163,184,.08)', drawTicks: false },
+                            ticks: {
+                                color: '#64748b',
+                                font: { size: 10, family: 'Inter' },
+                                padding: 8,
                                 callback: function(value) {
                                     return fmtMoney(value);
                                 }
@@ -1516,6 +1609,9 @@ select.inp{appearance:none}
             const labels = Object.keys(groupedData).slice(-10);
             const incomeData = labels.map(label => groupedData[label].income);
             const expenseData = labels.map(label => groupedData[label].expense);
+
+            const emptyEl = document.getElementById('chartEmpty');
+            if (emptyEl) emptyEl.classList.toggle('show', labels.length === 0);
 
             transactionChart.data.labels = labels;
             transactionChart.data.datasets[0].data = incomeData;
