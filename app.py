@@ -1,7 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
-from datetime import timedelta
+from datetime import timedelta, date
 import os
 import json
+import smtplib
+import urllib.request
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
 from pathlib import Path
 from openai import OpenAI
@@ -32,6 +36,16 @@ SUPABASE_KEY = (
 # CONFIGURACIÓN DEEPSEEK (IA de Pymax)
 DEEPSEEK_API_KEY = (os.getenv('DEEPSEEK_API_KEY') or '').strip()
 DEEPSEEK_BASE_URL = (os.getenv('DEEPSEEK_BASE_URL') or 'https://api.deepseek.com').strip()
+
+# CONFIGURACIÓN EMAIL (recordatorios de deudas)
+SMTP_HOST = (os.getenv('SMTP_HOST') or '').strip()
+SMTP_PORT = int(os.getenv('SMTP_PORT') or '587')
+SMTP_USER = (os.getenv('SMTP_USER') or '').strip()
+SMTP_PASS = (os.getenv('SMTP_PASS') or '').strip()
+EMAIL_FROM = (os.getenv('EMAIL_FROM') or SMTP_USER or 'Pymax <no-reply@pymax.app>').strip()
+
+# SERVICE ROLE KEY (bypass RLS para recordatorios globales de deudas)
+SERVICE_ROLE_KEY = (os.getenv('SERVICE_ROLE_KEY') or os.getenv('SUPABASE_SERVICE_KEY') or '').strip()
 
 # Context processor para hacer las variables disponibles en todos los templates
 @app.context_processor
@@ -289,6 +303,142 @@ Recuerda: el usuario confía en ti para tomar decisiones reales de su negocio.""
             'response': 'En este momento no puedo procesar tu consulta. Por favor intenta nuevamente en unos segundos.',
             'error': str(e)
         }), 200  # 200 para que el frontend lo maneje normalmente
+
+# ==============================================================================
+# RECORDATORIOS DE DEUDAS POR EMAIL
+# (2 días antes, 1 día antes y el mismo día del vencimiento)
+# ==============================================================================
+
+def _supa_rest_get(path, key):
+    req = urllib.request.Request(
+        SUPABASE_URL.rstrip('/') + '/rest/v1/' + path,
+        headers={'apikey': key, 'Authorization': 'Bearer ' + key}
+    )
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        return json.loads(resp.read().decode('utf-8'))
+
+
+def _supa_rest_post(path, key, payload):
+    body = json.dumps(payload).encode('utf-8')
+    req = urllib.request.Request(
+        SUPABASE_URL.rstrip('/') + '/rest/v1/' + path,
+        data=body, method='POST',
+        headers={'apikey': key, 'Authorization': 'Bearer ' + key,
+                 'Content-Type': 'application/json', 'Prefer': 'return=minimal'}
+    )
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        return resp.status
+
+
+def _send_email(to, subject, html):
+    if not SMTP_HOST:
+        print('[EMAIL] SMTP_HOST no configurado. No se envió el correo.')
+        return False
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = subject
+    msg['From'] = EMAIL_FROM
+    msg['To'] = to
+    msg.attach(MIMEText(html, 'html', 'utf-8'))
+    try:
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=30) as s:
+            s.ehlo()
+            if SMTP_PORT in (587, 465):
+                s.starttls()
+                s.ehlo()
+            if SMTP_USER:
+                s.login(SMTP_USER, SMTP_PASS)
+            s.sendmail(EMAIL_FROM, [to], msg.as_string())
+        return True
+    except Exception as e:
+        print(f'[EMAIL] Error enviando a {to}: {e}')
+        return False
+
+
+@app.route('/api/debt-reminders/check')
+def debt_reminders_check():
+    """Envía recordatorios de deudas que vencen hoy, mañana o en 2 días."""
+    if not SERVICE_ROLE_KEY:
+        return jsonify({'ok': False, 'reason': 'SERVICE_ROLE_KEY no configurada'}), 400
+
+    today = date.today()
+    dias = [today, today + timedelta(days=1), today + timedelta(days=2)]
+    dstr = ','.join(d.isoformat() for d in dias)
+
+    try:
+        rows = _supa_rest_get(
+            'obligaciones?select=id,tipo,monto,fecha_pago,email_contacto'
+            f'&estado=neq.pagada&estado=neq.pagado&email_contacto=not.is.null&fecha_pago=in.({dstr})',
+            SERVICE_ROLE_KEY
+        )
+    except Exception as e:
+        print(f'[REMINDER] Error consultando obligaciones: {e}')
+        return jsonify({'ok': False, 'reason': str(e)}), 500
+
+    enviados = 0
+    omitidos = 0
+    for ob in rows:
+        email = (ob.get('email_contacto') or '').strip()
+        due = ob.get('fecha_pago')
+        oid = ob.get('id')
+        if not email or not due or oid is None:
+            continue
+        try:
+            due_d = date.fromisoformat(due)
+        except Exception:
+            continue
+        delta = (due_d - today).days
+        if delta not in (0, 1, 2):
+            continue
+
+        # Evitar duplicados (tabla opcional debt_reminders)
+        try:
+            ya = _supa_rest_get(
+                f'debt_reminders?select=id&obligation_id=eq.{oid}&days_before=eq.{delta}&limit=1',
+                SERVICE_ROLE_KEY
+            )
+            if ya:
+                omitidos += 1
+                continue
+        except Exception:
+            pass
+
+        tipo = ob.get('tipo') or ''
+        resto = tipo.split(' | ', 1)[-1]
+        concepto = resto.split(' [', 1)[0].split(' ::', 1)[0].split(' ##', 1)[0].strip() or 'Tu obligación'
+        monto = int(float(ob.get('monto') or 0))
+
+        if delta == 0:
+            subject = '🔔 Tu pago vence HOY'
+            headline = 'vence hoy'
+        elif delta == 1:
+            subject = '⏰ Tu pago vence mañana'
+            headline = 'vence mañana'
+        else:
+            subject = '📅 Tu pago vence en 2 días'
+            headline = 'vence en 2 días'
+
+        monto_txt = f'{monto:,}'.replace(',', '.')
+        html = f'''<div style="font-family:Inter,Arial,sans-serif;background:#060A14;color:#E2E8F0;padding:32px;border-radius:16px;max-width:520px">
+          <h2 style="color:#F1F5FF;margin:0 0 8px">Hola 👋</h2>
+          <p style="margin:0 0 16px;color:#94A3B8;font-size:15px">Tienes una obligación que <strong style="color:#FCD34D">{headline}</strong>.</p>
+          <div style="background:#0B1020;border:1px solid #1E293B;border-radius:12px;padding:16px;margin:0 0 20px">
+            <p style="margin:0 0 6px;font-size:14px;color:#F1F5FF"><strong>{concepto}</strong></p>
+            <p style="margin:0;font-size:22px;font-weight:800;color:#34D399">${monto_txt} CLP</p>
+          </div>
+          <p style="margin:0;color:#64748B;font-size:12px">Programa tu pago a tiempo para evitar recargos. — Pymax</p>
+        </div>'''
+
+        if _send_email(email, subject, html):
+            enviados += 1
+            try:
+                _supa_rest_post('debt_reminders', SERVICE_ROLE_KEY, {
+                    'obligation_id': oid, 'due_date': due, 'days_before': delta
+                })
+            except Exception as e:
+                print(f'[REMINDER] No se pudo registrar envío: {e}')
+
+    return jsonify({'ok': True, 'sent': enviados, 'skipped': omitidos})
+
 
 # ==============================================================================
 # ERROR HANDLERS

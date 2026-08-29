@@ -840,15 +840,23 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
             if (email) data.email_contacto = email;
 
             try {
-                let result;
-                if (id) result = await client.from('obligaciones').update(data).eq('id', id).select().single();
-                else { const { data: { user } } = await client.auth.getUser(); result = await client.from('obligaciones').insert({ ...data, user_id: user.id }).select().single(); }
-                if (result.error) throw result.error;
+                let error = null;
+                if (id) {
+                    const r = await client.from('obligaciones').update(data).eq('id', id);
+                    error = r.error;
+                } else {
+                    const { data: { user } } = await client.auth.getUser();
+                    if (!user) throw new Error('Sesión expirada, recarga la página');
+                    const r = await client.from('obligaciones').insert({ ...data, user_id: user.id });
+                    error = r.error;
+                }
+                if (error) throw error;
                 Toast.fire({ icon: 'success', title: id ? 'Obligación actualizada' : 'Obligación agregada' });
                 resetForm();
                 await pymaxData.refresh();
             } catch (err) {
-                Toast.fire({ icon: 'error', title: err.message || 'Error al guardar' });
+                console.error('[DEUDAS] Error al guardar:', err);
+                Toast.fire({ icon: 'error', title: (err && (err.message || err.hint)) || 'Error al guardar' });
             }
         });
         function editDebt(id) {
@@ -1011,6 +1019,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
             renderCategoryMenu();
             renderPriorityMenu();
             setDateValue(toISO(new Date()));
+            initChart();
             document.getElementById('debtAmount').addEventListener('input', e => {
                 const digits = e.target.value.replace(/\D/g, '');
                 e.target.value = digits ? Number(digits).toLocaleString('es-CL') : '';
@@ -1027,8 +1036,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
             if (!initOk) return;
             pymaxData.on('data_updated', () => loadDebts());
             await loadDebts();
-            initChart();
             syncCurrencyUI();
+
+            // Dispara el chequeo de recordatorios de email (no bloquea la UI)
+            try { fetch('/api/debt-reminders/check').catch(() => {}); } catch (e) {}
         });
     </script>
     <script>
