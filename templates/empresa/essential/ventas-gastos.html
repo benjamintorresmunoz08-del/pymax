@@ -226,18 +226,15 @@ select.inp{appearance:none}
   position:relative;
 }
 .chart-card::before{
-  content:'';position:absolute;inset:0;border-radius:inherit;padding:1.5px;z-index:0;pointer-events:none;
-  background:conic-gradient(from 0deg,#3B82F6,#A78BFA,#34D399,#3B82F6);
+  content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;z-index:0;pointer-events:none;
+  background:linear-gradient(120deg,rgba(59,130,246,.5),rgba(139,92,246,.34),rgba(16,185,129,.3));
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
   -webkit-mask-composite:xor;mask-composite:exclude;
-  animation:spinBorder 6s linear infinite;
 }
-@keyframes spinBorder{to{transform:rotate(360deg)}}
-.chart-scan{position:absolute;top:0;left:0;right:0;height:2px;z-index:2;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(96,165,250,.85),transparent);animation:scanX 4s ease-in-out infinite}
-@keyframes scanX{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+@keyframes softGlow{0%,100%{box-shadow:0 0 16px rgba(59,130,246,.18)}50%{box-shadow:0 0 26px rgba(139,92,246,.28)}}
 .chart-ttl{display:flex;align-items:center;gap:11px}
-.chart-ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(59,130,246,.2),rgba(139,92,246,.2));color:#7dd3fc;font-size:18px;box-shadow:0 0 20px rgba(59,130,246,.35);animation:hicFloat 3.2s ease-in-out infinite}
-@keyframes hicFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.chart-ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(59,130,246,.2),rgba(139,92,246,.2));color:#7dd3fc;font-size:18px;box-shadow:0 0 20px rgba(59,130,246,.35);animation:softGlow 4s ease-in-out infinite}
+
 .chart-body{padding:16px 16px 14px;position:relative}
 .bc-sum{display:flex;gap:9px;margin-bottom:14px}
 .bc-sum-it{flex:1;display:flex;flex-direction:row;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--bx);position:relative;overflow:hidden;transition:transform .22s,box-shadow .22s,border-color .22s}
@@ -263,9 +260,9 @@ select.inp{appearance:none}
 
 /* Borde animado compartido para otras cards */
 .glow-card{position:relative;border:1px solid transparent}
-.glow-card::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1.5px;z-index:0;pointer-events:none;background:conic-gradient(from 0deg,#3B82F6,#A78BFA,#34D399,#3B82F6);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:spinBorder 6s linear infinite}
-.card-scan{position:absolute;top:0;left:0;right:0;height:2px;z-index:2;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(96,165,250,.85),transparent);animation:scanX 4s ease-in-out infinite}
-.hdr-chip{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,rgba(59,130,246,.18),rgba(139,92,246,.18));font-size:16px;box-shadow:0 0 16px rgba(59,130,246,.28);animation:hicFloat 3.2s ease-in-out infinite}
+.glow-card::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;z-index:0;pointer-events:none;background:linear-gradient(120deg,rgba(59,130,246,.42),rgba(139,92,246,.3),rgba(16,185,129,.26));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+
+.hdr-chip{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,rgba(59,130,246,.18),rgba(139,92,246,.18));font-size:16px;box-shadow:0 0 16px rgba(59,130,246,.28);animation:softGlow 4s ease-in-out infinite}
 
 /* SweetAlert2 premium */
 .swal2-popup{background:linear-gradient(160deg,#0B1020,#101828)!important;border:1px solid rgba(59,130,246,.25)!important;border-radius:18px!important;box-shadow:0 24px 70px rgba(0,0,0,.75),0 0 0 1px rgba(59,130,246,.08)!important;font-family:'Inter',sans-serif!important;color:var(--t1)!important}
@@ -289,8 +286,8 @@ select.inp{appearance:none}
 .tx-glow{position:absolute;top:-60px;right:-60px;width:180px;height:180px;background:radial-gradient(circle,rgba(59,130,246,.24),transparent 70%);pointer-events:none;filter:blur(8px);z-index:0;animation:txGlow 6s ease-in-out infinite}
 @keyframes txGlow{0%,100%{transform:translate(0,0);opacity:.6}50%{transform:translate(-14px,14px);opacity:1}}
 .hdr-flex{display:flex;align-items:center;gap:10px}
-.hdr-ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;box-shadow:0 4px 16px rgba(59,130,246,.45);font-size:16px;flex-shrink:0;animation:hicFloat 3.4s ease-in-out infinite}
-@keyframes hicFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.hdr-ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;box-shadow:0 4px 16px rgba(59,130,246,.45);font-size:16px;flex-shrink:0;animation:softGlow 4.5s ease-in-out infinite}
+
 .live-dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--gd);border:1px solid rgba(52,211,153,.3);color:var(--green2);animation:lpls 2s infinite}
 .live-dot i{font-size:11px}
 .f-lbl{display:flex;align-items:center;gap:5px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:7px}
@@ -408,9 +405,6 @@ select.inp{appearance:none}
 .btn-save:active{transform:scale(.97)}
 .btn-save::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);transition:left .5s}
 .btn-save:hover::after{left:100%}
-
-
-
 
 </style>
 </head>
@@ -627,7 +621,6 @@ select.inp{appearance:none}
 
                 <div class="card glow-card">
                     <span class="card-sh"></span>
-                    <span class="card-scan"></span>
                     <div class="card-hdr">
                         <div class="card-ttl"><span class="hdr-chip" style="color:var(--purple2)"><i class="ph-duotone ph-chart-bar"></i></span>Resumen</div>
                     </div>
@@ -642,7 +635,6 @@ select.inp{appearance:none}
             <div class="right-col">
                 <div class="card chart-card">
                     <span class="card-sh"></span>
-                    <span class="chart-scan"></span>
                     <div class="card-hdr">
                         <div class="chart-ttl">
                             <div class="chart-ic"><i class="ph-duotone ph-chart-line-up"></i></div>
@@ -682,7 +674,6 @@ select.inp{appearance:none}
 
                 <div class="card glow-card">
                     <span class="card-sh"></span>
-                    <span class="card-scan"></span>
                     <div class="card-hdr">
                         <div class="card-ttl"><span class="hdr-chip" style="color:var(--blue2)"><i class="ph-duotone ph-list-dashes"></i></span>Transacciones</div>
                         <div class="chips">
@@ -771,9 +762,6 @@ select.inp{appearance:none}
             </div>
         </div>
     </div>
-
-
-
 
     <!-- JavaScript -->
     <script>
