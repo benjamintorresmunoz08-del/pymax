@@ -105,7 +105,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .card-sub{font-size:9.5px;color:var(--t3);margin-top:2px}
 .card-body{padding:14px 16px}
 .glow-card{position:relative;border:1px solid transparent}
-.glow-card::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;z-index:0;pointer-events:none;background:linear-gradient(120deg,rgba(245,158,11,.4),rgba(139,92,246,.3),rgba(244,63,94,.26));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.glow-card::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;z-index:0;pointer-events:none;background:linear-gradient(120deg,rgba(245,158,11,.4),rgba(139,92,246,.3),rgba(244,63,94,.26));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 .hdr-chip{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,rgba(59,130,246,.18),rgba(139,92,246,.18));font-size:16px;box-shadow:0 0 16px rgba(59,130,246,.28);animation:softGlow 4s ease-in-out infinite}
 
 /* Form */
@@ -254,7 +254,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 #pymax-preloader{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:var(--bg);transition:opacity .45s ease,visibility .45s}
 #pymax-preloader.pm-done{opacity:0;visibility:hidden;pointer-events:none}
 .pm-logos{font-size:26px;font-weight:900;letter-spacing:-.04em;color:var(--t1)}
-.pm-logos .pm-lo{background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.pm-logos .pm-lo{background:linear-gradient(135deg,var(--blue),var(--purple));background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .pm-ic{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--blue),var(--purple));box-shadow:0 0 34px rgba(59,130,246,.5);font-size:24px;color:#fff}
 .pm-nm{font-size:12px;font-weight:700;color:var(--t2)}
 .pm-bar{width:180px;height:4px;border-radius:100px;background:rgba(255,255,255,.08);overflow:hidden}
