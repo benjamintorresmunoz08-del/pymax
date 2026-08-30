@@ -329,8 +329,9 @@ body::before{
 .main-grid{display:grid;grid-template-columns:1fr 320px;gap:12px;padding:0 24px;align-items:stretch}
 .left-col{display:flex;flex-direction:column;gap:12px}
 .right-col{display:flex;flex-direction:column;gap:12px}
-/* Simetría: las cards de la columna derecha llenan la misma altura que la izquierda */
-.right-col > .card{flex:1 1 0}
+/* Simetría: las cards de la columna derecha llenan la misma altura que la izquierda.
+   Se usa flex:0 0 auto para que cada card respete su contenido y NO se recorte. */
+.right-col > .card{flex:0 0 auto}
 
 /* ══ CARD ════════════════════════════════════════════ */
 .card{
