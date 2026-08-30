@@ -901,16 +901,25 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
             const meta = decodeTipo(d.tipo);
             const monto = parseFloat(d.monto || 0);
             const r = await Swal.fire({
-                title: '¿Marcar como pagada?',
-                text: monto ? `Se registrará un gasto de ${fmtMoney(monto)} que se descontará de tu balance neto.` : 'La obligación se marcará como completada.',
-                icon: 'question', showCancelButton: true, confirmButtonText: 'Sí, pagada', cancelButtonText: 'Cancelar',
-                background: '#0b1020', color: '#fff', confirmButtonColor: '#34d399'
+                title: '¿Cómo vas a pagar esta deuda?',
+                text: monto ? `Monto: ${fmtMoney(monto)}. Selecciona la fuente de los fondos.` : 'Selecciona la fuente de los fondos.',
+                icon: 'question',
+                showCancelButton: true,
+                showDenyButton: true,
+                confirmButtonText: '🏦 Dinero de la caja',
+                denyButtonText: '💼 Dinero externo',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#34d399',
+                denyButtonColor: '#8b5cf6',
+                background: '#0b1020', color: '#fff'
             });
-            if (!r.isConfirmed) return;
+            if (r.dismiss) return;
+            const fundingSource = r.isConfirmed ? 'caja' : 'externo';
+
             const upd = await client.from('obligaciones').update({ estado: 'pagada' }).eq('id', id);
             if (upd.error) { Toast.fire({ icon: 'error', title: 'Error al marcar pagada' }); return; }
 
-            // Registrar el egreso para que el balance neto se descuente de verdad
+            // Registrar el egreso. Si es 'caja' descuenta el flujo de caja; si es 'externo' no lo afecta.
             try {
                 const { data: { user } } = await client.auth.getUser();
                 if (user && monto > 0) {
@@ -922,7 +931,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
                         concept: 'Pago de: ' + concepto,
                         description: 'Pago de: ' + concepto,
                         category: meta.cat,
-                        notes: meta.acreedor ? ('Acreedor: ' + meta.acreedor) : null,
+                        funding_source: fundingSource,
+                        notes: (fundingSource === 'externo' ? 'Financiado con dinero externo' : '') +
+                               (meta.acreedor ? (fundingSource === 'externo' ? ' · Acreedor: ' : 'Acreedor: ') + meta.acreedor : ''),
                         created_at: new Date().toISOString()
                     });
                     if (resOp.error) console.warn('No se pudo registrar el egreso:', resOp.error);
@@ -931,7 +942,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
                 console.warn('No se pudo registrar el egreso:', e);
             }
 
-            Toast.fire({ icon: 'success', title: 'Pagada y descontada del balance' });
+            Toast.fire({
+                icon: 'success',
+                title: fundingSource === 'caja' ? 'Pagada y descontada del flujo de caja' : 'Pagada con dinero externo (sin afectar la caja)'
+            });
             await pymaxData.refresh();
         }
         function deleteDebt(id) {

@@ -79,6 +79,9 @@ ALTER TABLE obligaciones ADD COLUMN IF NOT EXISTS estado TEXT DEFAULT 'pendiente
 ALTER TABLE obligaciones ADD COLUMN IF NOT EXISTS email_contacto TEXT;
 ALTER TABLE obligaciones DROP COLUMN IF EXISTS status;
 
+-- A5. user_operations  →  columna funding_source (origen del pago)
+ALTER TABLE user_operations ADD COLUMN IF NOT EXISTS funding_source TEXT DEFAULT 'caja';
+
 -- ============================================================================
 -- B. CREAR TABLAS FALTANTES
 -- ============================================================================

@@ -766,6 +766,7 @@
                 };
 
                 let result;
+                const isNew = !editingId;
                 if (editingId) {
                     result = await pymaxData.updateInventoryItem(editingId, productData);
                 } else {
@@ -773,6 +774,38 @@
                 }
 
                 if (!result.success) throw result.error;
+
+                // Si es una compra nueva de stock (con costo), registrar el pago en flujo de caja
+                const costoUnit = parseFloat(productData.cost_price) || 0;
+                const cant = parseInt(productData.current_stock) || 0;
+                const totalCosto = costoUnit * cant;
+                if (isNew && totalCosto > 0) {
+                    const pay = await Swal.fire({
+                        title: '¿Cómo vas a pagar esta compra de inventario?',
+                        text: `Costo total: $${totalCosto.toLocaleString('en-US', { minimumFractionDigits: 2 })}. Selecciona la fuente de los fondos.`,
+                        icon: 'question',
+                        showCancelButton: true,
+                        showDenyButton: true,
+                        confirmButtonText: '🏦 Dinero de la caja',
+                        denyButtonText: '💼 Dinero externo',
+                        cancelButtonText: 'No registrar pago',
+                        confirmButtonColor: '#34d399',
+                        denyButtonColor: '#8b5cf6',
+                        background: '#0b1020', color: '#fff'
+                    });
+                    if (!pay.dismiss) {
+                        const fundingSource = pay.isConfirmed ? 'caja' : 'externo';
+                        await pymaxData.addOperation({
+                            type: 'egreso',
+                            amount: totalCosto,
+                            concept: 'Compra de inventario: ' + productData.product_name,
+                            description: 'Compra de inventario: ' + productData.product_name,
+                            category: 'Inventario / Stock',
+                            funding_source: fundingSource,
+                            created_at: new Date().toISOString()
+                        });
+                    }
+                }
 
                 closeProductModal();
                 await loadProducts();

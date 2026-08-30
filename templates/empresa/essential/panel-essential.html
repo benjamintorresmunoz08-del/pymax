@@ -1533,7 +1533,7 @@ async function loadFin(){
       .gte('created_at',s).lte('created_at',e).order('created_at',{ascending:false});
     var ops=res.data||[];
     var ing=ops.filter(function(o){return o.type==='ingreso';}).reduce(function(a,o){return a+parseFloat(o.amount||0);},0);
-    var gas=ops.filter(function(o){return o.type==='egreso';}).reduce(function(a,o){return a+parseFloat(o.amount||0);},0);
+    var gas=ops.filter(function(o){return o.type==='egreso' && o.funding_source!=='externo';}).reduce(function(a,o){return a+parseFloat(o.amount||0);},0);
         _fin={ing:ing,gas:gas,bal:ing-gas,mar:ing>0?Math.round(((ing-gas)/ing)*100):0,ops:ops};
         renderHero();renderKPIs();buildBarChart();renderTx();updateSem();updateInsights();
     // Tendencia vs mes anterior (paralelo, fuego y olvido)
@@ -1547,11 +1547,11 @@ async function loadPrevMonth(){
   try{
     var now=new Date(),s=new Date(now.getFullYear(),now.getMonth()-1,1).toISOString(),
         e=new Date(now.getFullYear(),now.getMonth(),0,23,59,59).toISOString();
-    var res=await _sb.from('user_operations').select('type,amount').eq('user_id',_u.id)
+    var res=await _sb.from('user_operations').select('type,amount,funding_source').eq('user_id',_u.id)
       .gte('created_at',s).lte('created_at',e);
     var ops=res.data||[];
     var ing=ops.filter(function(o){return o.type==='ingreso';}).reduce(function(a,o){return a+parseFloat(o.amount||0);},0);
-    var gas=ops.filter(function(o){return o.type==='egreso';}).reduce(function(a,o){return a+parseFloat(o.amount||0);},0);
+    var gas=ops.filter(function(o){return o.type==='egreso' && o.funding_source!=='externo';}).reduce(function(a,o){return a+parseFloat(o.amount||0);},0);
     _prevCalc={ing:ing,gas:gas};
     renderTrend();
   }catch(err){_prevCalc=null;}

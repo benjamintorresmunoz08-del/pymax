@@ -177,7 +177,12 @@ class PymaxDataManager {
             .reduce((sum, op) => sum + parseFloat(op.amount || 0), 0);
         
         const expenses = operations
-            .filter(op => op.type === 'egreso' || op.type === 'expense')
+            .filter(op => (op.type === 'egreso' || op.type === 'expense') && op.funding_source !== 'externo')
+            .reduce((sum, op) => sum + parseFloat(op.amount || 0), 0);
+
+        // Dinero externo usado (aporte de capital / financiamiento) — no afecta la caja
+        const externalFunding = operations
+            .filter(op => op.funding_source === 'externo')
             .reduce((sum, op) => sum + parseFloat(op.amount || 0), 0);
         
         const balance = income - expenses;
@@ -188,9 +193,10 @@ class PymaxDataManager {
             expenses,
             balance,
             margin,
+            externalFunding,
             operations: operations.length,
             incomeCount: operations.filter(op => op.type === 'ingreso' || op.type === 'income').length,
-            expensesCount: operations.filter(op => op.type === 'egreso' || op.type === 'expense').length
+            expensesCount: operations.filter(op => (op.type === 'egreso' || op.type === 'expense') && op.funding_source !== 'externo').length
         };
     }
 
