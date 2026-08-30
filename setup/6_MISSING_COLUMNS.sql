@@ -14,4 +14,4 @@ ALTER TABLE user_operations
   ADD COLUMN IF NOT EXISTS description TEXT,
   ADD COLUMN IF NOT EXISTS notes       TEXT,
   ADD COLUMN IF NOT EXISTS date        DATE,
-  ADD COLUMN IF NOT EXISTS metadata    JSONB DEFAULT '{}'::jsonb;
+  ADD COLUMN IF NOT EXISTS metadata    TEXT DEFAULT '{}';

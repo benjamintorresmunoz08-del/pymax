@@ -895,6 +895,12 @@ select.inp{appearance:none}
         function escapeHtml(s) {
             return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
         }
+        // Devuelve el objeto metadata sin importar si viene como JSONB (objeto) o TEXT (string)
+        function metaObj(m) {
+            if (!m) return {};
+            if (typeof m === 'object') return m;
+            try { return JSON.parse(m); } catch (e) { return {}; }
+        }
 
         const DEFAULT_CATEGORIES = {
             income: ['Ventas de productos','Servicios','Consultoría','Suscripciones','Retorno de inversión','Préstamo / Financiamiento','Regalo / Donación','Reembolso','Otros ingresos'],
@@ -1705,7 +1711,7 @@ select.inp{appearance:none}
             
             if (transaction.metadata) {
                 try {
-                    const metadata = JSON.parse(transaction.metadata);
+                    const metadata = metaObj(transaction.metadata);
                     selectMethod(metadata.method || '');
                     setTags(metadata.tags || '');
                 } catch (e) {
@@ -1831,7 +1837,7 @@ select.inp{appearance:none}
             filteredTransactions = allTransactions.filter(t => 
                 t.concept.toLowerCase().includes(searchTerm) ||
                 t.category.toLowerCase().includes(searchTerm) ||
-                (t.metadata && t.metadata.toLowerCase().includes(searchTerm))
+                (t.metadata && (typeof t.metadata === 'string' ? t.metadata : JSON.stringify(t.metadata)).toLowerCase().includes(searchTerm))
             );
 
             displayLimit = 20;
@@ -1925,7 +1931,7 @@ select.inp{appearance:none}
                 
                 if (paymentMethod) {
                     try {
-                        const metadata = JSON.parse(t.metadata || '{}');
+                        const metadata = metaObj(t.metadata);
                         if (metadata.method !== paymentMethod) matches = false;
                     } catch (e) {
                         matches = false;
@@ -1974,7 +1980,7 @@ select.inp{appearance:none}
                 
                 let method = '', tags = '';
                 try {
-                    const metadata = JSON.parse(t.metadata || '{}');
+                    const metadata = metaObj(t.metadata);
                     method = metadata.method || '';
                     tags = metadata.tags || '';
                 } catch (e) {
