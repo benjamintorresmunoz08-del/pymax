@@ -208,6 +208,8 @@ class PymaxDataManager {
             const { data, error } = await this.supabase
                 .from('user_operations')
                 .insert({
+                    status: 'realizado',
+                    activity_type: 'operativo',
                     ...operationData,
                     user_id: this.user.id
                 })
