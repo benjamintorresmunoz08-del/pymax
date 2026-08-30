@@ -894,6 +894,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
         async function markPaid(id) {
             const d = allDebts.find(x => String(x.id) === String(id));
             if (!d) return;
+            if (d.estado === 'pagada' || d.estado === 'pagado') {
+                Toast.fire({ icon: 'info', title: 'Esta deuda ya está pagada' });
+                return;
+            }
             const meta = decodeTipo(d.tipo);
             const monto = parseFloat(d.monto || 0);
             const r = await Swal.fire({

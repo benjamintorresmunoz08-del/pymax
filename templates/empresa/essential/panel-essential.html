@@ -1978,6 +1978,7 @@ async function saveTx(){
   if(!amt||amt<=0){showToast('Ingresa un monto válido','amber');return;}
   var bsD=document.getElementById('bsDate'),bsDesc=document.getElementById('bsDesc'),bsCat=document.getElementById('bsCat'),bsNote=document.getElementById('bsNote');
   var tx={user_id:_u.id,type:_txType,amount:amt,
+    concept:(bsDesc&&bsDesc.value.trim())||null,
     description:(bsDesc&&bsDesc.value.trim())||null,
     category:(bsCat&&bsCat.value)||null,
     notes:(bsNote&&bsNote.value.trim())||null,
