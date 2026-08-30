@@ -4,6 +4,10 @@ import os
 import json
 import smtplib
 import urllib.request
+import secrets
+import html as _html  # alias para no colisionar con la variable local `html` en debt_reminders_check
+import time
+import threading
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
@@ -17,7 +21,11 @@ load_dotenv(dotenv_path=env_path)
 app = Flask(__name__)
 
 # SEGURIDAD
-secret = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
+secret = (os.getenv('SECRET_KEY') or '').strip()
+if not secret:
+    # Clave impredecible: un secreto estático conocido permitiría falsificar la sesión.
+    secret = secrets.token_hex(32)
+    print('[SECURITY] ADVERTENCIA: SECRET_KEY no configurada. Se generó una clave temporal (las sesiones se reiniciarán al reiniciar el servidor).')
 app.secret_key = secret
 app.permanent_session_lifetime = timedelta(days=365)
 
@@ -46,6 +54,29 @@ EMAIL_FROM = (os.getenv('EMAIL_FROM') or SMTP_USER or 'Pymax <no-reply@pymax.app
 
 # SERVICE ROLE KEY (bypass RLS para recordatorios globales de deudas)
 SERVICE_ROLE_KEY = (os.getenv('SERVICE_ROLE_KEY') or os.getenv('SUPABASE_SERVICE_KEY') or '').strip()
+
+# SECRETO COMPARTIDO para proteger el endpoint del scheduler de recordatorios.
+# Solo quien conozca este valor (el cron job) puede disparar el envío de correos.
+CRON_SECRET = (os.getenv('CRON_SECRET') or '').strip()
+
+# Rate limiting en memoria (por IP) para el endpoint de IA.
+# Nota: en despliegue multi-worker (gunicorn) este límite es por proceso;
+# para producción se recomienda un store compartido (Redis) o validar el JWT de Supabase.
+_RATE_LIMIT = {}          # ip -> lista de timestamps
+_RATE_LIMIT_MAX = 20      # consultas por ventana
+_RATE_LIMIT_WINDOW = 60   # segundos
+_RATE_LOCK = threading.Lock()
+
+def _check_rate_limit(ip):
+    now = time.time()
+    with _RATE_LOCK:
+        times = [t for t in _RATE_LIMIT.get(ip, []) if now - t < _RATE_LIMIT_WINDOW]
+        if len(times) >= _RATE_LIMIT_MAX:
+            _RATE_LIMIT[ip] = times
+            return False
+        times.append(now)
+        _RATE_LIMIT[ip] = times
+    return True
 
 # Context processor para hacer las variables disponibles en todos los templates
 @app.context_processor
@@ -222,11 +253,16 @@ def ai_chat():
     try:
         from openai import OpenAI
 
+        # Rate limiting por IP (mitigación; en producción validar el JWT de Supabase)
+        ip = (request.headers.get('X-Forwarded-For') or request.remote_addr or '').split(',')[0].strip()
+        if not _check_rate_limit(ip):
+            return jsonify({'error': 'Límite de consultas alcanzado. Intenta nuevamente más tarde.'}), 429
+
         data       = request.get_json(silent=True) or {}
-        user_msg   = (data.get('message') or '').strip()
+        user_msg   = (str(data.get('message') or '')).strip()[:2000]
         context    = data.get('context') or {}
         history    = data.get('history') or []
-        plan       = data.get('plan', 'essential')
+        plan       = str(data.get('plan') or 'essential')
 
         if not user_msg:
             return jsonify({'error': 'Mensaje vacío'}), 400
@@ -234,17 +270,23 @@ def ai_chat():
         limits = PLAN_LIMITS.get(plan, PLAN_LIMITS['essential'])
 
         # ── Construir el system prompt con contexto financiero real ──
+        def _safe_int(v):
+            try:
+                return int(round(float(v)))
+            except (TypeError, ValueError):
+                return 0
+
         ctx_lines = []
         if context.get('ingresos') is not None:
-            ctx_lines.append(f"- Ingresos del mes actual: ${int(context['ingresos']):,}".replace(',', '.'))
+            ctx_lines.append(f"- Ingresos del mes actual: ${_safe_int(context['ingresos']):,}".replace(',', '.'))
         if context.get('gastos') is not None:
-            ctx_lines.append(f"- Gastos del mes actual: ${int(context['gastos']):,}".replace(',', '.'))
+            ctx_lines.append(f"- Gastos del mes actual: ${_safe_int(context['gastos']):,}".replace(',', '.'))
         if context.get('balance') is not None:
-            ctx_lines.append(f"- Balance neto: ${int(context['balance']):,}".replace(',', '.'))
+            ctx_lines.append(f"- Balance neto: ${_safe_int(context['balance']):,}".replace(',', '.'))
         if context.get('margen') is not None:
-            ctx_lines.append(f"- Margen de rentabilidad: {context['margen']}%")
+            ctx_lines.append(f"- Margen de rentabilidad: {_safe_int(context['margen'])}%")
         if context.get('transacciones') is not None:
-            ctx_lines.append(f"- Transacciones registradas: {context['transacciones']}")
+            ctx_lines.append(f"- Transacciones registradas: {_safe_int(context['transacciones'])}")
 
         financial_ctx = "\n".join(ctx_lines) if ctx_lines else "El usuario aún no tiene transacciones registradas este mes."
 
@@ -300,8 +342,7 @@ Recuerda: el usuario confía en ti para tomar decisiones reales de su negocio.""
     except Exception as e:
         print(f'[AI ERROR] {e}')
         return jsonify({
-            'response': 'En este momento no puedo procesar tu consulta. Por favor intenta nuevamente en unos segundos.',
-            'error': str(e)
+            'response': 'En este momento no puedo procesar tu consulta. Por favor intenta nuevamente en unos segundos.'
         }), 200  # 200 para que el frontend lo maneje normalmente
 
 # ==============================================================================
@@ -357,6 +398,12 @@ def _send_email(to, subject, html):
 @app.route('/api/debt-reminders/check')
 def debt_reminders_check():
     """Envía recordatorios de deudas que vencen hoy, mañana o en 2 días."""
+    # Protección: solo el scheduler (que conoce CRON_SECRET) puede disparar este envío.
+    if not CRON_SECRET:
+        return jsonify({'ok': False, 'reason': 'CRON_SECRET no configurada'}), 503
+    token = (request.headers.get('X-Cron-Secret') or request.args.get('token') or '')
+    if not secrets.compare_digest(token, CRON_SECRET):
+        return jsonify({'ok': False, 'reason': 'No autorizado'}), 401
     if not SERVICE_ROLE_KEY:
         return jsonify({'ok': False, 'reason': 'SERVICE_ROLE_KEY no configurada'}), 400
 
@@ -372,7 +419,7 @@ def debt_reminders_check():
         )
     except Exception as e:
         print(f'[REMINDER] Error consultando obligaciones: {e}')
-        return jsonify({'ok': False, 'reason': str(e)}), 500
+        return jsonify({'ok': False, 'reason': 'Error interno al consultar obligaciones'}), 500
 
     enviados = 0
     omitidos = 0
@@ -405,7 +452,10 @@ def debt_reminders_check():
         tipo = ob.get('tipo') or ''
         resto = tipo.split(' | ', 1)[-1]
         concepto = resto.split(' [', 1)[0].split(' ::', 1)[0].split(' ##', 1)[0].strip() or 'Tu obligación'
-        monto = int(float(ob.get('monto') or 0))
+        try:
+            monto = int(round(float(ob.get('monto') or 0)))
+        except (TypeError, ValueError):
+            monto = 0
 
         if delta == 0:
             subject = '🔔 Tu pago vence HOY'
@@ -422,7 +472,7 @@ def debt_reminders_check():
           <h2 style="color:#F1F5FF;margin:0 0 8px">Hola 👋</h2>
           <p style="margin:0 0 16px;color:#94A3B8;font-size:15px">Tienes una obligación que <strong style="color:#FCD34D">{headline}</strong>.</p>
           <div style="background:#0B1020;border:1px solid #1E293B;border-radius:12px;padding:16px;margin:0 0 20px">
-            <p style="margin:0 0 6px;font-size:14px;color:#F1F5FF"><strong>{concepto}</strong></p>
+            <p style="margin:0 0 6px;font-size:14px;color:#F1F5FF"><strong>{_html.escape(concepto)}</strong></p>
             <p style="margin:0;font-size:22px;font-weight:800;color:#34D399">${monto_txt} CLP</p>
           </div>
           <p style="margin:0;color:#64748B;font-size:12px">Programa tu pago a tiempo para evitar recargos. — Pymax</p>

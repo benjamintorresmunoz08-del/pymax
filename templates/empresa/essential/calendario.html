@@ -571,14 +571,17 @@
             timeline.innerHTML = todayEvents.map(event => `
                 <div class="timeline-event">
                     <div class="flex items-start justify-between mb-2">
-                        <p class="font-bold text-white text-sm">${event.title}</p>
+                        <p class="font-bold text-white text-sm">${esc(event.title)}</p>
                         <span class="text-xs text-slate-500">${new Date(event.date).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}</span>
                     </div>
-                    <p class="text-xs text-slate-400 mb-2">${event.description || t('no_description')}</p>
+                    <p class="text-xs text-slate-400 mb-2">${esc(event.description || t('no_description'))}</p>
                     <span class="event-badge ${event.type}">${typeLabels[event.type] || event.type}</span>
                 </div>
             `).join('');
         }
+
+        // Escape de HTML para datos del usuario (previene XSS en título/descripción de eventos)
+        function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
         function renderUpcomingEvents() {
             const container = document.getElementById('upcomingEvents');
@@ -603,7 +606,7 @@
                 return `
                     <div class="p-3 bg-white/5 rounded-lg border border-white/5">
                         <div class="flex justify-between items-start mb-1">
-                            <p class="font-semibold text-white text-xs">${event.title}</p>
+                            <p class="font-semibold text-white text-xs">${esc(event.title)}</p>
                             <span class="text-[10px] text-slate-500">${daysUntil}d</span>
                         </div>
                         <p class="text-[10px] text-slate-400">${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>

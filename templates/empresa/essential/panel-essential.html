@@ -1726,14 +1726,17 @@ function renderTx(){
     var d=new Date(o.created_at).toLocaleDateString('es-ES',{day:'numeric',month:'short'});
     return '<div class="txr" data-id="'+o.id+'">'+
       '<div class="tx-ic" style="background:'+(isI?'var(--gd)':'var(--rd)')+'"><i class="ph-duotone '+(isI?'ph-arrow-up':'ph-arrow-down')+'" style="color:'+(isI?'var(--green2)':'var(--red2)')+'"></i></div>'+
-      '<div class="tx-inf"><div class="tx-nm">'+(o.description||o.category||(isI?'Ingreso':'Gasto'))+'</div>'+
-        '<div class="tx-meta">'+d+(o.category?'<span class="tx-cat">'+o.category+'</span>':'')+'</div>'+
+      '<div class="tx-inf"><div class="tx-nm">'+esc(o.description||o.category||(isI?'Ingreso':'Gasto'))+'</div>'+
+        '<div class="tx-meta">'+d+(o.category?'<span class="tx-cat">'+esc(o.category)+'</span>':'')+'</div>'+
       '</div>'+
       '<div class="tx-amt" style="color:'+(isI?'var(--green2)':'var(--red2)')+'">'+(isI?'+':'-')+'$'+fmt(parseFloat(o.amount||0))+'</div>'+
     '</div>';
   }).join('');
   cont.querySelectorAll('.txr').forEach(function(r){r.addEventListener('click',function(){openDR(r.dataset.id);});});
 }
+
+/* Escape HTML para datos del usuario (anti-XSS) */
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 
 /* WEEK */
 async function loadWeek(){
@@ -2014,8 +2017,8 @@ function openDR(id){
   document.getElementById('drRows').innerHTML=[
     ['Tipo',isI?'✅ Ingreso':'❌ Gasto'],
     ['Fecha',d.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'long',year:'numeric'})],
-    ['Categoría',o.category||'Sin categoría'],
-    ['Descripción',o.description||'—'],
+    ['Categoría',esc(o.category||'Sin categoría')],
+    ['Descripción',esc(o.description||'—')],
     ['Monto','$'+fmt(parseFloat(o.amount||0))]
   ].map(function(r){return '<div class="dr-r"><span>'+r[0]+'</span><span>'+r[1]+'</span></div>';}).join('');
   document.getElementById('drOv').classList.add('open');
@@ -2025,7 +2028,7 @@ async function delTx(){
   if(!_curTx||!confirm('¿Eliminar esta transacción?'))return;
   var id=_curTx.id;
   _fin.ops=_fin.ops.filter(function(o){return o.id!==id;});
-  if(!String(id).startsWith('L_')){try{await _sb.from('user_operations').delete().eq('id',id);}catch(e){}}
+  if(!String(id).startsWith('L_')){try{await _sb.from('user_operations').delete().eq('id',id).eq('user_id',_u.id);}catch(e){}}
   closeDR();showToast('Transacción eliminada','red');
   await loadFin();
 }

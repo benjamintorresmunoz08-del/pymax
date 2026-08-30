@@ -550,6 +550,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
             const d = (info.code === 'CLP' || info.code === 'COP') ? 0 : 2;
             return new Intl.NumberFormat(info.locale, { minimumFractionDigits: d, maximumFractionDigits: d }).format(conv);
         }
+        // Escape de HTML para datos del usuario (previene XSS al renderizar concepto/acreedor)
+        function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
         function parseAmount(v) { return parseInt(String(v).replace(/\D/g, '')) || 0; }
         function formatAmountInput(v) { const n = parseAmount(v); return n ? n.toLocaleString('es-CL') : ''; }
         function animateMoney(id, clp, plain) {
@@ -677,10 +679,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
                 return `<div class="txr">
                     <div class="tx-ic" style="background:${cm.color}1f"><i class="ph-duotone ${cm.icon}" style="color:${cm.color}"></i></div>
                     <div class="tx-inf">
-                        <div class="tx-nm">${meta.concepto}</div>
+                        <div class="tx-nm">${esc(meta.concepto)}</div>
                         <div class="tx-meta">
                             <span class="tx-cat">${cm.label}</span>
-                            ${meta.acreedor ? `<span>· ${meta.acreedor}</span>` : ''}
+                            ${meta.acreedor ? `<span>· ${esc(meta.acreedor)}</span>` : ''}
                             ${badge}
                         </div>
                     </div>
@@ -840,13 +842,13 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
             if (email) data.email_contacto = email;
 
             try {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) throw new Error('Sesión expirada, recarga la página');
                 let error = null;
                 if (id) {
-                    const r = await client.from('obligaciones').update(data).eq('id', id);
+                    const r = await client.from('obligaciones').update(data).eq('id', id).eq('user_id', user.id);
                     error = r.error;
                 } else {
-                    const { data: { user } } = await client.auth.getUser();
-                    if (!user) throw new Error('Sesión expirada, recarga la página');
                     const r = await client.from('obligaciones').insert({ ...data, user_id: user.id });
                     error = r.error;
                 }
@@ -916,7 +918,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
             if (r.dismiss) return;
             const fundingSource = r.isConfirmed ? 'caja' : 'externo';
 
-            const upd = await client.from('obligaciones').update({ estado: 'pagada' }).eq('id', id);
+            const { data: { user: u } } = await client.auth.getUser();
+            if (!u) { Toast.fire({ icon: 'error', title: 'Sesión expirada' }); return; }
+            const upd = await client.from('obligaciones').update({ estado: 'pagada' }).eq('id', id).eq('user_id', u.id);
             if (upd.error) { Toast.fire({ icon: 'error', title: 'Error al marcar pagada' }); return; }
 
             // Registrar el egreso. Si es 'caja' descuenta el flujo de caja; si es 'externo' no lo afecta.
@@ -955,7 +959,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
                 background: '#0b1020', color: '#fff', confirmButtonColor: '#fb7185'
             }).then(async (r) => {
                 if (!r.isConfirmed) return;
-                const del = await client.from('obligaciones').delete().eq('id', id);
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) { Toast.fire({ icon: 'error', title: 'Sesión expirada' }); return; }
+                const del = await client.from('obligaciones').delete().eq('id', id).eq('user_id', user.id);
                 if (del.error) { Toast.fire({ icon: 'error', title: 'Error' }); return; }
                 Toast.fire({ icon: 'success', title: 'Eliminada' });
                 await pymaxData.refresh();

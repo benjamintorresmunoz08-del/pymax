@@ -139,6 +139,14 @@ table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
 .cmp-box .l i{font-size:13px}
 .cmp-box .v{font-size:22px;font-weight:800;margin-top:9px;font-variant-numeric:tabular-nums}
 .cmp-box .s{font-size:10.5px;color:var(--t3);margin-top:4px}
+.due-item{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--bx)}
+.due-item:last-child{border-bottom:none}
+.due-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.due-mid{flex:1;min-width:0}
+.due-lbl{font-size:12.5px;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.due-date{font-size:10px;color:var(--t3);margin-top:2px}
+.due-val{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.due-badge{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:100px;white-space:nowrap}
 .modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
 .modal.open{display:flex}
 .modal-bg{position:absolute;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);animation:fadeIn .2s ease}
@@ -248,6 +256,16 @@ table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
         <div id="crunchBox" style="margin-top:14px"></div>
       </div>
     </div>
+
+    <div class="card reveal">
+      <div class="card-hdr">
+        <div>
+          <div class="card-ttl"><span class="ic" style="background:var(--cd);color:var(--cyan2)"><i class="ph-duotone ph-calendar-check"></i></span>Próximos vencimientos</div>
+          <div class="card-sub">Facturas por cobrar y por pagar con fecha de vencimiento</div>
+        </div>
+      </div>
+      <div class="card-body"><div id="dueList"></div></div>
+    </div>
   </div>
 
   <!-- 4 · Tabla operativa -->
@@ -275,6 +293,12 @@ table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
           </select>
           <select id="fCat" onchange="renderTable()">
             <option value="">Categoría · todas</option>
+          </select>
+          <select id="fStatus" onchange="renderTable()">
+            <option value="">Estado · todos</option>
+            <option value="realizado">Realizado</option>
+            <option value="proyectado">Proyectado</option>
+            <option value="pendiente">Pendiente</option>
           </select>
           <input id="fFrom" type="date" onchange="renderTable()" title="Desde">
           <input id="fTo" type="date" onchange="renderTable()" title="Hasta">
@@ -309,6 +333,8 @@ table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
         <div class="cmp-grid">
           <div class="cmp-box"><div class="l"><i class="ph-bold ph-check-circle" style="color:var(--green2)"></i>Realizado</div><div class="v" id="cmpReal" style="color:var(--green2)">$0</div><div class="s" id="cmpRealSub">0 movimientos confirmados</div></div>
           <div class="cmp-box"><div class="l"><i class="ph-bold ph-clock" style="color:var(--blue2)"></i>Proyectado / Pendiente</div><div class="v" id="cmpProy" style="color:var(--blue2)">$0</div><div class="s" id="cmpProySub">0 compromisos por cobrar/pagar</div></div>
+          <div class="cmp-box"><div class="l"><i class="ph-bold ph-trend-up" style="color:var(--green2)"></i>Por cobrar</div><div class="v" id="cmpCobrar" style="color:var(--green2)">$0</div><div class="s" id="cmpCobrarSub">Facturas pendientes de cobro</div></div>
+          <div class="cmp-box"><div class="l"><i class="ph-bold ph-trend-down" style="color:var(--red2)"></i>Por pagar</div><div class="v" id="cmpPagar" style="color:var(--red2)">$0</div><div class="s" id="cmpPagarSub">Compromisos pendientes de pago</div></div>
         </div>
       </div>
     </div>
@@ -346,7 +372,8 @@ table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
 <script>
 const SU_URL = '{{ SUPABASE_URL or "https://haqjuyagyvxynmulanhe.supabase.co" }}';
 const SU_KEY = '{{ SUPABASE_KEY or "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhcWp1eWFneXZ4eW5tdWxhbmhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4MjU0MjQsImV4cCI6MjA4MTQwMTQyNH0.3aSIfr3s5spESzEv_UAaqYkJzVyhbkK8ZpSlExY0A3g" }}';
-const client = supabase.createClient(SU_URL, SU_KEY);
+let client = null;
+try { client = (typeof supabase !== 'undefined') ? supabase.createClient(SU_URL, SU_KEY) : null; } catch(e){ client = null; }
 
 let allOps = [];
 let period = 'mes';
@@ -378,11 +405,18 @@ function activityOf(t){
 }
 const ACT_LABEL = { operativo:'Operativo', inversion:'Inversión', financiamiento:'Financiamiento' };
 
-function cashImpact(t){
+// Una transacción "realizada" ya movió dinero; "proyectado/pendiente" aún no.
+function isRealized(t){ return !(t.status === 'proyectado' || t.status === 'pendiente'); }
+
+// Impacto de caja bruto (como si se realizara), sin mirar el estado.
+function grossImpact(t){
   if (isIn(t)) return parseFloat(t.amount||0);
   if (isOut(t)) return -parseFloat(t.amount||0);
   return 0;
 }
+
+// Impacto de caja REAL: las proyecciones/pendientes NO mueven efectivo hoy.
+function cashImpact(t){ return isRealized(t) ? grossImpact(t) : 0; }
 
 function setPeriod(p, el){
   period = p;
@@ -413,13 +447,30 @@ function inRange(t, s, e){
   return d >= s && d < e;
 }
 
+// Parsea 'YYYY-MM-DD' como fecha LOCAL (consistente con `today`, evita desfase de zona horaria)
+function parseDateLocal(s){
+  if (!s) return null;
+  const m = String(s).slice(0,10).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return null;
+  const d = new Date(+m[1], +m[2] - 1, +m[3]);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+function hidePreloader(){ const p = document.getElementById('pymax-preloader'); if (p) p.classList.add('pm-done'); }
+
 async function loadData(){
   try {
-    const { data: { user } } = await client.auth.getUser();
-    if (!user){ return; }
+    if (!client) throw new Error('Supabase no disponible');
+    const { data: { user }, error: authErr } = await client.auth.getUser();
+    if (authErr) throw authErr;
+    if (!user){ hidePreloader(); return; }
     const { data, error } = await client.from('user_operations').select('*').eq('user_id', user.id).order('created_at',{ascending:true});
-    if (!error) allOps = data || [];
-  } catch(e){ console.warn('loadData:', e); }
+    if (error) throw error;
+    allOps = Array.isArray(data) ? data : [];
+  } catch(e){
+    console.error('loadData:', e);
+    if (typeof Swal !== 'undefined') Swal.fire({ icon:'error', title:'No se pudieron cargar los datos', text:'Revisa tu conexión e inténtalo de nuevo.', confirmButtonColor:'#3B82F6', background:'#0B1020', color:'#F1F5FF' });
+  }
   populateCategoryFilter();
   render();
   revealAll();
@@ -431,33 +482,46 @@ function revealAll(){
   });
 }
 
+// Guarda el handle de animación por elemento para cancelar la anterior y evitar
+// bucles requestAnimationFrame superpuestos (flicker) al cambiar de período rápido.
+const numAnim = new WeakMap();
+
 function setNum(el, v){
+  if (!el) return;
   const to = Number(v || 0);
+  if (numAnim.has(el)) cancelAnimationFrame(numAnim.get(el));
   const start = performance.now();
   const from = 0, dur = 900;
   function frame(now){
     const p = Math.min(1, (now - start) / dur);
     const e = 1 - Math.pow(1 - p, 3);
     el.textContent = fmt(from + (to - from) * e);
-    if (p < 1) requestAnimationFrame(frame);
+    if (p < 1){ numAnim.set(el, requestAnimationFrame(frame)); }
+    else { numAnim.delete(el); }
   }
-  requestAnimationFrame(frame);
+  numAnim.set(el, requestAnimationFrame(frame));
 }
 function getMetrics(){
   const { s, e } = rangeFor(period);
   const cur = allOps.filter(t => inRange(t, s, e));
-  const inflow = cur.filter(isIn).reduce((a,t)=>a+parseFloat(t.amount||0),0);
-  const outflow = cur.filter(isOut).reduce((a,t)=>a+parseFloat(t.amount||0),0);
+  const realized = cur.filter(isRealized);
+  const inflow = realized.filter(isIn).reduce((a,t)=>a+parseFloat(t.amount||0),0);
+  const outflow = realized.filter(isOut).reduce((a,t)=>a+parseFloat(t.amount||0),0);
   const net = inflow - outflow;
   let opening = 0;
   allOps.forEach(t => { const d = new Date(t.created_at||t.date); if (d < s) opening += cashImpact(t); });
   const disponible = opening + net;
-  const months = period === 'mes' ? 1 : (period === 'anio' ? 12 : (period === 'semana' ? 0.25 : 0.03));
-  const burn = months > 0 ? outflow / months : 0;
-  return { cur, inflow, outflow, net, opening, disponible, burn };
+  // Días realmente transcurridos del período (mínimo 1) para el ritmo real
+  const elapsedDays = Math.max(1, Math.floor((Date.now() - s.getTime()) / 86400000) + 1);
+  // Burn rate mensual extrapolado del ritmo diario observado (30.44 = días/mes promedio)
+  const burn = outflow > 0 ? (outflow / elapsedDays) * 30.44 : 0;
+  return { cur, inflow, outflow, net, opening, disponible, burn, elapsedDays };
 }
 
-function getReserve(){ return parseFloat(localStorage.getItem('pymax_caja_minima') || 0) || 0; }
+function getReserve(){
+  try { return parseFloat(localStorage.getItem('pymax_caja_minima') || 0) || 0; }
+  catch(e){ return 0; }
+}
 
 function setReserve(){
   Swal.fire({
@@ -475,7 +539,7 @@ function setReserve(){
     inputAttributes:{ min:0, step:1000 }
   }).then(r => {
     if (r.isConfirmed){
-      localStorage.setItem('pymax_caja_minima', String(parseFloat(r.value)||0));
+      try { localStorage.setItem('pymax_caja_minima', String(parseFloat(r.value)||0)); } catch(e){}
       render();
     }
   });
@@ -487,9 +551,10 @@ function render(){
   document.getElementById('pageSub').textContent = 'Métricas y proyección de liquidez · ' + (PERIODS[period] || '');
   renderKPIs(m.opening, m.net, m.disponible, cover, m.burn);
   renderPillars(m.cur);
-  renderProjection();
+  renderProjection(m);
   renderTable();
   renderComparison(m.cur);
+  renderDueList();
   const p = document.getElementById('pymax-preloader'); if(p) p.classList.add('pm-done');
 }
 
@@ -518,6 +583,7 @@ function renderKPIs(opening, net, disponible, cover, burn){
 function renderPillars(cur){
   const by = { operativo:{i:0,o:0}, inversion:{i:0,o:0}, financiamiento:{i:0,o:0} };
   cur.forEach(t => {
+    if (!isRealized(t)) return;
     const act = activityOf(t);
     if (isIn(t)) by[act].i += parseFloat(t.amount||0);
     if (isOut(t)) by[act].o += parseFloat(t.amount||0);
@@ -540,12 +606,52 @@ function renderPillars(cur){
 function renderComparison(cur){
   const real = cur.filter(t => !(t.status === 'proyectado' || t.status === 'pendiente'));
   const proy = cur.filter(t => t.status === 'proyectado' || t.status === 'pendiente');
-  const rNet = real.reduce((a,t)=>a+cashImpact(t),0);
-  const pNet = proy.reduce((a,t)=>a+cashImpact(t),0);
+  const rNet = real.reduce((a,t)=>a+grossImpact(t),0);
+  const pNet = proy.reduce((a,t)=>a+grossImpact(t),0);
   setNum(document.getElementById('cmpReal'), rNet);
   setNum(document.getElementById('cmpProy'), pNet);
   document.getElementById('cmpRealSub').textContent = real.length + ' movimientos confirmados';
   document.getElementById('cmpProySub').textContent = proy.length + ' compromisos por cobrar/pagar';
+
+  // Totales de cuentas por cobrar y por pagar (todas las pendientes, sin importar fuente)
+  const cobrar = proy.filter(isIn).reduce((a,t)=>a+parseFloat(t.amount||0),0);
+  const pagar = proy.filter(t => t.type === 'egreso' || t.type === 'expense').reduce((a,t)=>a+parseFloat(t.amount||0),0);
+  setNum(document.getElementById('cmpCobrar'), cobrar);
+  setNum(document.getElementById('cmpPagar'), pagar);
+  document.getElementById('cmpCobrarSub').textContent = proy.filter(isIn).length + ' facturas';
+  document.getElementById('cmpPagarSub').textContent = proy.filter(t => t.type === 'egreso' || t.type === 'expense').length + ' compromisos';
+}
+
+function renderDueList(){
+  const box = document.getElementById('dueList');
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const items = allOps
+    .filter(t => (t.status === 'proyectado' || t.status === 'pendiente') && t.due_date)
+    .map(t => ({ t, due: parseDateLocal(t.due_date) }))
+    .filter(x => x.due)
+    .sort((a,b) => a.due - b.due)
+    .slice(0, 12);
+  if (!items.length){ box.innerHTML = '<div class="empty"><i class="ph-duotone ph-calendar-check"></i>No hay cuentas pendientes con vencimiento registrado</div>'; return; }
+  box.innerHTML = items.map(({t, due}) => {
+    const inc = isIn(t);
+    const days = Math.round((due - today) / 86400000);
+    const overdue = days < 0;
+    const todayFlag = days === 0;
+    const lbl = t.concept || t.description || (inc ? 'Por cobrar' : 'Por pagar');
+    const bg = inc ? 'var(--gd)' : 'var(--rd)';
+    const col = inc ? 'var(--green2)' : 'var(--red2)';
+    const badgeBg = overdue ? 'var(--rd)' : (todayFlag ? 'var(--ad)' : 'var(--gd)');
+    const badgeCol = overdue ? 'var(--red2)' : (todayFlag ? 'var(--amber2)' : 'var(--green2)');
+    const badgeTxt = overdue ? 'Vencido ' + Math.abs(days) + 'd' : (todayFlag ? 'Hoy' : 'en ' + days + 'd');
+    const dueTxt = 'Vence ' + due.toLocaleDateString('es-CL', { day:'2-digit', month:'short' });
+    return '<div class="due-item">' +
+      '<span class="due-ic" style="background:' + bg + ';color:' + col + '"><i class="ph-bold ' + (inc ? 'ph-arrow-down-left' : 'ph-arrow-up-right') + '"></i></span>' +
+      '<div class="due-mid"><div class="due-lbl">' + esc(lbl) + '</div><div class="due-date">' + dueTxt + '</div></div>' +
+      '<span class="due-badge" style="background:' + badgeBg + ';color:' + badgeCol + '">' + badgeTxt + '</span>' +
+      '<span class="due-val" style="color:' + col + '">' + (inc ? '+' : '−') + fmt(parseFloat(t.amount||0)) + '</span>' +
+      '</div>';
+  }).join('');
 }
 function scenarioLabel(){
   if (!scenario) return '';
@@ -555,24 +661,70 @@ function scenarioLabel(){
   return 'Aporte de capital por ' + m;
 }
 
-function renderProjection(){
-  const m = getMetrics();
-  const { s, e } = rangeFor(period);
-  const days = Math.max(1, Math.round((e - s) / 86400000));
-  const dailyNet = m.net / days;
+function renderProjection(m){
+  if (!m) m = getMetrics();
+  const { s } = rangeFor(period);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const reserve = getReserve();
-  const start = new Date(s);
+
+  const toKey = d => d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  const fmtLbl = d => d.toLocaleDateString('es-CL', { day:'2-digit', month:'short' });
+
+  // Inicio del gráfico: como máximo los últimos 90 días del período
+  const chartStart = new Date(Math.max(s.getTime(), today.getTime() - 89 * 86400000));
+
+  // Saldo inicial del gráfico + flujo diario real (todas las operaciones)
+  let chartOpening = 0;
+  const flow = {};
+  allOps.forEach(t => {
+    const d = new Date(t.created_at || t.date);
+    if (d < chartStart) chartOpening += cashImpact(t);
+    else if (d <= today) { const k = toKey(d); flow[k] = (flow[k] || 0) + cashImpact(t); }
+  });
+
+  // Histórico: saldo acumulado real día a día (subidas y bajadas reales)
   const labels = [], balances = [];
-  for (let i = 0; i <= horizon; i++){
-    let b = m.disponible + dailyNet * i;
-    if (scenario){
-      if (scenario.type === 'retraso'){ b -= scenario.amount; if (i >= scenario.extra) b += scenario.amount; }
-      else if (scenario.type === 'compra'){ b -= scenario.amount; }
-      else if (scenario.type === 'aporte'){ b += scenario.amount; }
+  const histDays = Math.max(1, Math.round((today - chartStart) / 86400000) + 1);
+  let acc = chartOpening;
+  for (let i = 0; i < histDays; i++){
+    const d = new Date(chartStart); d.setDate(chartStart.getDate() + i);
+    acc += (flow[toKey(d)] || 0);
+    labels.push(fmtLbl(d));
+    balances.push(acc);
+  }
+  // acc ahora equivale al saldo real de hoy (disponible)
+
+  // Ritmo diario real sobre los días transcurridos del período
+  const dailyNet = m.net / m.elapsedDays;
+
+  // Vencimientos reales: cuentas por cobrar/pagar futuras (proyectado/pendiente + due_date)
+  const dueMap = {};
+  allOps.forEach(t => {
+    if ((t.status === 'proyectado' || t.status === 'pendiente') && t.due_date){
+      const due = parseDateLocal(t.due_date);
+      if (due){
+        const offset = Math.round((due.getTime() - today.getTime()) / 86400000);
+        if (offset >= 0 && offset <= horizon){
+          dueMap[offset] = (dueMap[offset] || 0) + grossImpact(t);
+        }
+      }
     }
+  });
+
+  // Proyección futura desde hoy (ritmo + vencimientos reales)
+  let prev = acc;
+  for (let i = 1; i <= horizon; i++){
+    const d = new Date(today); d.setDate(today.getDate() + i);
+    let b = prev + dailyNet + (dueMap[i] || 0);
+    if (scenario){
+      if (scenario.type === 'retraso'){ if (i === 1) b -= scenario.amount; if (i === scenario.extra) b += scenario.amount; }
+      else if (scenario.type === 'compra' && i === 1){ b -= scenario.amount; }
+      else if (scenario.type === 'aporte' && i === 1){ b += scenario.amount; }
+    }
+    labels.push(fmtLbl(d));
     balances.push(b);
-    const d = new Date(start); d.setDate(start.getDate() + i);
-    labels.push(i === 0 ? 'Hoy' : d.toLocaleDateString('es-CL', { day:'2-digit', month:'short' }));
+    prev = b;
   }
 
   const crunch = [];
@@ -582,20 +734,42 @@ function renderProjection(){
   if (firstNeg !== null) crunch.push({ cls:'danger', icon:'ph-warning-circle', msg:'Saldo negativo proyectado para el <b>' + labels[firstNeg] + '</b>. Riesgo de brecha de liquidez.' });
   else if (belowReserve > 0) crunch.push({ cls:'warn', icon:'ph-warning', msg:'El saldo cae por debajo de tu caja mínima en <b>' + belowReserve + ' día(s)</b>.' });
   else crunch.push({ cls:'ok', icon:'ph-check-circle', msg:'Sin brechas de liquidez en el horizonte de ' + horizon + ' días.' });
+  crunch.push({ cls:'info', icon:'ph-trend-up', msg:'Ritmo diario real: <b>' + (dailyNet >= 0 ? '+' : '') + fmt(dailyNet) + '/día</b> (' + fmt(m.net) + ' en ' + m.elapsedDays + ' días).' });
   if (scenario) crunch.push({ cls:'info', icon:'ph-sliders', msg:'Escenario activo: ' + scenarioLabel() + '.' });
   document.getElementById('crunchBox').innerHTML = crunch.map(c => '<div class="crunch ' + c.cls + '"><i class="ph-bold ' + c.icon + '"></i><span>' + c.msg + '</span></div>').join('');
 
+  if (typeof Chart === 'undefined') return; // Chart.js no cargó; las alertas ya se muestran
   const ctx = document.getElementById('projChart');
   if (projChart){ projChart.destroy(); }
-  const g = ctx.getContext('2d').createLinearGradient(0, 0, 0, 280);
-  g.addColorStop(0, 'rgba(59,130,246,.25)');
-  g.addColorStop(1, 'rgba(59,130,246,0)');
-  const datasets = [{ label:'Saldo proyectado', data:balances, borderColor:'#3B82F6', backgroundColor:g, fill:true, tension:.3, pointRadius:0, pointHoverRadius:4, pointHoverBackgroundColor:'#fff', borderWidth:2 }];
-  if (reserve > 0) datasets.push({ label:'Caja mínima', data: balances.map(() => reserve), borderColor:'#F59E0B', borderDash:[6,4], borderWidth:1.5, pointRadius:0, fill:false });
+  const datasets = [{
+    label: 'Saldo de caja',
+    data: balances,
+    borderWidth: 2.5,
+    tension: 0,
+    fill: false,
+    pointRadius: c => (c.parsed.y < 0 ? 3 : 0),
+    pointBackgroundColor: '#F43F5E',
+    pointBorderColor: '#F43F5E',
+    pointHoverRadius: 5,
+    pointHoverBackgroundColor: '#fff',
+    segment: { borderColor: c => (c.p0.parsed.y > c.p1.parsed.y ? '#F43F5E' : '#10B981') }
+  }];
+  if (reserve > 0) datasets.push({ label: 'Caja mínima', data: balances.map(() => reserve), borderColor: '#F59E0B', borderDash: [6,4], borderWidth: 1.5, pointRadius: 0, fill: false });
+  datasets.push({ label: '', data: balances.map(() => 0), borderColor: 'rgba(148,163,184,.18)', borderDash: [3,4], borderWidth: 1, pointRadius: 0, fill: false });
   projChart = new Chart(ctx, {
-    type:'line',
-    data:{ labels, datasets },
-    options:{ responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false}, plugins:{ legend:{display: reserve > 0, labels:{color:'#94A3B8', boxWidth:14, usePointStyle:true, pointStyle:'line', font:{size:10}}}, tooltip:{backgroundColor:'rgba(11,16,32,.96)',borderColor:'rgba(148,163,184,.2)',borderWidth:1,titleColor:'#94A3B8',bodyColor:'#F1F5FF',padding:11,cornerRadius:10,displayColors:false,callbacks:{label:c=>' '+fmt(c.parsed.y)} } }, scales:{ x:{ ticks:{color:'#475569',font:{size:9},maxTicksLimit:8}, grid:{color:'rgba(148,163,184,.05)'} }, y:{ ticks:{color:'#475569',font:{size:9},callback:v=>fmt(v)}, grid:{color:'rgba(148,163,184,.05)'} } } }
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: reserve > 0, labels: { color: '#94A3B8', boxWidth: 14, usePointStyle: true, pointStyle: 'line', font: { size: 10 }, filter: item => item.text !== '' } },
+        tooltip: { backgroundColor: 'rgba(11,16,32,.96)', borderColor: 'rgba(148,163,184,.2)', borderWidth: 1, titleColor: '#94A3B8', bodyColor: '#F1F5FF', padding: 11, cornerRadius: 10, displayColors: false, callbacks: { label: c => ' ' + fmt(c.parsed.y) } }
+      },
+      scales: {
+        x: { ticks: { color: '#475569', font: { size: 9 }, maxTicksLimit: 10, maxRotation: 0 }, grid: { color: 'rgba(148,163,184,.05)' } },
+        y: { ticks: { color: '#475569', font: { size: 9 }, callback: v => fmt(v) }, grid: { color: 'rgba(148,163,184,.05)' } }
+      }
+    }
   });
 }
 function populateCategoryFilter(){
@@ -608,6 +782,7 @@ function getFilteredList(){
   const fType = document.getElementById('fType').value;
   const fAct = document.getElementById('fAct').value;
   const fCat = document.getElementById('fCat').value;
+  const fStatus = document.getElementById('fStatus').value;
   const fFrom = document.getElementById('fFrom').value;
   const fTo = document.getElementById('fTo').value;
   const q = (document.getElementById('fSearch').value || '').toLowerCase();
@@ -616,11 +791,16 @@ function getFilteredList(){
   if (fType) list = list.filter(t => (fType === 'ingreso' ? isIn(t) : (t.type === 'egreso' || t.type === 'expense')));
   if (fAct) list = list.filter(t => activityOf(t) === fAct);
   if (fCat) list = list.filter(t => (t.category || 'Sin categoría') === fCat);
+  if (fStatus === 'realizado') list = list.filter(t => isRealized(t));
+  else if (fStatus) list = list.filter(t => t.status === fStatus);
   if (fFrom) list = list.filter(t => new Date(t.created_at || t.date) >= new Date(fFrom));
   if (fTo) list = list.filter(t => new Date(t.created_at || t.date) <= new Date(fTo + 'T23:59:59'));
   if (q) list = list.filter(t => ((t.concept||'') + (t.description||'')).toLowerCase().includes(q));
-  list.sort((a,b) => new Date(b.created_at||b.date) - new Date(a.created_at||a.date));
-  return list;
+  // Precalcula el timestamp una sola vez por elemento (evita crear Date en cada comparación del sort)
+  return list
+    .map(t => ({ t, ts: new Date(t.created_at || t.date).getTime() }))
+    .sort((a, b) => b.ts - a.ts)
+    .map(x => x.t);
 }
 
 function renderTable(){
@@ -653,8 +833,9 @@ function updateSimLabels(){
 function applySim(){
   const type = document.getElementById('simType').value;
   const amount = parseFloat(document.getElementById('simAmount').value) || 0;
-  const extra = parseInt(document.getElementById('simExtra').value) || 0;
-  if (amount <= 0){ Swal.fire({ icon:'warning', title:'Ingresa un monto', confirmButtonColor:'#3B82F6', background:'#0B1020', color:'#F1F5FF' }); return; }
+  const extra = parseInt(document.getElementById('simExtra').value, 10) || 0;
+  if (!Number.isFinite(amount) || amount <= 0){ Swal.fire({ icon:'warning', title:'Ingresa un monto válido', confirmButtonColor:'#3B82F6', background:'#0B1020', color:'#F1F5FF' }); return; }
+  if (type === 'retraso' && extra < 1){ Swal.fire({ icon:'warning', title:'Los días de retraso deben ser al menos 1', confirmButtonColor:'#3B82F6', background:'#0B1020', color:'#F1F5FF' }); return; }
   scenario = { type, amount, extra };
   closeSim();
   renderProjection();
@@ -672,12 +853,22 @@ function download(name, content, mime){
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
+function csvField(v){
+  let s = String(v == null ? '' : v);
+  // Anti inyección CSV: neutraliza fórmulas (= + - @ tab CR)
+  if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+  if (/[",\n\r]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
+  return s;
+}
+
+function localDateKey(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+
 function exportCsv(){
   const list = getFilteredList();
   const rows = list.map(t => {
     const inc = isIn(t);
     const d = new Date(t.created_at || t.date);
-    return [d.toISOString().slice(0,10), (t.concept||t.description||'').replace(/"/g,'""'), t.category||'', ACT_LABEL[activityOf(t)], inc?'ingreso':'egreso', (inc?'':'-') + parseFloat(t.amount||0)].join(',');
+    return [localDateKey(d), csvField(t.concept||t.description||''), csvField(t.category||''), ACT_LABEL[activityOf(t)], inc?'ingreso':'egreso', (inc?'':'-') + parseFloat(t.amount||0)].join(',');
   });
   download('pymax_flujo_caja.csv', '\ufeff' + ('Fecha,Concepto,Categoría,Actividad,Tipo,Monto\n' + rows.join('\n')), 'text/csv;charset=utf-8');
 }
@@ -688,7 +879,7 @@ function exportExcel(){
   html += list.map(t => {
     const inc = isIn(t);
     const d = new Date(t.created_at || t.date);
-    return '<tr><td>' + d.toISOString().slice(0,10) + '</td><td>' + esc(t.concept||t.description||'') + '</td><td>' + esc(t.category||'') + '</td><td>' + ACT_LABEL[activityOf(t)] + '</td><td>' + (inc?'ingreso':'egreso') + '</td><td>' + (inc?'':'-') + parseFloat(t.amount||0) + '</td></tr>';
+    return '<tr><td>' + localDateKey(d) + '</td><td>' + esc(t.concept||t.description||'') + '</td><td>' + esc(t.category||'') + '</td><td>' + ACT_LABEL[activityOf(t)] + '</td><td>' + (inc?'ingreso':'egreso') + '</td><td>' + (inc?'':'-') + parseFloat(t.amount||0) + '</td></tr>';
   }).join('');
   html += '</table>';
   download('pymax_flujo_caja.xls', '<meta charset="utf-8">' + html, 'application/vnd.ms-excel');
@@ -700,7 +891,7 @@ function exportPdf(){
   const rows = list.map(t => {
     const inc = isIn(t);
     const d = new Date(t.created_at || t.date);
-    return '<tr><td>' + d.toISOString().slice(0,10) + '</td><td>' + esc(t.concept||t.description||'') + '</td><td>' + esc(t.category||'') + '</td><td>' + ACT_LABEL[activityOf(t)] + '</td><td>' + (inc?'Ingreso':'Egreso') + '</td><td>' + (inc?'+':'-') + fmt(parseFloat(t.amount||0)) + '</td></tr>';
+    return '<tr><td>' + localDateKey(d) + '</td><td>' + esc(t.concept||t.description||'') + '</td><td>' + esc(t.category||'') + '</td><td>' + ACT_LABEL[activityOf(t)] + '</td><td>' + (inc?'Ingreso':'Egreso') + '</td><td>' + (inc?'+':'-') + fmt(parseFloat(t.amount||0)) + '</td></tr>';
   }).join('');
   const doc = '<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Flujo de Caja</title>' +
     '<style>body{font-family:Arial,Helvetica,sans-serif;color:#111;padding:24px;font-size:13px}h1{font-size:20px;margin-bottom:2px}.muted{color:#666;font-size:12px;margin-bottom:18px}.kpis{display:flex;gap:16px;margin-bottom:20px}.kpi{flex:1;border:1px solid #ddd;border-radius:8px;padding:12px}.kpi b{font-size:18px;display:block}.kpi span{font-size:11px;color:#666}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ddd;padding:7px 9px;text-align:left}th{background:#f4f4f4}</style></head><body>' +

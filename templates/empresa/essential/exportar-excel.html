@@ -206,6 +206,13 @@
   window.supabase = supabase.createClient(SU_URL, SU_KEY);
 </script>
 <script>
+// Neutraliza inyección de fórmulas (= + - @ tab CR) en celdas de texto de Excel/CSV
+function sanitizeCell(v) {
+  let s = String(v == null ? '' : v);
+  if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+  return s;
+}
+
 async function exportar(tipo) {
   const { data: { user } } = await window.supabase.auth.getUser();
   if (!user) { alert('Inicia sesión para exportar.'); return; }
@@ -213,13 +220,13 @@ async function exportar(tipo) {
   try {
     if (tipo === 'movimientos') {
       const { data } = await window.supabase.from('user_operations').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
-      const rows = (data || []).map(m => ({ Fecha: m.created_at?.slice(0,10), Tipo: m.type, Categoría: m.category, Monto: m.amount, Concepto: m.concept }));
+      const rows = (data || []).map(m => ({ Fecha: m.created_at?.slice(0,10), Tipo: sanitizeCell(m.type), Categoría: sanitizeCell(m.category), Monto: m.amount, Concepto: sanitizeCell(m.concept) }));
       const ws = XLSX.utils.json_to_sheet(rows);
       const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Movimientos');
       XLSX.writeFile(wb, 'Pymax_Movimientos.xlsx');
     } else if (tipo === 'obligaciones') {
       const { data } = await window.supabase.from('obligaciones').select('*').eq('user_id', user.id);
-      const rows = (data || []).map(o => ({ Tipo: o.tipo, Monto: o.monto, 'Fecha Pago': o.fecha_pago || o.fecha_vencimiento, Estado: o.estado }));
+      const rows = (data || []).map(o => ({ Tipo: sanitizeCell(o.tipo), Monto: o.monto, 'Fecha Pago': o.fecha_pago || o.fecha_vencimiento, Estado: sanitizeCell(o.estado) }));
       const ws = XLSX.utils.json_to_sheet(rows);
       const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Obligaciones');
       XLSX.writeFile(wb, 'Pymax_Obligaciones.xlsx');
@@ -235,7 +242,7 @@ async function exportar(tipo) {
     alert('Exportación completada.');
   } catch (e) {
     console.error(e);
-    alert('Error al exportar: ' + (e.message || 'Revisa la consola.'));
+    alert('Error al exportar. Intenta nuevamente.');
   }
 }
 

@@ -624,6 +624,9 @@
             }
         }
 
+        // Escape de HTML para datos del usuario (previene XSS en concepto/categoría)
+        function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
         // Populate Categories
         function populateCategories() {
             const categories = [...new Set(allTransactions.map(t => t.category))].filter(c => c).sort();
@@ -671,10 +674,10 @@
                 return `
                     <tr>
                         <td class="font-mono text-slate-400 text-sm">${formattedDate}</td>
-                        <td class="font-semibold text-white">${t.concept || 'Untitled'}</td>
+                        <td class="font-semibold text-white">${esc(t.concept || 'Untitled')}</td>
                         <td>
                             <span class="text-xs text-cyan-400 bg-cyan-500/10 px-2 py-1 rounded border border-cyan-500/20">
-                                ${t.category || 'Uncategorized'}
+                                ${esc(t.category || 'Uncategorized')}
                             </span>
                         </td>
                         <td>

@@ -1379,10 +1379,10 @@ select.inp{appearance:none}
                     <div class="txr">
                         <div class="tx-ic" style="background:${icBg}"><i class="ph-duotone ${isIncome ? 'ph-arrow-up' : 'ph-arrow-down'}" style="color:${icColor}"></i></div>
                         <div class="tx-inf">
-                            <div class="tx-nm">${title}</div>
+                            <div class="tx-nm">${escapeHtml(title)}</div>
                             <div class="tx-meta">
                                 <span>${formattedDate}</span>
-                                ${t.category ? `<span class="tx-cat">${t.category}</span>` : ''}
+                                ${t.category ? `<span class="tx-cat">${escapeHtml(t.category)}</span>` : ''}
                             </div>
                         </div>
                         <p class="tx-amt" style="color:${icColor}">${isIncome ? '+' : '-'}${fmtMoney(amount)}</p>

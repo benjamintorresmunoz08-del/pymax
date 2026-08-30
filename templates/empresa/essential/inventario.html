@@ -612,6 +612,9 @@
         }
 
         // Render Products
+        // Escape de HTML para datos del usuario (previene XSS en nombres de producto/proveedor)
+        function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
         function renderProducts() {
             const container = document.getElementById('productsList');
             const t = key => window.i18n?.t(key) || key;
@@ -655,8 +658,8 @@
                     <div class="product-card">
                         <div class="flex justify-between items-start mb-3">
                             <div class="flex-1">
-                                <h4 class="font-bold text-white text-base mb-1">${p.product_name}</h4>
-                                <p class="text-xs text-slate-400">${p.supplier || t('no_supplier')}</p>
+                                <h4 class="font-bold text-white text-base mb-1">${esc(p.product_name)}</h4>
+                                <p class="text-xs text-slate-400">${esc(p.supplier || t('no_supplier'))}</p>
                             </div>
                             <span class="stock-badge ${stockStatus}">${stockBadge}</span>
                         </div>
