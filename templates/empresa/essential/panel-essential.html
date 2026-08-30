@@ -1561,13 +1561,10 @@ async function loadPrevMonth(){
 function renderHero(){
   var f=_fin;
   var bEl=document.getElementById('heroBal');
-  if(bEl){bEl.innerHTML='';countUpEl(bEl,f.bal,'$');}
-  if(f.bal<0){
-    setTimeout(function(){
-      var b=document.getElementById('heroBal');
-      if(b){b.style.background='linear-gradient(135deg,var(--t1),var(--red))';
-        b.style['-webkit-background-clip']='text';b.style.backgroundClip='text';}
-    },900);
+  if(bEl){
+    bEl.innerHTML='';countUpEl(bEl,f.bal,'$');
+    // Alternar color según signo usando la clase .neg (se reinicia bien al cambiar de periodo)
+    bEl.classList.toggle('neg', f.bal < 0);
   }
   // Badge
   var bdg=document.getElementById('heroBadge');
