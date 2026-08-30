@@ -49,62 +49,56 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .back-btn{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--t3);text-decoration:none;padding:5px 12px;border-radius:var(--rg);border:1px solid var(--b);transition:all .18s}
 .back-btn:hover{color:var(--t2);border-color:var(--bh)}
 .back-btn i{font-size:14px}
-.page{position:relative;z-index:1;max-width:1160px;margin:0 auto;padding:68px 20px 60px}
-.hero{position:relative;padding:24px 4px 20px;overflow:hidden;margin-bottom:4px}
-.hero::before{content:'';position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:640px;height:320px;background:radial-gradient(ellipse,rgba(59,130,246,.1),rgba(139,92,246,.05) 50%,transparent 70%);pointer-events:none}
-.hero-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:12px;position:relative}
-.hero-greet{font-size:13px;font-weight:500;color:var(--t2)}
-.period-tabs{display:flex;gap:2px;background:rgba(6,10,20,.6);border:1px solid var(--b);border-radius:9px;padding:3px;flex-shrink:0}
-.pt{padding:4px 13px;border-radius:7px;font-size:11px;font-weight:600;color:var(--t3);cursor:pointer;border:none;font-family:inherit;background:none;transition:all .18s;white-space:nowrap}
+.page{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:72px 20px 64px}
+.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.page-title{font-size:20px;font-weight:800;letter-spacing:-.03em}
+.page-title span{background:linear-gradient(90deg,#93C5FD,#A78BFA);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.page-sub{font-size:12px;color:var(--t3);margin-top:3px}
+.period-tabs{display:flex;gap:2px;background:rgba(6,10,20,.6);border:1px solid var(--b);border-radius:9px;padding:3px}
+.pt{padding:5px 14px;border-radius:7px;font-size:11px;font-weight:600;color:var(--t3);cursor:pointer;border:none;font-family:inherit;background:none;transition:all .18s;white-space:nowrap}
 .pt.on{background:rgba(59,130,246,.18);color:var(--blue2);box-shadow:0 1px 8px rgba(59,130,246,.2)}
 .pt:hover:not(.on){color:var(--t2)}
-.hero-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(59,130,246,.8);margin-bottom:6px}
-.hero-bal{font-size:clamp(40px,5.5vw,60px);font-weight:900;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums;background:linear-gradient(135deg,var(--t1) 30%,var(--blue2) 60%,var(--purple2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.hero-bal.neg{background:linear-gradient(135deg,var(--t1),var(--red));-webkit-background-clip:text;background-clip:text}
-.hero-bal.neu{background:linear-gradient(135deg,var(--t1),var(--t2));-webkit-background-clip:text;background-clip:text}
-.hero-sub{font-size:12px;color:var(--t3);margin-top:8px;display:flex;align-items:center;gap:6px}
-.hero-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
-.hchip{padding:7px 14px;border-radius:10px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;border:1px solid;backdrop-filter:blur(8px);transition:all .22s cubic-bezier(.34,1.56,.64,1)}
-.hchip:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
-.hchip i{font-size:13px}
-.hchip b{font-weight:800;font-variant-numeric:tabular-nums}
-.kpi-bar{display:grid;grid-template-columns:repeat(4,1fr);background:var(--s1);border:1px solid var(--b);border-radius:var(--r);overflow:hidden;margin-bottom:18px}
-.kpi{padding:14px 18px 16px;position:relative;cursor:pointer;transition:background .18s;border-right:1px solid var(--b)}
-.kpi:last-child{border-right:none}
-.kpi:hover{background:rgba(59,130,246,.04)}
-.kpi-lbl{font-size:9px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--t3);margin-bottom:7px;display:flex;align-items:center;gap:5px}
-.kpi-lbl i{font-size:12px}
-.kpi-val{font-size:22px;font-weight:800;letter-spacing:-.035em;font-variant-numeric:tabular-nums;line-height:1;margin-bottom:5px}
-.kpi-sub{font-size:10px;color:var(--t3)}
-.kpi-sub .ok{color:var(--green2)}.kpi-sub .warn{color:var(--amber2)}.kpi-sub .bad{color:var(--red2)}
-.main-grid{display:grid;grid-template-columns:1fr 320px;gap:14px;align-items:start}
-.left-col,.right-col{display:flex;flex-direction:column;gap:14px}
-.card{border-radius:var(--r);background:rgba(255,255,255,.027);backdrop-filter:blur(16px);border:1px solid var(--b);overflow:hidden;transition:border-color .22s,box-shadow .28s}
+
+/* Sections */
+.sec{margin-bottom:26px}
+.sec-ttl{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--t2);margin-bottom:12px}
+.sec-ttl .n{width:22px;height:22px;border-radius:7px;background:var(--s2);border:1px solid var(--b);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--blue2);flex-shrink:0}
+.sec-ttl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--b),transparent)}
+
+/* Card */
+.card{border-radius:var(--r);background:rgba(255,255,255,.027);backdrop-filter:blur(16px);border:1px solid var(--b);overflow:hidden;transition:border-color .22s}
 .card:hover{border-color:var(--bh)}
 .card-hdr{padding:16px 20px 12px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
 .card-ttl{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;letter-spacing:-.01em}
 .card-ttl .ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
 .card-sub{font-size:11px;color:var(--t3);margin-top:2px;margin-left:38px}
 .card-body{padding:8px 20px 18px}
-/* Pillars (stacked) */
-.pillar-row{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--bx)}
-.pillar-row:last-child{border-bottom:none}
-.pillar-ic{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
-.pillar-mid{flex:1;min-width:0}
-.pillar-lbl{font-size:12px;font-weight:600;color:var(--t1)}
-.pillar-bar{height:4px;background:rgba(255,255,255,.06);border-radius:100px;margin-top:6px;overflow:hidden}
+
+/* KPIs (4 cards) */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.kpi{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:16px 18px;transition:border-color .2s,transform .2s}
+.kpi:hover{border-color:var(--bh)}
+.kpi.clickable{cursor:pointer}
+.kpi-lbl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);display:flex;align-items:center;gap:6px}
+.kpi-lbl i{font-size:13px}
+.kpi-val{font-size:24px;font-weight:800;letter-spacing:-.035em;margin-top:10px;font-variant-numeric:tabular-nums;line-height:1}
+.kpi-sub{font-size:10.5px;color:var(--t3);margin-top:6px}
+.kpi-sub .ok{color:var(--green2)}.kpi-sub .warn{color:var(--amber2)}.kpi-sub .bad{color:var(--red2)}
+
+/* Three pillars (3 cards) */
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.pillar{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:18px}
+.pillar-top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.pillar-ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.pillar-name{font-size:13px;font-weight:700}
+.pillar-desc{font-size:10.5px;color:var(--t3);margin-top:2px;line-height:1.4;min-height:28px}
+.pillar-val{font-size:22px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.pillar-flows{display:flex;flex-direction:column;gap:5px;margin-top:10px}
+.pf-row{display:flex;justify-content:space-between;font-size:11px}
+.pf-row .l{color:var(--t3)}
+.pf-row .v{font-weight:700;font-variant-numeric:tabular-nums}
+.pillar-bar{height:4px;background:rgba(255,255,255,.06);border-radius:100px;margin-top:12px;overflow:hidden}
 .pillar-fill{height:100%;border-radius:100px;width:0;transition:width .8s cubic-bezier(.16,1,.3,1)}
-.pillar-val{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
-/* Waterfall */
-.wf-row{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--bx)}
-.wf-row:last-child{border-bottom:none}
-.wf-ic{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.wf-lbl{font-size:12.5px;font-weight:500;color:var(--t1)}
-.wf-val{margin-left:auto;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
-.wf-group{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);padding:14px 0 2px}
-.wf-total{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding:13px 15px;border-radius:11px;background:var(--s2);border:1px solid var(--b)}
-.wf-total .l{font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:8px}
-.wf-total .v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
 .tbl-wrap{overflow-x:auto}
 table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
 .tbl thead th{text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);padding:10px 12px;border-bottom:1px solid var(--b);white-space:nowrap}
@@ -121,6 +115,7 @@ table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
 .filters select,.filters input{background:var(--s2);border:1px solid var(--b);color:var(--t1);border-radius:8px;padding:7px 10px;font-family:inherit;font-size:12px;outline:none;transition:border-color .15s}
 .filters select:focus,.filters input:focus{border-color:rgba(59,130,246,.4)}
 .filters select option{background:var(--s2);color:var(--t1)}
+.filters input[type=date]{color-scheme:dark}
 .btn{display:inline-flex;align-items:center;gap:6px;font-family:inherit;font-size:12px;font-weight:600;padding:7px 14px;border-radius:var(--rg);border:1px solid var(--b);background:var(--s2);color:var(--t2);cursor:pointer;transition:all .2s cubic-bezier(.16,1,.3,1);white-space:nowrap;text-decoration:none}
 .btn:hover{background:var(--s3);color:var(--t1);border-color:var(--bh)}
 .btn:active{transform:scale(.96)}
@@ -137,9 +132,16 @@ table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
 .crunch.warn{background:var(--ad);border-color:rgba(245,158,11,.2);color:var(--amber2)}
 .crunch.ok{background:var(--gd);border-color:rgba(16,185,129,.2);color:var(--green2)}
 .crunch.info{background:var(--bd);border-color:rgba(59,130,246,.2);color:var(--blue2)}
+/* Report / comparison */
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.cmp-box{background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:16px}
+.cmp-box .l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);display:flex;align-items:center;gap:7px}
+.cmp-box .l i{font-size:13px}
+.cmp-box .v{font-size:22px;font-weight:800;margin-top:9px;font-variant-numeric:tabular-nums}
+.cmp-box .s{font-size:10.5px;color:var(--t3);margin-top:4px}
 .modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
 .modal.open{display:flex}
-.modal-bg{position:absolute;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);animation:fadeIn .2s var(--ease, ease)}
+.modal-bg{position:absolute;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);animation:fadeIn .2s ease}
 .modal-box{position:relative;z-index:1;width:100%;max-width:440px;background:var(--s1);border:1px solid var(--bh);border-radius:16px;padding:22px;animation:popIn .22s cubic-bezier(.16,1,.3,1);box-shadow:var(--shd)}
 .modal-box h3{font-size:16px;font-weight:800;margin-bottom:4px}
 .modal-box .sub{font-size:12px;color:var(--t2);margin-bottom:18px}
@@ -150,13 +152,11 @@ table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes popIn{from{opacity:0;transform:scale(.97) translateY(8px)}to{opacity:1;transform:none}}
-.chart-wrap{position:relative;height:260px}
-.empty{text-align:center;padding:30px 20px;color:var(--t3);font-size:12px}
-.empty i{font-size:30px;display:block;margin-bottom:10px;opacity:.4}
+.chart-wrap{position:relative;height:280px}
 .reveal{opacity:0;transform:translateY(12px);transition:opacity .55s cubic-bezier(.16,1,.3,1),transform .55s cubic-bezier(.16,1,.3,1)}
 .reveal.in{opacity:1;transform:none}
-@media(max-width:900px){.kpi-bar{grid-template-columns:repeat(2,1fr)}.main-grid{grid-template-columns:1fr}}
-@media(max-width:600px){.page{padding:64px 12px 44px}.b-name span{display:none}.pt{padding:4px 9px;font-size:10px}}
+@media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.pillars{grid-template-columns:1fr}.cmp-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.page{padding:64px 12px 44px}.b-name span{display:none}.pt{padding:5px 10px;font-size:10px}}
 </style>
 </head>
 <body>
@@ -177,123 +177,139 @@ table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
 </div>
 
 <div class="page">
-  <div class="hero">
-    <div class="hero-top">
-      <div class="hero-greet">Flujo de caja · <span id="heroPeriod">Este mes</span></div>
-      <div class="period-tabs">
-        <button class="pt on" data-p="mes" onclick="setPeriod('mes',this)">Mes</button>
-        <button class="pt" data-p="semana" onclick="setPeriod('semana',this)">Semana</button>
-        <button class="pt" data-p="hoy" onclick="setPeriod('hoy',this)">Hoy</button>
-        <button class="pt" data-p="anio" onclick="setPeriod('anio',this)">Año</button>
-      </div>
+  <div class="page-head">
+    <div>
+      <div class="page-title">Flujo de <span>Caja</span></div>
+      <div class="page-sub" id="pageSub">Métricas y proyección de liquidez</div>
     </div>
-    <div class="hero-lbl">Flujo operativo neto</div>
-    <div class="hero-bal" id="heroNet">$0</div>
-    <div class="hero-sub"><i class="ph-bold ph-info" style="color:var(--t3)"></i><span id="heroSub">Ingresos − gastos del período</span></div>
-    <div class="hero-chips">
-      <div class="hchip" style="background:var(--gd);border-color:rgba(52,211,153,.2);color:var(--green2)"><i class="ph-bold ph-trend-up"></i>Entradas <b id="chipIn">$0</b></div>
-      <div class="hchip" style="background:var(--rd);border-color:rgba(251,113,133,.18);color:var(--red2)"><i class="ph-bold ph-trend-down"></i>Salidas <b id="chipOut">$0</b></div>
-      <div class="hchip" style="background:var(--bd);border-color:rgba(96,165,250,.18);color:var(--blue2)"><i class="ph-bold ph-wallet"></i>Saldo inicial <b id="chipOpening">$0</b></div>
+    <div class="period-tabs">
+      <button class="pt on" data-p="mes" onclick="setPeriod('mes',this)">Mes</button>
+      <button class="pt" data-p="semana" onclick="setPeriod('semana',this)">Semana</button>
+      <button class="pt" data-p="hoy" onclick="setPeriod('hoy',this)">Hoy</button>
+      <button class="pt" data-p="anio" onclick="setPeriod('anio',this)">Año</button>
     </div>
   </div>
 
-  <div class="kpi-bar">
-    <div class="kpi"><div class="kpi-lbl"><i class="ph-bold ph-wallet" style="color:var(--blue2)"></i>Saldo inicial</div><div class="kpi-val" id="kpiOpening">$0</div><div class="kpi-sub">Al inicio del período</div></div>
-    <div class="kpi"><div class="kpi-lbl"><i class="ph-bold ph-bank" style="color:var(--cyan2)"></i>Disponible real</div><div class="kpi-val" id="kpiAvail">$0</div><div class="kpi-sub">Saldo inicial + flujo neto</div></div>
-    <div class="kpi"><div class="kpi-lbl"><i class="ph-bold ph-hourglass-simple" style="color:var(--amber2)"></i>Runway</div><div class="kpi-val" id="kpiRunway">—</div><div class="kpi-sub" id="kpiRunwaySub">Meses de vida</div></div>
-    <div class="kpi" onclick="setReserve()" title="Configurar umbral de reserva"><div class="kpi-lbl"><i class="ph-bold ph-shield-check" style="color:var(--purple2)"></i>Caja mínima</div><div class="kpi-val" id="kpiReserve">$0</div><div class="kpi-sub" id="kpiReserveSub">Fondo de reserva</div></div>
+  <!-- 1 · Métricas clave -->
+  <div class="sec">
+    <div class="sec-ttl"><span class="n">1</span>Métricas clave</div>
+    <div class="kpi-grid">
+      <div class="kpi reveal"><div class="kpi-lbl"><i class="ph-bold ph-wallet" style="color:var(--blue2)"></i>Saldo inicial</div><div class="kpi-val" id="kpiOpening" style="color:var(--t1)">$0</div><div class="kpi-sub" id="kpiOpeningSub">Disponible real: $0</div></div>
+      <div class="kpi reveal"><div class="kpi-lbl"><i class="ph-bold ph-scales" style="color:var(--green2)"></i>Flujo operativo neto</div><div class="kpi-val" id="kpiNet" style="color:var(--green2)">$0</div><div class="kpi-sub" id="kpiNetSub">Ingresos − gastos</div></div>
+      <div class="kpi reveal"><div class="kpi-lbl"><i class="ph-bold ph-hourglass-simple" style="color:var(--amber2)"></i>Runway</div><div class="kpi-val" id="kpiRunway" style="color:var(--amber2)">—</div><div class="kpi-sub" id="kpiRunwaySub">Meses de vida</div></div>
+      <div class="kpi clickable reveal" onclick="setReserve()" title="Configurar umbral de reserva"><div class="kpi-lbl"><i class="ph-bold ph-shield-check" style="color:var(--purple2)"></i>Caja mínima</div><div class="kpi-val" id="kpiReserve" style="color:var(--purple2)">$0</div><div class="kpi-sub" id="kpiReserveSub">Fondo de reserva</div></div>
+    </div>
   </div>
-  <div class="main-grid">
-    <div class="left-col">
-      <div class="card reveal">
-        <div class="card-hdr">
-          <div>
-            <div class="card-ttl"><span class="ic" style="background:var(--bd);color:var(--blue2)"><i class="ph-duotone ph-trend-up"></i></span>Proyección de liquidez</div>
-            <div class="card-sub">Saldo futuro a 30, 60 y 90 días</div>
-          </div>
-          <div style="display:flex;gap:8px;align-items:center">
-            <div class="horizon" id="horizon">
-              <button class="on" data-h="30" onclick="setHorizon(30,this)">30d</button>
-              <button data-h="60" onclick="setHorizon(60,this)">60d</button>
-              <button data-h="90" onclick="setHorizon(90,this)">90d</button>
-            </div>
-            <button class="btn" onclick="openSim()"><i class="ph-bold ph-sliders"></i>Simular</button>
-          </div>
+
+  <!-- 2 · Tres pilares -->
+  <div class="sec">
+    <div class="sec-ttl"><span class="n">2</span>Estructura del flujo · Tres pilares</div>
+    <div class="pillars">
+      <div class="pillar reveal">
+        <div class="pillar-top"><span class="pillar-ic" style="background:var(--bd);color:var(--blue2)"><i class="ph-bold ph-storefront"></i></span><div><div class="pillar-name">Flujo operativo</div><div class="pillar-desc">Ventas, cobros, proveedores, sueldos, arriendos e impuestos.</div></div></div>
+        <div class="pillar-val" id="pilOper">$0</div>
+        <div class="pillar-flows"><div class="pf-row"><span class="l">Ingresos</span><span class="v" id="pilOperIn" style="color:var(--green2)">$0</span></div><div class="pf-row"><span class="l">Egresos</span><span class="v" id="pilOperOut" style="color:var(--red2)">$0</span></div></div>
+        <div class="pillar-bar"><div class="pillar-fill" id="pilOperBar" style="background:var(--blue2)"></div></div>
+      </div>
+      <div class="pillar reveal">
+        <div class="pillar-top"><span class="pillar-ic" style="background:var(--pd);color:var(--purple2)"><i class="ph-bold ph-buildings"></i></span><div><div class="pillar-name">Flujo de inversión</div><div class="pillar-desc">Compra o venta de activos, maquinaria, equipos e inversiones.</div></div></div>
+        <div class="pillar-val" id="pilInver">$0</div>
+        <div class="pillar-flows"><div class="pf-row"><span class="l">Ingresos</span><span class="v" id="pilInverIn" style="color:var(--green2)">$0</span></div><div class="pf-row"><span class="l">Egresos</span><span class="v" id="pilInverOut" style="color:var(--red2)">$0</span></div></div>
+        <div class="pillar-bar"><div class="pillar-fill" id="pilInverBar" style="background:var(--purple2)"></div></div>
+      </div>
+      <div class="pillar reveal">
+        <div class="pillar-top"><span class="pillar-ic" style="background:var(--cd);color:var(--cyan2)"><i class="ph-bold ph-bank"></i></span><div><div class="pillar-name">Flujo de financiamiento</div><div class="pillar-desc">Créditos, aportes de socios, dividendos y amortización de deudas.</div></div></div>
+        <div class="pillar-val" id="pilFinan">$0</div>
+        <div class="pillar-flows"><div class="pf-row"><span class="l">Ingresos</span><span class="v" id="pilFinanIn" style="color:var(--green2)">$0</span></div><div class="pf-row"><span class="l">Egresos</span><span class="v" id="pilFinanOut" style="color:var(--red2)">$0</span></div></div>
+        <div class="pillar-bar"><div class="pillar-fill" id="pilFinanBar" style="background:var(--cyan2)"></div></div>
+      </div>
+    </div>
+  </div>
+  <!-- 3 · Proyección y escenarios -->
+  <div class="sec">
+    <div class="sec-ttl"><span class="n">3</span>Proyección y escenarios</div>
+    <div class="card reveal">
+      <div class="card-hdr">
+        <div>
+          <div class="card-ttl"><span class="ic" style="background:var(--bd);color:var(--blue2)"><i class="ph-duotone ph-trend-up"></i></span>Proyección automática de liquidez</div>
+          <div class="card-sub">Saldo futuro según tu ritmo de caja</div>
         </div>
-        <div class="card-body">
-          <div class="chart-wrap"><canvas id="projChart"></canvas></div>
-          <div id="crunchBox" style="margin-top:14px"></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div class="horizon" id="horizon">
+            <button class="on" data-h="30" onclick="setHorizon(30,this)">30 días</button>
+            <button data-h="60" onclick="setHorizon(60,this)">60 días</button>
+            <button data-h="90" onclick="setHorizon(90,this)">90 días</button>
+          </div>
+          <button class="btn" onclick="openSim()"><i class="ph-bold ph-sliders"></i>Simular escenario</button>
         </div>
       </div>
-
-      <div class="card reveal">
-        <div class="card-hdr">
-          <div>
-            <div class="card-ttl"><span class="ic" style="background:var(--gd);color:var(--green2)"><i class="ph-duotone ph-list-dashes"></i></span>Estado de flujo de efectivo</div>
-            <div class="card-sub">Operativo · Inversión · Financiamiento</div>
-          </div>
-        </div>
-        <div class="card-body"><div id="cfStatement"></div></div>
+      <div class="card-body">
+        <div class="chart-wrap"><canvas id="projChart"></canvas></div>
+        <div id="crunchBox" style="margin-top:14px"></div>
       </div>
+    </div>
+  </div>
 
-      <div class="card reveal">
-        <div class="card-hdr">
-          <div>
-            <div class="card-ttl"><span class="ic" style="background:var(--pd);color:var(--purple2)"><i class="ph-duotone ph-table"></i></span>Movimientos</div>
-            <div class="card-sub">Detalle de transacciones del período</div>
-          </div>
-          <div style="display:flex;gap:8px">
-            <button class="btn" onclick="exportCsv()"><i class="ph-bold ph-file-csv"></i>CSV</button>
-            <button class="btn" onclick="exportExcel()"><i class="ph-bold ph-file-xls"></i>Excel</button>
-          </div>
+  <!-- 4 · Tabla operativa -->
+  <div class="sec">
+    <div class="sec-ttl"><span class="n">4</span>Tabla operativa · Detalle de movimientos</div>
+    <div class="card reveal">
+      <div class="card-hdr">
+        <div>
+          <div class="card-ttl"><span class="ic" style="background:var(--pd);color:var(--purple2)"><i class="ph-duotone ph-table"></i></span>Movimientos del período</div>
+          <div class="card-sub">Estado, actividad y filtros avanzados</div>
         </div>
-        <div class="card-body">
-          <div class="filters" style="margin-bottom:14px">
-            <select id="fType" onchange="renderTable()">
-              <option value="">Tipo · todos</option>
-              <option value="ingreso">Ingresos</option>
-              <option value="egreso">Egresos</option>
-            </select>
-            <select id="fAct" onchange="renderTable()">
-              <option value="">Actividad · todas</option>
-              <option value="operativo">Operativo</option>
-              <option value="inversion">Inversión</option>
-              <option value="financiamiento">Financiamiento</option>
-            </select>
-            <select id="fCat" onchange="renderTable()">
-              <option value="">Categoría · todas</option>
-            </select>
-            <input id="fSearch" type="text" placeholder="Buscar concepto…" oninput="renderTable()" style="margin-left:auto;min-width:170px">
-          </div>
-          <div class="tbl-wrap">
-            <table class="tbl">
-              <thead><tr><th>Fecha</th><th>Concepto</th><th>Categoría</th><th>Actividad</th><th>Estado</th><th style="text-align:right">Monto</th></tr></thead>
-              <tbody id="txTableBody"></tbody>
-            </table>
-          </div>
+      </div>
+      <div class="card-body">
+        <div class="filters" style="margin-bottom:14px">
+          <select id="fType" onchange="renderTable()">
+            <option value="">Tipo · todos</option>
+            <option value="ingreso">Ingresos</option>
+            <option value="egreso">Egresos</option>
+          </select>
+          <select id="fAct" onchange="renderTable()">
+            <option value="">Actividad · todas</option>
+            <option value="operativo">Operativo</option>
+            <option value="inversion">Inversión</option>
+            <option value="financiamiento">Financiamiento</option>
+          </select>
+          <select id="fCat" onchange="renderTable()">
+            <option value="">Categoría · todas</option>
+          </select>
+          <input id="fFrom" type="date" onchange="renderTable()" title="Desde">
+          <input id="fTo" type="date" onchange="renderTable()" title="Hasta">
+          <input id="fSearch" type="text" placeholder="Buscar concepto…" oninput="renderTable()" style="margin-left:auto;min-width:160px">
+        </div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>Fecha</th><th>Concepto</th><th>Categoría</th><th>Actividad</th><th>Estado</th><th style="text-align:right">Monto</th></tr></thead>
+            <tbody id="txTableBody"></tbody>
+          </table>
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="right-col">
-      <div class="card reveal">
-        <div class="card-hdr">
-          <div>
-            <div class="card-ttl"><span class="ic" style="background:var(--pd);color:var(--purple2)"><i class="ph-duotone ph-chart-pie-slice"></i></span>Tres pilares</div>
-            <div class="card-sub">Clasificación por actividad</div>
-          </div>
+  <!-- 5 · Reportes y exportación -->
+  <div class="sec">
+    <div class="sec-ttl"><span class="n">5</span>Reportes y exportación</div>
+    <div class="card reveal">
+      <div class="card-hdr">
+        <div>
+          <div class="card-ttl"><span class="ic" style="background:var(--gd);color:var(--green2)"><i class="ph-duotone ph-file-text"></i></span>Vista comparativa · Real vs Proyectado</div>
+          <div class="card-sub">Precisión del presupuesto estimado</div>
         </div>
-        <div class="card-body"><div id="pillarsBox"></div></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn" onclick="exportCsv()"><i class="ph-bold ph-file-csv"></i>CSV</button>
+          <button class="btn" onclick="exportExcel()"><i class="ph-bold ph-file-xls"></i>Excel</button>
+          <button class="btn btn-p" onclick="exportPdf()"><i class="ph-bold ph-file-pdf"></i>PDF</button>
+        </div>
       </div>
-
-      <div class="card reveal">
-        <div class="card-hdr">
-          <div>
-            <div class="card-ttl"><span class="ic" style="background:var(--ad);color:var(--amber2)"><i class="ph-duotone ph-warning"></i></span>Alertas de liquidez</div>
-            <div class="card-sub">Señales para tu caja</div>
-          </div>
+      <div class="card-body">
+        <div class="cmp-grid">
+          <div class="cmp-box"><div class="l"><i class="ph-bold ph-check-circle" style="color:var(--green2)"></i>Realizado</div><div class="v" id="cmpReal" style="color:var(--green2)">$0</div><div class="s" id="cmpRealSub">0 movimientos confirmados</div></div>
+          <div class="cmp-box"><div class="l"><i class="ph-bold ph-clock" style="color:var(--blue2)"></i>Proyectado / Pendiente</div><div class="v" id="cmpProy" style="color:var(--blue2)">$0</div><div class="s" id="cmpProySub">0 compromisos por cobrar/pagar</div></div>
         </div>
-        <div class="card-body"><div id="alertsBox"></div></div>
       </div>
     </div>
   </div>
@@ -372,7 +388,6 @@ function setPeriod(p, el){
   period = p;
   document.querySelectorAll('.pt').forEach(b => b.classList.remove('on'));
   if (el) el.classList.add('on');
-  document.getElementById('heroPeriod').textContent = PERIODS[p] || 'Este mes';
   render();
 }
 
@@ -469,32 +484,22 @@ function setReserve(){
 function render(){
   const m = getMetrics();
   const cover = m.burn > 0 ? Math.max(0, m.disponible / m.burn) : (m.disponible > 0 ? Infinity : 0);
-  renderHero(m.net, m.inflow, m.outflow, m.opening);
-  renderKPIs(m.opening, m.disponible, cover, m.burn);
+  document.getElementById('pageSub').textContent = 'Métricas y proyección de liquidez · ' + (PERIODS[period] || '');
+  renderKPIs(m.opening, m.net, m.disponible, cover, m.burn);
   renderPillars(m.cur);
-  renderCFStatement(m.cur, m.inflow, m.outflow, m.net);
   renderProjection();
   renderTable();
-  renderAlerts(m.net, m.outflow, m.inflow, m.cur);
+  renderComparison(m.cur);
   const p = document.getElementById('pymax-preloader'); if(p) p.classList.add('pm-done');
 }
 
-function renderHero(net, inflow, outflow, opening){
-  const hv = document.getElementById('heroNet');
-  hv.classList.remove('neg','neu');
-  if (net < 0) hv.classList.add('neg'); else if (net === 0) hv.classList.add('neu');
-  setNum(hv, net);
-  document.getElementById('heroSub').innerHTML = net >= 0
-    ? '<i class="ph-bold ph-check-circle" style="color:var(--green2)"></i>Flujo neto positivo del período'
-    : '<i class="ph-bold ph-warning-circle" style="color:var(--red2)"></i>Flujo neto negativo del período';
-  setNum(document.getElementById('chipIn'), inflow);
-  setNum(document.getElementById('chipOut'), outflow);
-  setNum(document.getElementById('chipOpening'), opening);
-}
-
-function renderKPIs(opening, disponible, cover, burn){
+function renderKPIs(opening, net, disponible, cover, burn){
   setNum(document.getElementById('kpiOpening'), opening);
-  setNum(document.getElementById('kpiAvail'), disponible);
+  document.getElementById('kpiOpeningSub').textContent = 'Disponible real: ' + fmt(disponible);
+  const kn = document.getElementById('kpiNet');
+  setNum(kn, net);
+  kn.style.color = net >= 0 ? 'var(--green2)' : 'var(--red2)';
+  document.getElementById('kpiNetSub').textContent = net >= 0 ? 'Ingresos superan gastos' : 'Gastos superan ingresos';
   const kr = document.getElementById('kpiRunway');
   kr.textContent = burn > 0 ? cover.toFixed(1) + ' m' : (disponible > 0 ? '∞' : '—');
   document.getElementById('kpiRunwaySub').textContent = burn > 0 ? 'Al ritmo de gasto actual' : 'Sin gastos registrados';
@@ -509,63 +514,39 @@ function renderKPIs(opening, disponible, cover, burn){
     rs.textContent = 'Toca para configurar';
   }
 }
-function renderPillars(cur){
-  const sums = { operativo:0, inversion:0, financiamiento:0 };
-  cur.forEach(t => { sums[activityOf(t)] += cashImpact(t); });
-  const max = Math.max(Math.abs(sums.operativo), Math.abs(sums.inversion), Math.abs(sums.financiamiento)) || 1;
-  const meta = {
-    operativo:['ph-storefront','var(--blue2)','var(--bd)'],
-    inversion:['ph-buildings','var(--purple2)','var(--pd)'],
-    financiamiento:['ph-bank','var(--cyan2)','var(--cd)']
-  };
-  const box = document.getElementById('pillarsBox');
-  box.innerHTML = ['operativo','inversion','financiamiento'].map(act => {
-    const v = sums[act];
-    const pct = Math.round(Math.abs(v) / max * 100);
-    return '<div class="pillar-row">' +
-      '<span class="pillar-ic" style="background:' + meta[act][2] + ';color:' + meta[act][1] + '"><i class="ph-bold ' + meta[act][0] + '"></i></span>' +
-      '<div class="pillar-mid"><div class="pillar-lbl">' + ACT_LABEL[act] + '</div><div class="pillar-bar"><div class="pillar-fill" style="background:' + meta[act][1] + ';width:' + pct + '%"></div></div></div>' +
-      '<span class="pillar-val" style="color:' + (v >= 0 ? 'var(--t1)' : 'var(--red2)') + '">' + fmt(v) + '</span>' +
-      '</div>';
-  }).join('');
-}
 
-function renderCFStatement(cur, inflow, outflow, net){
-  const box = document.getElementById('cfStatement');
-  if (!cur.length){ box.innerHTML = '<div class="empty"><i class="ph-duotone ph-wallet"></i>Sin movimientos en este período</div>'; return; }
+function renderPillars(cur){
   const by = { operativo:{i:0,o:0}, inversion:{i:0,o:0}, financiamiento:{i:0,o:0} };
   cur.forEach(t => {
     const act = activityOf(t);
     if (isIn(t)) by[act].i += parseFloat(t.amount||0);
     if (isOut(t)) by[act].o += parseFloat(t.amount||0);
   });
-  const extFunding = cur.filter(isExternal).reduce((a,t)=>a+parseFloat(t.amount||0),0);
-  const meta = { operativo:['ph-storefront','var(--blue2)','var(--bd)'], inversion:['ph-buildings','var(--purple2)','var(--pd)'], financiamiento:['ph-bank','var(--cyan2)','var(--cd)'] };
-  let html = '';
-  ['operativo','inversion','financiamiento'].forEach(act => {
-    const d = by[act];
-    const netA = d.i - d.o;
-    html += '<div class="wf-group">' + ACT_LABEL[act] + '</div>';
-    if (d.i > 0) html += '<div class="wf-row"><span class="wf-ic" style="background:var(--gd);color:var(--green2)"><i class="ph-bold ph-arrow-down-left"></i></span><span class="wf-lbl">Ingresos</span><span class="wf-val" style="color:var(--green2)">+' + fmt(d.i) + '</span></div>';
-    if (d.o > 0) html += '<div class="wf-row"><span class="wf-ic" style="background:var(--rd);color:var(--red2)"><i class="ph-bold ph-arrow-up-right"></i></span><span class="wf-lbl">Egresos</span><span class="wf-val" style="color:var(--red2)">−' + fmt(d.o) + '</span></div>';
-    html += '<div class="wf-row"><span class="wf-ic" style="background:' + meta[act][2] + ';color:' + meta[act][1] + '"><i class="ph-bold ' + meta[act][0] + '"></i></span><span class="wf-lbl">Neto ' + ACT_LABEL[act].toLowerCase() + '</span><span class="wf-val" style="color:' + (netA >= 0 ? 'var(--green2)' : 'var(--red2)') + '">' + fmt(netA) + '</span></div>';
-  });
-  html += '<div class="wf-total"><span class="l"><i class="ph-bold ph-scales" style="color:var(--blue2)"></i>Flujo de caja neto</span><span class="v" style="color:' + (net >= 0 ? 'var(--green2)' : 'var(--red2)') + '">' + fmt(net) + '</span></div>';
-  if (extFunding > 0) html += '<div class="wf-row" style="margin-top:8px;border-bottom:none"><span class="wf-ic" style="background:var(--cd);color:var(--cyan2)"><i class="ph-bold ph-bank"></i></span><span class="wf-lbl">Financiamiento externo (no descuenta caja)</span><span class="wf-val" style="color:var(--cyan2)">' + fmt(extFunding) + '</span></div>';
-  box.innerHTML = html;
+  const max = Math.max(Math.abs(by.operativo.i - by.operativo.o), Math.abs(by.inversion.i - by.inversion.o), Math.abs(by.financiamiento.i - by.financiamiento.o)) || 1;
+  const fill = (id, d) => {
+    const net = d.i - d.o;
+    const el = document.getElementById('pil' + id);
+    setNum(el, net);
+    el.style.color = net >= 0 ? 'var(--t1)' : 'var(--red2)';
+    setNum(document.getElementById('pil' + id + 'In'), d.i);
+    setNum(document.getElementById('pil' + id + 'Out'), d.o);
+    document.getElementById('pil' + id + 'Bar').style.width = (Math.abs(net) / max * 100) + '%';
+  };
+  fill('Oper', by.operativo);
+  fill('Inver', by.inversion);
+  fill('Finan', by.financiamiento);
 }
 
-function renderAlerts(net, outflow, inflow, cur){
-  const box = document.getElementById('alertsBox');
-  const items = [];
-  if (cur.length && net < 0) items.push({ cls:'danger', icon:'ph-trend-down', msg:'Flujo neto negativo (' + fmt(net) + '). Tu caja está quemando más de lo que ingresa.' });
-  if (cur.length && inflow === 0 && outflow > 0) items.push({ cls:'warn', icon:'ph-warning', msg:'Solo hay salidas de efectivo en este período.' });
-  if (cur.length && outflow > inflow && inflow > 0) items.push({ cls:'warn', icon:'ph-warning', msg:'Las salidas superan a las entradas.' });
-  if (cur.length && net > 0) items.push({ cls:'ok', icon:'ph-check-circle', msg:'Flujo de caja positivo. Tu caja genera superávit.' });
-  if (!cur.length) items.push({ cls:'info', icon:'ph-info', msg:'Sin movimientos registrados en este período.' });
-  box.innerHTML = items.map(a => '<div class="crunch ' + a.cls + '"><i class="ph-bold ' + a.icon + '"></i><span>' + a.msg + '</span></div>').join('');
+function renderComparison(cur){
+  const real = cur.filter(t => !(t.status === 'proyectado' || t.status === 'pendiente'));
+  const proy = cur.filter(t => t.status === 'proyectado' || t.status === 'pendiente');
+  const rNet = real.reduce((a,t)=>a+cashImpact(t),0);
+  const pNet = proy.reduce((a,t)=>a+cashImpact(t),0);
+  setNum(document.getElementById('cmpReal'), rNet);
+  setNum(document.getElementById('cmpProy'), pNet);
+  document.getElementById('cmpRealSub').textContent = real.length + ' movimientos confirmados';
+  document.getElementById('cmpProySub').textContent = proy.length + ' compromisos por cobrar/pagar';
 }
-
 function scenarioLabel(){
   if (!scenario) return '';
   const m = fmt(scenario.amount);
@@ -573,6 +554,7 @@ function scenarioLabel(){
   if (scenario.type === 'compra') return 'Compra de equipo por ' + m;
   return 'Aporte de capital por ' + m;
 }
+
 function renderProjection(){
   const m = getMetrics();
   const { s, e } = rangeFor(period);
@@ -605,7 +587,7 @@ function renderProjection(){
 
   const ctx = document.getElementById('projChart');
   if (projChart){ projChart.destroy(); }
-  const g = ctx.getContext('2d').createLinearGradient(0, 0, 0, 260);
+  const g = ctx.getContext('2d').createLinearGradient(0, 0, 0, 280);
   g.addColorStop(0, 'rgba(59,130,246,.25)');
   g.addColorStop(1, 'rgba(59,130,246,0)');
   const datasets = [{ label:'Saldo proyectado', data:balances, borderColor:'#3B82F6', backgroundColor:g, fill:true, tension:.3, pointRadius:0, pointHoverRadius:4, pointHoverBackgroundColor:'#fff', borderWidth:2 }];
@@ -616,7 +598,6 @@ function renderProjection(){
     options:{ responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false}, plugins:{ legend:{display: reserve > 0, labels:{color:'#94A3B8', boxWidth:14, usePointStyle:true, pointStyle:'line', font:{size:10}}}, tooltip:{backgroundColor:'rgba(11,16,32,.96)',borderColor:'rgba(148,163,184,.2)',borderWidth:1,titleColor:'#94A3B8',bodyColor:'#F1F5FF',padding:11,cornerRadius:10,displayColors:false,callbacks:{label:c=>' '+fmt(c.parsed.y)} } }, scales:{ x:{ ticks:{color:'#475569',font:{size:9},maxTicksLimit:8}, grid:{color:'rgba(148,163,184,.05)'} }, y:{ ticks:{color:'#475569',font:{size:9},callback:v=>fmt(v)}, grid:{color:'rgba(148,163,184,.05)'} } } }
   });
 }
-
 function populateCategoryFilter(){
   const sel = document.getElementById('fCat');
   const cats = [...new Set(allOps.map(t => t.category).filter(Boolean))].sort();
@@ -627,12 +608,16 @@ function getFilteredList(){
   const fType = document.getElementById('fType').value;
   const fAct = document.getElementById('fAct').value;
   const fCat = document.getElementById('fCat').value;
+  const fFrom = document.getElementById('fFrom').value;
+  const fTo = document.getElementById('fTo').value;
   const q = (document.getElementById('fSearch').value || '').toLowerCase();
   const { s, e } = rangeFor(period);
   let list = allOps.filter(t => inRange(t, s, e));
   if (fType) list = list.filter(t => (fType === 'ingreso' ? isIn(t) : (t.type === 'egreso' || t.type === 'expense')));
   if (fAct) list = list.filter(t => activityOf(t) === fAct);
   if (fCat) list = list.filter(t => (t.category || 'Sin categoría') === fCat);
+  if (fFrom) list = list.filter(t => new Date(t.created_at || t.date) >= new Date(fFrom));
+  if (fTo) list = list.filter(t => new Date(t.created_at || t.date) <= new Date(fTo + 'T23:59:59'));
   if (q) list = list.filter(t => ((t.concept||'') + (t.description||'')).toLowerCase().includes(q));
   list.sort((a,b) => new Date(b.created_at||b.date) - new Date(a.created_at||a.date));
   return list;
@@ -709,6 +694,32 @@ function exportExcel(){
   download('pymax_flujo_caja.xls', '<meta charset="utf-8">' + html, 'application/vnd.ms-excel');
 }
 
+function exportPdf(){
+  const m = getMetrics();
+  const list = getFilteredList();
+  const rows = list.map(t => {
+    const inc = isIn(t);
+    const d = new Date(t.created_at || t.date);
+    return '<tr><td>' + d.toISOString().slice(0,10) + '</td><td>' + esc(t.concept||t.description||'') + '</td><td>' + esc(t.category||'') + '</td><td>' + ACT_LABEL[activityOf(t)] + '</td><td>' + (inc?'Ingreso':'Egreso') + '</td><td>' + (inc?'+':'-') + fmt(parseFloat(t.amount||0)) + '</td></tr>';
+  }).join('');
+  const doc = '<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Flujo de Caja</title>' +
+    '<style>body{font-family:Arial,Helvetica,sans-serif;color:#111;padding:24px;font-size:13px}h1{font-size:20px;margin-bottom:2px}.muted{color:#666;font-size:12px;margin-bottom:18px}.kpis{display:flex;gap:16px;margin-bottom:20px}.kpi{flex:1;border:1px solid #ddd;border-radius:8px;padding:12px}.kpi b{font-size:18px;display:block}.kpi span{font-size:11px;color:#666}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ddd;padding:7px 9px;text-align:left}th{background:#f4f4f4}</style></head><body>' +
+    '<h1>Flujo de Caja · ' + (PERIODS[period] || '') + '</h1><div class="muted">Reporte generado el ' + new Date().toLocaleDateString('es-CL') + '</div>' +
+    '<div class="kpis">' +
+      '<div class="kpi"><span>Saldo inicial</span><b>' + fmt(m.opening) + '</b></div>' +
+      '<div class="kpi"><span>Flujo neto</span><b>' + fmt(m.net) + '</b></div>' +
+      '<div class="kpi"><span>Disponible real</span><b>' + fmt(m.disponible) + '</b></div>' +
+      '<div class="kpi"><span>Runway</span><b>' + (m.burn > 0 ? (m.disponible/m.burn).toFixed(1) + ' m' : '—') + '</b></div>' +
+    '</div>' +
+    '<table><thead><tr><th>Fecha</th><th>Concepto</th><th>Categoría</th><th>Actividad</th><th>Tipo</th><th>Monto</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+    '</body></html>';
+  const w = window.open('', '_blank');
+  if (!w) return;
+  w.document.write(doc);
+  w.document.close();
+  setTimeout(() => { w.focus(); w.print(); }, 400);
+}
+
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -718,7 +729,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
-
 
 
 
