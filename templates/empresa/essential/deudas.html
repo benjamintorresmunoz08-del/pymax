@@ -208,9 +208,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .tx-prio{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .tx-actions{display:flex;gap:4px;opacity:1;transition:opacity .18s}
 .tx-act{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:var(--s2);border:1px solid var(--b);color:var(--t2);cursor:pointer;transition:all .15s}
-.tx-act:hover{color:var(--blue2);border-color:rgba(59,130,246,.3);background:var(--bd)}
-.tx-act.ok:hover{color:var(--green2);border-color:rgba(52,211,153,.3);background:var(--gd)}
-.tx-act.danger:hover{color:var(--red2);border-color:rgba(244,63,94,.3);background:var(--rd)}
+.tx-act:hover{color:var(--blue2);border-color:rgba(59,130,246,.3);background:var(--bd);transform:scale(1.12)}
+.tx-act.ok:hover{color:var(--green2);border-color:rgba(52,211,153,.3);background:var(--gd);transform:scale(1.12)}
+.tx-act.danger:hover{color:var(--red2);border-color:rgba(244,63,94,.3);background:var(--rd);transform:scale(1.12)}
 .tx-act i{font-size:12px}
 .tx-empty{padding:30px;text-align:center;color:var(--t3);font-size:12px}
 .tx-empty i{font-size:30px;display:block;margin:0 auto 8px;opacity:.22}
@@ -687,9 +687,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
                     <span class="tx-prio" style="background:${pm.color};box-shadow:0 0 6px ${pm.color}" title="Prioridad ${pm.label}"></span>
                     <div class="tx-amt" style="color:${state === 'vencido' ? 'var(--red2)' : 'var(--t1)'}">${fmtMoney(amount)}</div>
                     <div class="tx-actions">
-                        ${state !== 'pagado' ? `<div class="tx-act ok" onclick="markPaid('${d.id}')" title="Marcar pagada"><i class="ph-bold ph-check"></i></div>` : ''}
-                        <div class="tx-act" onclick="editDebt('${d.id}')" title="Editar"><i class="ph-bold ph-pencil"></i></div>
-                        <div class="tx-act danger" onclick="deleteDebt('${d.id}')" title="Eliminar"><i class="ph-bold ph-trash"></i></div>
+                        ${state !== 'pagado' ? `<button type="button" class="tx-act ok" data-action="paid" data-id="${d.id}" title="Marcar pagada"><i class="ph-bold ph-check"></i></button>` : ''}
+                        <button type="button" class="tx-act" data-action="edit" data-id="${d.id}" title="Editar"><i class="ph-bold ph-pencil"></i></button>
+                        <button type="button" class="tx-act danger" data-action="delete" data-id="${d.id}" title="Eliminar"><i class="ph-bold ph-trash"></i></button>
                     </div>
                 </div>`;
             }).join('');
@@ -860,7 +860,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
             }
         });
         function editDebt(id) {
-            const d = allDebts.find(x => x.id === id);
+            const d = allDebts.find(x => String(x.id) === String(id));
             if (!d) return;
             const meta = decodeTipo(d.tipo);
             document.getElementById('editingId').value = id;
@@ -916,6 +916,27 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
                 await pymaxData.refresh();
             });
         }
+
+        // Delegación de eventos: funciona siempre, sin depender de onclick inline
+        (function bindDebtActions() {
+            const list = document.getElementById('debtsList');
+            if (!list) return;
+            list.addEventListener('click', (e) => {
+                const btn = e.target.closest('.tx-act');
+                if (!btn) return;
+                const id = btn.getAttribute('data-id');
+                const action = btn.getAttribute('data-action');
+                if (!id) return;
+                if (action === 'paid') markPaid(id);
+                else if (action === 'edit') editDebt(id);
+                else if (action === 'delete') deleteDebt(id);
+            });
+        })();
+
+        // Exponer funciones globalmente (por si algo las llama por onclick)
+        window.markPaid = markPaid;
+        window.editDebt = editDebt;
+        window.deleteDebt = deleteDebt;
 
         function exportData() {
             const rows = [['Concepto', 'Acreedor', 'Categoría', 'Monto', 'Vence', 'Estado', 'Prioridad', 'Notas']];
