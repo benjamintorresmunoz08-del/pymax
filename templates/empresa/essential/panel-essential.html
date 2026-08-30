@@ -405,7 +405,7 @@ body::before{
 .tx-list::-webkit-scrollbar-thumb{background:rgba(148,163,184,.1)}
 .txr{display:flex;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid var(--bx);
   cursor:pointer;transition:background .15s;position:relative;overflow:hidden}
-.txr::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(59,130,246,.05);transition:width .22s}
+.txr::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(59,130,246,.05);transition:width .22s;pointer-events:none}
 .txr:hover::before{width:100%}.txr:hover{background:rgba(255,255,255,.02)}
 .txr:last-of-type{border:none}
 .tx-ic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}

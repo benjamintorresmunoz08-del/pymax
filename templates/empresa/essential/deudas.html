@@ -193,7 +193,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .tx-list{max-height:400px;overflow-y:auto}
 .tx-list::-webkit-scrollbar{width:2px}.tx-list::-webkit-scrollbar-thumb{background:rgba(148,163,184,.1)}
 .txr{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--bx);transition:background .15s;position:relative;overflow:hidden}
-.txr::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(59,130,246,.05);transition:width .22s}
+.txr::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(59,130,246,.05);transition:width .22s;pointer-events:none}
 .txr:hover::before{width:100%}
 .txr:hover .tx-actions{opacity:1}
 .txr:last-of-type{border:none}
@@ -892,15 +892,42 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
         }
 
         async function markPaid(id) {
+            const d = allDebts.find(x => String(x.id) === String(id));
+            if (!d) return;
+            const meta = decodeTipo(d.tipo);
+            const monto = parseFloat(d.monto || 0);
             const r = await Swal.fire({
-                title: '¿Marcar como pagada?', text: 'La obligación se marcará como completada.',
+                title: '¿Marcar como pagada?',
+                text: monto ? `Se registrará un gasto de ${fmtMoney(monto)} que se descontará de tu balance neto.` : 'La obligación se marcará como completada.',
                 icon: 'question', showCancelButton: true, confirmButtonText: 'Sí, pagada', cancelButtonText: 'Cancelar',
                 background: '#0b1020', color: '#fff', confirmButtonColor: '#34d399'
             });
             if (!r.isConfirmed) return;
             const upd = await client.from('obligaciones').update({ estado: 'pagada' }).eq('id', id);
-            if (upd.error) { Toast.fire({ icon: 'error', title: 'Error' }); return; }
-            Toast.fire({ icon: 'success', title: 'Marcada como pagada' });
+            if (upd.error) { Toast.fire({ icon: 'error', title: 'Error al marcar pagada' }); return; }
+
+            // Registrar el egreso para que el balance neto se descuente de verdad
+            try {
+                const { data: { user } } = await client.auth.getUser();
+                if (user && monto > 0) {
+                    const concepto = meta.concepto || 'Obligación';
+                    const resOp = await client.from('user_operations').insert({
+                        user_id: user.id,
+                        type: 'egreso',
+                        amount: monto,
+                        concept: 'Pago de: ' + concepto,
+                        description: 'Pago de: ' + concepto,
+                        category: meta.cat,
+                        notes: meta.acreedor ? ('Acreedor: ' + meta.acreedor) : null,
+                        created_at: new Date().toISOString()
+                    });
+                    if (resOp.error) console.warn('No se pudo registrar el egreso:', resOp.error);
+                }
+            } catch (e) {
+                console.warn('No se pudo registrar el egreso:', e);
+            }
+
+            Toast.fire({ icon: 'success', title: 'Pagada y descontada del balance' });
             await pymaxData.refresh();
         }
         function deleteDebt(id) {
