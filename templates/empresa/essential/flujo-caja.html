@@ -74,20 +74,23 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .card-sub{font-size:11px;color:var(--t3);margin-top:2px;margin-left:38px}
 .card-body{padding:8px 20px 18px}
 
-/* KPIs (4 cards) */
+/* KPIs (4 stat cards) */
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.kpi{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:16px 18px;transition:border-color .2s,transform .2s}
-.kpi:hover{border-color:var(--bh)}
+.kpi{position:relative;background:linear-gradient(160deg,var(--s1),rgba(26,36,56,.55));border:1px solid var(--b);border-radius:var(--r);padding:16px 18px;transition:border-color .2s,transform .2s,box-shadow .25s;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--ka,var(--blue)),transparent 80%)}
+.kpi::after{content:'';position:absolute;top:-36px;right:-36px;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,var(--ka,var(--blue)),transparent 70%);opacity:.14;filter:blur(12px);pointer-events:none}
+.kpi:hover{border-color:var(--bh);transform:translateY(-3px);box-shadow:0 12px 34px rgba(0,0,0,.35)}
 .kpi.clickable{cursor:pointer}
-.kpi-lbl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);display:flex;align-items:center;gap:6px}
-.kpi-lbl i{font-size:13px}
-.kpi-val{font-size:24px;font-weight:800;letter-spacing:-.035em;margin-top:10px;font-variant-numeric:tabular-nums;line-height:1}
-.kpi-sub{font-size:10.5px;color:var(--t3);margin-top:6px}
+.kpi-ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:13px;position:relative;z-index:1}
+.kpi-lbl{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);position:relative;z-index:1}
+.kpi-val{font-size:24px;font-weight:800;letter-spacing:-.035em;margin-top:7px;font-variant-numeric:tabular-nums;line-height:1;position:relative;z-index:1}
+.kpi-sub{font-size:10.5px;color:var(--t3);margin-top:6px;position:relative;z-index:1}
 .kpi-sub .ok{color:var(--green2)}.kpi-sub .warn{color:var(--amber2)}.kpi-sub .bad{color:var(--red2)}
 
 /* Three pillars (3 cards) */
 .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.pillar{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:18px}
+.pillar{position:relative;background:linear-gradient(160deg,var(--s1),rgba(26,36,56,.55));border:1px solid var(--b);border-radius:var(--r);padding:18px;overflow:hidden}
+.pillar::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--pa,var(--blue)),transparent 80%)}
 .pillar-top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .pillar-ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .pillar-name{font-size:13px;font-weight:700}
@@ -134,9 +137,10 @@ table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
 .crunch.info{background:var(--bd);border-color:rgba(59,130,246,.2);color:var(--blue2)}
 /* Report / comparison */
 .cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
-.cmp-box{background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:16px}
+.cmp-box{position:relative;background:linear-gradient(160deg,var(--s2),rgba(26,36,56,.5));border:1px solid var(--b);border-radius:12px;padding:16px;overflow:hidden}
+.cmp-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--ca,var(--blue)),transparent 80%)}
+.cmp-ic{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:11px}
 .cmp-box .l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);display:flex;align-items:center;gap:7px}
-.cmp-box .l i{font-size:13px}
 .cmp-box .v{font-size:22px;font-weight:800;margin-top:9px;font-variant-numeric:tabular-nums}
 .cmp-box .s{font-size:10.5px;color:var(--t3);margin-top:4px}
 .due-item{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--bx)}
@@ -183,10 +187,6 @@ table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
 /* ===== Pulido de tarjetas ===== */
 .card{transition:border-color .22s,box-shadow .25s}
 .card:hover{box-shadow:0 12px 40px rgba(0,0,0,.3)}
-.kpi{position:relative;overflow:hidden}
-.kpi:hover{transform:translateY(-3px);box-shadow:0 10px 34px rgba(0,0,0,.35)}
-.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--blue),transparent);opacity:0;transition:opacity .25s}
-.kpi:hover::after{opacity:.9}
 .pillar{transition:border-color .22s,transform .22s,box-shadow .25s}
 .pillar:hover{transform:translateY(-3px);box-shadow:0 10px 34px rgba(0,0,0,.32)}
 .sec-ttl .n{background:linear-gradient(135deg,rgba(59,130,246,.22),rgba(139,92,246,.18));border-color:rgba(59,130,246,.25)}
@@ -255,10 +255,30 @@ table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
   <div class="sec">
     <div class="sec-ttl"><span class="n">1</span>Métricas clave</div>
     <div class="kpi-grid">
-      <div class="kpi reveal"><div class="kpi-lbl"><i class="ph-bold ph-wallet" style="color:var(--blue2)"></i>Saldo inicial</div><div class="kpi-val" id="kpiOpening" style="color:var(--t1)">$0</div><div class="kpi-sub" id="kpiOpeningSub">Disponible real: $0</div></div>
-      <div class="kpi reveal"><div class="kpi-lbl"><i class="ph-bold ph-scales" style="color:var(--green2)"></i>Flujo operativo neto</div><div class="kpi-val" id="kpiNet" style="color:var(--green2)">$0</div><div class="kpi-sub" id="kpiNetSub">Ingresos − gastos</div></div>
-      <div class="kpi reveal"><div class="kpi-lbl"><i class="ph-bold ph-hourglass-simple" style="color:var(--amber2)"></i>Runway</div><div class="kpi-val" id="kpiRunway" style="color:var(--amber2)">—</div><div class="kpi-sub" id="kpiRunwaySub">Meses de vida</div></div>
-      <div class="kpi clickable reveal" onclick="setReserve()" title="Configurar umbral de reserva"><div class="kpi-lbl"><i class="ph-bold ph-shield-check" style="color:var(--purple2)"></i>Caja mínima</div><div class="kpi-val" id="kpiReserve" style="color:var(--purple2)">$0</div><div class="kpi-sub" id="kpiReserveSub">Fondo de reserva</div></div>
+      <div class="kpi reveal" style="--ka:var(--blue2)">
+        <div class="kpi-ic" style="background:var(--bd);color:var(--blue2)"><i class="ph-bold ph-wallet"></i></div>
+        <div class="kpi-lbl">Saldo inicial</div>
+        <div class="kpi-val" id="kpiOpening">$0</div>
+        <div class="kpi-sub" id="kpiOpeningSub">Disponible real: $0</div>
+      </div>
+      <div class="kpi reveal" style="--ka:var(--green2)">
+        <div class="kpi-ic" style="background:var(--gd);color:var(--green2)"><i class="ph-bold ph-scales"></i></div>
+        <div class="kpi-lbl">Flujo operativo neto</div>
+        <div class="kpi-val" id="kpiNet" style="color:var(--green2)">$0</div>
+        <div class="kpi-sub" id="kpiNetSub">Ingresos − gastos</div>
+      </div>
+      <div class="kpi reveal" style="--ka:var(--amber2)">
+        <div class="kpi-ic" style="background:var(--ad);color:var(--amber2)"><i class="ph-bold ph-hourglass-simple"></i></div>
+        <div class="kpi-lbl">Runway</div>
+        <div class="kpi-val" id="kpiRunway" style="color:var(--amber2)">—</div>
+        <div class="kpi-sub" id="kpiRunwaySub">Meses de vida</div>
+      </div>
+      <div class="kpi clickable reveal" style="--ka:var(--purple2)" onclick="setReserve()" title="Configurar umbral de reserva">
+        <div class="kpi-ic" style="background:var(--pd);color:var(--purple2)"><i class="ph-bold ph-shield-check"></i></div>
+        <div class="kpi-lbl">Caja mínima</div>
+        <div class="kpi-val" id="kpiReserve" style="color:var(--purple2)">$0</div>
+        <div class="kpi-sub" id="kpiReserveSub">Fondo de reserva</div>
+      </div>
     </div>
   </div>
 
@@ -266,19 +286,19 @@ table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
   <div class="sec">
     <div class="sec-ttl"><span class="n">2</span>Estructura del flujo · Tres pilares</div>
     <div class="pillars">
-      <div class="pillar reveal">
+      <div class="pillar reveal" style="--pa:var(--blue2)">
         <div class="pillar-top"><span class="pillar-ic" style="background:var(--bd);color:var(--blue2)"><i class="ph-bold ph-storefront"></i></span><div><div class="pillar-name">Flujo operativo</div><div class="pillar-desc">Ventas, cobros, proveedores, sueldos, arriendos e impuestos.</div></div></div>
         <div class="pillar-val" id="pilOper">$0</div>
         <div class="pillar-flows"><div class="pf-row"><span class="l">Ingresos</span><span class="v" id="pilOperIn" style="color:var(--green2)">$0</span></div><div class="pf-row"><span class="l">Egresos</span><span class="v" id="pilOperOut" style="color:var(--red2)">$0</span></div></div>
         <div class="pillar-bar"><div class="pillar-fill" id="pilOperBar" style="background:var(--blue2)"></div></div>
       </div>
-      <div class="pillar reveal">
+      <div class="pillar reveal" style="--pa:var(--purple2)">
         <div class="pillar-top"><span class="pillar-ic" style="background:var(--pd);color:var(--purple2)"><i class="ph-bold ph-buildings"></i></span><div><div class="pillar-name">Flujo de inversión</div><div class="pillar-desc">Compra o venta de activos, maquinaria, equipos e inversiones.</div></div></div>
         <div class="pillar-val" id="pilInver">$0</div>
         <div class="pillar-flows"><div class="pf-row"><span class="l">Ingresos</span><span class="v" id="pilInverIn" style="color:var(--green2)">$0</span></div><div class="pf-row"><span class="l">Egresos</span><span class="v" id="pilInverOut" style="color:var(--red2)">$0</span></div></div>
         <div class="pillar-bar"><div class="pillar-fill" id="pilInverBar" style="background:var(--purple2)"></div></div>
       </div>
-      <div class="pillar reveal">
+      <div class="pillar reveal" style="--pa:var(--cyan2)">
         <div class="pillar-top"><span class="pillar-ic" style="background:var(--cd);color:var(--cyan2)"><i class="ph-bold ph-bank"></i></span><div><div class="pillar-name">Flujo de financiamiento</div><div class="pillar-desc">Créditos, aportes de socios, dividendos y amortización de deudas.</div></div></div>
         <div class="pillar-val" id="pilFinan">$0</div>
         <div class="pillar-flows"><div class="pf-row"><span class="l">Ingresos</span><span class="v" id="pilFinanIn" style="color:var(--green2)">$0</span></div><div class="pf-row"><span class="l">Egresos</span><span class="v" id="pilFinanOut" style="color:var(--red2)">$0</span></div></div>
@@ -384,10 +404,30 @@ table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
       </div>
       <div class="card-body">
         <div class="cmp-grid">
-          <div class="cmp-box"><div class="l"><i class="ph-bold ph-check-circle" style="color:var(--green2)"></i>Realizado</div><div class="v" id="cmpReal" style="color:var(--green2)">$0</div><div class="s" id="cmpRealSub">0 movimientos confirmados</div></div>
-          <div class="cmp-box"><div class="l"><i class="ph-bold ph-clock" style="color:var(--blue2)"></i>Proyectado / Pendiente</div><div class="v" id="cmpProy" style="color:var(--blue2)">$0</div><div class="s" id="cmpProySub">0 compromisos por cobrar/pagar</div></div>
-          <div class="cmp-box"><div class="l"><i class="ph-bold ph-trend-up" style="color:var(--green2)"></i>Por cobrar</div><div class="v" id="cmpCobrar" style="color:var(--green2)">$0</div><div class="s" id="cmpCobrarSub">Facturas pendientes de cobro</div></div>
-          <div class="cmp-box"><div class="l"><i class="ph-bold ph-trend-down" style="color:var(--red2)"></i>Por pagar</div><div class="v" id="cmpPagar" style="color:var(--red2)">$0</div><div class="s" id="cmpPagarSub">Compromisos pendientes de pago</div></div>
+          <div class="cmp-box" style="--ca:var(--green2)">
+            <div class="cmp-ic" style="background:var(--gd);color:var(--green2)"><i class="ph-bold ph-check-circle"></i></div>
+            <div class="l">Realizado</div>
+            <div class="v" id="cmpReal" style="color:var(--green2)">$0</div>
+            <div class="s" id="cmpRealSub">0 movimientos confirmados</div>
+          </div>
+          <div class="cmp-box" style="--ca:var(--blue2)">
+            <div class="cmp-ic" style="background:var(--bd);color:var(--blue2)"><i class="ph-bold ph-clock"></i></div>
+            <div class="l">Proyectado / Pendiente</div>
+            <div class="v" id="cmpProy" style="color:var(--blue2)">$0</div>
+            <div class="s" id="cmpProySub">0 compromisos por cobrar/pagar</div>
+          </div>
+          <div class="cmp-box" style="--ca:var(--green2)">
+            <div class="cmp-ic" style="background:var(--gd);color:var(--green2)"><i class="ph-bold ph-trend-up"></i></div>
+            <div class="l">Por cobrar</div>
+            <div class="v" id="cmpCobrar" style="color:var(--green2)">$0</div>
+            <div class="s" id="cmpCobrarSub">Facturas pendientes de cobro</div>
+          </div>
+          <div class="cmp-box" style="--ca:var(--red2)">
+            <div class="cmp-ic" style="background:var(--rd);color:var(--red2)"><i class="ph-bold ph-trend-down"></i></div>
+            <div class="l">Por pagar</div>
+            <div class="v" id="cmpPagar" style="color:var(--red2)">$0</div>
+            <div class="s" id="cmpPagarSub">Compromisos pendientes de pago</div>
+          </div>
         </div>
       </div>
     </div>
