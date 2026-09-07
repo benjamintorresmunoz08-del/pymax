@@ -184,6 +184,44 @@ table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
 .hs-lbl{font-size:10px;font-weight:600;color:var(--t3);display:flex;align-items:center;gap:6px}
 .hs-lbl i{font-size:13px}
 .hs-val{font-size:20px;font-weight:800;letter-spacing:-.03em;margin-top:8px;font-variant-numeric:tabular-nums}
+/* ===== Dashboard layout (grid) ===== */
+.hero-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;position:relative;z-index:1;flex-wrap:wrap}
+.hero-main{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;position:relative;z-index:1;flex-wrap:wrap}
+.hero-left{flex:1;min-width:220px}
+.hero-side{display:flex;align-items:flex-end}
+.dash{display:grid;grid-template-columns:1.55fr 1fr;gap:16px;align-items:start;margin-bottom:16px}
+.dash-main{display:flex;flex-direction:column;gap:16px;min-width:0}
+.dash-side{display:flex;flex-direction:column;gap:16px;min-width:0}
+.m-row{display:flex;align-items:center;gap:12px;padding:12px 2px}
+.m-row+.m-row{border-top:1px solid var(--bx)}
+.m-row.clickable{cursor:pointer}
+.m-ic{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.m-body{flex:1;min-width:0}
+.m-lbl{font-size:12px;font-weight:600;color:var(--t2)}
+.m-sub{font-size:10px;color:var(--t3);margin-top:2px}
+.m-sub .ok{color:var(--green2)}.m-sub .warn{color:var(--amber2)}.m-sub .bad{color:var(--red2)}
+.m-val{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pv{padding:12px 2px}
+.pv+.pv{border-top:1px solid var(--bx)}
+.pv-top{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.pv-ic{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.pv-name{font-size:12.5px;font-weight:700}
+.pv-val{font-size:16px;font-weight:800;margin-left:auto;font-variant-numeric:tabular-nums}
+.pv-flows{display:flex;gap:14px;font-size:11px;margin-bottom:8px}
+.pv-flows .in{color:var(--green2);font-weight:700}
+.pv-flows .out{color:var(--red2);font-weight:700}
+.due-totals{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.dt{background:var(--s2);border:1px solid var(--b);border-radius:11px;padding:12px;display:flex;flex-direction:column;gap:2px}
+.dt .l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--t3);display:flex;align-items:center;gap:6px}
+.dt .v{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums}
+.dt .s{font-size:10px;color:var(--t3)}
+.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mini{background:var(--s2);border:1px solid var(--b);border-radius:11px;padding:12px;position:relative;overflow:hidden}
+.mini::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--ca,var(--blue)),transparent 80%)}
+.mini .l{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--t3)}
+.mini .v{font-size:16px;font-weight:800;margin-top:6px;font-variant-numeric:tabular-nums}
+.mini .s{font-size:9.5px;color:var(--t3);margin-top:2px}
+@media(max-width:900px){.dash{grid-template-columns:1fr}.hero-main{flex-direction:column;align-items:stretch}.hero-side{align-items:stretch}}
 /* ===== Pulido de tarjetas ===== */
 .card{transition:border-color .22s,box-shadow .25s}
 .card:hover{box-shadow:0 12px 40px rgba(0,0,0,.3)}
@@ -214,30 +252,30 @@ table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
 </div>
 
 <div class="page">
-  <div class="page-head">
-    <div>
-      <div class="page-title">Flujo de <span>Caja</span></div>
-      <div class="page-sub" id="pageSub">Métricas y proyección de liquidez</div>
-    </div>
-    <div class="period-tabs">
-      <button class="pt on" data-p="mes" onclick="setPeriod('mes',this)">Mes</button>
-      <button class="pt" data-p="semana" onclick="setPeriod('semana',this)">Semana</button>
-      <button class="pt" data-p="hoy" onclick="setPeriod('hoy',this)">Hoy</button>
-      <button class="pt" data-p="anio" onclick="setPeriod('anio',this)">Año</button>
-    </div>
-  </div>
-
-  <!-- ▸ HERO · Liquidez disponible -->
+  <!-- ▸ HERO -->
   <section class="hero reveal">
-    <div class="hero-top">
-      <div class="hero-eyebrow"><i class="ph-duotone ph-cash-register"></i>Liquidez disponible hoy</div>
-      <div class="hero-status" id="heroStatus"><span class="dot" style="background:var(--t3)"></span>Calculando…</div>
+    <div class="hero-bar">
+      <div class="page-title">Flujo de <span>Caja</span></div>
+      <div class="period-tabs">
+        <button class="pt on" data-p="mes" onclick="setPeriod('mes',this)">Mes</button>
+        <button class="pt" data-p="semana" onclick="setPeriod('semana',this)">Semana</button>
+        <button class="pt" data-p="hoy" onclick="setPeriod('hoy',this)">Hoy</button>
+        <button class="pt" data-p="anio" onclick="setPeriod('anio',this)">Año</button>
+      </div>
     </div>
-    <div class="hero-val" id="heroAvailable">$0</div>
-    <div class="hero-sub">Saldo total de caja considerando todos tus movimientos registrados</div>
+    <div class="hero-main">
+      <div class="hero-left">
+        <div class="hero-eyebrow"><i class="ph-duotone ph-cash-register"></i>Liquidez disponible hoy</div>
+        <div class="hero-val" id="heroAvailable">$0</div>
+        <div class="hero-sub" id="pageSub">Saldo total de caja según todos tus movimientos</div>
+      </div>
+      <div class="hero-side">
+        <div class="hero-status" id="heroStatus"><span class="dot" style="background:var(--t3)"></span>Calculando…</div>
+      </div>
+    </div>
     <div class="hero-stats">
       <div class="hero-stat">
-        <div class="hs-lbl"><i class="ph-bold ph-arrows-down-up" style="color:var(--green2)"></i>Flujo neto del período</div>
+        <div class="hs-lbl"><i class="ph-bold ph-arrows-down-up" style="color:var(--green2)"></i>Flujo neto</div>
         <div class="hs-val" id="heroNet">$0</div>
       </div>
       <div class="hero-stat">
@@ -251,107 +289,122 @@ table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
     </div>
   </section>
 
-  <!-- 1 · Métricas clave -->
-  <div class="sec">
-    <div class="sec-ttl"><span class="n">1</span>Métricas clave</div>
-    <div class="kpi-grid">
-      <div class="kpi reveal" style="--ka:var(--blue2)">
-        <div class="kpi-ic" style="background:var(--bd);color:var(--blue2)"><i class="ph-bold ph-wallet"></i></div>
-        <div class="kpi-lbl">Saldo inicial</div>
-        <div class="kpi-val" id="kpiOpening">$0</div>
-        <div class="kpi-sub" id="kpiOpeningSub">Disponible real: $0</div>
-      </div>
-      <div class="kpi reveal" style="--ka:var(--green2)">
-        <div class="kpi-ic" style="background:var(--gd);color:var(--green2)"><i class="ph-bold ph-scales"></i></div>
-        <div class="kpi-lbl">Flujo operativo neto</div>
-        <div class="kpi-val" id="kpiNet" style="color:var(--green2)">$0</div>
-        <div class="kpi-sub" id="kpiNetSub">Ingresos − gastos</div>
-      </div>
-      <div class="kpi reveal" style="--ka:var(--amber2)">
-        <div class="kpi-ic" style="background:var(--ad);color:var(--amber2)"><i class="ph-bold ph-hourglass-simple"></i></div>
-        <div class="kpi-lbl">Runway</div>
-        <div class="kpi-val" id="kpiRunway" style="color:var(--amber2)">—</div>
-        <div class="kpi-sub" id="kpiRunwaySub">Meses de vida</div>
-      </div>
-      <div class="kpi clickable reveal" style="--ka:var(--purple2)" onclick="setReserve()" title="Configurar umbral de reserva">
-        <div class="kpi-ic" style="background:var(--pd);color:var(--purple2)"><i class="ph-bold ph-shield-check"></i></div>
-        <div class="kpi-lbl">Caja mínima</div>
-        <div class="kpi-val" id="kpiReserve" style="color:var(--purple2)">$0</div>
-        <div class="kpi-sub" id="kpiReserveSub">Fondo de reserva</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 2 · Tres pilares -->
-  <div class="sec">
-    <div class="sec-ttl"><span class="n">2</span>Estructura del flujo · Tres pilares</div>
-    <div class="pillars">
-      <div class="pillar reveal" style="--pa:var(--blue2)">
-        <div class="pillar-top"><span class="pillar-ic" style="background:var(--bd);color:var(--blue2)"><i class="ph-bold ph-storefront"></i></span><div><div class="pillar-name">Flujo operativo</div><div class="pillar-desc">Ventas, cobros, proveedores, sueldos, arriendos e impuestos.</div></div></div>
-        <div class="pillar-val" id="pilOper">$0</div>
-        <div class="pillar-flows"><div class="pf-row"><span class="l">Ingresos</span><span class="v" id="pilOperIn" style="color:var(--green2)">$0</span></div><div class="pf-row"><span class="l">Egresos</span><span class="v" id="pilOperOut" style="color:var(--red2)">$0</span></div></div>
-        <div class="pillar-bar"><div class="pillar-fill" id="pilOperBar" style="background:var(--blue2)"></div></div>
-      </div>
-      <div class="pillar reveal" style="--pa:var(--purple2)">
-        <div class="pillar-top"><span class="pillar-ic" style="background:var(--pd);color:var(--purple2)"><i class="ph-bold ph-buildings"></i></span><div><div class="pillar-name">Flujo de inversión</div><div class="pillar-desc">Compra o venta de activos, maquinaria, equipos e inversiones.</div></div></div>
-        <div class="pillar-val" id="pilInver">$0</div>
-        <div class="pillar-flows"><div class="pf-row"><span class="l">Ingresos</span><span class="v" id="pilInverIn" style="color:var(--green2)">$0</span></div><div class="pf-row"><span class="l">Egresos</span><span class="v" id="pilInverOut" style="color:var(--red2)">$0</span></div></div>
-        <div class="pillar-bar"><div class="pillar-fill" id="pilInverBar" style="background:var(--purple2)"></div></div>
-      </div>
-      <div class="pillar reveal" style="--pa:var(--cyan2)">
-        <div class="pillar-top"><span class="pillar-ic" style="background:var(--cd);color:var(--cyan2)"><i class="ph-bold ph-bank"></i></span><div><div class="pillar-name">Flujo de financiamiento</div><div class="pillar-desc">Créditos, aportes de socios, dividendos y amortización de deudas.</div></div></div>
-        <div class="pillar-val" id="pilFinan">$0</div>
-        <div class="pillar-flows"><div class="pf-row"><span class="l">Ingresos</span><span class="v" id="pilFinanIn" style="color:var(--green2)">$0</span></div><div class="pf-row"><span class="l">Egresos</span><span class="v" id="pilFinanOut" style="color:var(--red2)">$0</span></div></div>
-        <div class="pillar-bar"><div class="pillar-fill" id="pilFinanBar" style="background:var(--cyan2)"></div></div>
-      </div>
-    </div>
-  </div>
-  <!-- 3 · Proyección y escenarios -->
-  <div class="sec">
-    <div class="sec-ttl"><span class="n">3</span>Proyección y escenarios</div>
-    <div class="card reveal">
-      <div class="card-hdr">
-        <div>
-          <div class="card-ttl"><span class="ic" style="background:var(--bd);color:var(--blue2)"><i class="ph-duotone ph-trend-up"></i></span>Proyección automática de liquidez</div>
-          <div class="card-sub">Saldo futuro según tu ritmo de caja</div>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <div class="horizon" id="horizon">
-            <button class="on" data-h="30" onclick="setHorizon(30,this)">30 días</button>
-            <button data-h="60" onclick="setHorizon(60,this)">60 días</button>
-            <button data-h="90" onclick="setHorizon(90,this)">90 días</button>
+  <!-- ▸ PANEL PRINCIPAL (grid) -->
+  <div class="dash">
+    <div class="dash-main">
+      <div class="card reveal">
+        <div class="card-hdr">
+          <div>
+            <div class="card-ttl"><span class="ic" style="background:var(--bd);color:var(--blue2)"><i class="ph-duotone ph-trend-up"></i></span>Proyección de liquidez</div>
+            <div class="card-sub">Saldo futuro según tu ritmo de caja</div>
           </div>
-          <button class="btn" onclick="openSim()"><i class="ph-bold ph-sliders"></i>Simular escenario</button>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <div class="horizon" id="horizon">
+              <button class="on" data-h="30" onclick="setHorizon(30,this)">30 días</button>
+              <button data-h="60" onclick="setHorizon(60,this)">60 días</button>
+              <button data-h="90" onclick="setHorizon(90,this)">90 días</button>
+            </div>
+            <button class="btn" onclick="openSim()"><i class="ph-bold ph-sliders"></i>Simular</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart-wrap"><canvas id="projChart"></canvas></div>
+          <div id="crunchBox" style="margin-top:14px"></div>
         </div>
       </div>
-      <div class="card-body">
-        <div class="chart-wrap"><canvas id="projChart"></canvas></div>
-        <div id="crunchBox" style="margin-top:14px"></div>
+
+      <div class="card reveal">
+        <div class="card-hdr">
+          <div>
+            <div class="card-ttl"><span class="ic" style="background:var(--cd);color:var(--cyan2)"><i class="ph-duotone ph-calendar-check"></i></span>Próximos vencimientos</div>
+            <div class="card-sub">Cuentas por cobrar y por pagar</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="due-totals">
+            <div class="dt"><span class="l"><i class="ph-bold ph-trend-up" style="color:var(--green2)"></i>Por cobrar</span><span class="v" id="cmpCobrar" style="color:var(--green2)">$0</span><span class="s" id="cmpCobrarSub">0 facturas</span></div>
+            <div class="dt"><span class="l"><i class="ph-bold ph-trend-down" style="color:var(--red2)"></i>Por pagar</span><span class="v" id="cmpPagar" style="color:var(--red2)">$0</span><span class="s" id="cmpPagarSub">0 compromisos</span></div>
+          </div>
+          <div id="dueList"></div>
+        </div>
       </div>
     </div>
 
-    <div class="card reveal">
-      <div class="card-hdr">
-        <div>
-          <div class="card-ttl"><span class="ic" style="background:var(--cd);color:var(--cyan2)"><i class="ph-duotone ph-calendar-check"></i></span>Próximos vencimientos</div>
-          <div class="card-sub">Facturas por cobrar y por pagar con fecha de vencimiento</div>
+    <div class="dash-side">
+      <div class="card reveal">
+        <div class="card-hdr"><div class="card-ttl"><span class="ic" style="background:var(--bd);color:var(--blue2)"><i class="ph-duotone ph-gauge"></i></span>Métricas clave</div></div>
+        <div class="card-body">
+          <div class="m-row">
+            <div class="m-ic" style="background:var(--bd);color:var(--blue2)"><i class="ph-bold ph-wallet"></i></div>
+            <div class="m-body"><div class="m-lbl">Saldo inicial</div><div class="m-sub" id="kpiOpeningSub">Disponible real: $0</div></div>
+            <div class="m-val" id="kpiOpening">$0</div>
+          </div>
+          <div class="m-row">
+            <div class="m-ic" style="background:var(--gd);color:var(--green2)"><i class="ph-bold ph-scales"></i></div>
+            <div class="m-body"><div class="m-lbl">Flujo operativo neto</div><div class="m-sub" id="kpiNetSub">Ingresos − gastos</div></div>
+            <div class="m-val" id="kpiNet" style="color:var(--green2)">$0</div>
+          </div>
+          <div class="m-row">
+            <div class="m-ic" style="background:var(--ad);color:var(--amber2)"><i class="ph-bold ph-hourglass-simple"></i></div>
+            <div class="m-body"><div class="m-lbl">Runway</div><div class="m-sub" id="kpiRunwaySub">Meses de vida</div></div>
+            <div class="m-val" id="kpiRunway" style="color:var(--amber2)">—</div>
+          </div>
+          <div class="m-row clickable" onclick="setReserve()" title="Configurar umbral de reserva">
+            <div class="m-ic" style="background:var(--pd);color:var(--purple2)"><i class="ph-bold ph-shield-check"></i></div>
+            <div class="m-body"><div class="m-lbl">Caja mínima</div><div class="m-sub" id="kpiReserveSub">Fondo de reserva</div></div>
+            <div class="m-val" id="kpiReserve" style="color:var(--purple2)">$0</div>
+          </div>
         </div>
       </div>
-      <div class="card-body"><div id="dueList"></div></div>
+
+      <div class="card reveal">
+        <div class="card-hdr"><div class="card-ttl"><span class="ic" style="background:var(--pd);color:var(--purple2)"><i class="ph-duotone ph-stack"></i></span>Estructura del flujo</div></div>
+        <div class="card-body">
+          <div class="pv">
+            <div class="pv-top"><span class="pv-ic" style="background:var(--bd);color:var(--blue2)"><i class="ph-bold ph-storefront"></i></span><span class="pv-name">Operativo</span><span class="pv-val" id="pilOper">$0</span></div>
+            <div class="pv-flows"><span class="in">+<span id="pilOperIn">$0</span></span><span class="out">−<span id="pilOperOut">$0</span></span></div>
+            <div class="pillar-bar"><div class="pillar-fill" id="pilOperBar" style="background:var(--blue2)"></div></div>
+          </div>
+          <div class="pv">
+            <div class="pv-top"><span class="pv-ic" style="background:var(--pd);color:var(--purple2)"><i class="ph-bold ph-buildings"></i></span><span class="pv-name">Inversión</span><span class="pv-val" id="pilInver">$0</span></div>
+            <div class="pv-flows"><span class="in">+<span id="pilInverIn">$0</span></span><span class="out">−<span id="pilInverOut">$0</span></span></div>
+            <div class="pillar-bar"><div class="pillar-fill" id="pilInverBar" style="background:var(--purple2)"></div></div>
+          </div>
+          <div class="pv">
+            <div class="pv-top"><span class="pv-ic" style="background:var(--cd);color:var(--cyan2)"><i class="ph-bold ph-bank"></i></span><span class="pv-name">Financiamiento</span><span class="pv-val" id="pilFinan">$0</span></div>
+            <div class="pv-flows"><span class="in">+<span id="pilFinanIn">$0</span></span><span class="out">−<span id="pilFinanOut">$0</span></span></div>
+            <div class="pillar-bar"><div class="pillar-fill" id="pilFinanBar" style="background:var(--cyan2)"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card reveal">
+        <div class="card-hdr"><div class="card-ttl"><span class="ic" style="background:var(--gd);color:var(--green2)"><i class="ph-duotone ph-chart-bar"></i></span>Real vs Proyectado</div></div>
+        <div class="card-body">
+          <div class="mini-grid">
+            <div class="mini" style="--ca:var(--green2)"><div class="l">Realizado</div><div class="v" id="cmpReal" style="color:var(--green2)">$0</div><div class="s" id="cmpRealSub">0 movimientos</div></div>
+            <div class="mini" style="--ca:var(--blue2)"><div class="l">Proyectado</div><div class="v" id="cmpProy" style="color:var(--blue2)">$0</div><div class="s" id="cmpProySub">0 compromisos</div></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+  <!-- ▸ fin del panel principal -->
 
-  <!-- 4 · Tabla operativa -->
-  <div class="sec">
-    <div class="sec-ttl"><span class="n">4</span>Tabla operativa · Detalle de movimientos</div>
-    <div class="card reveal">
-      <div class="card-hdr">
-        <div>
-          <div class="card-ttl"><span class="ic" style="background:var(--pd);color:var(--purple2)"><i class="ph-duotone ph-table"></i></span>Movimientos del período</div>
-          <div class="card-sub">Estado, actividad y filtros avanzados</div>
-        </div>
+  <!-- ▸ Movimientos -->
+  <div class="card reveal">
+    <div class="card-hdr">
+      <div>
+        <div class="card-ttl"><span class="ic" style="background:var(--pd);color:var(--purple2)"><i class="ph-duotone ph-table"></i></span>Movimientos del período</div>
+        <div class="card-sub">Detalle de ingresos y gastos</div>
       </div>
-      <div class="card-body">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" onclick="exportCsv()"><i class="ph-bold ph-file-csv"></i>CSV</button>
+        <button class="btn" onclick="exportExcel()"><i class="ph-bold ph-file-xls"></i>Excel</button>
+        <button class="btn btn-p" onclick="exportPdf()"><i class="ph-bold ph-file-pdf"></i>PDF</button>
+      </div>
+    </div>
+    <div class="card-body">
         <div class="filters" style="margin-bottom:14px">
           <select id="fType" onchange="renderTable()">
             <option value="">Tipo · todos</option>
@@ -385,53 +438,6 @@ table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- 5 · Reportes y exportación -->
-  <div class="sec">
-    <div class="sec-ttl"><span class="n">5</span>Reportes y exportación</div>
-    <div class="card reveal">
-      <div class="card-hdr">
-        <div>
-          <div class="card-ttl"><span class="ic" style="background:var(--gd);color:var(--green2)"><i class="ph-duotone ph-file-text"></i></span>Vista comparativa · Real vs Proyectado</div>
-          <div class="card-sub">Precisión del presupuesto estimado</div>
-        </div>
-        <div style="display:flex;gap:8px">
-          <button class="btn" onclick="exportCsv()"><i class="ph-bold ph-file-csv"></i>CSV</button>
-          <button class="btn" onclick="exportExcel()"><i class="ph-bold ph-file-xls"></i>Excel</button>
-          <button class="btn btn-p" onclick="exportPdf()"><i class="ph-bold ph-file-pdf"></i>PDF</button>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="cmp-grid">
-          <div class="cmp-box" style="--ca:var(--green2)">
-            <div class="cmp-ic" style="background:var(--gd);color:var(--green2)"><i class="ph-bold ph-check-circle"></i></div>
-            <div class="l">Realizado</div>
-            <div class="v" id="cmpReal" style="color:var(--green2)">$0</div>
-            <div class="s" id="cmpRealSub">0 movimientos confirmados</div>
-          </div>
-          <div class="cmp-box" style="--ca:var(--blue2)">
-            <div class="cmp-ic" style="background:var(--bd);color:var(--blue2)"><i class="ph-bold ph-clock"></i></div>
-            <div class="l">Proyectado / Pendiente</div>
-            <div class="v" id="cmpProy" style="color:var(--blue2)">$0</div>
-            <div class="s" id="cmpProySub">0 compromisos por cobrar/pagar</div>
-          </div>
-          <div class="cmp-box" style="--ca:var(--green2)">
-            <div class="cmp-ic" style="background:var(--gd);color:var(--green2)"><i class="ph-bold ph-trend-up"></i></div>
-            <div class="l">Por cobrar</div>
-            <div class="v" id="cmpCobrar" style="color:var(--green2)">$0</div>
-            <div class="s" id="cmpCobrarSub">Facturas pendientes de cobro</div>
-          </div>
-          <div class="cmp-box" style="--ca:var(--red2)">
-            <div class="cmp-ic" style="background:var(--rd);color:var(--red2)"><i class="ph-bold ph-trend-down"></i></div>
-            <div class="l">Por pagar</div>
-            <div class="v" id="cmpPagar" style="color:var(--red2)">$0</div>
-            <div class="s" id="cmpPagarSub">Compromisos pendientes de pago</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 <div class="modal" id="simModal">
   <div class="modal-bg" onclick="closeSim()"></div>
