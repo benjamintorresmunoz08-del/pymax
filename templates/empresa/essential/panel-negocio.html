@@ -311,7 +311,7 @@ function renderGrid(){
   renderKpis();
 }
 
-function renderKpis(){
+function renderKpis(){ 
   setT('kpProd',_prods.length);
   const prices=_prods.map(p=>parseFloat(p.price||0)).filter(v=>v>0);
   const avg=prices.length?Math.round(prices.reduce((a,b)=>a+b,0)/prices.length):0;
