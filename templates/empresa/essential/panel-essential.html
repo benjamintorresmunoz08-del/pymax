@@ -1322,18 +1322,21 @@ document.addEventListener('DOMContentLoaded',async function(){
 
   var user=null;
   try{
-    var sr=await _sb.auth.getSession();
-    user=(sr&&sr.data&&sr.data.session&&sr.data.session.user)||null;
+    // getUser() valida y renueva el token en el servidor. getSession() solo lee la
+    // caché y NO refresca, por lo que tras varios días sin ingresar el token expiraba
+    // y el dashboard quedaba en $0. Por eso usamos getUser() primero.
+    var gr=await _sb.auth.getUser();
+    user=(gr&&gr.data&&gr.data.user)||null;
   }catch(e){
-    console.warn('⚠️ getSession falló, intentando getUser:',e);
+    console.warn('⚠️ getUser falló, intentando getSession:',e);
   }
 
   if(!user){
     try{
-      var gr=await _sb.auth.getUser();
-      user=(gr&&gr.data&&gr.data.user)||null;
+      var sr=await _sb.auth.getSession();
+      user=(sr&&sr.data&&sr.data.session&&sr.data.session.user)||null;
     }catch(e){
-      console.warn('⚠️ getUser falló:',e);
+      console.warn('⚠️ getSession falló:',e);
     }
   }
 

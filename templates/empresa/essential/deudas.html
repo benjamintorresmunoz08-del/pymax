@@ -635,8 +635,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 
         async function checkAuth() {
             let user = null;
-            try { const { data: { session } } = await client.auth.getSession(); user = session && session.user; } catch (e) {}
-            if (!user) { try { const { data: { user: u }, error } = await client.auth.getUser(); if (!error) user = u; } catch (e) {} }
+            // getUser() valida y renueva el token; getSession() solo lee la caché (token expirado → $0)
+            try { const { data: { user: u }, error } = await client.auth.getUser(); if (!error) user = u; } catch (e) {}
+            if (!user) { try { const { data: { session } } = await client.auth.getSession(); user = session && session.user; } catch (e) {} }
             if (!user) {
                 Swal.fire({ title: 'Sesión requerida', text: 'Debes iniciar sesión para acceder a este módulo.', icon: 'warning', confirmButtonText: 'Ir a login', background: '#0b0b14', color: '#fff' }).then(() => window.location.href = '/');
                 return null;
