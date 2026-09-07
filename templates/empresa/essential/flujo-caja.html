@@ -163,6 +163,35 @@ table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
 .chart-wrap{position:relative;height:280px}
 .reveal{opacity:0;transform:translateY(12px);transition:opacity .55s cubic-bezier(.16,1,.3,1),transform .55s cubic-bezier(.16,1,.3,1)}
 .reveal.in{opacity:1;transform:none}
+/* ===== HERO · Liquidez disponible ===== */
+.hero{position:relative;border-radius:20px;padding:28px 26px;margin-bottom:26px;background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(139,92,246,.11) 55%,rgba(16,185,129,.09));border:1px solid rgba(148,163,184,.18);overflow:hidden;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.hero::before{content:'';position:absolute;top:-45%;right:-8%;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,.35),transparent 70%);filter:blur(48px);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-55%;left:-6%;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,.28),transparent 70%);filter:blur(48px);pointer-events:none}
+.hero-top{display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative;z-index:1;flex-wrap:wrap}
+.hero-eyebrow{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t2);display:flex;align-items:center;gap:7px}
+.hero-eyebrow i{font-size:16px;color:var(--blue2)}
+.hero-status{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;padding:5px 12px;border-radius:100px;background:rgba(6,10,20,.5);border:1px solid var(--b)}
+.hero-status .dot{width:7px;height:7px;border-radius:50%;box-shadow:0 0 8px currentColor}
+.hero-val{position:relative;z-index:1;font-size:46px;font-weight:900;letter-spacing:-.045em;line-height:1;margin-top:18px;font-variant-numeric:tabular-nums;background:linear-gradient(90deg,#F1F5FF,#93C5FD 55%,#A78BFA);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{position:relative;z-index:1;font-size:12px;color:var(--t3);margin-top:9px}
+.hero-stats{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}
+.hero-stat{padding:14px 16px;border-radius:12px;background:rgba(6,10,20,.42);border:1px solid var(--b);transition:border-color .2s}
+.hero-stat:hover{border-color:var(--bh)}
+.hs-lbl{font-size:10px;font-weight:600;color:var(--t3);display:flex;align-items:center;gap:6px}
+.hs-lbl i{font-size:13px}
+.hs-val{font-size:20px;font-weight:800;letter-spacing:-.03em;margin-top:8px;font-variant-numeric:tabular-nums}
+/* ===== Pulido de tarjetas ===== */
+.card{transition:border-color .22s,box-shadow .25s}
+.card:hover{box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.kpi{position:relative;overflow:hidden}
+.kpi:hover{transform:translateY(-3px);box-shadow:0 10px 34px rgba(0,0,0,.35)}
+.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--blue),transparent);opacity:0;transition:opacity .25s}
+.kpi:hover::after{opacity:.9}
+.pillar{transition:border-color .22s,transform .22s,box-shadow .25s}
+.pillar:hover{transform:translateY(-3px);box-shadow:0 10px 34px rgba(0,0,0,.32)}
+.sec-ttl .n{background:linear-gradient(135deg,rgba(59,130,246,.22),rgba(139,92,246,.18));border-color:rgba(59,130,246,.25)}
+@media(max-width:600px){.hero{padding:22px 18px}.hero-val{font-size:34px}.hero-stats{grid-template-columns:1fr 1fr}}
+
 @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.pillars{grid-template-columns:1fr}.cmp-grid{grid-template-columns:1fr}}
 @media(max-width:600px){.page{padding:64px 12px 44px}.b-name span{display:none}.pt{padding:5px 10px;font-size:10px}}
 </style>
@@ -197,6 +226,30 @@ table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
       <button class="pt" data-p="anio" onclick="setPeriod('anio',this)">Año</button>
     </div>
   </div>
+
+  <!-- ▸ HERO · Liquidez disponible -->
+  <section class="hero reveal">
+    <div class="hero-top">
+      <div class="hero-eyebrow"><i class="ph-duotone ph-cash-register"></i>Liquidez disponible hoy</div>
+      <div class="hero-status" id="heroStatus"><span class="dot" style="background:var(--t3)"></span>Calculando…</div>
+    </div>
+    <div class="hero-val" id="heroAvailable">$0</div>
+    <div class="hero-sub">Saldo total de caja considerando todos tus movimientos registrados</div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hs-lbl"><i class="ph-bold ph-arrows-down-up" style="color:var(--green2)"></i>Flujo neto del período</div>
+        <div class="hs-val" id="heroNet">$0</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hs-lbl"><i class="ph-bold ph-hourglass-simple" style="color:var(--amber2)"></i>Runway</div>
+        <div class="hs-val" id="heroRunway">—</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hs-lbl"><i class="ph-bold ph-pulse" style="color:var(--blue2)"></i>Ritmo diario</div>
+        <div class="hs-val" id="heroDaily">$0</div>
+      </div>
+    </div>
+  </section>
 
   <!-- 1 · Métricas clave -->
   <div class="sec">
@@ -550,6 +603,7 @@ function render(){
   const cover = m.burn > 0 ? Math.max(0, m.disponible / m.burn) : (m.disponible > 0 ? Infinity : 0);
   document.getElementById('pageSub').textContent = 'Métricas y proyección de liquidez · ' + (PERIODS[period] || '');
   renderKPIs(m.opening, m.net, m.disponible, cover, m.burn);
+  renderHero(m);
   renderPillars(m.cur);
   renderProjection(m);
   renderTable();
@@ -578,6 +632,26 @@ function renderKPIs(opening, net, disponible, cover, burn){
   } else {
     rs.textContent = 'Toca para configurar';
   }
+}
+
+function renderHero(m){
+  const hv = document.getElementById('heroAvailable');
+  if (hv) setNum(hv, m.disponible);
+  const st = document.getElementById('heroStatus');
+  if (st){
+    if (m.disponible > 0) st.innerHTML = '<span class="dot" style="background:var(--green2)"></span>Positivo';
+    else if (m.disponible < 0) st.innerHTML = '<span class="dot" style="background:var(--red2)"></span>En rojo';
+    else st.innerHTML = '<span class="dot" style="background:var(--t3)"></span>En cero';
+  }
+  const hn = document.getElementById('heroNet');
+  if (hn){ setNum(hn, m.net); hn.style.color = m.net >= 0 ? 'var(--green2)' : 'var(--red2)'; }
+  const hr = document.getElementById('heroRunway');
+  if (hr){
+    if (m.burn > 0) hr.textContent = Math.max(0, m.disponible / m.burn).toFixed(1) + ' meses';
+    else hr.textContent = m.disponible > 0 ? '∞' : '—';
+  }
+  const hd = document.getElementById('heroDaily');
+  if (hd) setNum(hd, m.net / m.elapsedDays);
 }
 
 function renderPillars(cur){
@@ -741,12 +815,17 @@ function renderProjection(m){
   if (typeof Chart === 'undefined') return; // Chart.js no cargó; las alertas ya se muestran
   const ctx = document.getElementById('projChart');
   if (projChart){ projChart.destroy(); }
+  const gctx = ctx.getContext('2d');
+  const areaGrad = gctx.createLinearGradient(0, 0, 0, 280);
+  areaGrad.addColorStop(0, 'rgba(16,185,129,.28)');
+  areaGrad.addColorStop(1, 'rgba(16,185,129,0)');
   const datasets = [{
     label: 'Saldo de caja',
     data: balances,
     borderWidth: 2.5,
-    tension: 0,
-    fill: false,
+    tension: 0.25,
+    fill: true,
+    backgroundColor: areaGrad,
     pointRadius: c => (c.parsed.y < 0 ? 3 : 0),
     pointBackgroundColor: '#F43F5E',
     pointBorderColor: '#F43F5E',
